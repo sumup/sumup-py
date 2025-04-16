@@ -3,9 +3,9 @@ from datetime import date
 import typing
 import pydantic
 
-type FinancialPayoutStatus = typing.Literal["FAILED", "SUCCESSFUL"]
+FinancialPayoutStatus = typing.Literal["FAILED", "SUCCESSFUL"]
 
-type FinancialPayoutType = typing.Literal[
+FinancialPayoutType = typing.Literal[
     "BALANCE_DEDUCTION",
     "CHARGE_BACK_DEDUCTION",
     "DD_RETURN_DEDUCTION",
@@ -41,7 +41,7 @@ class FinancialPayout(pydantic.BaseModel):
     type: typing.Optional[FinancialPayoutType] = None
 
 
-type FinancialPayouts = list[FinancialPayout]
+FinancialPayouts = list[FinancialPayout]
 """
 FinancialPayouts is a schema definition.
 """

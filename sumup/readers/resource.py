@@ -12,7 +12,7 @@ from .types import (
 import typing
 import pydantic
 
-type CreateReaderCheckoutBodyCardType = typing.Literal["credit", "debit"]
+CreateReaderCheckoutBodyCardType = typing.Literal["credit", "debit"]
 
 
 class CreateReaderCheckoutBody(pydantic.BaseModel):
@@ -147,7 +147,7 @@ class ReadersResource(Resource):
         merchant_code: str,
         id: str,
         body: CreateReaderCheckoutBody,
-        headers: HeaderTypes | None = None,
+        headers: typing.Optional[HeaderTypes] = None,
     ) -> CreateReaderCheckout201Response:
         """
         Create a Reader Checkout
@@ -170,7 +170,9 @@ class ReadersResource(Resource):
         )
         return pydantic.TypeAdapter(CreateReaderCheckout201Response).validate_python(resp.json())
 
-    def terminate_checkout(self, merchant_code: str, id: str, headers: HeaderTypes | None = None):
+    def terminate_checkout(
+        self, merchant_code: str, id: str, headers: typing.Optional[HeaderTypes] = None
+    ):
         """
         Create a Reader Terminate action
 
@@ -196,7 +198,7 @@ class ReadersResource(Resource):
         )
 
     def list(
-        self, merchant_code: str, headers: HeaderTypes | None = None
+        self, merchant_code: str, headers: typing.Optional[HeaderTypes] = None
     ) -> ListReaders200Response:
         """
         List Readers
@@ -210,7 +212,10 @@ class ReadersResource(Resource):
         return pydantic.TypeAdapter(ListReaders200Response).validate_python(resp.json())
 
     def create(
-        self, merchant_code: str, body: CreateReaderBody, headers: HeaderTypes | None = None
+        self,
+        merchant_code: str,
+        body: CreateReaderBody,
+        headers: typing.Optional[HeaderTypes] = None,
     ) -> Reader:
         """
         Create a Reader
@@ -224,7 +229,9 @@ class ReadersResource(Resource):
         )
         return pydantic.TypeAdapter(Reader).validate_python(resp.json())
 
-    def get(self, merchant_code: str, id: ReaderId, headers: HeaderTypes | None = None) -> Reader:
+    def get(
+        self, merchant_code: str, id: ReaderId, headers: typing.Optional[HeaderTypes] = None
+    ) -> Reader:
         """
         Retrieve a Reader
 
@@ -236,7 +243,9 @@ class ReadersResource(Resource):
         )
         return pydantic.TypeAdapter(Reader).validate_python(resp.json())
 
-    def delete_reader(self, merchant_code: str, id: ReaderId, headers: HeaderTypes | None = None):
+    def delete_reader(
+        self, merchant_code: str, id: ReaderId, headers: typing.Optional[HeaderTypes] = None
+    ):
         """
         Delete a reader
 
@@ -252,7 +261,7 @@ class ReadersResource(Resource):
         merchant_code: str,
         id: ReaderId,
         body: UpdateReaderBody,
-        headers: HeaderTypes | None = None,
+        headers: typing.Optional[HeaderTypes] = None,
     ) -> Reader:
         """
         Update a Reader
@@ -276,7 +285,7 @@ class AsyncReadersResource(AsyncResource):
         merchant_code: str,
         id: str,
         body: CreateReaderCheckoutBody,
-        headers: HeaderTypes | None = None,
+        headers: typing.Optional[HeaderTypes] = None,
     ) -> CreateReaderCheckout201Response:
         """
         Create a Reader Checkout
@@ -300,7 +309,7 @@ class AsyncReadersResource(AsyncResource):
         return pydantic.TypeAdapter(CreateReaderCheckout201Response).validate_python(resp.json())
 
     async def terminate_checkout(
-        self, merchant_code: str, id: str, headers: HeaderTypes | None = None
+        self, merchant_code: str, id: str, headers: typing.Optional[HeaderTypes] = None
     ):
         """
         Create a Reader Terminate action
@@ -327,7 +336,7 @@ class AsyncReadersResource(AsyncResource):
         )
 
     async def list(
-        self, merchant_code: str, headers: HeaderTypes | None = None
+        self, merchant_code: str, headers: typing.Optional[HeaderTypes] = None
     ) -> ListReaders200Response:
         """
         List Readers
@@ -341,7 +350,10 @@ class AsyncReadersResource(AsyncResource):
         return pydantic.TypeAdapter(ListReaders200Response).validate_python(resp.json())
 
     async def create(
-        self, merchant_code: str, body: CreateReaderBody, headers: HeaderTypes | None = None
+        self,
+        merchant_code: str,
+        body: CreateReaderBody,
+        headers: typing.Optional[HeaderTypes] = None,
     ) -> Reader:
         """
         Create a Reader
@@ -356,7 +368,7 @@ class AsyncReadersResource(AsyncResource):
         return pydantic.TypeAdapter(Reader).validate_python(resp.json())
 
     async def get(
-        self, merchant_code: str, id: ReaderId, headers: HeaderTypes | None = None
+        self, merchant_code: str, id: ReaderId, headers: typing.Optional[HeaderTypes] = None
     ) -> Reader:
         """
         Retrieve a Reader
@@ -370,7 +382,7 @@ class AsyncReadersResource(AsyncResource):
         return pydantic.TypeAdapter(Reader).validate_python(resp.json())
 
     async def delete_reader(
-        self, merchant_code: str, id: ReaderId, headers: HeaderTypes | None = None
+        self, merchant_code: str, id: ReaderId, headers: typing.Optional[HeaderTypes] = None
     ):
         """
         Delete a reader
@@ -387,7 +399,7 @@ class AsyncReadersResource(AsyncResource):
         merchant_code: str,
         id: ReaderId,
         body: UpdateReaderBody,
-        headers: HeaderTypes | None = None,
+        headers: typing.Optional[HeaderTypes] = None,
     ) -> Reader:
         """
         Update a Reader

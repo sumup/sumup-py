@@ -136,7 +136,7 @@ class TransactionsResource(Resource):
         super().__init__(client)
 
     def refund(
-        self, txn_id: str, body: RefundTransactionBody, headers: HeaderTypes | None = None
+        self, txn_id: str, body: RefundTransactionBody, headers: typing.Optional[HeaderTypes] = None
     ) -> RefundTransaction204Response:
         """
         Refund a transaction
@@ -153,8 +153,8 @@ class TransactionsResource(Resource):
     def get(
         self,
         merchant_code: str,
-        params: GetTransactionV21Params | None = None,
-        headers: HeaderTypes | None = None,
+        params: typing.Optional[GetTransactionV21Params] = None,
+        headers: typing.Optional[HeaderTypes] = None,
     ) -> TransactionFull:
         """
         Retrieve a transaction
@@ -175,7 +175,9 @@ class TransactionsResource(Resource):
         return pydantic.TypeAdapter(TransactionFull).validate_python(resp.json())
 
     def get_deprecated(
-        self, params: GetTransactionParams | None = None, headers: HeaderTypes | None = None
+        self,
+        params: typing.Optional[GetTransactionParams] = None,
+        headers: typing.Optional[HeaderTypes] = None,
     ) -> TransactionFull:
         """
         Retrieve a transaction
@@ -201,8 +203,8 @@ class TransactionsResource(Resource):
     def list(
         self,
         merchant_code: str,
-        params: ListTransactionsV21Params | None = None,
-        headers: HeaderTypes | None = None,
+        params: typing.Optional[ListTransactionsV21Params] = None,
+        headers: typing.Optional[HeaderTypes] = None,
     ) -> ListTransactionsV21200Response:
         """
         List transactions
@@ -217,7 +219,9 @@ class TransactionsResource(Resource):
         return pydantic.TypeAdapter(ListTransactionsV21200Response).validate_python(resp.json())
 
     def list_deprecated(
-        self, params: ListTransactionsParams | None = None, headers: HeaderTypes | None = None
+        self,
+        params: typing.Optional[ListTransactionsParams] = None,
+        headers: typing.Optional[HeaderTypes] = None,
     ) -> ListTransactions200Response:
         """
         List transactions
@@ -239,7 +243,7 @@ class AsyncTransactionsResource(AsyncResource):
         super().__init__(client)
 
     async def refund(
-        self, txn_id: str, body: RefundTransactionBody, headers: HeaderTypes | None = None
+        self, txn_id: str, body: RefundTransactionBody, headers: typing.Optional[HeaderTypes] = None
     ) -> RefundTransaction204Response:
         """
         Refund a transaction
@@ -256,8 +260,8 @@ class AsyncTransactionsResource(AsyncResource):
     async def get(
         self,
         merchant_code: str,
-        params: GetTransactionV21Params | None = None,
-        headers: HeaderTypes | None = None,
+        params: typing.Optional[GetTransactionV21Params] = None,
+        headers: typing.Optional[HeaderTypes] = None,
     ) -> TransactionFull:
         """
         Retrieve a transaction
@@ -278,7 +282,9 @@ class AsyncTransactionsResource(AsyncResource):
         return pydantic.TypeAdapter(TransactionFull).validate_python(resp.json())
 
     async def get_deprecated(
-        self, params: GetTransactionParams | None = None, headers: HeaderTypes | None = None
+        self,
+        params: typing.Optional[GetTransactionParams] = None,
+        headers: typing.Optional[HeaderTypes] = None,
     ) -> TransactionFull:
         """
         Retrieve a transaction
@@ -304,8 +310,8 @@ class AsyncTransactionsResource(AsyncResource):
     async def list(
         self,
         merchant_code: str,
-        params: ListTransactionsV21Params | None = None,
-        headers: HeaderTypes | None = None,
+        params: typing.Optional[ListTransactionsV21Params] = None,
+        headers: typing.Optional[HeaderTypes] = None,
     ) -> ListTransactionsV21200Response:
         """
         List transactions
@@ -320,7 +326,9 @@ class AsyncTransactionsResource(AsyncResource):
         return pydantic.TypeAdapter(ListTransactionsV21200Response).validate_python(resp.json())
 
     async def list_deprecated(
-        self, params: ListTransactionsParams | None = None, headers: HeaderTypes | None = None
+        self,
+        params: typing.Optional[ListTransactionsParams] = None,
+        headers: typing.Optional[HeaderTypes] = None,
     ) -> ListTransactions200Response:
         """
         List transactions

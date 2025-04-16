@@ -45,8 +45,8 @@ class PayoutsResource(Resource):
     def list(
         self,
         merchant_code: str,
-        params: ListPayoutsV1Params | None = None,
-        headers: HeaderTypes | None = None,
+        params: typing.Optional[ListPayoutsV1Params] = None,
+        headers: typing.Optional[HeaderTypes] = None,
     ) -> FinancialPayouts:
         """
         List payouts
@@ -61,7 +61,9 @@ class PayoutsResource(Resource):
         return pydantic.TypeAdapter(FinancialPayouts).validate_python(resp.json())
 
     def list_deprecated(
-        self, params: ListPayoutsParams | None = None, headers: HeaderTypes | None = None
+        self,
+        params: typing.Optional[ListPayoutsParams] = None,
+        headers: typing.Optional[HeaderTypes] = None,
     ) -> FinancialPayouts:
         """
         List payouts
@@ -85,8 +87,8 @@ class AsyncPayoutsResource(AsyncResource):
     async def list(
         self,
         merchant_code: str,
-        params: ListPayoutsV1Params | None = None,
-        headers: HeaderTypes | None = None,
+        params: typing.Optional[ListPayoutsV1Params] = None,
+        headers: typing.Optional[HeaderTypes] = None,
     ) -> FinancialPayouts:
         """
         List payouts
@@ -101,7 +103,9 @@ class AsyncPayoutsResource(AsyncResource):
         return pydantic.TypeAdapter(FinancialPayouts).validate_python(resp.json())
 
     async def list_deprecated(
-        self, params: ListPayoutsParams | None = None, headers: HeaderTypes | None = None
+        self,
+        params: typing.Optional[ListPayoutsParams] = None,
+        headers: typing.Optional[HeaderTypes] = None,
     ) -> FinancialPayouts:
         """
         List payouts

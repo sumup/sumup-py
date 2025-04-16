@@ -53,7 +53,7 @@ class Error(pydantic.BaseModel):
 	"""
 
 
-type Currency = typing.Literal[
+Currency = typing.Literal[
     "BGN",
     "BRL",
     "CHF",
@@ -93,9 +93,9 @@ class MandateResponse(pydantic.BaseModel):
 	"""
 
 
-type TransactionMixinBaseStatus = typing.Literal["CANCELLED", "FAILED", "PENDING", "SUCCESSFUL"]
+TransactionMixinBaseStatus = typing.Literal["CANCELLED", "FAILED", "PENDING", "SUCCESSFUL"]
 
-type TransactionMixinBasePaymentType = typing.Literal["BOLETO", "ECOM", "RECURRING"]
+TransactionMixinBasePaymentType = typing.Literal["BOLETO", "ECOM", "RECURRING"]
 
 
 class TransactionMixinBase(pydantic.BaseModel):
@@ -145,7 +145,7 @@ class TransactionMixinBase(pydantic.BaseModel):
 	"""
 
 
-type TransactionMixinCheckoutEntryMode = typing.Literal["BOLETO", "CUSTOMER_ENTRY"]
+TransactionMixinCheckoutEntryMode = typing.Literal["BOLETO", "CUSTOMER_ENTRY"]
 
 
 class TransactionMixinCheckout(pydantic.BaseModel):
@@ -184,13 +184,13 @@ class TransactionMixinCheckout(pydantic.BaseModel):
 	"""
 
 
-type CheckoutStatus = typing.Literal["FAILED", "PAID", "PENDING"]
+CheckoutStatus = typing.Literal["FAILED", "PAID", "PENDING"]
 
-type CheckoutTransactionStatus = typing.Literal["CANCELLED", "FAILED", "PENDING", "SUCCESSFUL"]
+CheckoutTransactionStatus = typing.Literal["CANCELLED", "FAILED", "PENDING", "SUCCESSFUL"]
 
-type CheckoutTransactionPaymentType = typing.Literal["BOLETO", "ECOM", "RECURRING"]
+CheckoutTransactionPaymentType = typing.Literal["BOLETO", "ECOM", "RECURRING"]
 
-type CheckoutTransactionEntryMode = typing.Literal["BOLETO", "CUSTOMER_ENTRY"]
+CheckoutTransactionEntryMode = typing.Literal["BOLETO", "CUSTOMER_ENTRY"]
 
 
 class CheckoutTransaction(pydantic.BaseModel):
@@ -394,17 +394,17 @@ class ErrorForbidden(pydantic.BaseModel):
 	"""
 
 
-type CheckoutCreateRequestPurpose = typing.Literal["CHECKOUT", "SETUP_RECURRING_PAYMENT"]
+CheckoutCreateRequestPurpose = typing.Literal["CHECKOUT", "SETUP_RECURRING_PAYMENT"]
 
-type CheckoutCreateRequestStatus = typing.Literal["FAILED", "PAID", "PENDING"]
+CheckoutCreateRequestStatus = typing.Literal["FAILED", "PAID", "PENDING"]
 
-type CheckoutCreateRequestTransactionStatus = typing.Literal[
+CheckoutCreateRequestTransactionStatus = typing.Literal[
     "CANCELLED", "FAILED", "PENDING", "SUCCESSFUL"
 ]
 
-type CheckoutCreateRequestTransactionPaymentType = typing.Literal["BOLETO", "ECOM", "RECURRING"]
+CheckoutCreateRequestTransactionPaymentType = typing.Literal["BOLETO", "ECOM", "RECURRING"]
 
-type CheckoutCreateRequestTransactionEntryMode = typing.Literal["BOLETO", "CUSTOMER_ENTRY"]
+CheckoutCreateRequestTransactionEntryMode = typing.Literal["BOLETO", "CUSTOMER_ENTRY"]
 
 
 class CheckoutCreateRequestTransaction(pydantic.BaseModel):
@@ -575,15 +575,13 @@ class CheckoutCreateRequest(pydantic.BaseModel):
 	"""
 
 
-type CheckoutSuccessStatus = typing.Literal["FAILED", "PAID", "PENDING"]
+CheckoutSuccessStatus = typing.Literal["FAILED", "PAID", "PENDING"]
 
-type CheckoutSuccessTransactionStatus = typing.Literal[
-    "CANCELLED", "FAILED", "PENDING", "SUCCESSFUL"
-]
+CheckoutSuccessTransactionStatus = typing.Literal["CANCELLED", "FAILED", "PENDING", "SUCCESSFUL"]
 
-type CheckoutSuccessTransactionPaymentType = typing.Literal["BOLETO", "ECOM", "RECURRING"]
+CheckoutSuccessTransactionPaymentType = typing.Literal["BOLETO", "ECOM", "RECURRING"]
 
-type CheckoutSuccessTransactionEntryMode = typing.Literal["BOLETO", "CUSTOMER_ENTRY"]
+CheckoutSuccessTransactionEntryMode = typing.Literal["BOLETO", "CUSTOMER_ENTRY"]
 
 
 class CheckoutSuccessTransaction(pydantic.BaseModel):
@@ -783,7 +781,7 @@ class CheckoutSuccess(pydantic.BaseModel):
 	"""
 
 
-type CheckoutAcceptedNextStepMechanism = typing.Literal["browser", "iframe"]
+CheckoutAcceptedNextStepMechanism = typing.Literal["browser", "iframe"]
 
 
 class CheckoutAcceptedNextStepPayload(pydantic.BaseModel):
@@ -840,7 +838,7 @@ class CheckoutAccepted(pydantic.BaseModel):
 	"""
 
 
-type MandatePayloadType = typing.Literal["recurrent"]
+MandatePayloadType = typing.Literal["recurrent"]
 
 
 class MandatePayload(pydantic.BaseModel):
@@ -864,11 +862,11 @@ class MandatePayload(pydantic.BaseModel):
 	"""
 
 
-type CardExpiryMonth = typing.Literal[
+CardExpiryMonth = typing.Literal[
     "01", "02", "03", "04", "05", "06", "07", "08", "09", "10", "11", "12"
 ]
 
-type CardType = typing.Literal[
+CardType = typing.Literal[
     "AMEX",
     "CUP",
     "DINERS",
@@ -1027,9 +1025,7 @@ class PersonalDetails(pydantic.BaseModel):
 	"""
 
 
-type CheckoutProcessMixinPaymentType = typing.Literal[
-    "bancontact", "blik", "boleto", "card", "ideal"
-]
+CheckoutProcessMixinPaymentType = typing.Literal["bancontact", "blik", "boleto", "card", "ideal"]
 
 
 class CheckoutProcessMixin(pydantic.BaseModel):

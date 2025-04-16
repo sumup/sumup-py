@@ -3,7 +3,7 @@ from datetime import datetime
 import typing
 import pydantic
 
-type Metadata = dict[typing.Any, typing.Any]
+Metadata = dict[typing.Any, typing.Any]
 """
 Set of user-defined key-value pairs attached to the object. Partial updates are not supported. When updating, alwayssubmit whole metadata.
 """

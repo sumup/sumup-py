@@ -83,14 +83,14 @@ class Invite(pydantic.BaseModel):
     expires_at: datetime
 
 
-type MembershipStatus = typing.Literal["accepted", "disabled", "expired", "pending", "unknown"]
+MembershipStatus = typing.Literal["accepted", "disabled", "expired", "pending", "unknown"]
 
-type Metadata = dict[typing.Any, typing.Any]
+Metadata = dict[typing.Any, typing.Any]
 """
 Set of user-defined key-value pairs attached to the object. Partial updates are not supported. When updating, alwayssubmit whole metadata.
 """
 
-type Attributes = dict[typing.Any, typing.Any]
+Attributes = dict[typing.Any, typing.Any]
 """
 Object attributes that modifiable only by SumUp applications.
 """

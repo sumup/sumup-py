@@ -157,9 +157,9 @@ class MandateResponse(pydantic.BaseModel):
 	"""
 
 
-type PaymentInstrumentResponseType = typing.Literal["card"]
+PaymentInstrumentResponseType = typing.Literal["card"]
 
-type PaymentInstrumentResponseCardType = typing.Literal[
+PaymentInstrumentResponseCardType = typing.Literal[
     "AMEX",
     "CUP",
     "DINERS",

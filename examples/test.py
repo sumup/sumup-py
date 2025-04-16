@@ -10,5 +10,7 @@ print(merchant)
 merchant = client.readers.list(merchant.merchant_profile.merchant_code)
 print(merchant)
 
-transactions = client.checkouts.list(ListCheckoutsParams(checkout_reference="1231"))
+transactions = client.checkouts.list(
+    ListCheckoutsParams(checkout_reference="1231"), headers={"Foo": "Bar"}
+)
 print(transactions)

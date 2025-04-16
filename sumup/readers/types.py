@@ -29,7 +29,7 @@ class CreateReaderCheckoutAmount(pydantic.BaseModel):
 	"""
 
 
-type AffiliateTags = dict[typing.Any, typing.Any]
+AffiliateTags = dict[typing.Any, typing.Any]
 """
 Additional metadata for the transaction.
 It is key-value object that can be associated with the transaction.
@@ -69,7 +69,7 @@ class Affiliate(pydantic.BaseModel):
 	"""
 
 
-type CreateReaderCheckoutCardType = typing.Literal["credit", "debit"]
+CreateReaderCheckoutCardType = typing.Literal["credit", "debit"]
 
 
 class CreateReaderCheckout(pydantic.BaseModel):
@@ -123,7 +123,7 @@ class CreateReaderCheckout(pydantic.BaseModel):
 	"""
 
 
-type ReaderId = str
+ReaderId = str
 """
 Unique identifier of the object.
 Note that this identifies the instance of the physical devices pairing with your SumUp account.
@@ -132,15 +132,15 @@ Min length: 30
 Max length: 30
 """
 
-type ReaderName = str
+ReaderName = str
 """
 Custom human-readable, user-defined name for easier identification of the reader.
 Max length: 500
 """
 
-type ReaderStatus = typing.Literal["expired", "paired", "processing", "unknown"]
+ReaderStatus = typing.Literal["expired", "paired", "processing", "unknown"]
 
-type ReaderDeviceModel = typing.Literal["solo", "virtual-solo"]
+ReaderDeviceModel = typing.Literal["solo", "virtual-solo"]
 
 
 class ReaderDevice(pydantic.BaseModel):
@@ -159,7 +159,7 @@ class ReaderDevice(pydantic.BaseModel):
 	"""
 
 
-type Meta = dict[typing.Any, typing.Any]
+Meta = dict[typing.Any, typing.Any]
 """
 Set of user-defined key-value pairs attached to the object.
 Max properties: 50
@@ -220,7 +220,7 @@ class Reader(pydantic.BaseModel):
 	"""
 
 
-type ReaderPairingCode = str
+ReaderPairingCode = str
 """
 The pairing code is a 8 or 9 character alphanumeric string that is displayed on a SumUp Device after initiatingthe pairing. It is used to link the physical device to the created pairing.
 Min length: 8

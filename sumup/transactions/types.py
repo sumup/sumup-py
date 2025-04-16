@@ -20,7 +20,7 @@ class Error(pydantic.BaseModel):
 	"""
 
 
-type Currency = typing.Literal[
+Currency = typing.Literal[
     "BGN",
     "BRL",
     "CHF",
@@ -38,9 +38,9 @@ type Currency = typing.Literal[
     "USD",
 ]
 
-type TransactionMixinBaseStatus = typing.Literal["CANCELLED", "FAILED", "PENDING", "SUCCESSFUL"]
+TransactionMixinBaseStatus = typing.Literal["CANCELLED", "FAILED", "PENDING", "SUCCESSFUL"]
 
-type TransactionMixinBasePaymentType = typing.Literal["BOLETO", "ECOM", "RECURRING"]
+TransactionMixinBasePaymentType = typing.Literal["BOLETO", "ECOM", "RECURRING"]
 
 
 class TransactionMixinBase(pydantic.BaseModel):
@@ -90,7 +90,7 @@ class TransactionMixinBase(pydantic.BaseModel):
 	"""
 
 
-type TransactionMixinCheckoutEntryMode = typing.Literal["BOLETO", "CUSTOMER_ENTRY"]
+TransactionMixinCheckoutEntryMode = typing.Literal["BOLETO", "CUSTOMER_ENTRY"]
 
 
 class TransactionMixinCheckout(pydantic.BaseModel):
@@ -129,7 +129,7 @@ class TransactionMixinCheckout(pydantic.BaseModel):
 	"""
 
 
-type TransactionMixinHistoryPayoutPlan = typing.Literal[
+TransactionMixinHistoryPayoutPlan = typing.Literal[
     "ACCELERATED_INSTALLMENT", "SINGLE_PAYMENT", "TRUE_INSTALLMENT"
 ]
 
@@ -160,26 +160,26 @@ class TransactionMixinHistory(pydantic.BaseModel):
 	"""
 
 
-type Lat = float
+Lat = float
 """
 Latitude value from the coordinates of the payment location (as received from the payment terminal reader).
 Min: 0
 Max: 90
 """
 
-type Lon = float
+Lon = float
 """
 Longitude value from the coordinates of the payment location (as received from the payment terminal reader).
 Min: 0
 Max: 180
 """
 
-type HorizontalAccuracy = float
+HorizontalAccuracy = float
 """
 Indication of the precision of the geographical position received from the payment terminal.
 """
 
-type CardResponseType = typing.Literal[
+CardResponseType = typing.Literal[
     "AMEX",
     "CUP",
     "DINERS",
@@ -268,24 +268,22 @@ class Product(pydantic.BaseModel):
 	"""
 
 
-type EventId = int
+EventId = int
 """
 Unique ID of the transaction event.
 Format: int64
 """
 
-type EventType = typing.Literal["CHARGE_BACK", "PAYOUT", "PAYOUT_DEDUCTION", "REFUND"]
+EventType = typing.Literal["CHARGE_BACK", "PAYOUT", "PAYOUT_DEDUCTION", "REFUND"]
 
-type EventStatus = typing.Literal[
-    "FAILED", "PAID_OUT", "PENDING", "REFUNDED", "SCHEDULED", "SUCCESSFUL"
-]
+EventStatus = typing.Literal["FAILED", "PAID_OUT", "PENDING", "REFUNDED", "SCHEDULED", "SUCCESSFUL"]
 
-type AmountEvent = float
+AmountEvent = float
 """
 Amount of the event.
 """
 
-type TimestampEvent = str
+TimestampEvent = str
 """
 Date and time of the transaction event.
 """
@@ -394,7 +392,7 @@ class LinkRefund(pydantic.BaseModel):
 	"""
 
 
-type TransactionId = str
+TransactionId = str
 """
 Unique ID of the transaction.
 """
@@ -457,21 +455,21 @@ class Event(pydantic.BaseModel):
 	"""
 
 
-type TransactionFullStatus = typing.Literal["CANCELLED", "FAILED", "PENDING", "SUCCESSFUL"]
+TransactionFullStatus = typing.Literal["CANCELLED", "FAILED", "PENDING", "SUCCESSFUL"]
 
-type TransactionFullPaymentType = typing.Literal["BOLETO", "ECOM", "RECURRING"]
+TransactionFullPaymentType = typing.Literal["BOLETO", "ECOM", "RECURRING"]
 
-type TransactionFullEntryMode = typing.Literal["BOLETO", "CUSTOMER_ENTRY"]
+TransactionFullEntryMode = typing.Literal["BOLETO", "CUSTOMER_ENTRY"]
 
-type TransactionFullPayoutPlan = typing.Literal[
+TransactionFullPayoutPlan = typing.Literal[
     "ACCELERATED_INSTALLMENT", "SINGLE_PAYMENT", "TRUE_INSTALLMENT"
 ]
 
-type TransactionFullSimplePaymentType = typing.Literal[
+TransactionFullSimplePaymentType = typing.Literal[
     "CASH", "CC_CUSTOMER_ENTERED", "CC_SIGNATURE", "ELV", "EMV", "MANUAL_ENTRY", "MOTO"
 ]
 
-type TransactionFullVerificationMethod = typing.Literal[
+TransactionFullVerificationMethod = typing.Literal[
     "confirmation code verified",
     "none",
     "offline pin",
@@ -480,9 +478,9 @@ type TransactionFullVerificationMethod = typing.Literal[
     "signature",
 ]
 
-type TransactionFullPayoutType = typing.Literal["BALANCE", "BANK_ACCOUNT", "PREPAID_CARD"]
+TransactionFullPayoutType = typing.Literal["BALANCE", "BANK_ACCOUNT", "PREPAID_CARD"]
 
-type TransactionFullSimpleStatus = typing.Literal[
+TransactionFullSimpleStatus = typing.Literal[
     "CANCELLED",
     "CANCEL_FAILED",
     "CHARGEBACK",
@@ -709,17 +707,17 @@ class TransactionFull(pydantic.BaseModel):
 	"""
 
 
-type TransactionHistoryStatus = typing.Literal["CANCELLED", "FAILED", "PENDING", "SUCCESSFUL"]
+TransactionHistoryStatus = typing.Literal["CANCELLED", "FAILED", "PENDING", "SUCCESSFUL"]
 
-type TransactionHistoryPaymentType = typing.Literal["BOLETO", "ECOM", "RECURRING"]
+TransactionHistoryPaymentType = typing.Literal["BOLETO", "ECOM", "RECURRING"]
 
-type TransactionHistoryPayoutPlan = typing.Literal[
+TransactionHistoryPayoutPlan = typing.Literal[
     "ACCELERATED_INSTALLMENT", "SINGLE_PAYMENT", "TRUE_INSTALLMENT"
 ]
 
-type TransactionHistoryType = typing.Literal["CHARGE_BACK", "PAYMENT", "REFUND"]
+TransactionHistoryType = typing.Literal["CHARGE_BACK", "PAYMENT", "REFUND"]
 
-type TransactionHistoryCardType = typing.Literal[
+TransactionHistoryCardType = typing.Literal[
     "AMEX",
     "CUP",
     "DINERS",

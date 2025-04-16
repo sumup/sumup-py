@@ -36,12 +36,12 @@ class ListBankAccountsParams(pydantic.BaseModel):
     primary: typing.Optional[bool] = None
 
 
-type ListBankAccountsV11200Response = list[BankAccount]
+ListBankAccountsV11200Response = list[BankAccount]
 """
 ListBankAccountsV11200Response is a schema definition.
 """
 
-type ListBankAccounts200Response = list[BankAccount]
+ListBankAccounts200Response = list[BankAccount]
 """
 ListBankAccounts200Response is a schema definition.
 """
@@ -52,7 +52,9 @@ class MerchantResource(Resource):
         super().__init__(client)
 
     def get(
-        self, params: GetAccountParams | None = None, headers: HeaderTypes | None = None
+        self,
+        params: typing.Optional[GetAccountParams] = None,
+        headers: typing.Optional[HeaderTypes] = None,
     ) -> MerchantAccount:
         """
         Retrieve a profile
@@ -66,7 +68,7 @@ class MerchantResource(Resource):
         )
         return pydantic.TypeAdapter(MerchantAccount).validate_python(resp.json())
 
-    def get_personal_profile(self, headers: HeaderTypes | None = None) -> PersonalProfile:
+    def get_personal_profile(self, headers: typing.Optional[HeaderTypes] = None) -> PersonalProfile:
         """
         Retrieve a personal profile
 
@@ -78,7 +80,7 @@ class MerchantResource(Resource):
         )
         return pydantic.TypeAdapter(PersonalProfile).validate_python(resp.json())
 
-    def get_merchant_profile(self, headers: HeaderTypes | None = None) -> MerchantProfile:
+    def get_merchant_profile(self, headers: typing.Optional[HeaderTypes] = None) -> MerchantProfile:
         """
         Retrieve a merchant profile
 
@@ -90,7 +92,9 @@ class MerchantResource(Resource):
         )
         return pydantic.TypeAdapter(MerchantProfile).validate_python(resp.json())
 
-    def get_doing_business_as(self, headers: HeaderTypes | None = None) -> DoingBusinessAs:
+    def get_doing_business_as(
+        self, headers: typing.Optional[HeaderTypes] = None
+    ) -> DoingBusinessAs:
         """
         Retrieve DBA
 
@@ -105,8 +109,8 @@ class MerchantResource(Resource):
     def list_bank_accounts(
         self,
         merchant_code: str,
-        params: ListBankAccountsV11Params | None = None,
-        headers: HeaderTypes | None = None,
+        params: typing.Optional[ListBankAccountsV11Params] = None,
+        headers: typing.Optional[HeaderTypes] = None,
     ) -> ListBankAccountsV11200Response:
         """
         List bank accounts
@@ -121,7 +125,9 @@ class MerchantResource(Resource):
         return pydantic.TypeAdapter(ListBankAccountsV11200Response).validate_python(resp.json())
 
     def list_bank_accounts_deprecated(
-        self, params: ListBankAccountsParams | None = None, headers: HeaderTypes | None = None
+        self,
+        params: typing.Optional[ListBankAccountsParams] = None,
+        headers: typing.Optional[HeaderTypes] = None,
     ) -> ListBankAccounts200Response:
         """
         List bank accounts
@@ -137,7 +143,7 @@ class MerchantResource(Resource):
         )
         return pydantic.TypeAdapter(ListBankAccounts200Response).validate_python(resp.json())
 
-    def get_settings(self, headers: HeaderTypes | None = None) -> MerchantSettings:
+    def get_settings(self, headers: typing.Optional[HeaderTypes] = None) -> MerchantSettings:
         """
         Get settings
 
@@ -155,7 +161,9 @@ class AsyncMerchantResource(AsyncResource):
         super().__init__(client)
 
     async def get(
-        self, params: GetAccountParams | None = None, headers: HeaderTypes | None = None
+        self,
+        params: typing.Optional[GetAccountParams] = None,
+        headers: typing.Optional[HeaderTypes] = None,
     ) -> MerchantAccount:
         """
         Retrieve a profile
@@ -169,7 +177,9 @@ class AsyncMerchantResource(AsyncResource):
         )
         return pydantic.TypeAdapter(MerchantAccount).validate_python(resp.json())
 
-    async def get_personal_profile(self, headers: HeaderTypes | None = None) -> PersonalProfile:
+    async def get_personal_profile(
+        self, headers: typing.Optional[HeaderTypes] = None
+    ) -> PersonalProfile:
         """
         Retrieve a personal profile
 
@@ -181,7 +191,9 @@ class AsyncMerchantResource(AsyncResource):
         )
         return pydantic.TypeAdapter(PersonalProfile).validate_python(resp.json())
 
-    async def get_merchant_profile(self, headers: HeaderTypes | None = None) -> MerchantProfile:
+    async def get_merchant_profile(
+        self, headers: typing.Optional[HeaderTypes] = None
+    ) -> MerchantProfile:
         """
         Retrieve a merchant profile
 
@@ -193,7 +205,9 @@ class AsyncMerchantResource(AsyncResource):
         )
         return pydantic.TypeAdapter(MerchantProfile).validate_python(resp.json())
 
-    async def get_doing_business_as(self, headers: HeaderTypes | None = None) -> DoingBusinessAs:
+    async def get_doing_business_as(
+        self, headers: typing.Optional[HeaderTypes] = None
+    ) -> DoingBusinessAs:
         """
         Retrieve DBA
 
@@ -208,8 +222,8 @@ class AsyncMerchantResource(AsyncResource):
     async def list_bank_accounts(
         self,
         merchant_code: str,
-        params: ListBankAccountsV11Params | None = None,
-        headers: HeaderTypes | None = None,
+        params: typing.Optional[ListBankAccountsV11Params] = None,
+        headers: typing.Optional[HeaderTypes] = None,
     ) -> ListBankAccountsV11200Response:
         """
         List bank accounts
@@ -224,7 +238,9 @@ class AsyncMerchantResource(AsyncResource):
         return pydantic.TypeAdapter(ListBankAccountsV11200Response).validate_python(resp.json())
 
     async def list_bank_accounts_deprecated(
-        self, params: ListBankAccountsParams | None = None, headers: HeaderTypes | None = None
+        self,
+        params: typing.Optional[ListBankAccountsParams] = None,
+        headers: typing.Optional[HeaderTypes] = None,
     ) -> ListBankAccounts200Response:
         """
         List bank accounts
@@ -240,7 +256,7 @@ class AsyncMerchantResource(AsyncResource):
         )
         return pydantic.TypeAdapter(ListBankAccounts200Response).validate_python(resp.json())
 
-    async def get_settings(self, headers: HeaderTypes | None = None) -> MerchantSettings:
+    async def get_settings(self, headers: typing.Optional[HeaderTypes] = None) -> MerchantSettings:
         """
         Get settings
 
