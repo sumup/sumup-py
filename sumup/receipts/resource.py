@@ -22,7 +22,10 @@ class ReceiptsResource(Resource):
         super().__init__(client)
 
     def get(
-        self, id: str, params: GetReceiptParams | None = None, headers: HeaderTypes | None = None
+        self,
+        id: str,
+        params: typing.Optional[GetReceiptParams] = None,
+        headers: typing.Optional[HeaderTypes] = None,
     ) -> Receipt:
         """
         Retrieve receipt details
@@ -42,7 +45,10 @@ class AsyncReceiptsResource(AsyncResource):
         super().__init__(client)
 
     async def get(
-        self, id: str, params: GetReceiptParams | None = None, headers: HeaderTypes | None = None
+        self,
+        id: str,
+        params: typing.Optional[GetReceiptParams] = None,
+        headers: typing.Optional[HeaderTypes] = None,
     ) -> Receipt:
         """
         Retrieve receipt details

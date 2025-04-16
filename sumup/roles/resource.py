@@ -67,7 +67,7 @@ class RolesResource(Resource):
         super().__init__(client)
 
     def list(
-        self, merchant_code: str, headers: HeaderTypes | None = None
+        self, merchant_code: str, headers: typing.Optional[HeaderTypes] = None
     ) -> ListMerchantRoles200Response:
         """
         List roles
@@ -81,7 +81,10 @@ class RolesResource(Resource):
         return pydantic.TypeAdapter(ListMerchantRoles200Response).validate_python(resp.json())
 
     def create(
-        self, merchant_code: str, body: CreateMerchantRoleBody, headers: HeaderTypes | None = None
+        self,
+        merchant_code: str,
+        body: CreateMerchantRoleBody,
+        headers: typing.Optional[HeaderTypes] = None,
     ) -> Role:
         """
         Create a role
@@ -95,7 +98,9 @@ class RolesResource(Resource):
         )
         return pydantic.TypeAdapter(Role).validate_python(resp.json())
 
-    def get(self, merchant_code: str, role_id: str, headers: HeaderTypes | None = None) -> Role:
+    def get(
+        self, merchant_code: str, role_id: str, headers: typing.Optional[HeaderTypes] = None
+    ) -> Role:
         """
         Retrieve a role
 
@@ -107,7 +112,9 @@ class RolesResource(Resource):
         )
         return pydantic.TypeAdapter(Role).validate_python(resp.json())
 
-    def delete(self, merchant_code: str, role_id: str, headers: HeaderTypes | None = None):
+    def delete(
+        self, merchant_code: str, role_id: str, headers: typing.Optional[HeaderTypes] = None
+    ):
         """
         Delete a role
 
@@ -123,7 +130,7 @@ class RolesResource(Resource):
         merchant_code: str,
         role_id: str,
         body: UpdateMerchantRoleBody,
-        headers: HeaderTypes | None = None,
+        headers: typing.Optional[HeaderTypes] = None,
     ) -> Role:
         """
         Update a role
@@ -143,7 +150,7 @@ class AsyncRolesResource(AsyncResource):
         super().__init__(client)
 
     async def list(
-        self, merchant_code: str, headers: HeaderTypes | None = None
+        self, merchant_code: str, headers: typing.Optional[HeaderTypes] = None
     ) -> ListMerchantRoles200Response:
         """
         List roles
@@ -157,7 +164,10 @@ class AsyncRolesResource(AsyncResource):
         return pydantic.TypeAdapter(ListMerchantRoles200Response).validate_python(resp.json())
 
     async def create(
-        self, merchant_code: str, body: CreateMerchantRoleBody, headers: HeaderTypes | None = None
+        self,
+        merchant_code: str,
+        body: CreateMerchantRoleBody,
+        headers: typing.Optional[HeaderTypes] = None,
     ) -> Role:
         """
         Create a role
@@ -172,7 +182,7 @@ class AsyncRolesResource(AsyncResource):
         return pydantic.TypeAdapter(Role).validate_python(resp.json())
 
     async def get(
-        self, merchant_code: str, role_id: str, headers: HeaderTypes | None = None
+        self, merchant_code: str, role_id: str, headers: typing.Optional[HeaderTypes] = None
     ) -> Role:
         """
         Retrieve a role
@@ -185,7 +195,9 @@ class AsyncRolesResource(AsyncResource):
         )
         return pydantic.TypeAdapter(Role).validate_python(resp.json())
 
-    async def delete(self, merchant_code: str, role_id: str, headers: HeaderTypes | None = None):
+    async def delete(
+        self, merchant_code: str, role_id: str, headers: typing.Optional[HeaderTypes] = None
+    ):
         """
         Delete a role
 
@@ -201,7 +213,7 @@ class AsyncRolesResource(AsyncResource):
         merchant_code: str,
         role_id: str,
         body: UpdateMerchantRoleBody,
-        headers: HeaderTypes | None = None,
+        headers: typing.Optional[HeaderTypes] = None,
     ) -> Role:
         """
         Update a role

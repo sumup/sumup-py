@@ -86,7 +86,7 @@ class ListSubAccountsParams(pydantic.BaseModel):
     query: typing.Optional[str] = None
 
 
-type ListSubAccounts200Response = list[Operator]
+ListSubAccounts200Response = list[Operator]
 """
 ListSubAccounts200Response is a schema definition.
 """
@@ -97,7 +97,9 @@ class SubaccountsResource(Resource):
         super().__init__(client)
 
     def list_sub_accounts(
-        self, params: ListSubAccountsParams | None = None, headers: HeaderTypes | None = None
+        self,
+        params: typing.Optional[ListSubAccountsParams] = None,
+        headers: typing.Optional[HeaderTypes] = None,
     ) -> ListSubAccounts200Response:
         """
         List operators
@@ -114,7 +116,7 @@ class SubaccountsResource(Resource):
         return pydantic.TypeAdapter(ListSubAccounts200Response).validate_python(resp.json())
 
     def create_sub_account(
-        self, body: CreateSubAccountBody, headers: HeaderTypes | None = None
+        self, body: CreateSubAccountBody, headers: typing.Optional[HeaderTypes] = None
     ) -> Operator:
         """
         Create an operator
@@ -130,7 +132,9 @@ class SubaccountsResource(Resource):
         )
         return pydantic.TypeAdapter(Operator).validate_python(resp.json())
 
-    def compat_get_operator(self, operator_id: int, headers: HeaderTypes | None = None) -> Operator:
+    def compat_get_operator(
+        self, operator_id: int, headers: typing.Optional[HeaderTypes] = None
+    ) -> Operator:
         """
         Retrieve an operator
 
@@ -145,7 +149,10 @@ class SubaccountsResource(Resource):
         return pydantic.TypeAdapter(Operator).validate_python(resp.json())
 
     def update_sub_account(
-        self, operator_id: int, body: UpdateSubAccountBody, headers: HeaderTypes | None = None
+        self,
+        operator_id: int,
+        body: UpdateSubAccountBody,
+        headers: typing.Optional[HeaderTypes] = None,
     ) -> Operator:
         """
         Update an operator
@@ -162,7 +169,7 @@ class SubaccountsResource(Resource):
         return pydantic.TypeAdapter(Operator).validate_python(resp.json())
 
     def deactivate_sub_account(
-        self, operator_id: int, headers: HeaderTypes | None = None
+        self, operator_id: int, headers: typing.Optional[HeaderTypes] = None
     ) -> Operator:
         """
         Disable an operator
@@ -183,7 +190,9 @@ class AsyncSubaccountsResource(AsyncResource):
         super().__init__(client)
 
     async def list_sub_accounts(
-        self, params: ListSubAccountsParams | None = None, headers: HeaderTypes | None = None
+        self,
+        params: typing.Optional[ListSubAccountsParams] = None,
+        headers: typing.Optional[HeaderTypes] = None,
     ) -> ListSubAccounts200Response:
         """
         List operators
@@ -200,7 +209,7 @@ class AsyncSubaccountsResource(AsyncResource):
         return pydantic.TypeAdapter(ListSubAccounts200Response).validate_python(resp.json())
 
     async def create_sub_account(
-        self, body: CreateSubAccountBody, headers: HeaderTypes | None = None
+        self, body: CreateSubAccountBody, headers: typing.Optional[HeaderTypes] = None
     ) -> Operator:
         """
         Create an operator
@@ -217,7 +226,7 @@ class AsyncSubaccountsResource(AsyncResource):
         return pydantic.TypeAdapter(Operator).validate_python(resp.json())
 
     async def compat_get_operator(
-        self, operator_id: int, headers: HeaderTypes | None = None
+        self, operator_id: int, headers: typing.Optional[HeaderTypes] = None
     ) -> Operator:
         """
         Retrieve an operator
@@ -233,7 +242,10 @@ class AsyncSubaccountsResource(AsyncResource):
         return pydantic.TypeAdapter(Operator).validate_python(resp.json())
 
     async def update_sub_account(
-        self, operator_id: int, body: UpdateSubAccountBody, headers: HeaderTypes | None = None
+        self,
+        operator_id: int,
+        body: UpdateSubAccountBody,
+        headers: typing.Optional[HeaderTypes] = None,
     ) -> Operator:
         """
         Update an operator
@@ -250,7 +262,7 @@ class AsyncSubaccountsResource(AsyncResource):
         return pydantic.TypeAdapter(Operator).validate_python(resp.json())
 
     async def deactivate_sub_account(
-        self, operator_id: int, headers: HeaderTypes | None = None
+        self, operator_id: int, headers: typing.Optional[HeaderTypes] = None
     ) -> Operator:
         """
         Disable an operator

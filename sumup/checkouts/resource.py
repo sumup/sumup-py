@@ -13,17 +13,15 @@ from datetime import datetime
 import typing
 import pydantic
 
-type CreateCheckoutBodyPurpose = typing.Literal["CHECKOUT", "SETUP_RECURRING_PAYMENT"]
+CreateCheckoutBodyPurpose = typing.Literal["CHECKOUT", "SETUP_RECURRING_PAYMENT"]
 
-type CreateCheckoutBodyStatus = typing.Literal["FAILED", "PAID", "PENDING"]
+CreateCheckoutBodyStatus = typing.Literal["FAILED", "PAID", "PENDING"]
 
-type CreateCheckoutBodyTransactionStatus = typing.Literal[
-    "CANCELLED", "FAILED", "PENDING", "SUCCESSFUL"
-]
+CreateCheckoutBodyTransactionStatus = typing.Literal["CANCELLED", "FAILED", "PENDING", "SUCCESSFUL"]
 
-type CreateCheckoutBodyTransactionPaymentType = typing.Literal["BOLETO", "ECOM", "RECURRING"]
+CreateCheckoutBodyTransactionPaymentType = typing.Literal["BOLETO", "ECOM", "RECURRING"]
 
-type CreateCheckoutBodyTransactionEntryMode = typing.Literal["BOLETO", "CUSTOMER_ENTRY"]
+CreateCheckoutBodyTransactionEntryMode = typing.Literal["BOLETO", "CUSTOMER_ENTRY"]
 
 
 class CreateCheckoutBodyTransaction(pydantic.BaseModel):
@@ -194,9 +192,7 @@ class CreateCheckoutBody(pydantic.BaseModel):
 	"""
 
 
-type ProcessCheckoutBodyPaymentType = typing.Literal[
-    "bancontact", "blik", "boleto", "card", "ideal"
-]
+ProcessCheckoutBodyPaymentType = typing.Literal["bancontact", "blik", "boleto", "card", "ideal"]
 
 
 class ProcessCheckoutBody(pydantic.BaseModel):
@@ -281,25 +277,23 @@ class GetPaymentMethods200Response(pydantic.BaseModel):
     ] = None
 
 
-type ListCheckouts200Response = list[CheckoutSuccess]
+ListCheckouts200Response = list[CheckoutSuccess]
 """
 ListCheckouts200Response is a schema definition.
 """
 
-type ProcessCheckoutResponse = CheckoutSuccess | CheckoutAccepted
-type DeactivateCheckout200ResponsePurpose = typing.Literal["CHECKOUT", "SETUP_RECURRING_PAYMENT"]
+ProcessCheckoutResponse = typing.Union[CheckoutSuccess, CheckoutAccepted]
+DeactivateCheckout200ResponsePurpose = typing.Literal["CHECKOUT", "SETUP_RECURRING_PAYMENT"]
 
-type DeactivateCheckout200ResponseStatus = typing.Literal["EXPIRED"]
+DeactivateCheckout200ResponseStatus = typing.Literal["EXPIRED"]
 
-type DeactivateCheckout200ResponseTransactionStatus = typing.Literal[
+DeactivateCheckout200ResponseTransactionStatus = typing.Literal[
     "CANCELLED", "FAILED", "PENDING", "SUCCESSFUL"
 ]
 
-type DeactivateCheckout200ResponseTransactionPaymentType = typing.Literal[
-    "BOLETO", "ECOM", "RECURRING"
-]
+DeactivateCheckout200ResponseTransactionPaymentType = typing.Literal["BOLETO", "ECOM", "RECURRING"]
 
-type DeactivateCheckout200ResponseTransactionEntryMode = typing.Literal["BOLETO", "CUSTOMER_ENTRY"]
+DeactivateCheckout200ResponseTransactionEntryMode = typing.Literal["BOLETO", "CUSTOMER_ENTRY"]
 
 
 class DeactivateCheckout200ResponseTransaction(pydantic.BaseModel):
@@ -471,8 +465,8 @@ class CheckoutsResource(Resource):
     def list_available_payment_methods(
         self,
         merchant_code: str,
-        params: GetPaymentMethodsParams | None = None,
-        headers: HeaderTypes | None = None,
+        params: typing.Optional[GetPaymentMethodsParams] = None,
+        headers: typing.Optional[HeaderTypes] = None,
     ) -> GetPaymentMethods200Response:
         """
         Get available payment methods
@@ -486,7 +480,9 @@ class CheckoutsResource(Resource):
         )
         return pydantic.TypeAdapter(GetPaymentMethods200Response).validate_python(resp.json())
 
-    def create(self, body: CreateCheckoutBody, headers: HeaderTypes | None = None) -> Checkout:
+    def create(
+        self, body: CreateCheckoutBody, headers: typing.Optional[HeaderTypes] = None
+    ) -> Checkout:
         """
         Create a checkout
 
@@ -504,7 +500,9 @@ class CheckoutsResource(Resource):
         return pydantic.TypeAdapter(Checkout).validate_python(resp.json())
 
     def list(
-        self, params: ListCheckoutsParams | None = None, headers: HeaderTypes | None = None
+        self,
+        params: typing.Optional[ListCheckoutsParams] = None,
+        headers: typing.Optional[HeaderTypes] = None,
     ) -> ListCheckouts200Response:
         """
         List checkouts
@@ -518,7 +516,7 @@ class CheckoutsResource(Resource):
         )
         return pydantic.TypeAdapter(ListCheckouts200Response).validate_python(resp.json())
 
-    def get(self, id: str, headers: HeaderTypes | None = None) -> CheckoutSuccess:
+    def get(self, id: str, headers: typing.Optional[HeaderTypes] = None) -> CheckoutSuccess:
         """
         Retrieve a checkout
 
@@ -531,7 +529,7 @@ class CheckoutsResource(Resource):
         return pydantic.TypeAdapter(CheckoutSuccess).validate_python(resp.json())
 
     def process(
-        self, id: str, body: ProcessCheckoutBody, headers: HeaderTypes | None = None
+        self, id: str, body: ProcessCheckoutBody, headers: typing.Optional[HeaderTypes] = None
     ) -> ProcessCheckoutResponse:
         """
         Process a checkout
@@ -548,7 +546,7 @@ class CheckoutsResource(Resource):
         return pydantic.TypeAdapter(ProcessCheckoutResponse).validate_python(resp.json())
 
     def deactivate(
-        self, id: str, headers: HeaderTypes | None = None
+        self, id: str, headers: typing.Optional[HeaderTypes] = None
     ) -> DeactivateCheckout200Response:
         """
         Deactivate a checkout
@@ -569,8 +567,8 @@ class AsyncCheckoutsResource(AsyncResource):
     async def list_available_payment_methods(
         self,
         merchant_code: str,
-        params: GetPaymentMethodsParams | None = None,
-        headers: HeaderTypes | None = None,
+        params: typing.Optional[GetPaymentMethodsParams] = None,
+        headers: typing.Optional[HeaderTypes] = None,
     ) -> GetPaymentMethods200Response:
         """
         Get available payment methods
@@ -585,7 +583,7 @@ class AsyncCheckoutsResource(AsyncResource):
         return pydantic.TypeAdapter(GetPaymentMethods200Response).validate_python(resp.json())
 
     async def create(
-        self, body: CreateCheckoutBody, headers: HeaderTypes | None = None
+        self, body: CreateCheckoutBody, headers: typing.Optional[HeaderTypes] = None
     ) -> Checkout:
         """
         Create a checkout
@@ -604,7 +602,9 @@ class AsyncCheckoutsResource(AsyncResource):
         return pydantic.TypeAdapter(Checkout).validate_python(resp.json())
 
     async def list(
-        self, params: ListCheckoutsParams | None = None, headers: HeaderTypes | None = None
+        self,
+        params: typing.Optional[ListCheckoutsParams] = None,
+        headers: typing.Optional[HeaderTypes] = None,
     ) -> ListCheckouts200Response:
         """
         List checkouts
@@ -618,7 +618,7 @@ class AsyncCheckoutsResource(AsyncResource):
         )
         return pydantic.TypeAdapter(ListCheckouts200Response).validate_python(resp.json())
 
-    async def get(self, id: str, headers: HeaderTypes | None = None) -> CheckoutSuccess:
+    async def get(self, id: str, headers: typing.Optional[HeaderTypes] = None) -> CheckoutSuccess:
         """
         Retrieve a checkout
 
@@ -631,7 +631,7 @@ class AsyncCheckoutsResource(AsyncResource):
         return pydantic.TypeAdapter(CheckoutSuccess).validate_python(resp.json())
 
     async def process(
-        self, id: str, body: ProcessCheckoutBody, headers: HeaderTypes | None = None
+        self, id: str, body: ProcessCheckoutBody, headers: typing.Optional[HeaderTypes] = None
     ) -> ProcessCheckoutResponse:
         """
         Process a checkout
@@ -648,7 +648,7 @@ class AsyncCheckoutsResource(AsyncResource):
         return pydantic.TypeAdapter(ProcessCheckoutResponse).validate_python(resp.json())
 
     async def deactivate(
-        self, id: str, headers: HeaderTypes | None = None
+        self, id: str, headers: typing.Optional[HeaderTypes] = None
     ) -> DeactivateCheckout200Response:
         """
         Deactivate a checkout

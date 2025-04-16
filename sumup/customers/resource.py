@@ -36,7 +36,7 @@ class UpdateCustomerBody(pydantic.BaseModel):
 	"""
 
 
-type ListPaymentInstruments200Response = list[PaymentInstrumentResponse]
+ListPaymentInstruments200Response = list[PaymentInstrumentResponse]
 """
 ListPaymentInstruments200Response is a schema definition.
 """
@@ -52,7 +52,9 @@ class CustomersResource(Resource):
     def __init__(self, client):
         super().__init__(client)
 
-    def create(self, body: CreateCustomerBody, headers: HeaderTypes | None = None) -> Customer:
+    def create(
+        self, body: CreateCustomerBody, headers: typing.Optional[HeaderTypes] = None
+    ) -> Customer:
         """
         Create a customer
 
@@ -65,7 +67,7 @@ class CustomersResource(Resource):
         )
         return pydantic.TypeAdapter(Customer).validate_python(resp.json())
 
-    def get(self, customer_id: str, headers: HeaderTypes | None = None) -> Customer:
+    def get(self, customer_id: str, headers: typing.Optional[HeaderTypes] = None) -> Customer:
         """
         Retrieve a customer
 
@@ -78,7 +80,10 @@ class CustomersResource(Resource):
         return pydantic.TypeAdapter(Customer).validate_python(resp.json())
 
     def update(
-        self, customer_id: str, body: UpdateCustomerBody, headers: HeaderTypes | None = None
+        self,
+        customer_id: str,
+        body: UpdateCustomerBody,
+        headers: typing.Optional[HeaderTypes] = None,
     ) -> Customer:
         """
         Update a customer
@@ -95,7 +100,7 @@ class CustomersResource(Resource):
         return pydantic.TypeAdapter(Customer).validate_python(resp.json())
 
     def list_payment_instruments(
-        self, customer_id: str, headers: HeaderTypes | None = None
+        self, customer_id: str, headers: typing.Optional[HeaderTypes] = None
     ) -> ListPaymentInstruments200Response:
         """
         List payment instruments
@@ -109,7 +114,7 @@ class CustomersResource(Resource):
         return pydantic.TypeAdapter(ListPaymentInstruments200Response).validate_python(resp.json())
 
     def deactivate_payment_instrument(
-        self, customer_id: str, token: str, headers: HeaderTypes | None = None
+        self, customer_id: str, token: str, headers: typing.Optional[HeaderTypes] = None
     ) -> DeactivatePaymentInstrument204Response:
         """
         Deactivate a payment instrument
@@ -130,7 +135,7 @@ class AsyncCustomersResource(AsyncResource):
         super().__init__(client)
 
     async def create(
-        self, body: CreateCustomerBody, headers: HeaderTypes | None = None
+        self, body: CreateCustomerBody, headers: typing.Optional[HeaderTypes] = None
     ) -> Customer:
         """
         Create a customer
@@ -144,7 +149,7 @@ class AsyncCustomersResource(AsyncResource):
         )
         return pydantic.TypeAdapter(Customer).validate_python(resp.json())
 
-    async def get(self, customer_id: str, headers: HeaderTypes | None = None) -> Customer:
+    async def get(self, customer_id: str, headers: typing.Optional[HeaderTypes] = None) -> Customer:
         """
         Retrieve a customer
 
@@ -157,7 +162,10 @@ class AsyncCustomersResource(AsyncResource):
         return pydantic.TypeAdapter(Customer).validate_python(resp.json())
 
     async def update(
-        self, customer_id: str, body: UpdateCustomerBody, headers: HeaderTypes | None = None
+        self,
+        customer_id: str,
+        body: UpdateCustomerBody,
+        headers: typing.Optional[HeaderTypes] = None,
     ) -> Customer:
         """
         Update a customer
@@ -174,7 +182,7 @@ class AsyncCustomersResource(AsyncResource):
         return pydantic.TypeAdapter(Customer).validate_python(resp.json())
 
     async def list_payment_instruments(
-        self, customer_id: str, headers: HeaderTypes | None = None
+        self, customer_id: str, headers: typing.Optional[HeaderTypes] = None
     ) -> ListPaymentInstruments200Response:
         """
         List payment instruments
@@ -188,7 +196,7 @@ class AsyncCustomersResource(AsyncResource):
         return pydantic.TypeAdapter(ListPaymentInstruments200Response).validate_python(resp.json())
 
     async def deactivate_payment_instrument(
-        self, customer_id: str, token: str, headers: HeaderTypes | None = None
+        self, customer_id: str, token: str, headers: typing.Optional[HeaderTypes] = None
     ) -> DeactivatePaymentInstrument204Response:
         """
         Deactivate a payment instrument

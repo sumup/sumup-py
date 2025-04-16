@@ -20,29 +20,27 @@ class ReceiptCard(pydantic.BaseModel):
 	"""
 
 
-type EventId = int
+EventId = int
 """
 Unique ID of the transaction event.
 Format: int64
 """
 
-type TransactionId = str
+TransactionId = str
 """
 Unique ID of the transaction.
 """
 
-type EventType = typing.Literal["CHARGE_BACK", "PAYOUT", "PAYOUT_DEDUCTION", "REFUND"]
+EventType = typing.Literal["CHARGE_BACK", "PAYOUT", "PAYOUT_DEDUCTION", "REFUND"]
 
-type EventStatus = typing.Literal[
-    "FAILED", "PAID_OUT", "PENDING", "REFUNDED", "SCHEDULED", "SUCCESSFUL"
-]
+EventStatus = typing.Literal["FAILED", "PAID_OUT", "PENDING", "REFUNDED", "SCHEDULED", "SUCCESSFUL"]
 
-type AmountEvent = float
+AmountEvent = float
 """
 Amount of the event.
 """
 
-type TimestampEvent = str
+TimestampEvent = str
 """
 Date and time of the transaction event.
 """

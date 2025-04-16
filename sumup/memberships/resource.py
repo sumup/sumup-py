@@ -39,7 +39,9 @@ class MembershipsResource(Resource):
         super().__init__(client)
 
     def list(
-        self, params: ListMembershipsParams | None = None, headers: HeaderTypes | None = None
+        self,
+        params: typing.Optional[ListMembershipsParams] = None,
+        headers: typing.Optional[HeaderTypes] = None,
     ) -> ListMemberships200Response:
         """
         List memberships
@@ -59,7 +61,9 @@ class AsyncMembershipsResource(AsyncResource):
         super().__init__(client)
 
     async def list(
-        self, params: ListMembershipsParams | None = None, headers: HeaderTypes | None = None
+        self,
+        params: typing.Optional[ListMembershipsParams] = None,
+        headers: typing.Optional[HeaderTypes] = None,
     ) -> ListMemberships200Response:
         """
         List memberships

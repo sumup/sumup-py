@@ -30,7 +30,7 @@ class Permissions(pydantic.BaseModel):
 	"""
 
 
-type OperatorAccountType = typing.Literal["normal", "operator"]
+OperatorAccountType = typing.Literal["normal", "operator"]
 
 
 class Operator(pydantic.BaseModel):

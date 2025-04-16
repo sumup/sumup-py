@@ -2,7 +2,7 @@
 import typing
 import pydantic
 
-type AccountType = typing.Literal["normal", "operator"]
+AccountType = typing.Literal["normal", "operator"]
 
 
 class Account(pydantic.BaseModel):
@@ -244,7 +244,7 @@ class BusinessOwner(pydantic.BaseModel):
 	"""
 
 
-type BusinessOwners = list[BusinessOwner]
+BusinessOwners = list[BusinessOwner]
 """
 Business owners information.
 """
@@ -324,7 +324,7 @@ class DoingBusinessAs(pydantic.BaseModel):
 	"""
 
 
-type MerchantSettingsMotoPayment = typing.Literal["ENFORCED", "OFF", "ON", "UNAVAILABLE"]
+MerchantSettingsMotoPayment = typing.Literal["ENFORCED", "OFF", "ON", "UNAVAILABLE"]
 
 
 class MerchantSettings(pydantic.BaseModel):

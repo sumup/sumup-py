@@ -4,17 +4,17 @@ import httpx
 from functools import cached_property
 
 from ._service import Resource, AsyncResource
-from .checkouts.resource import CheckoutsResource, AsyncCheckoutsResource
-from .customers.resource import CustomersResource, AsyncCustomersResource
-from .members.resource import MembersResource, AsyncMembersResource
-from .memberships.resource import MembershipsResource, AsyncMembershipsResource
-from .merchant.resource import MerchantResource, AsyncMerchantResource
-from .payouts.resource import PayoutsResource, AsyncPayoutsResource
-from .readers.resource import ReadersResource, AsyncReadersResource
-from .receipts.resource import ReceiptsResource, AsyncReceiptsResource
-from .roles.resource import RolesResource, AsyncRolesResource
-from .subaccounts.resource import SubaccountsResource, AsyncSubaccountsResource
-from .transactions.resource import TransactionsResource, AsyncTransactionsResource
+from .checkouts import CheckoutsResource, AsyncCheckoutsResource
+from .customers import CustomersResource, AsyncCustomersResource
+from .members import MembersResource, AsyncMembersResource
+from .memberships import MembershipsResource, AsyncMembershipsResource
+from .merchant import MerchantResource, AsyncMerchantResource
+from .payouts import PayoutsResource, AsyncPayoutsResource
+from .readers import ReadersResource, AsyncReadersResource
+from .receipts import ReceiptsResource, AsyncReceiptsResource
+from .roles import RolesResource, AsyncRolesResource
+from .subaccounts import SubaccountsResource, AsyncSubaccountsResource
+from .transactions import TransactionsResource, AsyncTransactionsResource
 
 BASE_URL = "https://api.sumup.com"
 

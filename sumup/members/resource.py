@@ -138,8 +138,8 @@ class MembersResource(Resource):
     def list(
         self,
         merchant_code: str,
-        params: ListMerchantMembersParams | None = None,
-        headers: HeaderTypes | None = None,
+        params: typing.Optional[ListMerchantMembersParams] = None,
+        headers: typing.Optional[HeaderTypes] = None,
     ) -> ListMerchantMembers200Response:
         """
         List members
@@ -154,7 +154,10 @@ class MembersResource(Resource):
         return pydantic.TypeAdapter(ListMerchantMembers200Response).validate_python(resp.json())
 
     def create(
-        self, merchant_code: str, body: CreateMerchantMemberBody, headers: HeaderTypes | None = None
+        self,
+        merchant_code: str,
+        body: CreateMerchantMemberBody,
+        headers: typing.Optional[HeaderTypes] = None,
     ) -> Member:
         """
         Create a member
@@ -168,7 +171,9 @@ class MembersResource(Resource):
         )
         return pydantic.TypeAdapter(Member).validate_python(resp.json())
 
-    def get(self, merchant_code: str, member_id: str, headers: HeaderTypes | None = None) -> Member:
+    def get(
+        self, merchant_code: str, member_id: str, headers: typing.Optional[HeaderTypes] = None
+    ) -> Member:
         """
         Retrieve a member
 
@@ -185,7 +190,7 @@ class MembersResource(Resource):
         merchant_code: str,
         member_id: str,
         body: UpdateMerchantMemberBody,
-        headers: HeaderTypes | None = None,
+        headers: typing.Optional[HeaderTypes] = None,
     ) -> Member:
         """
         Update a member
@@ -199,7 +204,9 @@ class MembersResource(Resource):
         )
         return pydantic.TypeAdapter(Member).validate_python(resp.json())
 
-    def delete(self, merchant_code: str, member_id: str, headers: HeaderTypes | None = None):
+    def delete(
+        self, merchant_code: str, member_id: str, headers: typing.Optional[HeaderTypes] = None
+    ):
         """
         Delete a member
 
@@ -218,8 +225,8 @@ class AsyncMembersResource(AsyncResource):
     async def list(
         self,
         merchant_code: str,
-        params: ListMerchantMembersParams | None = None,
-        headers: HeaderTypes | None = None,
+        params: typing.Optional[ListMerchantMembersParams] = None,
+        headers: typing.Optional[HeaderTypes] = None,
     ) -> ListMerchantMembers200Response:
         """
         List members
@@ -234,7 +241,10 @@ class AsyncMembersResource(AsyncResource):
         return pydantic.TypeAdapter(ListMerchantMembers200Response).validate_python(resp.json())
 
     async def create(
-        self, merchant_code: str, body: CreateMerchantMemberBody, headers: HeaderTypes | None = None
+        self,
+        merchant_code: str,
+        body: CreateMerchantMemberBody,
+        headers: typing.Optional[HeaderTypes] = None,
     ) -> Member:
         """
         Create a member
@@ -249,7 +259,7 @@ class AsyncMembersResource(AsyncResource):
         return pydantic.TypeAdapter(Member).validate_python(resp.json())
 
     async def get(
-        self, merchant_code: str, member_id: str, headers: HeaderTypes | None = None
+        self, merchant_code: str, member_id: str, headers: typing.Optional[HeaderTypes] = None
     ) -> Member:
         """
         Retrieve a member
@@ -267,7 +277,7 @@ class AsyncMembersResource(AsyncResource):
         merchant_code: str,
         member_id: str,
         body: UpdateMerchantMemberBody,
-        headers: HeaderTypes | None = None,
+        headers: typing.Optional[HeaderTypes] = None,
     ) -> Member:
         """
         Update a member
@@ -281,7 +291,9 @@ class AsyncMembersResource(AsyncResource):
         )
         return pydantic.TypeAdapter(Member).validate_python(resp.json())
 
-    async def delete(self, merchant_code: str, member_id: str, headers: HeaderTypes | None = None):
+    async def delete(
+        self, merchant_code: str, member_id: str, headers: typing.Optional[HeaderTypes] = None
+    ):
         """
         Delete a member
 
