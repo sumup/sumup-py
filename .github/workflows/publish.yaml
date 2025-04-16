@@ -1,0 +1,16 @@
+name: Generate
+
+on:
+  workflow_dispatch: {}
+  pull_request:
+    paths:
+      - openapi.json
+    branches:
+      - main
+
+jobs:
+  publish:
+    name: Publish
+    runs-on: ubuntu-latest
+    steps:
+      - run: echo 'Publish'
