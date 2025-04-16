@@ -1,7 +1,7 @@
 [project]
 name = "sumup"
 description = "Use Square APIs to manage and run business including payment, customer, product, inventory, and employee management."
-version = "0.0.1-beta.0"
+version = "0.0.2"
 readme = "README.md"
 requires-python = ">=3.9"
 authors = [{name = "SumUp", email = "support@sumup.com"}]
