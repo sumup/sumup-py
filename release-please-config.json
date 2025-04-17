@@ -12,7 +12,14 @@
 	"packages": {
 		".": {
 			"release-type": "python",
-			"extra-files": ["sumup/_version.py"]
+			"extra-files": [
+				"sumup/_version.py",
+				{
+					"type": "toml",
+					"path": "uv.lock",
+					"jsonpath": "$.package[?(@.name.value=='sumup')].version"
+				}
+			]
 		}
 	}
 }
