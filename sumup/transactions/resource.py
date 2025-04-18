@@ -8,6 +8,7 @@ from .types import (
 from datetime import datetime
 import typing
 import pydantic
+import typing_extensions
 
 
 class RefundTransactionBody(pydantic.BaseModel):
@@ -174,6 +175,7 @@ class TransactionsResource(Resource):
         )
         return pydantic.TypeAdapter(TransactionFull).validate_python(resp.json())
 
+    @typing_extensions.deprecated("This method is deprecated")
     def get_deprecated(
         self,
         params: typing.Optional[GetTransactionParams] = None,
@@ -189,9 +191,6 @@ class TransactionsResource(Resource):
          *  `transaction_code`
          *  `foreign_transaction_id`
          *  `client_transaction_id`
-
-
-        Deprecated: this operation is deprecated
         """
         resp = self._client.get(
             "/v0.1/me/transactions",
@@ -218,6 +217,7 @@ class TransactionsResource(Resource):
         )
         return pydantic.TypeAdapter(ListTransactionsV21200Response).validate_python(resp.json())
 
+    @typing_extensions.deprecated("This method is deprecated")
     def list_deprecated(
         self,
         params: typing.Optional[ListTransactionsParams] = None,
@@ -227,8 +227,6 @@ class TransactionsResource(Resource):
         List transactions
 
         Lists detailed history of all transactions associated with the merchant profile.
-
-        Deprecated: this operation is deprecated
         """
         resp = self._client.get(
             "/v0.1/me/transactions/history",
@@ -281,6 +279,7 @@ class AsyncTransactionsResource(AsyncResource):
         )
         return pydantic.TypeAdapter(TransactionFull).validate_python(resp.json())
 
+    @typing_extensions.deprecated("This method is deprecated")
     async def get_deprecated(
         self,
         params: typing.Optional[GetTransactionParams] = None,
@@ -296,9 +295,6 @@ class AsyncTransactionsResource(AsyncResource):
          *  `transaction_code`
          *  `foreign_transaction_id`
          *  `client_transaction_id`
-
-
-        Deprecated: this operation is deprecated
         """
         resp = await self._client.get(
             "/v0.1/me/transactions",
@@ -325,6 +321,7 @@ class AsyncTransactionsResource(AsyncResource):
         )
         return pydantic.TypeAdapter(ListTransactionsV21200Response).validate_python(resp.json())
 
+    @typing_extensions.deprecated("This method is deprecated")
     async def list_deprecated(
         self,
         params: typing.Optional[ListTransactionsParams] = None,
@@ -334,8 +331,6 @@ class AsyncTransactionsResource(AsyncResource):
         List transactions
 
         Lists detailed history of all transactions associated with the merchant profile.
-
-        Deprecated: this operation is deprecated
         """
         resp = await self._client.get(
             "/v0.1/me/transactions/history",

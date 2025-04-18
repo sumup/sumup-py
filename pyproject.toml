@@ -9,6 +9,7 @@ authors = [{name = "SumUp", email = "support@sumup.com"}]
 dependencies = [
     "httpx>=0.28.1",
     "pydantic>=2.11.3",
+    "typing-extensions>=4.13.2",
 ]
 license = "Apache-2.0"
 license-files = ["LICENSE"]
