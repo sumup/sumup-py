@@ -10,6 +10,7 @@ from .types import (
 )
 import typing
 import pydantic
+import typing_extensions
 
 
 class GetAccountParams(pydantic.BaseModel):
@@ -124,6 +125,7 @@ class MerchantResource(Resource):
         )
         return pydantic.TypeAdapter(ListBankAccountsV11200Response).validate_python(resp.json())
 
+    @typing_extensions.deprecated("This method is deprecated")
     def list_bank_accounts_deprecated(
         self,
         params: typing.Optional[ListBankAccountsParams] = None,
@@ -133,8 +135,6 @@ class MerchantResource(Resource):
         List bank accounts
 
         Retrieves bank accounts of the merchant.
-
-        Deprecated: this operation is deprecated
         """
         resp = self._client.get(
             "/v0.1/me/merchant-profile/bank-accounts",
@@ -237,6 +237,7 @@ class AsyncMerchantResource(AsyncResource):
         )
         return pydantic.TypeAdapter(ListBankAccountsV11200Response).validate_python(resp.json())
 
+    @typing_extensions.deprecated("This method is deprecated")
     async def list_bank_accounts_deprecated(
         self,
         params: typing.Optional[ListBankAccountsParams] = None,
@@ -246,8 +247,6 @@ class AsyncMerchantResource(AsyncResource):
         List bank accounts
 
         Retrieves bank accounts of the merchant.
-
-        Deprecated: this operation is deprecated
         """
         resp = await self._client.get(
             "/v0.1/me/merchant-profile/bank-accounts",

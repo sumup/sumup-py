@@ -4,6 +4,7 @@ from .types import FinancialPayouts
 from datetime import date
 import typing
 import pydantic
+import typing_extensions
 
 
 class ListPayoutsV1Params(pydantic.BaseModel):
@@ -60,6 +61,7 @@ class PayoutsResource(Resource):
         )
         return pydantic.TypeAdapter(FinancialPayouts).validate_python(resp.json())
 
+    @typing_extensions.deprecated("This method is deprecated")
     def list_deprecated(
         self,
         params: typing.Optional[ListPayoutsParams] = None,
@@ -69,8 +71,6 @@ class PayoutsResource(Resource):
         List payouts
 
         Lists ordered payouts for the merchant profile.
-
-        Deprecated: this operation is deprecated
         """
         resp = self._client.get(
             "/v0.1/me/financials/payouts",
@@ -102,6 +102,7 @@ class AsyncPayoutsResource(AsyncResource):
         )
         return pydantic.TypeAdapter(FinancialPayouts).validate_python(resp.json())
 
+    @typing_extensions.deprecated("This method is deprecated")
     async def list_deprecated(
         self,
         params: typing.Optional[ListPayoutsParams] = None,
@@ -111,8 +112,6 @@ class AsyncPayoutsResource(AsyncResource):
         List payouts
 
         Lists ordered payouts for the merchant profile.
-
-        Deprecated: this operation is deprecated
         """
         resp = await self._client.get(
             "/v0.1/me/financials/payouts",

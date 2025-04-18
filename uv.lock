@@ -264,6 +264,7 @@ source = { virtual = "." }
 dependencies = [
     { name = "httpx" },
     { name = "pydantic" },
+    { name = "typing-extensions" },
 ]
 
 [package.dev-dependencies]
@@ -276,6 +277,7 @@ dev = [
 requires-dist = [
     { name = "httpx", specifier = ">=0.28.1" },
     { name = "pydantic", specifier = ">=2.11.3" },
+    { name = "typing-extensions", specifier = ">=4.13.2" },
 ]
 
 [package.metadata.requires-dev]

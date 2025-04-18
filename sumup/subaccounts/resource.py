@@ -3,6 +3,7 @@ from .._service import Resource, AsyncResource, HeaderTypes
 from .types import Operator
 import typing
 import pydantic
+import typing_extensions
 
 
 class CreateSubAccountBodyPermissions(pydantic.BaseModel):
@@ -96,6 +97,9 @@ class SubaccountsResource(Resource):
     def __init__(self, client):
         super().__init__(client)
 
+    @typing_extensions.deprecated(
+        "Subaccounts API is deprecated, to list users in your merchant account please use [List members](https://developer.sumup.com/api/members/list) instead."
+    )
     def list_sub_accounts(
         self,
         params: typing.Optional[ListSubAccountsParams] = None,
@@ -105,8 +109,6 @@ class SubaccountsResource(Resource):
         List operators
 
         Returns list of operators for currently authorized user's merchant.
-
-        Deprecated: Subaccounts API is deprecated, to list users in your merchant account please use [List members](https://developer.sumup.com/api/members/list) instead.
         """
         resp = self._client.get(
             "/v0.1/me/accounts",
@@ -115,6 +117,9 @@ class SubaccountsResource(Resource):
         )
         return pydantic.TypeAdapter(ListSubAccounts200Response).validate_python(resp.json())
 
+    @typing_extensions.deprecated(
+        "Subaccounts API is deprecated, to create an user in your merchant account please use [Create member](https://developer.sumup.com/api/members/create) instead."
+    )
     def create_sub_account(
         self, body: CreateSubAccountBody, headers: typing.Optional[HeaderTypes] = None
     ) -> Operator:
@@ -122,8 +127,6 @@ class SubaccountsResource(Resource):
         Create an operator
 
         Creates new operator for currently authorized users' merchant.
-
-        Deprecated: Subaccounts API is deprecated, to create an user in your merchant account please use [Create member](https://developer.sumup.com/api/members/create) instead.
         """
         resp = self._client.post(
             "/v0.1/me/accounts",
@@ -132,6 +135,9 @@ class SubaccountsResource(Resource):
         )
         return pydantic.TypeAdapter(Operator).validate_python(resp.json())
 
+    @typing_extensions.deprecated(
+        "Subaccounts API is deprecated, to get an user that's a member of your merchant account please use [Get member](https://developer.sumup.com/api/members/get) instead."
+    )
     def compat_get_operator(
         self, operator_id: int, headers: typing.Optional[HeaderTypes] = None
     ) -> Operator:
@@ -139,8 +145,6 @@ class SubaccountsResource(Resource):
         Retrieve an operator
 
         Returns specific operator.
-
-        Deprecated: Subaccounts API is deprecated, to get an user that's a member of your merchant account please use [Get member](https://developer.sumup.com/api/members/get)instead.
         """
         resp = self._client.get(
             f"/v0.1/me/accounts/{operator_id}",
@@ -148,6 +152,9 @@ class SubaccountsResource(Resource):
         )
         return pydantic.TypeAdapter(Operator).validate_python(resp.json())
 
+    @typing_extensions.deprecated(
+        "Subaccounts API is deprecated, to update an user that's a member of your merchant account please use [Update member](https://developer.sumup.com/api/members/update) instead."
+    )
     def update_sub_account(
         self,
         operator_id: int,
@@ -158,8 +165,6 @@ class SubaccountsResource(Resource):
         Update an operator
 
         Updates operator. If the operator was disabled and their password is updated they will be unblocked.
-
-        Deprecated: Subaccounts API is deprecated, to update an user that's a member of your merchant account please use [Updatemember](https://developer.sumup.com/api/members/update) instead.
         """
         resp = self._client.put(
             f"/v0.1/me/accounts/{operator_id}",
@@ -168,15 +173,14 @@ class SubaccountsResource(Resource):
         )
         return pydantic.TypeAdapter(Operator).validate_python(resp.json())
 
+    @typing_extensions.deprecated(
+        "Subaccounts API is deprecated, to remove an user that's a member of your merchant account please use [Delete member](https://developer.sumup.com/api/members/delete) instead."
+    )
     def deactivate_sub_account(
         self, operator_id: int, headers: typing.Optional[HeaderTypes] = None
     ) -> Operator:
         """
         Disable an operator
-
-
-
-        Deprecated: Subaccounts API is deprecated, to remove an user that's a member of your merchant account please use [Deletemember](https://developer.sumup.com/api/members/delete) instead.
         """
         resp = self._client.delete(
             f"/v0.1/me/accounts/{operator_id}",
@@ -189,6 +193,9 @@ class AsyncSubaccountsResource(AsyncResource):
     def __init__(self, client):
         super().__init__(client)
 
+    @typing_extensions.deprecated(
+        "Subaccounts API is deprecated, to list users in your merchant account please use [List members](https://developer.sumup.com/api/members/list) instead."
+    )
     async def list_sub_accounts(
         self,
         params: typing.Optional[ListSubAccountsParams] = None,
@@ -198,8 +205,6 @@ class AsyncSubaccountsResource(AsyncResource):
         List operators
 
         Returns list of operators for currently authorized user's merchant.
-
-        Deprecated: Subaccounts API is deprecated, to list users in your merchant account please use [List members](https://developer.sumup.com/api/members/list) instead.
         """
         resp = await self._client.get(
             "/v0.1/me/accounts",
@@ -208,6 +213,9 @@ class AsyncSubaccountsResource(AsyncResource):
         )
         return pydantic.TypeAdapter(ListSubAccounts200Response).validate_python(resp.json())
 
+    @typing_extensions.deprecated(
+        "Subaccounts API is deprecated, to create an user in your merchant account please use [Create member](https://developer.sumup.com/api/members/create) instead."
+    )
     async def create_sub_account(
         self, body: CreateSubAccountBody, headers: typing.Optional[HeaderTypes] = None
     ) -> Operator:
@@ -215,8 +223,6 @@ class AsyncSubaccountsResource(AsyncResource):
         Create an operator
 
         Creates new operator for currently authorized users' merchant.
-
-        Deprecated: Subaccounts API is deprecated, to create an user in your merchant account please use [Create member](https://developer.sumup.com/api/members/create) instead.
         """
         resp = await self._client.post(
             "/v0.1/me/accounts",
@@ -225,6 +231,9 @@ class AsyncSubaccountsResource(AsyncResource):
         )
         return pydantic.TypeAdapter(Operator).validate_python(resp.json())
 
+    @typing_extensions.deprecated(
+        "Subaccounts API is deprecated, to get an user that's a member of your merchant account please use [Get member](https://developer.sumup.com/api/members/get) instead."
+    )
     async def compat_get_operator(
         self, operator_id: int, headers: typing.Optional[HeaderTypes] = None
     ) -> Operator:
@@ -232,8 +241,6 @@ class AsyncSubaccountsResource(AsyncResource):
         Retrieve an operator
 
         Returns specific operator.
-
-        Deprecated: Subaccounts API is deprecated, to get an user that's a member of your merchant account please use [Get member](https://developer.sumup.com/api/members/get)instead.
         """
         resp = await self._client.get(
             f"/v0.1/me/accounts/{operator_id}",
@@ -241,6 +248,9 @@ class AsyncSubaccountsResource(AsyncResource):
         )
         return pydantic.TypeAdapter(Operator).validate_python(resp.json())
 
+    @typing_extensions.deprecated(
+        "Subaccounts API is deprecated, to update an user that's a member of your merchant account please use [Update member](https://developer.sumup.com/api/members/update) instead."
+    )
     async def update_sub_account(
         self,
         operator_id: int,
@@ -251,8 +261,6 @@ class AsyncSubaccountsResource(AsyncResource):
         Update an operator
 
         Updates operator. If the operator was disabled and their password is updated they will be unblocked.
-
-        Deprecated: Subaccounts API is deprecated, to update an user that's a member of your merchant account please use [Updatemember](https://developer.sumup.com/api/members/update) instead.
         """
         resp = await self._client.put(
             f"/v0.1/me/accounts/{operator_id}",
@@ -261,15 +269,14 @@ class AsyncSubaccountsResource(AsyncResource):
         )
         return pydantic.TypeAdapter(Operator).validate_python(resp.json())
 
+    @typing_extensions.deprecated(
+        "Subaccounts API is deprecated, to remove an user that's a member of your merchant account please use [Delete member](https://developer.sumup.com/api/members/delete) instead."
+    )
     async def deactivate_sub_account(
         self, operator_id: int, headers: typing.Optional[HeaderTypes] = None
     ) -> Operator:
         """
         Disable an operator
-
-
-
-        Deprecated: Subaccounts API is deprecated, to remove an user that's a member of your merchant account please use [Deletemember](https://developer.sumup.com/api/members/delete) instead.
         """
         resp = await self._client.delete(
             f"/v0.1/me/accounts/{operator_id}",
