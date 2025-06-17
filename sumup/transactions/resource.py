@@ -106,12 +106,6 @@ class ListTransactionsParams(pydantic.BaseModel):
     users: typing.Optional[list[str]] = None
 
 
-class RefundTransaction204Response(pydantic.BaseModel):
-    """
-    RefundTransaction204Response is a schema definition.
-    """
-
-
 class ListTransactionsV21200Response(pydantic.BaseModel):
     """
     ListTransactionsV21200Response is a schema definition.
@@ -138,18 +132,17 @@ class TransactionsResource(Resource):
 
     def refund(
         self, txn_id: str, body: RefundTransactionBody, headers: typing.Optional[HeaderTypes] = None
-    ) -> RefundTransaction204Response:
+    ):
         """
         Refund a transaction
 
         Refunds an identified transaction either in full or partially.
         """
-        resp = self._client.post(
+        self._client.post(
             f"/v0.1/me/refund/{txn_id}",
             json=body,
             headers=headers,
         )
-        return pydantic.TypeAdapter(RefundTransaction204Response).validate_python(resp.json())
 
     def get(
         self,
@@ -242,18 +235,17 @@ class AsyncTransactionsResource(AsyncResource):
 
     async def refund(
         self, txn_id: str, body: RefundTransactionBody, headers: typing.Optional[HeaderTypes] = None
-    ) -> RefundTransaction204Response:
+    ):
         """
         Refund a transaction
 
         Refunds an identified transaction either in full or partially.
         """
-        resp = await self._client.post(
+        await self._client.post(
             f"/v0.1/me/refund/{txn_id}",
             json=body,
             headers=headers,
         )
-        return pydantic.TypeAdapter(RefundTransaction204Response).validate_python(resp.json())
 
     async def get(
         self,

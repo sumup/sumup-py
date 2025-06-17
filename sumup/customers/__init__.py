@@ -3,7 +3,6 @@ from .resource import (
     AsyncCustomersResource,
     CreateCustomerBody,
     UpdateCustomerBody,
-    DeactivatePaymentInstrument204Response,
 )
 from .types import (
     Address,
@@ -21,7 +20,6 @@ __all__ = [
     "AsyncCustomersResource",
     "CreateCustomerBody",
     "UpdateCustomerBody",
-    "DeactivatePaymentInstrument204Response",
     "Address",
     "Customer",
     "Error",

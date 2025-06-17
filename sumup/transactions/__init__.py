@@ -6,7 +6,6 @@ from .resource import (
     GetTransactionParams,
     ListTransactionsV21Params,
     ListTransactionsParams,
-    RefundTransaction204Response,
     ListTransactionsV21200Response,
     ListTransactions200Response,
 )
@@ -44,7 +43,6 @@ __all__ = [
     "GetTransactionParams",
     "ListTransactionsV21Params",
     "ListTransactionsParams",
-    "RefundTransaction204Response",
     "ListTransactionsV21200Response",
     "ListTransactions200Response",
     "AmountEvent",

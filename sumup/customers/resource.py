@@ -42,12 +42,6 @@ ListPaymentInstruments200Response is a schema definition.
 """
 
 
-class DeactivatePaymentInstrument204Response(pydantic.BaseModel):
-    """
-    DeactivatePaymentInstrument204Response is a schema definition.
-    """
-
-
 class CustomersResource(Resource):
     def __init__(self, client):
         super().__init__(client)
@@ -115,18 +109,15 @@ class CustomersResource(Resource):
 
     def deactivate_payment_instrument(
         self, customer_id: str, token: str, headers: typing.Optional[HeaderTypes] = None
-    ) -> DeactivatePaymentInstrument204Response:
+    ):
         """
         Deactivate a payment instrument
 
         Deactivates an identified card payment instrument resource for a customer.
         """
-        resp = self._client.delete(
+        self._client.delete(
             f"/v0.1/customers/{customer_id}/payment-instruments/{token}",
             headers=headers,
-        )
-        return pydantic.TypeAdapter(DeactivatePaymentInstrument204Response).validate_python(
-            resp.json()
         )
 
 
@@ -197,16 +188,13 @@ class AsyncCustomersResource(AsyncResource):
 
     async def deactivate_payment_instrument(
         self, customer_id: str, token: str, headers: typing.Optional[HeaderTypes] = None
-    ) -> DeactivatePaymentInstrument204Response:
+    ):
         """
         Deactivate a payment instrument
 
         Deactivates an identified card payment instrument resource for a customer.
         """
-        resp = await self._client.delete(
+        await self._client.delete(
             f"/v0.1/customers/{customer_id}/payment-instruments/{token}",
             headers=headers,
-        )
-        return pydantic.TypeAdapter(DeactivatePaymentInstrument204Response).validate_python(
-            resp.json()
         )
