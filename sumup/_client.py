@@ -29,7 +29,7 @@ class Sumup(Resource):
                 base_url=base_url,
                 timeout=timeout,
                 headers={
-                    "User-Agent": f"sumup-py/{self.version}",
+                    "User-Agent": f"sumup-py/{self.version()}",
                     "Authorization": f"Bearer {self.api_key}",
                 },
             )
@@ -112,7 +112,7 @@ class AsyncSumup(AsyncResource):
                 base_url=base_url,
                 timeout=timeout,
                 headers={
-                    "User-Agent": f"sumup-py/{self.version}",
+                    "User-Agent": f"sumup-py/{self.version()}",
                     "Authorization": f"Bearer {self.api_key}",
                 },
             )
