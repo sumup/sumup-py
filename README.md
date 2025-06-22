@@ -5,7 +5,7 @@
 [![pypi](https://img.shields.io/pypi/v/sumup.svg)](https://pypi.python.org/pypi/sumup)
 [![Documentation][docs-badge]](https://developer.sumup.com)
 [![CI Status](https://github.com/sumup/sumup-py/workflows/CI/badge.svg)](https://github.com/sumup/sumup-py/actions/workflows/ci.yml)
-[![pypi download](https://img.shields.io/pypi/dw/sumup)](https://pypi.python.org/pypi/sumup)
+[![pypi download](https://img.shields.io/pypi/dm/sumup)](https://pypi.python.org/pypi/sumup)
 [![License](https://img.shields.io/github/license/sumup/sumup-py)](./LICENSE)
 
 </div>
