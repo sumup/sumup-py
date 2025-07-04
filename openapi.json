@@ -2029,6 +2029,22 @@
             "schema": {
               "type": "string"
             }
+          },
+          {
+            "name": "foreign_transaction_id",
+            "in": "query",
+            "description": "External/foreign transaction id (passed by clients).",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "client_transaction_id",
+            "in": "query",
+            "description": "Client transaction id.",
+            "schema": {
+              "type": "string"
+            }
           }
         ],
         "responses": {
@@ -4525,6 +4541,14 @@
             "description": "Filter memberships by the sandbox status of the resource the membership is in.",
             "schema": {
               "type": "boolean"
+            }
+          },
+          {
+            "name": "resource.name",
+            "in": "query",
+            "description": "Filter memberships by the name of the resource the membership is in.",
+            "schema": {
+              "type": "string"
             }
           }
         ],
