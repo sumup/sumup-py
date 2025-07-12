@@ -23,6 +23,8 @@ class ListMembershipsParams(pydantic.BaseModel):
 
     resource_attributes_sandbox: typing.Optional[bool] = None
 
+    resource_name: typing.Optional[str] = None
+
 
 class ListMemberships200Response(pydantic.BaseModel):
     """

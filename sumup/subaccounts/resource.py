@@ -180,7 +180,9 @@ class SubaccountsResource(Resource):
         self, operator_id: int, headers: typing.Optional[HeaderTypes] = None
     ) -> Operator:
         """
-        Disable an operator
+        Disable an operator.
+
+        Disable the specified operator for the merchant account.
         """
         resp = self._client.delete(
             f"/v0.1/me/accounts/{operator_id}",
@@ -276,7 +278,9 @@ class AsyncSubaccountsResource(AsyncResource):
         self, operator_id: int, headers: typing.Optional[HeaderTypes] = None
     ) -> Operator:
         """
-        Disable an operator
+        Disable an operator.
+
+        Disable the specified operator for the merchant account.
         """
         resp = await self._client.delete(
             f"/v0.1/me/accounts/{operator_id}",

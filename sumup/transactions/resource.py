@@ -27,6 +27,10 @@ class GetTransactionV21Params(pydantic.BaseModel):
     GetTransactionV21Params: query parameters for GetTransactionV2.1
     """
 
+    client_transaction_id: typing.Optional[str] = None
+
+    foreign_transaction_id: typing.Optional[str] = None
+
     id: typing.Optional[str] = None
 
     internal_id: typing.Optional[str] = None
