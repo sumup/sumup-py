@@ -149,13 +149,6 @@ class CreateCheckoutBody(pydantic.BaseModel):
 	Read only
 	"""
 
-    pay_to_email: typing.Optional[str] = None
-    """
-	Email address of the registered user (merchant) to whom the payment is made.
-	Format: email
-	Deprecated: `pay_to_email` is deprecated, use `merchant_code` instead.
-	"""
-
     purpose: typing.Optional[CreateCheckoutBodyPurpose] = None
     """
 	Purpose of the checkout.
@@ -424,13 +417,6 @@ class DeactivateCheckout200Response(pydantic.BaseModel):
     merchant_name: typing.Optional[str] = None
     """
 	Merchant name
-	"""
-
-    pay_to_email: typing.Optional[str] = None
-    """
-	Email address of the registered user (merchant) to whom the payment is made.
-	Format: email
-	Deprecated: `pay_to_email` is deprecated, use `merchant_code` instead.
 	"""
 
     purpose: typing.Optional[DeactivateCheckout200ResponsePurpose] = None

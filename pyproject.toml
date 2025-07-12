@@ -47,7 +47,7 @@ dev = [
 [project.urls]
 Homepage = "https://github.com/sumup/sumup-py"
 Issues = "https://github.com/sumup/sumup-py/issues"
-"Source Code" = "https://github.com/sumup/stripe-py"
+"Source Code" = "https://github.com/sumup/sumup-py"
 
 [tool.ruff]
 line-length = 100

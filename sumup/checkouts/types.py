@@ -322,13 +322,6 @@ class Checkout(pydantic.BaseModel):
 	Unique identifying code of the merchant profile.
 	"""
 
-    pay_to_email: typing.Optional[str] = None
-    """
-	Email address of the registered user (merchant) to whom the payment is made.
-	Format: email
-	Deprecated: `pay_to_email` is deprecated, use `merchant_code` instead.
-	"""
-
     return_url: typing.Optional[str] = None
     """
 	URL to which the SumUp platform sends the processing status of the payment checkout.
@@ -532,13 +525,6 @@ class CheckoutCreateRequest(pydantic.BaseModel):
 	Read only
 	"""
 
-    pay_to_email: typing.Optional[str] = None
-    """
-	Email address of the registered user (merchant) to whom the payment is made.
-	Format: email
-	Deprecated: `pay_to_email` is deprecated, use `merchant_code` instead.
-	"""
-
     purpose: typing.Optional[CheckoutCreateRequestPurpose] = None
     """
 	Purpose of the checkout.
@@ -727,13 +713,6 @@ class CheckoutSuccess(pydantic.BaseModel):
     merchant_name: typing.Optional[str] = None
     """
 	Name of the merchant
-	"""
-
-    pay_to_email: typing.Optional[str] = None
-    """
-	Email address of the registered user (merchant) to whom the payment is made.
-	Format: email
-	Deprecated: `pay_to_email` is deprecated, use `merchant_code` instead.
 	"""
 
     payment_instrument: typing.Optional[CheckoutSuccessPaymentInstrument] = None

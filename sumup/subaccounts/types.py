@@ -35,7 +35,7 @@ OperatorAccountType = typing.Literal["normal", "operator"]
 
 class Operator(pydantic.BaseModel):
     """
-    Operator is a schema definition.
+    Operator account for a merchant.
     """
 
     account_type: OperatorAccountType
@@ -69,7 +69,7 @@ class Operator(pydantic.BaseModel):
 
 class CompatError(pydantic.BaseModel):
     """
-    Error
+    Error object for compat API calls.
     """
 
     error_code: str
