@@ -1,5 +1,17 @@
 # Changelog
 
+## [0.0.5](https://github.com/sumup/sumup-py/compare/v0.0.4...v0.0.5) (2025-07-14)
+
+
+### Features
+
+* **readme:** badges ([#25](https://github.com/sumup/sumup-py/issues/25)) ([5fee228](https://github.com/sumup/sumup-py/commit/5fee228f07cc03ace06a8102d522900c3b31301d))
+
+
+### Bug Fixes
+
+* **readme:** downloads badge period ([#26](https://github.com/sumup/sumup-py/issues/26)) ([d1a3912](https://github.com/sumup/sumup-py/commit/d1a3912034ae7749f6fe4fef1eebe16df33765a5))
+
 ## [0.0.4](https://github.com/sumup/sumup-py/compare/v0.0.3...v0.0.4) (2025-06-17)
 
 
