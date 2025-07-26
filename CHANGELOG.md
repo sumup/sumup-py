@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.0.6](https://github.com/sumup/sumup-py/compare/v0.0.5...v0.0.6) (2025-07-26)
+
+
+### Features
+
+* **codegen:** move codegen here ([#33](https://github.com/sumup/sumup-py/issues/33)) ([feb4675](https://github.com/sumup/sumup-py/commit/feb46752d9b2b2d0a0ede30210d8a6e60986708c))
+
 ## [0.0.5](https://github.com/sumup/sumup-py/compare/v0.0.4...v0.0.5) (2025-07-14)
 
 
