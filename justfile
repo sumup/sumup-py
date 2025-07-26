@@ -26,4 +26,4 @@ check-fix:
 # Generate code from OpenAPI specs
 [group('misc')]
 generate: && fmt check-fix
-    py-sdk-gen generate --out sumup --module sumup --package sumup --name 'SumUp' ./openapi.json
+    cd codegen && go run ./... generate --out ../sumup/ ../openapi.json
