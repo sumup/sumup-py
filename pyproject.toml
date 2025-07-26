@@ -49,5 +49,11 @@ Homepage = "https://github.com/sumup/sumup-py"
 Issues = "https://github.com/sumup/sumup-py/issues"
 "Source Code" = "https://github.com/sumup/stripe-py"
 
+[tool.setuptools]
+py-modules = ["sumup"]
+
 [tool.ruff]
 line-length = 100
+
+[tool.uv.workspace]
+exclude = ["codegen"]

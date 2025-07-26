@@ -5,6 +5,7 @@ on:
   pull_request:
     paths:
       - openapi.json
+      - "codegen/**"
     branches:
       - main
 
@@ -22,15 +23,14 @@ jobs:
       - name: Install Go
         uses: actions/setup-go@d35c59abb061a4a6fb18e82ac0862c26744d6ab5 # v5.5.0
         with:
-          go-version: '1.24'
+          go-version-file: "./codegen/go.mod"
 
       - name: Install the project
         run: uv sync --all-extras --dev
 
-      - run: go install github.com/sumup/python-sdk-gen/cmd/python-sdk-gen@latest
-
       - name: Generate SDK
-        run: py-sdk-gen generate --out sumup --module sumup --package sumup --name 'SumUp' ./openapi.json
+        run: go run ./... generate --out ../sumup/ ../openapi.json
+        working-directory: codegen
 
       - name: Format
         run: uv run ruff format
