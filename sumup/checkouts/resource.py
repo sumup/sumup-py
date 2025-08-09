@@ -480,7 +480,7 @@ class CheckoutsResource(Resource):
         """
         resp = self._client.post(
             "/v0.1/checkouts",
-            json=body,
+            json=body.model_dump(),
             headers=headers,
         )
         return pydantic.TypeAdapter(Checkout).validate_python(resp.json())
