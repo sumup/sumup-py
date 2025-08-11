@@ -1,5 +1,5 @@
 from sumup import Sumup
-from sumup.checkouts.resource import ListCheckoutsParams
+from sumup.checkouts.resource import ListCheckoutsParams, CreateCheckoutBody
 
 client = Sumup()
 
@@ -14,3 +14,13 @@ transactions = client.checkouts.list(
     ListCheckoutsParams(checkout_reference="1231"), headers={"Foo": "Bar"}
 )
 print(transactions)
+
+checkout = client.checkouts.create(
+    CreateCheckoutBody(
+        merchant_code=merchant.merchant_profile.merchant_code,
+        amount=100.50,
+        checkout_reference="unique-checkout-ref-123",
+        currency="EUR",
+    )
+)
+print(checkout)

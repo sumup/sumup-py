@@ -165,7 +165,7 @@ class ReadersResource(Resource):
         """
         resp = self._client.post(
             f"/v0.1/merchants/{merchant_code}/readers/{id}/checkout",
-            json=body,
+            json=body.model_dump_json(),
             headers=headers,
         )
         return pydantic.TypeAdapter(CreateReaderCheckout201Response).validate_python(resp.json())
@@ -224,7 +224,7 @@ class ReadersResource(Resource):
         """
         resp = self._client.post(
             f"/v0.1/merchants/{merchant_code}/readers",
-            json=body,
+            json=body.model_dump_json(),
             headers=headers,
         )
         return pydantic.TypeAdapter(Reader).validate_python(resp.json())
@@ -270,7 +270,7 @@ class ReadersResource(Resource):
         """
         resp = self._client.patch(
             f"/v0.1/merchants/{merchant_code}/readers/{id}",
-            json=body,
+            json=body.model_dump_json(),
             headers=headers,
         )
         return pydantic.TypeAdapter(Reader).validate_python(resp.json())
@@ -303,7 +303,7 @@ class AsyncReadersResource(AsyncResource):
         """
         resp = await self._client.post(
             f"/v0.1/merchants/{merchant_code}/readers/{id}/checkout",
-            json=body,
+            json=body.model_dump_json(),
             headers=headers,
         )
         return pydantic.TypeAdapter(CreateReaderCheckout201Response).validate_python(resp.json())
@@ -362,7 +362,7 @@ class AsyncReadersResource(AsyncResource):
         """
         resp = await self._client.post(
             f"/v0.1/merchants/{merchant_code}/readers",
-            json=body,
+            json=body.model_dump_json(),
             headers=headers,
         )
         return pydantic.TypeAdapter(Reader).validate_python(resp.json())
@@ -408,7 +408,7 @@ class AsyncReadersResource(AsyncResource):
         """
         resp = await self._client.patch(
             f"/v0.1/merchants/{merchant_code}/readers/{id}",
-            json=body,
+            json=body.model_dump_json(),
             headers=headers,
         )
         return pydantic.TypeAdapter(Reader).validate_python(resp.json())

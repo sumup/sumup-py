@@ -144,7 +144,7 @@ class TransactionsResource(Resource):
         """
         self._client.post(
             f"/v0.1/me/refund/{txn_id}",
-            json=body,
+            json=body.model_dump_json(),
             headers=headers,
         )
 
@@ -247,7 +247,7 @@ class AsyncTransactionsResource(AsyncResource):
         """
         await self._client.post(
             f"/v0.1/me/refund/{txn_id}",
-            json=body,
+            json=body.model_dump_json(),
             headers=headers,
         )
 

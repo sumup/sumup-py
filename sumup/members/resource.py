@@ -166,7 +166,7 @@ class MembersResource(Resource):
         """
         resp = self._client.post(
             f"/v0.1/merchants/{merchant_code}/members",
-            json=body,
+            json=body.model_dump_json(),
             headers=headers,
         )
         return pydantic.TypeAdapter(Member).validate_python(resp.json())
@@ -199,7 +199,7 @@ class MembersResource(Resource):
         """
         resp = self._client.put(
             f"/v0.1/merchants/{merchant_code}/members/{member_id}",
-            json=body,
+            json=body.model_dump_json(),
             headers=headers,
         )
         return pydantic.TypeAdapter(Member).validate_python(resp.json())
@@ -253,7 +253,7 @@ class AsyncMembersResource(AsyncResource):
         """
         resp = await self._client.post(
             f"/v0.1/merchants/{merchant_code}/members",
-            json=body,
+            json=body.model_dump_json(),
             headers=headers,
         )
         return pydantic.TypeAdapter(Member).validate_python(resp.json())
@@ -286,7 +286,7 @@ class AsyncMembersResource(AsyncResource):
         """
         resp = await self._client.put(
             f"/v0.1/merchants/{merchant_code}/members/{member_id}",
-            json=body,
+            json=body.model_dump_json(),
             headers=headers,
         )
         return pydantic.TypeAdapter(Member).validate_python(resp.json())

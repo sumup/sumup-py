@@ -34,7 +34,7 @@ class {{.Service}}Resource(Resource):
 		self._client.{{.Method}}({{.Path}},
 {{- end }}
 {{- if .HasBody }}
-			json=body,
+			json=body.model_dump_json(),
 {{- end }}
 {{- with .QueryParams }}
 			params=params.dict() if params else None,
@@ -66,7 +66,7 @@ class Async{{.Service}}Resource(AsyncResource):
 		await self._client.{{.Method}}({{.Path}},
 {{- end }}
 {{- if .HasBody }}
-			json=body,
+			json=body.model_dump_json(),
 {{- end }}
 {{- with .QueryParams }}
 			params=params.dict() if params else None,

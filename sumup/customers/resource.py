@@ -56,7 +56,7 @@ class CustomersResource(Resource):
         """
         resp = self._client.post(
             "/v0.1/customers",
-            json=body,
+            json=body.model_dump_json(),
             headers=headers,
         )
         return pydantic.TypeAdapter(Customer).validate_python(resp.json())
@@ -88,7 +88,7 @@ class CustomersResource(Resource):
         """
         resp = self._client.put(
             f"/v0.1/customers/{customer_id}",
-            json=body,
+            json=body.model_dump_json(),
             headers=headers,
         )
         return pydantic.TypeAdapter(Customer).validate_python(resp.json())
@@ -135,7 +135,7 @@ class AsyncCustomersResource(AsyncResource):
         """
         resp = await self._client.post(
             "/v0.1/customers",
-            json=body,
+            json=body.model_dump_json(),
             headers=headers,
         )
         return pydantic.TypeAdapter(Customer).validate_python(resp.json())
@@ -167,7 +167,7 @@ class AsyncCustomersResource(AsyncResource):
         """
         resp = await self._client.put(
             f"/v0.1/customers/{customer_id}",
-            json=body,
+            json=body.model_dump_json(),
             headers=headers,
         )
         return pydantic.TypeAdapter(Customer).validate_python(resp.json())

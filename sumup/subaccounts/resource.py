@@ -130,7 +130,7 @@ class SubaccountsResource(Resource):
         """
         resp = self._client.post(
             "/v0.1/me/accounts",
-            json=body,
+            json=body.model_dump_json(),
             headers=headers,
         )
         return pydantic.TypeAdapter(Operator).validate_python(resp.json())
@@ -168,7 +168,7 @@ class SubaccountsResource(Resource):
         """
         resp = self._client.put(
             f"/v0.1/me/accounts/{operator_id}",
-            json=body,
+            json=body.model_dump_json(),
             headers=headers,
         )
         return pydantic.TypeAdapter(Operator).validate_python(resp.json())
@@ -228,7 +228,7 @@ class AsyncSubaccountsResource(AsyncResource):
         """
         resp = await self._client.post(
             "/v0.1/me/accounts",
-            json=body,
+            json=body.model_dump_json(),
             headers=headers,
         )
         return pydantic.TypeAdapter(Operator).validate_python(resp.json())
@@ -266,7 +266,7 @@ class AsyncSubaccountsResource(AsyncResource):
         """
         resp = await self._client.put(
             f"/v0.1/me/accounts/{operator_id}",
-            json=body,
+            json=body.model_dump_json(),
             headers=headers,
         )
         return pydantic.TypeAdapter(Operator).validate_python(resp.json())

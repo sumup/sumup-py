@@ -1,4 +1,4 @@
-import httpx
+import typing
 
 
 class SumupError(Exception):
@@ -7,9 +7,9 @@ class SumupError(Exception):
 
 class APIError(SumupError):
     message: str
-    request: httpx.Request
 
-    body: object | None
+    body: typing.Optional[object]
+
     """The API response body.
 
     If the API responded with a valid JSON structure then this property will be the
@@ -20,8 +20,7 @@ class APIError(SumupError):
     If there was no response associated with this error then it will be `None`.
     """
 
-    def __init__(self, message: str, request: httpx.Request, *, body: object | None) -> None:
+    def __init__(self, message: str, *, body: typing.Optional[object]) -> None:
         super().__init__(message)
-        self.request = request
         self.message = message
         self.body = body

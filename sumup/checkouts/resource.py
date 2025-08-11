@@ -480,7 +480,7 @@ class CheckoutsResource(Resource):
         """
         resp = self._client.post(
             "/v0.1/checkouts",
-            json=body,
+            json=body.model_dump_json(),
             headers=headers,
         )
         return pydantic.TypeAdapter(Checkout).validate_python(resp.json())
@@ -526,7 +526,7 @@ class CheckoutsResource(Resource):
         """
         resp = self._client.put(
             f"/v0.1/checkouts/{id}",
-            json=body,
+            json=body.model_dump_json(),
             headers=headers,
         )
         return pydantic.TypeAdapter(ProcessCheckoutResponse).validate_python(resp.json())
@@ -582,7 +582,7 @@ class AsyncCheckoutsResource(AsyncResource):
         """
         resp = await self._client.post(
             "/v0.1/checkouts",
-            json=body,
+            json=body.model_dump_json(),
             headers=headers,
         )
         return pydantic.TypeAdapter(Checkout).validate_python(resp.json())
@@ -628,7 +628,7 @@ class AsyncCheckoutsResource(AsyncResource):
         """
         resp = await self._client.put(
             f"/v0.1/checkouts/{id}",
-            json=body,
+            json=body.model_dump_json(),
             headers=headers,
         )
         return pydantic.TypeAdapter(ProcessCheckoutResponse).validate_python(resp.json())
