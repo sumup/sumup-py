@@ -1,5 +1,18 @@
 # Changelog
 
+## [0.0.6](https://github.com/sumup/sumup-py/compare/v0.0.5...v0.0.6) (2025-08-12)
+
+
+### Features
+
+* **codegen:** move codegen here ([#33](https://github.com/sumup/sumup-py/issues/33)) ([feb4675](https://github.com/sumup/sumup-py/commit/feb46752d9b2b2d0a0ede30210d8a6e60986708c))
+
+
+### Bug Fixes
+
+* **codegen:** response status code handling ([91583a0](https://github.com/sumup/sumup-py/commit/91583a0cbb7b596a06fff66d1177e75bde1058af))
+* serialization of request objects ([4b10d52](https://github.com/sumup/sumup-py/commit/4b10d52d804364a1be73a8e1f4a07938d39e4b9d))
+
 ## [0.0.5](https://github.com/sumup/sumup-py/compare/v0.0.4...v0.0.5) (2025-07-14)
 
 
