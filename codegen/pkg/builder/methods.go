@@ -179,18 +179,6 @@ func (b *Builder) operationToMethod(method, path string, o *v3.Operation) (*Meth
 		return a.Code - b.Code
 	})
 
-	if !slices.ContainsFunc(responses, func(r Response) bool {
-		return r.IsDefault
-	}) {
-		responses = append(responses, Response{
-			IsErr:        false,
-			IsDefault:    true,
-			IsUnexpected: true,
-			Type:         "",
-			Code:         0,
-		})
-	}
-
 	slog.Info("generating method",
 		slog.String("id", o.OperationId),
 		slog.String("method_name", methodName),
