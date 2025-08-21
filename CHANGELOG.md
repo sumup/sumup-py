@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.0.7](https://github.com/sumup/sumup-py/compare/v0.0.6...v0.0.7) (2025-08-21)
+
+
+### Bug Fixes
+
+* **build:** packaging ([#47](https://github.com/sumup/sumup-py/issues/47)) ([5fef66a](https://github.com/sumup/sumup-py/commit/5fef66ad1d0d222fde6f7962f4e7d3f0bc612d84))
+
 ## [0.0.6](https://github.com/sumup/sumup-py/compare/v0.0.5...v0.0.6) (2025-08-12)
 
 
