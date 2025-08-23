@@ -6,7 +6,8 @@ from .types import (
     TransactionFull,
     TransactionHistory,
 )
-from datetime import datetime
+import datetime
+import httpx
 import typing
 import pydantic
 import typing_extensions
@@ -56,17 +57,17 @@ class ListTransactionsV21Params(pydantic.BaseModel):
     ListTransactionsV21Params: query parameters for ListTransactionsV2.1
     """
 
-    changes_since: typing.Optional[datetime] = None
+    changes_since: typing.Optional[datetime.datetime] = None
 
     limit: typing.Optional[int] = None
 
     newest_ref: typing.Optional[str] = None
 
-    newest_time: typing.Optional[datetime] = None
+    newest_time: typing.Optional[datetime.datetime] = None
 
     oldest_ref: typing.Optional[str] = None
 
-    oldest_time: typing.Optional[datetime] = None
+    oldest_time: typing.Optional[datetime.datetime] = None
 
     order: typing.Optional[str] = None
 
@@ -86,17 +87,17 @@ class ListTransactionsParams(pydantic.BaseModel):
     ListTransactionsParams: query parameters for ListTransactions
     """
 
-    changes_since: typing.Optional[datetime] = None
+    changes_since: typing.Optional[datetime.datetime] = None
 
     limit: typing.Optional[int] = None
 
     newest_ref: typing.Optional[str] = None
 
-    newest_time: typing.Optional[datetime] = None
+    newest_time: typing.Optional[datetime.datetime] = None
 
     oldest_ref: typing.Optional[str] = None
 
-    oldest_time: typing.Optional[datetime] = None
+    oldest_time: typing.Optional[datetime.datetime] = None
 
     order: typing.Optional[str] = None
 
@@ -132,7 +133,7 @@ class ListTransactions200Response(pydantic.BaseModel):
 
 
 class TransactionsResource(Resource):
-    def __init__(self, client):
+    def __init__(self, client: httpx.Client):
         super().__init__(client)
 
     def refund(
@@ -149,13 +150,13 @@ class TransactionsResource(Resource):
             headers=headers,
         )
         if resp.status_code == 204:
-            return pydantic.TypeAdapter().validate_python(resp.json())
+            return
         elif resp.status_code == 404:
             raise APIError("Not Found", status=resp.status_code, body=resp.text)
         elif resp.status_code == 409:
             raise APIError("Conflict", status=resp.status_code, body=resp.text)
         else:
-            raise APIError(f"Unexpected response status code {resp.status_code}", body=resp.text)
+            raise APIError("Unexpected response", status=resp.status_code, body=resp.text)
 
     def get(
         self,
@@ -176,7 +177,7 @@ class TransactionsResource(Resource):
         """
         resp = self._client.get(
             f"/v2.1/merchants/{merchant_code}/transactions",
-            params=params.dict() if params else None,
+            params=params.model_dump() if params else None,
             headers=headers,
         )
         if resp.status_code == 200:
@@ -186,7 +187,7 @@ class TransactionsResource(Resource):
         elif resp.status_code == 404:
             raise APIError("Not Found", status=resp.status_code, body=resp.text)
         else:
-            raise APIError(f"Unexpected response status code {resp.status_code}", body=resp.text)
+            raise APIError("Unexpected response", status=resp.status_code, body=resp.text)
 
     @typing_extensions.deprecated("This method is deprecated")
     def get_deprecated(
@@ -207,7 +208,7 @@ class TransactionsResource(Resource):
         """
         resp = self._client.get(
             "/v0.1/me/transactions",
-            params=params.dict() if params else None,
+            params=params.model_dump() if params else None,
             headers=headers,
         )
         if resp.status_code == 200:
@@ -217,7 +218,7 @@ class TransactionsResource(Resource):
         elif resp.status_code == 404:
             raise APIError("Not Found", status=resp.status_code, body=resp.text)
         else:
-            raise APIError(f"Unexpected response status code {resp.status_code}", body=resp.text)
+            raise APIError("Unexpected response", status=resp.status_code, body=resp.text)
 
     def list(
         self,
@@ -232,7 +233,7 @@ class TransactionsResource(Resource):
         """
         resp = self._client.get(
             f"/v2.1/merchants/{merchant_code}/transactions/history",
-            params=params.dict() if params else None,
+            params=params.model_dump() if params else None,
             headers=headers,
         )
         if resp.status_code == 200:
@@ -240,7 +241,7 @@ class TransactionsResource(Resource):
         elif resp.status_code == 401:
             raise APIError("Unauthorized", status=resp.status_code, body=resp.text)
         else:
-            raise APIError(f"Unexpected response status code {resp.status_code}", body=resp.text)
+            raise APIError("Unexpected response", status=resp.status_code, body=resp.text)
 
     @typing_extensions.deprecated("This method is deprecated")
     def list_deprecated(
@@ -255,7 +256,7 @@ class TransactionsResource(Resource):
         """
         resp = self._client.get(
             "/v0.1/me/transactions/history",
-            params=params.dict() if params else None,
+            params=params.model_dump() if params else None,
             headers=headers,
         )
         if resp.status_code == 200:
@@ -263,11 +264,11 @@ class TransactionsResource(Resource):
         elif resp.status_code == 401:
             raise APIError("Unauthorized", status=resp.status_code, body=resp.text)
         else:
-            raise APIError(f"Unexpected response status code {resp.status_code}", body=resp.text)
+            raise APIError("Unexpected response", status=resp.status_code, body=resp.text)
 
 
 class AsyncTransactionsResource(AsyncResource):
-    def __init__(self, client):
+    def __init__(self, client: httpx.AsyncClient):
         super().__init__(client)
 
     async def refund(
@@ -284,13 +285,13 @@ class AsyncTransactionsResource(AsyncResource):
             headers=headers,
         )
         if resp.status_code == 204:
-            return pydantic.TypeAdapter().validate_python(resp.json())
+            return
         elif resp.status_code == 404:
             raise APIError("Not Found", status=resp.status_code, body=resp.text)
         elif resp.status_code == 409:
             raise APIError("Conflict", status=resp.status_code, body=resp.text)
         else:
-            raise APIError(f"Unexpected response status code {resp.status_code}", body=resp.text)
+            raise APIError("Unexpected response", status=resp.status_code, body=resp.text)
 
     async def get(
         self,
@@ -311,7 +312,7 @@ class AsyncTransactionsResource(AsyncResource):
         """
         resp = await self._client.get(
             f"/v2.1/merchants/{merchant_code}/transactions",
-            params=params.dict() if params else None,
+            params=params.model_dump() if params else None,
             headers=headers,
         )
         if resp.status_code == 200:
@@ -321,7 +322,7 @@ class AsyncTransactionsResource(AsyncResource):
         elif resp.status_code == 404:
             raise APIError("Not Found", status=resp.status_code, body=resp.text)
         else:
-            raise APIError(f"Unexpected response status code {resp.status_code}", body=resp.text)
+            raise APIError("Unexpected response", status=resp.status_code, body=resp.text)
 
     @typing_extensions.deprecated("This method is deprecated")
     async def get_deprecated(
@@ -342,7 +343,7 @@ class AsyncTransactionsResource(AsyncResource):
         """
         resp = await self._client.get(
             "/v0.1/me/transactions",
-            params=params.dict() if params else None,
+            params=params.model_dump() if params else None,
             headers=headers,
         )
         if resp.status_code == 200:
@@ -352,7 +353,7 @@ class AsyncTransactionsResource(AsyncResource):
         elif resp.status_code == 404:
             raise APIError("Not Found", status=resp.status_code, body=resp.text)
         else:
-            raise APIError(f"Unexpected response status code {resp.status_code}", body=resp.text)
+            raise APIError("Unexpected response", status=resp.status_code, body=resp.text)
 
     async def list(
         self,
@@ -367,7 +368,7 @@ class AsyncTransactionsResource(AsyncResource):
         """
         resp = await self._client.get(
             f"/v2.1/merchants/{merchant_code}/transactions/history",
-            params=params.dict() if params else None,
+            params=params.model_dump() if params else None,
             headers=headers,
         )
         if resp.status_code == 200:
@@ -375,7 +376,7 @@ class AsyncTransactionsResource(AsyncResource):
         elif resp.status_code == 401:
             raise APIError("Unauthorized", status=resp.status_code, body=resp.text)
         else:
-            raise APIError(f"Unexpected response status code {resp.status_code}", body=resp.text)
+            raise APIError("Unexpected response", status=resp.status_code, body=resp.text)
 
     @typing_extensions.deprecated("This method is deprecated")
     async def list_deprecated(
@@ -390,7 +391,7 @@ class AsyncTransactionsResource(AsyncResource):
         """
         resp = await self._client.get(
             "/v0.1/me/transactions/history",
-            params=params.dict() if params else None,
+            params=params.model_dump() if params else None,
             headers=headers,
         )
         if resp.status_code == 200:
@@ -398,4 +399,4 @@ class AsyncTransactionsResource(AsyncResource):
         elif resp.status_code == 401:
             raise APIError("Unauthorized", status=resp.status_code, body=resp.text)
         else:
-            raise APIError(f"Unexpected response status code {resp.status_code}", body=resp.text)
+            raise APIError("Unexpected response", status=resp.status_code, body=resp.text)

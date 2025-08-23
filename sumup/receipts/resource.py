@@ -4,6 +4,7 @@ from .._exceptions import APIError
 from .types import (
     Receipt,
 )
+import httpx
 import typing
 import pydantic
 
@@ -19,7 +20,7 @@ class GetReceiptParams(pydantic.BaseModel):
 
 
 class ReceiptsResource(Resource):
-    def __init__(self, client):
+    def __init__(self, client: httpx.Client):
         super().__init__(client)
 
     def get(
@@ -35,7 +36,7 @@ class ReceiptsResource(Resource):
         """
         resp = self._client.get(
             f"/v1.1/receipts/{id}",
-            params=params.dict() if params else None,
+            params=params.model_dump() if params else None,
             headers=headers,
         )
         if resp.status_code == 200:
@@ -45,11 +46,11 @@ class ReceiptsResource(Resource):
         elif resp.status_code == 401:
             raise APIError("Unauthorized", status=resp.status_code, body=resp.text)
         else:
-            raise APIError(f"Unexpected response status code {resp.status_code}", body=resp.text)
+            raise APIError("Unexpected response", status=resp.status_code, body=resp.text)
 
 
 class AsyncReceiptsResource(AsyncResource):
-    def __init__(self, client):
+    def __init__(self, client: httpx.AsyncClient):
         super().__init__(client)
 
     async def get(
@@ -65,7 +66,7 @@ class AsyncReceiptsResource(AsyncResource):
         """
         resp = await self._client.get(
             f"/v1.1/receipts/{id}",
-            params=params.dict() if params else None,
+            params=params.model_dump() if params else None,
             headers=headers,
         )
         if resp.status_code == 200:
@@ -75,4 +76,4 @@ class AsyncReceiptsResource(AsyncResource):
         elif resp.status_code == 401:
             raise APIError("Unauthorized", status=resp.status_code, body=resp.text)
         else:
-            raise APIError(f"Unexpected response status code {resp.status_code}", body=resp.text)
+            raise APIError("Unexpected response", status=resp.status_code, body=resp.text)

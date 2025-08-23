@@ -9,6 +9,7 @@ from .types import (
     MerchantSettings,
     PersonalProfile,
 )
+import httpx
 import typing
 import pydantic
 import typing_extensions
@@ -50,7 +51,7 @@ ListBankAccounts200Response is a schema definition.
 
 
 class MerchantResource(Resource):
-    def __init__(self, client):
+    def __init__(self, client: httpx.Client):
         super().__init__(client)
 
     def get(
@@ -65,7 +66,7 @@ class MerchantResource(Resource):
         """
         resp = self._client.get(
             "/v0.1/me",
-            params=params.dict() if params else None,
+            params=params.model_dump() if params else None,
             headers=headers,
         )
         if resp.status_code == 200:
@@ -73,7 +74,7 @@ class MerchantResource(Resource):
         elif resp.status_code == 401:
             raise APIError("Unauthorized", status=resp.status_code, body=resp.text)
         else:
-            raise APIError(f"Unexpected response status code {resp.status_code}", body=resp.text)
+            raise APIError("Unexpected response", status=resp.status_code, body=resp.text)
 
     def get_personal_profile(self, headers: typing.Optional[HeaderTypes] = None) -> PersonalProfile:
         """
@@ -90,7 +91,7 @@ class MerchantResource(Resource):
         elif resp.status_code == 401:
             raise APIError("Unauthorized", status=resp.status_code, body=resp.text)
         else:
-            raise APIError(f"Unexpected response status code {resp.status_code}", body=resp.text)
+            raise APIError("Unexpected response", status=resp.status_code, body=resp.text)
 
     def get_merchant_profile(self, headers: typing.Optional[HeaderTypes] = None) -> MerchantProfile:
         """
@@ -109,7 +110,7 @@ class MerchantResource(Resource):
         elif resp.status_code == 403:
             raise APIError("Forbidden", status=resp.status_code, body=resp.text)
         else:
-            raise APIError(f"Unexpected response status code {resp.status_code}", body=resp.text)
+            raise APIError("Unexpected response", status=resp.status_code, body=resp.text)
 
     def get_doing_business_as(
         self, headers: typing.Optional[HeaderTypes] = None
@@ -128,7 +129,7 @@ class MerchantResource(Resource):
         elif resp.status_code == 401:
             raise APIError("Unauthorized", status=resp.status_code, body=resp.text)
         else:
-            raise APIError(f"Unexpected response status code {resp.status_code}", body=resp.text)
+            raise APIError("Unexpected response", status=resp.status_code, body=resp.text)
 
     def list_bank_accounts(
         self,
@@ -143,7 +144,7 @@ class MerchantResource(Resource):
         """
         resp = self._client.get(
             f"/v1.1/merchants/{merchant_code}/bank-accounts",
-            params=params.dict() if params else None,
+            params=params.model_dump() if params else None,
             headers=headers,
         )
         if resp.status_code == 200:
@@ -153,7 +154,7 @@ class MerchantResource(Resource):
         elif resp.status_code == 403:
             raise APIError("Forbidden", status=resp.status_code, body=resp.text)
         else:
-            raise APIError(f"Unexpected response status code {resp.status_code}", body=resp.text)
+            raise APIError("Unexpected response", status=resp.status_code, body=resp.text)
 
     @typing_extensions.deprecated("This method is deprecated")
     def list_bank_accounts_deprecated(
@@ -168,7 +169,7 @@ class MerchantResource(Resource):
         """
         resp = self._client.get(
             "/v0.1/me/merchant-profile/bank-accounts",
-            params=params.dict() if params else None,
+            params=params.model_dump() if params else None,
             headers=headers,
         )
         if resp.status_code == 200:
@@ -178,7 +179,7 @@ class MerchantResource(Resource):
         elif resp.status_code == 403:
             raise APIError("Forbidden", status=resp.status_code, body=resp.text)
         else:
-            raise APIError(f"Unexpected response status code {resp.status_code}", body=resp.text)
+            raise APIError("Unexpected response", status=resp.status_code, body=resp.text)
 
     def get_settings(self, headers: typing.Optional[HeaderTypes] = None) -> MerchantSettings:
         """
@@ -197,11 +198,11 @@ class MerchantResource(Resource):
         elif resp.status_code == 403:
             raise APIError("Forbidden", status=resp.status_code, body=resp.text)
         else:
-            raise APIError(f"Unexpected response status code {resp.status_code}", body=resp.text)
+            raise APIError("Unexpected response", status=resp.status_code, body=resp.text)
 
 
 class AsyncMerchantResource(AsyncResource):
-    def __init__(self, client):
+    def __init__(self, client: httpx.AsyncClient):
         super().__init__(client)
 
     async def get(
@@ -216,7 +217,7 @@ class AsyncMerchantResource(AsyncResource):
         """
         resp = await self._client.get(
             "/v0.1/me",
-            params=params.dict() if params else None,
+            params=params.model_dump() if params else None,
             headers=headers,
         )
         if resp.status_code == 200:
@@ -224,7 +225,7 @@ class AsyncMerchantResource(AsyncResource):
         elif resp.status_code == 401:
             raise APIError("Unauthorized", status=resp.status_code, body=resp.text)
         else:
-            raise APIError(f"Unexpected response status code {resp.status_code}", body=resp.text)
+            raise APIError("Unexpected response", status=resp.status_code, body=resp.text)
 
     async def get_personal_profile(
         self, headers: typing.Optional[HeaderTypes] = None
@@ -243,7 +244,7 @@ class AsyncMerchantResource(AsyncResource):
         elif resp.status_code == 401:
             raise APIError("Unauthorized", status=resp.status_code, body=resp.text)
         else:
-            raise APIError(f"Unexpected response status code {resp.status_code}", body=resp.text)
+            raise APIError("Unexpected response", status=resp.status_code, body=resp.text)
 
     async def get_merchant_profile(
         self, headers: typing.Optional[HeaderTypes] = None
@@ -264,7 +265,7 @@ class AsyncMerchantResource(AsyncResource):
         elif resp.status_code == 403:
             raise APIError("Forbidden", status=resp.status_code, body=resp.text)
         else:
-            raise APIError(f"Unexpected response status code {resp.status_code}", body=resp.text)
+            raise APIError("Unexpected response", status=resp.status_code, body=resp.text)
 
     async def get_doing_business_as(
         self, headers: typing.Optional[HeaderTypes] = None
@@ -283,7 +284,7 @@ class AsyncMerchantResource(AsyncResource):
         elif resp.status_code == 401:
             raise APIError("Unauthorized", status=resp.status_code, body=resp.text)
         else:
-            raise APIError(f"Unexpected response status code {resp.status_code}", body=resp.text)
+            raise APIError("Unexpected response", status=resp.status_code, body=resp.text)
 
     async def list_bank_accounts(
         self,
@@ -298,7 +299,7 @@ class AsyncMerchantResource(AsyncResource):
         """
         resp = await self._client.get(
             f"/v1.1/merchants/{merchant_code}/bank-accounts",
-            params=params.dict() if params else None,
+            params=params.model_dump() if params else None,
             headers=headers,
         )
         if resp.status_code == 200:
@@ -308,7 +309,7 @@ class AsyncMerchantResource(AsyncResource):
         elif resp.status_code == 403:
             raise APIError("Forbidden", status=resp.status_code, body=resp.text)
         else:
-            raise APIError(f"Unexpected response status code {resp.status_code}", body=resp.text)
+            raise APIError("Unexpected response", status=resp.status_code, body=resp.text)
 
     @typing_extensions.deprecated("This method is deprecated")
     async def list_bank_accounts_deprecated(
@@ -323,7 +324,7 @@ class AsyncMerchantResource(AsyncResource):
         """
         resp = await self._client.get(
             "/v0.1/me/merchant-profile/bank-accounts",
-            params=params.dict() if params else None,
+            params=params.model_dump() if params else None,
             headers=headers,
         )
         if resp.status_code == 200:
@@ -333,7 +334,7 @@ class AsyncMerchantResource(AsyncResource):
         elif resp.status_code == 403:
             raise APIError("Forbidden", status=resp.status_code, body=resp.text)
         else:
-            raise APIError(f"Unexpected response status code {resp.status_code}", body=resp.text)
+            raise APIError("Unexpected response", status=resp.status_code, body=resp.text)
 
     async def get_settings(self, headers: typing.Optional[HeaderTypes] = None) -> MerchantSettings:
         """
@@ -352,4 +353,4 @@ class AsyncMerchantResource(AsyncResource):
         elif resp.status_code == 403:
             raise APIError("Forbidden", status=resp.status_code, body=resp.text)
         else:
-            raise APIError(f"Unexpected response status code {resp.status_code}", body=resp.text)
+            raise APIError("Unexpected response", status=resp.status_code, body=resp.text)

@@ -6,6 +6,7 @@ from .types import (
     PaymentInstrumentResponse,
     PersonalDetails,
 )
+import httpx
 import typing
 import pydantic
 
@@ -44,7 +45,7 @@ ListPaymentInstruments200Response is a schema definition.
 
 
 class CustomersResource(Resource):
-    def __init__(self, client):
+    def __init__(self, client: httpx.Client):
         super().__init__(client)
 
     def create(
@@ -69,7 +70,7 @@ class CustomersResource(Resource):
         elif resp.status_code == 409:
             raise APIError("Conflict", status=resp.status_code, body=resp.text)
         else:
-            raise APIError(f"Unexpected response status code {resp.status_code}", body=resp.text)
+            raise APIError("Unexpected response", status=resp.status_code, body=resp.text)
 
     def get(self, customer_id: str, headers: typing.Optional[HeaderTypes] = None) -> Customer:
         """
@@ -90,7 +91,7 @@ class CustomersResource(Resource):
         elif resp.status_code == 404:
             raise APIError("Not Found", status=resp.status_code, body=resp.text)
         else:
-            raise APIError(f"Unexpected response status code {resp.status_code}", body=resp.text)
+            raise APIError("Unexpected response", status=resp.status_code, body=resp.text)
 
     def update(
         self,
@@ -119,7 +120,7 @@ class CustomersResource(Resource):
         elif resp.status_code == 404:
             raise APIError("Not Found", status=resp.status_code, body=resp.text)
         else:
-            raise APIError(f"Unexpected response status code {resp.status_code}", body=resp.text)
+            raise APIError("Unexpected response", status=resp.status_code, body=resp.text)
 
     def list_payment_instruments(
         self, customer_id: str, headers: typing.Optional[HeaderTypes] = None
@@ -144,7 +145,7 @@ class CustomersResource(Resource):
         elif resp.status_code == 404:
             raise APIError("Not Found", status=resp.status_code, body=resp.text)
         else:
-            raise APIError(f"Unexpected response status code {resp.status_code}", body=resp.text)
+            raise APIError("Unexpected response", status=resp.status_code, body=resp.text)
 
     def deactivate_payment_instrument(
         self, customer_id: str, token: str, headers: typing.Optional[HeaderTypes] = None
@@ -159,7 +160,7 @@ class CustomersResource(Resource):
             headers=headers,
         )
         if resp.status_code == 204:
-            return pydantic.TypeAdapter().validate_python(resp.json())
+            return
         elif resp.status_code == 401:
             raise APIError("Unauthorized", status=resp.status_code, body=resp.text)
         elif resp.status_code == 403:
@@ -167,11 +168,11 @@ class CustomersResource(Resource):
         elif resp.status_code == 404:
             raise APIError("Not Found", status=resp.status_code, body=resp.text)
         else:
-            raise APIError(f"Unexpected response status code {resp.status_code}", body=resp.text)
+            raise APIError("Unexpected response", status=resp.status_code, body=resp.text)
 
 
 class AsyncCustomersResource(AsyncResource):
-    def __init__(self, client):
+    def __init__(self, client: httpx.AsyncClient):
         super().__init__(client)
 
     async def create(
@@ -196,7 +197,7 @@ class AsyncCustomersResource(AsyncResource):
         elif resp.status_code == 409:
             raise APIError("Conflict", status=resp.status_code, body=resp.text)
         else:
-            raise APIError(f"Unexpected response status code {resp.status_code}", body=resp.text)
+            raise APIError("Unexpected response", status=resp.status_code, body=resp.text)
 
     async def get(self, customer_id: str, headers: typing.Optional[HeaderTypes] = None) -> Customer:
         """
@@ -217,7 +218,7 @@ class AsyncCustomersResource(AsyncResource):
         elif resp.status_code == 404:
             raise APIError("Not Found", status=resp.status_code, body=resp.text)
         else:
-            raise APIError(f"Unexpected response status code {resp.status_code}", body=resp.text)
+            raise APIError("Unexpected response", status=resp.status_code, body=resp.text)
 
     async def update(
         self,
@@ -246,7 +247,7 @@ class AsyncCustomersResource(AsyncResource):
         elif resp.status_code == 404:
             raise APIError("Not Found", status=resp.status_code, body=resp.text)
         else:
-            raise APIError(f"Unexpected response status code {resp.status_code}", body=resp.text)
+            raise APIError("Unexpected response", status=resp.status_code, body=resp.text)
 
     async def list_payment_instruments(
         self, customer_id: str, headers: typing.Optional[HeaderTypes] = None
@@ -271,7 +272,7 @@ class AsyncCustomersResource(AsyncResource):
         elif resp.status_code == 404:
             raise APIError("Not Found", status=resp.status_code, body=resp.text)
         else:
-            raise APIError(f"Unexpected response status code {resp.status_code}", body=resp.text)
+            raise APIError("Unexpected response", status=resp.status_code, body=resp.text)
 
     async def deactivate_payment_instrument(
         self, customer_id: str, token: str, headers: typing.Optional[HeaderTypes] = None
@@ -286,7 +287,7 @@ class AsyncCustomersResource(AsyncResource):
             headers=headers,
         )
         if resp.status_code == 204:
-            return pydantic.TypeAdapter().validate_python(resp.json())
+            return
         elif resp.status_code == 401:
             raise APIError("Unauthorized", status=resp.status_code, body=resp.text)
         elif resp.status_code == 403:
@@ -294,4 +295,4 @@ class AsyncCustomersResource(AsyncResource):
         elif resp.status_code == 404:
             raise APIError("Not Found", status=resp.status_code, body=resp.text)
         else:
-            raise APIError(f"Unexpected response status code {resp.status_code}", body=resp.text)
+            raise APIError("Unexpected response", status=resp.status_code, body=resp.text)

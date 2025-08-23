@@ -378,11 +378,11 @@ func (b *Builder) getReferenceSchema(v *base.SchemaProxy) string {
 func formatStringType(t *base.Schema) string {
 	switch t.Format {
 	case "date-time":
-		return "datetime"
+		return "datetime.datetime"
 	case "date":
-		return "date"
+		return "datetime.date"
 	case "time":
-		return "time"
+		return "datetime.time"
 	default:
 		return "str"
 	}

@@ -20,5 +20,5 @@ class Resource(BaseResource):
 class AsyncResource(BaseResource):
     _client: httpx.AsyncClient
 
-    def __init__(self, client: httpx.Client) -> None:
+    def __init__(self, client: httpx.AsyncClient) -> None:
         self._client = client

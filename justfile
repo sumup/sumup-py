@@ -17,6 +17,7 @@ fmt:
 [group('lint')]
 check:
     uv run ruff check
+    uv run ty check
 
 # Check and auto-fix py files
 [group('lint')]

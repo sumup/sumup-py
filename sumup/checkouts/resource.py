@@ -10,7 +10,8 @@ from .types import (
     MandatePayload,
     PersonalDetails,
 )
-from datetime import datetime
+import datetime
+import httpx
 import typing
 import pydantic
 
@@ -81,7 +82,7 @@ class CreateCheckoutBodyTransaction(pydantic.BaseModel):
 	Current status of the transaction.
 	"""
 
-    timestamp: typing.Optional[datetime] = None
+    timestamp: typing.Optional[datetime.datetime] = None
     """
 	Date and time of the creation of the transaction. Response format expressed according to [ISO8601](https://en.wikipedia.org/wiki/ISO_8601) code.
 	"""
@@ -133,7 +134,7 @@ class CreateCheckoutBody(pydantic.BaseModel):
 	Unique identification of a customer. If specified, the checkout session and payment instrument are associated withthe referenced customer.
 	"""
 
-    date: typing.Optional[datetime] = None
+    date: typing.Optional[datetime.datetime] = None
     """
 	Date and time of the creation of the payment checkout. Response format expressed according to [ISO8601](https://en.wikipedia.org/wiki/ISO_8601) code.
 	Readonly
@@ -180,7 +181,7 @@ class CreateCheckoutBody(pydantic.BaseModel):
 	Unique items only
 	"""
 
-    valid_until: typing.Optional[datetime] = None
+    valid_until: typing.Optional[datetime.datetime] = None
     """
 	Date and time of the checkout expiration before which the client application needs to send a processing request.If no value is present, the checkout does not have an expiration time.
 	"""
@@ -346,7 +347,7 @@ class DeactivateCheckout200ResponseTransaction(pydantic.BaseModel):
 	Current status of the transaction.
 	"""
 
-    timestamp: typing.Optional[datetime] = None
+    timestamp: typing.Optional[datetime.datetime] = None
     """
 	Date and time of the creation of the transaction. Response format expressed according to [ISO8601](https://en.wikipedia.org/wiki/ISO_8601) code.
 	"""
@@ -388,7 +389,7 @@ class DeactivateCheckout200Response(pydantic.BaseModel):
 	Three-letter [ISO4217](https://en.wikipedia.org/wiki/ISO_4217) code of the currency for the amount. Currently supportedcurrency values are enumerated above.
 	"""
 
-    date: typing.Optional[datetime] = None
+    date: typing.Optional[datetime.datetime] = None
     """
 	Date and time of the creation of the payment checkout. Response format expressed according to [ISO8601](https://en.wikipedia.org/wiki/ISO_8601) code.
 	Readonly
@@ -438,7 +439,7 @@ class DeactivateCheckout200Response(pydantic.BaseModel):
 	Unique items only
 	"""
 
-    valid_until: typing.Optional[datetime] = None
+    valid_until: typing.Optional[datetime.datetime] = None
     """
 	Date and time of the checkout expiration before which the client application needs to send a processing request.If no value is present, the checkout does not have an expiration time.
 	Read only
@@ -446,7 +447,7 @@ class DeactivateCheckout200Response(pydantic.BaseModel):
 
 
 class CheckoutsResource(Resource):
-    def __init__(self, client):
+    def __init__(self, client: httpx.Client):
         super().__init__(client)
 
     def list_available_payment_methods(
@@ -462,7 +463,7 @@ class CheckoutsResource(Resource):
         """
         resp = self._client.get(
             f"/v0.1/merchants/{merchant_code}/payment-methods",
-            params=params.dict() if params else None,
+            params=params.model_dump() if params else None,
             headers=headers,
         )
         if resp.status_code == 200:
@@ -472,7 +473,7 @@ class CheckoutsResource(Resource):
         elif resp.status_code == 401:
             raise APIError("Unauthorized", status=resp.status_code, body=resp.text)
         else:
-            raise APIError(f"Unexpected response status code {resp.status_code}", body=resp.text)
+            raise APIError("Unexpected response", status=resp.status_code, body=resp.text)
 
     def create(
         self, body: CreateCheckoutBody, headers: typing.Optional[HeaderTypes] = None
@@ -502,7 +503,7 @@ class CheckoutsResource(Resource):
         elif resp.status_code == 409:
             raise APIError("Conflict", status=resp.status_code, body=resp.text)
         else:
-            raise APIError(f"Unexpected response status code {resp.status_code}", body=resp.text)
+            raise APIError("Unexpected response", status=resp.status_code, body=resp.text)
 
     def list(
         self,
@@ -516,7 +517,7 @@ class CheckoutsResource(Resource):
         """
         resp = self._client.get(
             "/v0.1/checkouts",
-            params=params.dict() if params else None,
+            params=params.model_dump() if params else None,
             headers=headers,
         )
         if resp.status_code == 200:
@@ -524,7 +525,7 @@ class CheckoutsResource(Resource):
         elif resp.status_code == 401:
             raise APIError("Unauthorized", status=resp.status_code, body=resp.text)
         else:
-            raise APIError(f"Unexpected response status code {resp.status_code}", body=resp.text)
+            raise APIError("Unexpected response", status=resp.status_code, body=resp.text)
 
     def get(self, id: str, headers: typing.Optional[HeaderTypes] = None) -> CheckoutSuccess:
         """
@@ -543,7 +544,7 @@ class CheckoutsResource(Resource):
         elif resp.status_code == 404:
             raise APIError("Not Found", status=resp.status_code, body=resp.text)
         else:
-            raise APIError(f"Unexpected response status code {resp.status_code}", body=resp.text)
+            raise APIError("Unexpected response", status=resp.status_code, body=resp.text)
 
     def process(
         self, id: str, body: ProcessCheckoutBody, headers: typing.Optional[HeaderTypes] = None
@@ -573,7 +574,7 @@ class CheckoutsResource(Resource):
         elif resp.status_code == 409:
             raise APIError("Conflict", status=resp.status_code, body=resp.text)
         else:
-            raise APIError(f"Unexpected response status code {resp.status_code}", body=resp.text)
+            raise APIError("Unexpected response", status=resp.status_code, body=resp.text)
 
     def deactivate(
         self, id: str, headers: typing.Optional[HeaderTypes] = None
@@ -596,11 +597,11 @@ class CheckoutsResource(Resource):
         elif resp.status_code == 409:
             raise APIError("Conflict", status=resp.status_code, body=resp.text)
         else:
-            raise APIError(f"Unexpected response status code {resp.status_code}", body=resp.text)
+            raise APIError("Unexpected response", status=resp.status_code, body=resp.text)
 
 
 class AsyncCheckoutsResource(AsyncResource):
-    def __init__(self, client):
+    def __init__(self, client: httpx.AsyncClient):
         super().__init__(client)
 
     async def list_available_payment_methods(
@@ -616,7 +617,7 @@ class AsyncCheckoutsResource(AsyncResource):
         """
         resp = await self._client.get(
             f"/v0.1/merchants/{merchant_code}/payment-methods",
-            params=params.dict() if params else None,
+            params=params.model_dump() if params else None,
             headers=headers,
         )
         if resp.status_code == 200:
@@ -626,7 +627,7 @@ class AsyncCheckoutsResource(AsyncResource):
         elif resp.status_code == 401:
             raise APIError("Unauthorized", status=resp.status_code, body=resp.text)
         else:
-            raise APIError(f"Unexpected response status code {resp.status_code}", body=resp.text)
+            raise APIError("Unexpected response", status=resp.status_code, body=resp.text)
 
     async def create(
         self, body: CreateCheckoutBody, headers: typing.Optional[HeaderTypes] = None
@@ -656,7 +657,7 @@ class AsyncCheckoutsResource(AsyncResource):
         elif resp.status_code == 409:
             raise APIError("Conflict", status=resp.status_code, body=resp.text)
         else:
-            raise APIError(f"Unexpected response status code {resp.status_code}", body=resp.text)
+            raise APIError("Unexpected response", status=resp.status_code, body=resp.text)
 
     async def list(
         self,
@@ -670,7 +671,7 @@ class AsyncCheckoutsResource(AsyncResource):
         """
         resp = await self._client.get(
             "/v0.1/checkouts",
-            params=params.dict() if params else None,
+            params=params.model_dump() if params else None,
             headers=headers,
         )
         if resp.status_code == 200:
@@ -678,7 +679,7 @@ class AsyncCheckoutsResource(AsyncResource):
         elif resp.status_code == 401:
             raise APIError("Unauthorized", status=resp.status_code, body=resp.text)
         else:
-            raise APIError(f"Unexpected response status code {resp.status_code}", body=resp.text)
+            raise APIError("Unexpected response", status=resp.status_code, body=resp.text)
 
     async def get(self, id: str, headers: typing.Optional[HeaderTypes] = None) -> CheckoutSuccess:
         """
@@ -697,7 +698,7 @@ class AsyncCheckoutsResource(AsyncResource):
         elif resp.status_code == 404:
             raise APIError("Not Found", status=resp.status_code, body=resp.text)
         else:
-            raise APIError(f"Unexpected response status code {resp.status_code}", body=resp.text)
+            raise APIError("Unexpected response", status=resp.status_code, body=resp.text)
 
     async def process(
         self, id: str, body: ProcessCheckoutBody, headers: typing.Optional[HeaderTypes] = None
@@ -727,7 +728,7 @@ class AsyncCheckoutsResource(AsyncResource):
         elif resp.status_code == 409:
             raise APIError("Conflict", status=resp.status_code, body=resp.text)
         else:
-            raise APIError(f"Unexpected response status code {resp.status_code}", body=resp.text)
+            raise APIError("Unexpected response", status=resp.status_code, body=resp.text)
 
     async def deactivate(
         self, id: str, headers: typing.Optional[HeaderTypes] = None
@@ -750,4 +751,4 @@ class AsyncCheckoutsResource(AsyncResource):
         elif resp.status_code == 409:
             raise APIError("Conflict", status=resp.status_code, body=resp.text)
         else:
-            raise APIError(f"Unexpected response status code {resp.status_code}", body=resp.text)
+            raise APIError("Unexpected response", status=resp.status_code, body=resp.text)
