@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.0.8](https://github.com/sumup/sumup-py/compare/v0.0.7...v0.0.8) (2025-08-23)
+
+
+### Features
+
+* add ty for typechecking ([#49](https://github.com/sumup/sumup-py/issues/49)) ([f15e1b1](https://github.com/sumup/sumup-py/commit/f15e1b1fca9cbe66bd83f6f242094dc1d5eaa29a))
+
 ## [0.0.7](https://github.com/sumup/sumup-py/compare/v0.0.6...v0.0.7) (2025-08-21)
 
 
