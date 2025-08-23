@@ -2,6 +2,7 @@
 from .._service import Resource, AsyncResource, HeaderTypes
 from .._exceptions import APIError
 from .types import Operator
+import httpx
 import typing
 import pydantic
 import typing_extensions
@@ -95,7 +96,7 @@ ListSubAccounts200Response is a schema definition.
 
 
 class SubaccountsResource(Resource):
-    def __init__(self, client):
+    def __init__(self, client: httpx.Client):
         super().__init__(client)
 
     @typing_extensions.deprecated(
@@ -113,13 +114,13 @@ class SubaccountsResource(Resource):
         """
         resp = self._client.get(
             "/v0.1/me/accounts",
-            params=params.dict() if params else None,
+            params=params.model_dump() if params else None,
             headers=headers,
         )
         if resp.status_code == 200:
             return pydantic.TypeAdapter(ListSubAccounts200Response).validate_python(resp.json())
         else:
-            raise APIError(f"Unexpected response status code {resp.status_code}", body=resp.text)
+            raise APIError("Unexpected response", status=resp.status_code, body=resp.text)
 
     @typing_extensions.deprecated(
         "Subaccounts API is deprecated, to create an user in your merchant account please use [Create member](https://developer.sumup.com/api/members/create) instead."
@@ -144,7 +145,7 @@ class SubaccountsResource(Resource):
                 "Error response for compat API calls.", status=resp.status_code, body=resp.text
             )
         else:
-            raise APIError(f"Unexpected response status code {resp.status_code}", body=resp.text)
+            raise APIError("Unexpected response", status=resp.status_code, body=resp.text)
 
     @typing_extensions.deprecated(
         "Subaccounts API is deprecated, to get an user that's a member of your merchant account please use [Get member](https://developer.sumup.com/api/members/get) instead."
@@ -164,7 +165,7 @@ class SubaccountsResource(Resource):
         if resp.status_code == 200:
             return pydantic.TypeAdapter(Operator).validate_python(resp.json())
         else:
-            raise APIError(f"Unexpected response status code {resp.status_code}", body=resp.text)
+            raise APIError("Unexpected response", status=resp.status_code, body=resp.text)
 
     @typing_extensions.deprecated(
         "Subaccounts API is deprecated, to update an user that's a member of your merchant account please use [Update member](https://developer.sumup.com/api/members/update) instead."
@@ -194,7 +195,7 @@ class SubaccountsResource(Resource):
                 body=resp.text,
             )
         else:
-            raise APIError(f"Unexpected response status code {resp.status_code}", body=resp.text)
+            raise APIError("Unexpected response", status=resp.status_code, body=resp.text)
 
     @typing_extensions.deprecated(
         "Subaccounts API is deprecated, to remove an user that's a member of your merchant account please use [Delete member](https://developer.sumup.com/api/members/delete) instead."
@@ -214,11 +215,11 @@ class SubaccountsResource(Resource):
         if resp.status_code == 200:
             return pydantic.TypeAdapter(Operator).validate_python(resp.json())
         else:
-            raise APIError(f"Unexpected response status code {resp.status_code}", body=resp.text)
+            raise APIError("Unexpected response", status=resp.status_code, body=resp.text)
 
 
 class AsyncSubaccountsResource(AsyncResource):
-    def __init__(self, client):
+    def __init__(self, client: httpx.AsyncClient):
         super().__init__(client)
 
     @typing_extensions.deprecated(
@@ -236,13 +237,13 @@ class AsyncSubaccountsResource(AsyncResource):
         """
         resp = await self._client.get(
             "/v0.1/me/accounts",
-            params=params.dict() if params else None,
+            params=params.model_dump() if params else None,
             headers=headers,
         )
         if resp.status_code == 200:
             return pydantic.TypeAdapter(ListSubAccounts200Response).validate_python(resp.json())
         else:
-            raise APIError(f"Unexpected response status code {resp.status_code}", body=resp.text)
+            raise APIError("Unexpected response", status=resp.status_code, body=resp.text)
 
     @typing_extensions.deprecated(
         "Subaccounts API is deprecated, to create an user in your merchant account please use [Create member](https://developer.sumup.com/api/members/create) instead."
@@ -267,7 +268,7 @@ class AsyncSubaccountsResource(AsyncResource):
                 "Error response for compat API calls.", status=resp.status_code, body=resp.text
             )
         else:
-            raise APIError(f"Unexpected response status code {resp.status_code}", body=resp.text)
+            raise APIError("Unexpected response", status=resp.status_code, body=resp.text)
 
     @typing_extensions.deprecated(
         "Subaccounts API is deprecated, to get an user that's a member of your merchant account please use [Get member](https://developer.sumup.com/api/members/get) instead."
@@ -287,7 +288,7 @@ class AsyncSubaccountsResource(AsyncResource):
         if resp.status_code == 200:
             return pydantic.TypeAdapter(Operator).validate_python(resp.json())
         else:
-            raise APIError(f"Unexpected response status code {resp.status_code}", body=resp.text)
+            raise APIError("Unexpected response", status=resp.status_code, body=resp.text)
 
     @typing_extensions.deprecated(
         "Subaccounts API is deprecated, to update an user that's a member of your merchant account please use [Update member](https://developer.sumup.com/api/members/update) instead."
@@ -317,7 +318,7 @@ class AsyncSubaccountsResource(AsyncResource):
                 body=resp.text,
             )
         else:
-            raise APIError(f"Unexpected response status code {resp.status_code}", body=resp.text)
+            raise APIError("Unexpected response", status=resp.status_code, body=resp.text)
 
     @typing_extensions.deprecated(
         "Subaccounts API is deprecated, to remove an user that's a member of your merchant account please use [Delete member](https://developer.sumup.com/api/members/delete) instead."
@@ -337,4 +338,4 @@ class AsyncSubaccountsResource(AsyncResource):
         if resp.status_code == 200:
             return pydantic.TypeAdapter(Operator).validate_python(resp.json())
         else:
-            raise APIError(f"Unexpected response status code {resp.status_code}", body=resp.text)
+            raise APIError("Unexpected response", status=resp.status_code, body=resp.text)

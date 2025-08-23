@@ -2,7 +2,8 @@
 from .._service import Resource, AsyncResource, HeaderTypes
 from .._exceptions import APIError
 from .types import FinancialPayouts
-from datetime import date
+import datetime
+import httpx
 import typing
 import pydantic
 import typing_extensions
@@ -13,9 +14,9 @@ class ListPayoutsV1Params(pydantic.BaseModel):
     ListPayoutsV1Params: query parameters for ListPayoutsV1
     """
 
-    end_date: date
+    end_date: datetime.date
 
-    start_date: date
+    start_date: datetime.date
 
     format: typing.Optional[str] = None
 
@@ -29,9 +30,9 @@ class ListPayoutsParams(pydantic.BaseModel):
     ListPayoutsParams: query parameters for ListPayouts
     """
 
-    end_date: date
+    end_date: datetime.date
 
-    start_date: date
+    start_date: datetime.date
 
     format: typing.Optional[str] = None
 
@@ -41,7 +42,7 @@ class ListPayoutsParams(pydantic.BaseModel):
 
 
 class PayoutsResource(Resource):
-    def __init__(self, client):
+    def __init__(self, client: httpx.Client):
         super().__init__(client)
 
     def list(
@@ -57,7 +58,7 @@ class PayoutsResource(Resource):
         """
         resp = self._client.get(
             f"/v1.0/merchants/{merchant_code}/payouts",
-            params=params.dict() if params else None,
+            params=params.model_dump() if params else None,
             headers=headers,
         )
         if resp.status_code == 200:
@@ -65,7 +66,7 @@ class PayoutsResource(Resource):
         elif resp.status_code == 401:
             raise APIError("Unauthorized", status=resp.status_code, body=resp.text)
         else:
-            raise APIError(f"Unexpected response status code {resp.status_code}", body=resp.text)
+            raise APIError("Unexpected response", status=resp.status_code, body=resp.text)
 
     @typing_extensions.deprecated("This method is deprecated")
     def list_deprecated(
@@ -80,7 +81,7 @@ class PayoutsResource(Resource):
         """
         resp = self._client.get(
             "/v0.1/me/financials/payouts",
-            params=params.dict() if params else None,
+            params=params.model_dump() if params else None,
             headers=headers,
         )
         if resp.status_code == 200:
@@ -88,11 +89,11 @@ class PayoutsResource(Resource):
         elif resp.status_code == 401:
             raise APIError("Unauthorized", status=resp.status_code, body=resp.text)
         else:
-            raise APIError(f"Unexpected response status code {resp.status_code}", body=resp.text)
+            raise APIError("Unexpected response", status=resp.status_code, body=resp.text)
 
 
 class AsyncPayoutsResource(AsyncResource):
-    def __init__(self, client):
+    def __init__(self, client: httpx.AsyncClient):
         super().__init__(client)
 
     async def list(
@@ -108,7 +109,7 @@ class AsyncPayoutsResource(AsyncResource):
         """
         resp = await self._client.get(
             f"/v1.0/merchants/{merchant_code}/payouts",
-            params=params.dict() if params else None,
+            params=params.model_dump() if params else None,
             headers=headers,
         )
         if resp.status_code == 200:
@@ -116,7 +117,7 @@ class AsyncPayoutsResource(AsyncResource):
         elif resp.status_code == 401:
             raise APIError("Unauthorized", status=resp.status_code, body=resp.text)
         else:
-            raise APIError(f"Unexpected response status code {resp.status_code}", body=resp.text)
+            raise APIError("Unexpected response", status=resp.status_code, body=resp.text)
 
     @typing_extensions.deprecated("This method is deprecated")
     async def list_deprecated(
@@ -131,7 +132,7 @@ class AsyncPayoutsResource(AsyncResource):
         """
         resp = await self._client.get(
             "/v0.1/me/financials/payouts",
-            params=params.dict() if params else None,
+            params=params.model_dump() if params else None,
             headers=headers,
         )
         if resp.status_code == 200:
@@ -139,4 +140,4 @@ class AsyncPayoutsResource(AsyncResource):
         elif resp.status_code == 401:
             raise APIError("Unauthorized", status=resp.status_code, body=resp.text)
         else:
-            raise APIError(f"Unexpected response status code {resp.status_code}", body=resp.text)
+            raise APIError("Unexpected response", status=resp.status_code, body=resp.text)

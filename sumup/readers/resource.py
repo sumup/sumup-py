@@ -10,6 +10,7 @@ from .types import (
     ReaderName,
     ReaderPairingCode,
 )
+import httpx
 import typing
 import pydantic
 
@@ -140,7 +141,7 @@ class ListReaders200Response(pydantic.BaseModel):
 
 
 class ReadersResource(Resource):
-    def __init__(self, client):
+    def __init__(self, client: httpx.Client):
         super().__init__(client)
 
     def create_checkout(
@@ -184,7 +185,7 @@ class ReadersResource(Resource):
         elif resp.status_code == 504:
             raise APIError("Gateway Timeout", status=resp.status_code, body=resp.text)
         else:
-            raise APIError(f"Unexpected response status code {resp.status_code}", body=resp.text)
+            raise APIError("Unexpected response", status=resp.status_code, body=resp.text)
 
     def terminate_checkout(
         self, merchant_code: str, id: str, headers: typing.Optional[HeaderTypes] = None
@@ -213,7 +214,7 @@ class ReadersResource(Resource):
             headers=headers,
         )
         if resp.status_code == 202:
-            return pydantic.TypeAdapter().validate_python(resp.json())
+            return
         elif resp.status_code == 422:
             raise APIError("Unprocessable Entity", status=resp.status_code, body=resp.text)
         elif resp.status_code == 500:
@@ -223,7 +224,7 @@ class ReadersResource(Resource):
         elif resp.status_code == 504:
             raise APIError("Gateway Timeout", status=resp.status_code, body=resp.text)
         else:
-            raise APIError(f"Unexpected response status code {resp.status_code}", body=resp.text)
+            raise APIError("Unexpected response", status=resp.status_code, body=resp.text)
 
     def list(
         self, merchant_code: str, headers: typing.Optional[HeaderTypes] = None
@@ -240,7 +241,7 @@ class ReadersResource(Resource):
         if resp.status_code == 200:
             return pydantic.TypeAdapter(ListReaders200Response).validate_python(resp.json())
         else:
-            raise APIError(f"Unexpected response status code {resp.status_code}", body=resp.text)
+            raise APIError("Unexpected response", status=resp.status_code, body=resp.text)
 
     def create(
         self,
@@ -261,7 +262,7 @@ class ReadersResource(Resource):
         if resp.status_code == 201:
             return pydantic.TypeAdapter(Reader).validate_python(resp.json())
         else:
-            raise APIError(f"Unexpected response status code {resp.status_code}", body=resp.text)
+            raise APIError("Unexpected response", status=resp.status_code, body=resp.text)
 
     def get(
         self, merchant_code: str, id: ReaderId, headers: typing.Optional[HeaderTypes] = None
@@ -284,7 +285,7 @@ class ReadersResource(Resource):
                 body=resp.text,
             )
         else:
-            raise APIError(f"Unexpected response status code {resp.status_code}", body=resp.text)
+            raise APIError("Unexpected response", status=resp.status_code, body=resp.text)
 
     def delete_reader(
         self, merchant_code: str, id: ReaderId, headers: typing.Optional[HeaderTypes] = None
@@ -299,9 +300,9 @@ class ReadersResource(Resource):
             headers=headers,
         )
         if resp.status_code == 200:
-            return pydantic.TypeAdapter().validate_python(resp.json())
+            return
         else:
-            raise APIError(f"Unexpected response status code {resp.status_code}", body=resp.text)
+            raise APIError("Unexpected response", status=resp.status_code, body=resp.text)
 
     def update(
         self,
@@ -329,11 +330,11 @@ class ReadersResource(Resource):
                 body=resp.text,
             )
         else:
-            raise APIError(f"Unexpected response status code {resp.status_code}", body=resp.text)
+            raise APIError("Unexpected response", status=resp.status_code, body=resp.text)
 
 
 class AsyncReadersResource(AsyncResource):
-    def __init__(self, client):
+    def __init__(self, client: httpx.AsyncClient):
         super().__init__(client)
 
     async def create_checkout(
@@ -377,7 +378,7 @@ class AsyncReadersResource(AsyncResource):
         elif resp.status_code == 504:
             raise APIError("Gateway Timeout", status=resp.status_code, body=resp.text)
         else:
-            raise APIError(f"Unexpected response status code {resp.status_code}", body=resp.text)
+            raise APIError("Unexpected response", status=resp.status_code, body=resp.text)
 
     async def terminate_checkout(
         self, merchant_code: str, id: str, headers: typing.Optional[HeaderTypes] = None
@@ -406,7 +407,7 @@ class AsyncReadersResource(AsyncResource):
             headers=headers,
         )
         if resp.status_code == 202:
-            return pydantic.TypeAdapter().validate_python(resp.json())
+            return
         elif resp.status_code == 422:
             raise APIError("Unprocessable Entity", status=resp.status_code, body=resp.text)
         elif resp.status_code == 500:
@@ -416,7 +417,7 @@ class AsyncReadersResource(AsyncResource):
         elif resp.status_code == 504:
             raise APIError("Gateway Timeout", status=resp.status_code, body=resp.text)
         else:
-            raise APIError(f"Unexpected response status code {resp.status_code}", body=resp.text)
+            raise APIError("Unexpected response", status=resp.status_code, body=resp.text)
 
     async def list(
         self, merchant_code: str, headers: typing.Optional[HeaderTypes] = None
@@ -433,7 +434,7 @@ class AsyncReadersResource(AsyncResource):
         if resp.status_code == 200:
             return pydantic.TypeAdapter(ListReaders200Response).validate_python(resp.json())
         else:
-            raise APIError(f"Unexpected response status code {resp.status_code}", body=resp.text)
+            raise APIError("Unexpected response", status=resp.status_code, body=resp.text)
 
     async def create(
         self,
@@ -454,7 +455,7 @@ class AsyncReadersResource(AsyncResource):
         if resp.status_code == 201:
             return pydantic.TypeAdapter(Reader).validate_python(resp.json())
         else:
-            raise APIError(f"Unexpected response status code {resp.status_code}", body=resp.text)
+            raise APIError("Unexpected response", status=resp.status_code, body=resp.text)
 
     async def get(
         self, merchant_code: str, id: ReaderId, headers: typing.Optional[HeaderTypes] = None
@@ -477,7 +478,7 @@ class AsyncReadersResource(AsyncResource):
                 body=resp.text,
             )
         else:
-            raise APIError(f"Unexpected response status code {resp.status_code}", body=resp.text)
+            raise APIError("Unexpected response", status=resp.status_code, body=resp.text)
 
     async def delete_reader(
         self, merchant_code: str, id: ReaderId, headers: typing.Optional[HeaderTypes] = None
@@ -492,9 +493,9 @@ class AsyncReadersResource(AsyncResource):
             headers=headers,
         )
         if resp.status_code == 200:
-            return pydantic.TypeAdapter().validate_python(resp.json())
+            return
         else:
-            raise APIError(f"Unexpected response status code {resp.status_code}", body=resp.text)
+            raise APIError("Unexpected response", status=resp.status_code, body=resp.text)
 
     async def update(
         self,
@@ -522,4 +523,4 @@ class AsyncReadersResource(AsyncResource):
                 body=resp.text,
             )
         else:
-            raise APIError(f"Unexpected response status code {resp.status_code}", body=resp.text)
+            raise APIError("Unexpected response", status=resp.status_code, body=resp.text)

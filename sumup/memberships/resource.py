@@ -2,6 +2,7 @@
 from .._service import Resource, AsyncResource, HeaderTypes
 from .._exceptions import APIError
 from .types import Membership
+import httpx
 import typing
 import pydantic
 
@@ -38,7 +39,7 @@ class ListMemberships200Response(pydantic.BaseModel):
 
 
 class MembershipsResource(Resource):
-    def __init__(self, client):
+    def __init__(self, client: httpx.Client):
         super().__init__(client)
 
     def list(
@@ -53,17 +54,17 @@ class MembershipsResource(Resource):
         """
         resp = self._client.get(
             "/v0.1/memberships",
-            params=params.dict() if params else None,
+            params=params.model_dump() if params else None,
             headers=headers,
         )
         if resp.status_code == 200:
             return pydantic.TypeAdapter(ListMemberships200Response).validate_python(resp.json())
         else:
-            raise APIError(f"Unexpected response status code {resp.status_code}", body=resp.text)
+            raise APIError("Unexpected response", status=resp.status_code, body=resp.text)
 
 
 class AsyncMembershipsResource(AsyncResource):
-    def __init__(self, client):
+    def __init__(self, client: httpx.AsyncClient):
         super().__init__(client)
 
     async def list(
@@ -78,10 +79,10 @@ class AsyncMembershipsResource(AsyncResource):
         """
         resp = await self._client.get(
             "/v0.1/memberships",
-            params=params.dict() if params else None,
+            params=params.model_dump() if params else None,
             headers=headers,
         )
         if resp.status_code == 200:
             return pydantic.TypeAdapter(ListMemberships200Response).validate_python(resp.json())
         else:
-            raise APIError(f"Unexpected response status code {resp.status_code}", body=resp.text)
+            raise APIError("Unexpected response", status=resp.status_code, body=resp.text)

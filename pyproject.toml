@@ -42,6 +42,7 @@ classifiers = [
 dev = [
     "asyncio>=3.4.3",
     "ruff>=0.11.5",
+    "ty>=0.0.1a19",
 ]
 
 [project.urls]

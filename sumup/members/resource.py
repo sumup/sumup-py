@@ -7,6 +7,7 @@ from .types import (
     MembershipStatus,
     Metadata,
 )
+import httpx
 import typing
 import pydantic
 
@@ -133,7 +134,7 @@ class ListMerchantMembers200Response(pydantic.BaseModel):
 
 
 class MembersResource(Resource):
-    def __init__(self, client):
+    def __init__(self, client: httpx.Client):
         super().__init__(client)
 
     def list(
@@ -149,7 +150,7 @@ class MembersResource(Resource):
         """
         resp = self._client.get(
             f"/v0.1/merchants/{merchant_code}/members",
-            params=params.dict() if params else None,
+            params=params.model_dump() if params else None,
             headers=headers,
         )
         if resp.status_code == 200:
@@ -157,7 +158,7 @@ class MembersResource(Resource):
         elif resp.status_code == 404:
             raise APIError("Merchant not found.", status=resp.status_code, body=resp.text)
         else:
-            raise APIError(f"Unexpected response status code {resp.status_code}", body=resp.text)
+            raise APIError("Unexpected response", status=resp.status_code, body=resp.text)
 
     def create(
         self,
@@ -188,7 +189,7 @@ class MembersResource(Resource):
                 body=resp.text,
             )
         else:
-            raise APIError(f"Unexpected response status code {resp.status_code}", body=resp.text)
+            raise APIError("Unexpected response", status=resp.status_code, body=resp.text)
 
     def get(
         self, merchant_code: str, member_id: str, headers: typing.Optional[HeaderTypes] = None
@@ -207,7 +208,7 @@ class MembersResource(Resource):
         elif resp.status_code == 404:
             raise APIError("Merchant or member not found.", status=resp.status_code, body=resp.text)
         else:
-            raise APIError(f"Unexpected response status code {resp.status_code}", body=resp.text)
+            raise APIError("Unexpected response", status=resp.status_code, body=resp.text)
 
     def update(
         self,
@@ -249,7 +250,7 @@ class MembersResource(Resource):
                 body=resp.text,
             )
         else:
-            raise APIError(f"Unexpected response status code {resp.status_code}", body=resp.text)
+            raise APIError("Unexpected response", status=resp.status_code, body=resp.text)
 
     def delete(
         self, merchant_code: str, member_id: str, headers: typing.Optional[HeaderTypes] = None
@@ -264,15 +265,15 @@ class MembersResource(Resource):
             headers=headers,
         )
         if resp.status_code == 200:
-            return pydantic.TypeAdapter().validate_python(resp.json())
+            return
         elif resp.status_code == 404:
             raise APIError("Merchant or member not found.", status=resp.status_code, body=resp.text)
         else:
-            raise APIError(f"Unexpected response status code {resp.status_code}", body=resp.text)
+            raise APIError("Unexpected response", status=resp.status_code, body=resp.text)
 
 
 class AsyncMembersResource(AsyncResource):
-    def __init__(self, client):
+    def __init__(self, client: httpx.AsyncClient):
         super().__init__(client)
 
     async def list(
@@ -288,7 +289,7 @@ class AsyncMembersResource(AsyncResource):
         """
         resp = await self._client.get(
             f"/v0.1/merchants/{merchant_code}/members",
-            params=params.dict() if params else None,
+            params=params.model_dump() if params else None,
             headers=headers,
         )
         if resp.status_code == 200:
@@ -296,7 +297,7 @@ class AsyncMembersResource(AsyncResource):
         elif resp.status_code == 404:
             raise APIError("Merchant not found.", status=resp.status_code, body=resp.text)
         else:
-            raise APIError(f"Unexpected response status code {resp.status_code}", body=resp.text)
+            raise APIError("Unexpected response", status=resp.status_code, body=resp.text)
 
     async def create(
         self,
@@ -327,7 +328,7 @@ class AsyncMembersResource(AsyncResource):
                 body=resp.text,
             )
         else:
-            raise APIError(f"Unexpected response status code {resp.status_code}", body=resp.text)
+            raise APIError("Unexpected response", status=resp.status_code, body=resp.text)
 
     async def get(
         self, merchant_code: str, member_id: str, headers: typing.Optional[HeaderTypes] = None
@@ -346,7 +347,7 @@ class AsyncMembersResource(AsyncResource):
         elif resp.status_code == 404:
             raise APIError("Merchant or member not found.", status=resp.status_code, body=resp.text)
         else:
-            raise APIError(f"Unexpected response status code {resp.status_code}", body=resp.text)
+            raise APIError("Unexpected response", status=resp.status_code, body=resp.text)
 
     async def update(
         self,
@@ -388,7 +389,7 @@ class AsyncMembersResource(AsyncResource):
                 body=resp.text,
             )
         else:
-            raise APIError(f"Unexpected response status code {resp.status_code}", body=resp.text)
+            raise APIError("Unexpected response", status=resp.status_code, body=resp.text)
 
     async def delete(
         self, merchant_code: str, member_id: str, headers: typing.Optional[HeaderTypes] = None
@@ -403,8 +404,8 @@ class AsyncMembersResource(AsyncResource):
             headers=headers,
         )
         if resp.status_code == 200:
-            return pydantic.TypeAdapter().validate_python(resp.json())
+            return
         elif resp.status_code == 404:
             raise APIError("Merchant or member not found.", status=resp.status_code, body=resp.text)
         else:
-            raise APIError(f"Unexpected response status code {resp.status_code}", body=resp.text)
+            raise APIError("Unexpected response", status=resp.status_code, body=resp.text)

@@ -4,7 +4,8 @@ from .._exceptions import APIError
 {{- with .TypeNames }}
 from .types import {{ join ", " . }}
 {{- end }}
-from datetime import datetime, time, date
+import datetime
+import httpx
 import typing
 import pydantic
 import typing_extensions
@@ -16,7 +17,7 @@ import typing_extensions
 
 
 class {{.Service}}Resource(Resource):
-	def __init__(self, client):
+	def __init__(self, client: httpx.Client):
 		super().__init__(client)
 
 {{ range $method := .Methods }}
@@ -34,7 +35,7 @@ class {{.Service}}Resource(Resource):
 			json=body.model_dump(),
 {{- end }}
 {{- with .QueryParams }}
-			params=params.dict() if params else None,
+			params=params.model_dump() if params else None,
 {{- end }}
 			headers=headers,
 		)
@@ -42,25 +43,29 @@ class {{.Service}}Resource(Resource):
 	{{- if eq $i 0 }}
 		if resp.status_code == {{ .Code }}:
 		{{- if .IsErr }}
-			raise APIError(f"Unexpected response status code {resp.status_code}", body=resp.text)
-		{{- else }}
+			raise APIError("{{ .ErrDescription }}", status=resp.status_code, body=resp.text)
+		{{- else if .Type }}
 			return pydantic.TypeAdapter({{ .Type }}).validate_python(resp.json())
+		{{- else }}
+			return
 		{{- end }}
 	{{- else }}
 		elif resp.status_code == {{ .Code }}:
 		{{- if .IsErr }}
-			raise APIError(f"{{ .ErrDescription }}", status=resp.status_code, body=resp.text)
-		{{- else }}
+			raise APIError("{{ .ErrDescription }}", status=resp.status_code, body=resp.text)
+		{{- else if .Type }}
 			return pydantic.TypeAdapter({{ .Type }}).validate_python(resp.json())
+		{{- else }}
+			return
 		{{- end }}
 	{{- end }}
 {{- end }}
 		else:
-	        raise APIError(f"Unexpected response status code {resp.status_code}", body=resp.text)
+			raise APIError(f"Unexpected response", status=resp.status_code, body=resp.text)
 {{end}}
 
 class Async{{.Service}}Resource(AsyncResource):
-	def __init__(self, client):
+	def __init__(self, client: httpx.AsyncClient):
 		super().__init__(client)
 
 {{ range $method := .Methods }}
@@ -78,7 +83,7 @@ class Async{{.Service}}Resource(AsyncResource):
 			json=body.model_dump(),
 {{- end }}
 {{- with .QueryParams }}
-			params=params.dict() if params else None,
+			params=params.model_dump() if params else None,
 {{- end }}
 			headers=headers,
 		)
@@ -86,19 +91,23 @@ class Async{{.Service}}Resource(AsyncResource):
 	{{- if eq $i 0 }}
 		if resp.status_code == {{ .Code }}:
 		{{- if .IsErr }}
-			raise APIError(f"Unexpected response status code {resp.status_code}", body=resp.text)
-		{{- else }}
+			raise APIError("{{ .ErrDescription }}", status=resp.status_code, body=resp.text)
+		{{- else if .Type }}
 			return pydantic.TypeAdapter({{ .Type }}).validate_python(resp.json())
+		{{- else }}
+			return
 		{{- end }}
 	{{- else }}
 		elif resp.status_code == {{ .Code }}:
 		{{- if .IsErr }}
-			raise APIError(f"{{ .ErrDescription }}", status=resp.status_code, body=resp.text)
-		{{- else }}
+			raise APIError("{{ .ErrDescription }}", status=resp.status_code, body=resp.text)
+		{{- else if .Type }}
 			return pydantic.TypeAdapter({{ .Type }}).validate_python(resp.json())
+		{{- else }}
+			return
 		{{- end }}
 	{{- end }}
 {{- end }}
 		else:
-	        raise APIError(f"Unexpected response status code {resp.status_code}", body=resp.text)
+			raise APIError(f"Unexpected response", status=resp.status_code, body=resp.text)
 {{end}}

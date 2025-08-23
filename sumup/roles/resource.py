@@ -2,6 +2,7 @@
 from .._service import Resource, AsyncResource, HeaderTypes
 from .._exceptions import APIError
 from .types import Metadata, Role
+import httpx
 import typing
 import pydantic
 
@@ -64,7 +65,7 @@ class ListMerchantRoles200Response(pydantic.BaseModel):
 
 
 class RolesResource(Resource):
-    def __init__(self, client):
+    def __init__(self, client: httpx.Client):
         super().__init__(client)
 
     def list(
@@ -84,7 +85,7 @@ class RolesResource(Resource):
         elif resp.status_code == 404:
             raise APIError("Merchant not found.", status=resp.status_code, body=resp.text)
         else:
-            raise APIError(f"Unexpected response status code {resp.status_code}", body=resp.text)
+            raise APIError("Unexpected response", status=resp.status_code, body=resp.text)
 
     def create(
         self,
@@ -109,7 +110,7 @@ class RolesResource(Resource):
         elif resp.status_code == 404:
             raise APIError("Merchant not found.", status=resp.status_code, body=resp.text)
         else:
-            raise APIError(f"Unexpected response status code {resp.status_code}", body=resp.text)
+            raise APIError("Unexpected response", status=resp.status_code, body=resp.text)
 
     def get(
         self, merchant_code: str, role_id: str, headers: typing.Optional[HeaderTypes] = None
@@ -128,7 +129,7 @@ class RolesResource(Resource):
         elif resp.status_code == 404:
             raise APIError("Merchant or role not found.", status=resp.status_code, body=resp.text)
         else:
-            raise APIError(f"Unexpected response status code {resp.status_code}", body=resp.text)
+            raise APIError("Unexpected response", status=resp.status_code, body=resp.text)
 
     def delete(
         self, merchant_code: str, role_id: str, headers: typing.Optional[HeaderTypes] = None
@@ -143,13 +144,13 @@ class RolesResource(Resource):
             headers=headers,
         )
         if resp.status_code == 200:
-            return pydantic.TypeAdapter().validate_python(resp.json())
+            return
         elif resp.status_code == 400:
             raise APIError("Invalid request.", status=resp.status_code, body=resp.text)
         elif resp.status_code == 404:
             raise APIError("Merchant not found.", status=resp.status_code, body=resp.text)
         else:
-            raise APIError(f"Unexpected response status code {resp.status_code}", body=resp.text)
+            raise APIError("Unexpected response", status=resp.status_code, body=resp.text)
 
     def update(
         self,
@@ -175,11 +176,11 @@ class RolesResource(Resource):
         elif resp.status_code == 404:
             raise APIError("Merchant not found.", status=resp.status_code, body=resp.text)
         else:
-            raise APIError(f"Unexpected response status code {resp.status_code}", body=resp.text)
+            raise APIError("Unexpected response", status=resp.status_code, body=resp.text)
 
 
 class AsyncRolesResource(AsyncResource):
-    def __init__(self, client):
+    def __init__(self, client: httpx.AsyncClient):
         super().__init__(client)
 
     async def list(
@@ -199,7 +200,7 @@ class AsyncRolesResource(AsyncResource):
         elif resp.status_code == 404:
             raise APIError("Merchant not found.", status=resp.status_code, body=resp.text)
         else:
-            raise APIError(f"Unexpected response status code {resp.status_code}", body=resp.text)
+            raise APIError("Unexpected response", status=resp.status_code, body=resp.text)
 
     async def create(
         self,
@@ -224,7 +225,7 @@ class AsyncRolesResource(AsyncResource):
         elif resp.status_code == 404:
             raise APIError("Merchant not found.", status=resp.status_code, body=resp.text)
         else:
-            raise APIError(f"Unexpected response status code {resp.status_code}", body=resp.text)
+            raise APIError("Unexpected response", status=resp.status_code, body=resp.text)
 
     async def get(
         self, merchant_code: str, role_id: str, headers: typing.Optional[HeaderTypes] = None
@@ -243,7 +244,7 @@ class AsyncRolesResource(AsyncResource):
         elif resp.status_code == 404:
             raise APIError("Merchant or role not found.", status=resp.status_code, body=resp.text)
         else:
-            raise APIError(f"Unexpected response status code {resp.status_code}", body=resp.text)
+            raise APIError("Unexpected response", status=resp.status_code, body=resp.text)
 
     async def delete(
         self, merchant_code: str, role_id: str, headers: typing.Optional[HeaderTypes] = None
@@ -258,13 +259,13 @@ class AsyncRolesResource(AsyncResource):
             headers=headers,
         )
         if resp.status_code == 200:
-            return pydantic.TypeAdapter().validate_python(resp.json())
+            return
         elif resp.status_code == 400:
             raise APIError("Invalid request.", status=resp.status_code, body=resp.text)
         elif resp.status_code == 404:
             raise APIError("Merchant not found.", status=resp.status_code, body=resp.text)
         else:
-            raise APIError(f"Unexpected response status code {resp.status_code}", body=resp.text)
+            raise APIError("Unexpected response", status=resp.status_code, body=resp.text)
 
     async def update(
         self,
@@ -290,4 +291,4 @@ class AsyncRolesResource(AsyncResource):
         elif resp.status_code == 404:
             raise APIError("Merchant not found.", status=resp.status_code, body=resp.text)
         else:
-            raise APIError(f"Unexpected response status code {resp.status_code}", body=resp.text)
+            raise APIError("Unexpected response", status=resp.status_code, body=resp.text)
