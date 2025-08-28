@@ -1,5 +1,17 @@
 # Changelog
 
+## [0.0.8](https://github.com/sumup/sumup-py/compare/v0.0.7...v0.0.8) (2025-08-28)
+
+
+### Features
+
+* add ty for typechecking ([#49](https://github.com/sumup/sumup-py/issues/49)) ([f15e1b1](https://github.com/sumup/sumup-py/commit/f15e1b1fca9cbe66bd83f6f242094dc1d5eaa29a))
+
+
+### Bug Fixes
+
+* **dist:** distributed package missing files ([#56](https://github.com/sumup/sumup-py/issues/56)) ([bd8c10d](https://github.com/sumup/sumup-py/commit/bd8c10d8cfe092e6417cc7f23f2277f6a3f2967c))
+
 ## [0.0.7](https://github.com/sumup/sumup-py/compare/v0.0.6...v0.0.7) (2025-08-21)
 
 
