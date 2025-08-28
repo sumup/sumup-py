@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.0.9](https://github.com/sumup/sumup-py/compare/v0.0.8...v0.0.9) (2025-08-28)
+
+
+### Bug Fixes
+
+* **tools:** release pr titles ([f614a39](https://github.com/sumup/sumup-py/commit/f614a39296388183d6545ab2039298c08f256103))
+
 ## [0.0.8](https://github.com/sumup/sumup-py/compare/v0.0.7...v0.0.8) (2025-08-28)
 
 
