@@ -4,7 +4,7 @@
 	"bump-patch-for-minor-pre-major": true,
 	"include-component-in-tag": false,
 	"include-v-in-tag": true,
-	"pull-request-header": "Automated sumup-ts release",
+	"pull-request-header": "Automated sumup-py release",
 	"pull-request-title-pattern": "release: ${version}",
 	"versioning": "prerelease",
 	"extra-label": "release",
