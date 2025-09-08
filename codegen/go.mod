@@ -5,7 +5,7 @@ go 1.24.3
 require (
 	github.com/iancoleman/strcase v0.3.0
 	github.com/lmittmann/tint v1.1.2
-	github.com/pb33f/libopenapi v0.25.3
+	github.com/pb33f/libopenapi v0.25.9
 	github.com/urfave/cli/v2 v2.27.7
 	gopkg.in/yaml.v3 v3.0.1
 )
