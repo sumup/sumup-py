@@ -1,7 +1,6 @@
 package main
 
 import (
-	"errors"
 	"fmt"
 	"os"
 
@@ -41,9 +40,9 @@ func Generate() *cli.Command {
 				return fmt.Errorf("load openapi document: %w", err)
 			}
 
-			model, errs := doc.BuildV3Model()
-			if len(errs) > 0 {
-				return fmt.Errorf("build openapi v3 model: %w", errors.Join(errs...))
+			model, err := doc.BuildV3Model()
+			if err != nil {
+				return fmt.Errorf("build openapi v3 model: %w", err)
 			}
 
 			builder := builder.New(builder.Config{
