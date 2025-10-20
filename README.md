@@ -26,13 +26,87 @@ uv add sumup
 
 ## Usage
 
+### Synchronous Client
+
 ```python
 from sumup import Sumup
 
 client = Sumup(api_key="sup_sk_MvxmLOl0...")
 
+# Get merchant profile
 merchant = client.merchant.get()
-print(merchant)
+print(f"Merchant: {merchant.merchant_profile.merchant_code}")
+```
+
+### Async Client
+
+```python
+import asyncio
+from sumup import AsyncSumup
+
+async def main():
+    client = AsyncSumup(api_key="sup_sk_MvxmLOl0...")
+    
+    # Get merchant profile
+    merchant = await client.merchant.get()
+    print(f"Merchant: {merchant.merchant_profile.merchant_code}")
+
+asyncio.run(main())
+```
+
+### Creating a Checkout
+
+```python
+from sumup import Sumup
+from sumup.checkouts import CreateCheckoutBody
+import uuid
+
+client = Sumup(api_key="sup_sk_MvxmLOl0...")
+
+# Get merchant code
+merchant = client.merchant.get()
+merchant_code = merchant.merchant_profile.merchant_code
+
+# Create a checkout
+checkout = client.checkouts.create(
+    body=CreateCheckoutBody(
+        amount=10.00,
+        currency="EUR",
+        checkout_reference=str(uuid.uuid4()),
+        merchant_code=merchant_code,
+        description="Test payment",
+        redirect_url="https://example.com/success",
+        return_url="https://example.com/webhook"
+    )
+)
+
+print(f"Checkout ID: {checkout.id}")
+print(f"Checkout Reference: {checkout.checkout_reference}")
+```
+
+### Creating a Reader Checkout
+
+```python
+from sumup import Sumup
+from sumup.readers import CreateReaderCheckoutBody, CreateReaderCheckoutAmount
+
+client = Sumup(api_key="sup_sk_MvxmLOl0...")
+
+# Create a reader checkout
+reader_checkout = client.readers.create_checkout(
+    reader_id="your-reader-id",
+    body=CreateReaderCheckoutBody(
+        total_amount=CreateReaderCheckoutAmount(
+            value=1000,  # 10.00 EUR (amount in cents)
+            currency="EUR",
+            minor_unit=2
+        ),
+        description="Coffee purchase",
+        return_url="https://example.com/webhook"
+    )
+)
+
+print(f"Reader checkout created: {reader_checkout}")
 ```
 
 ## Version support policy
