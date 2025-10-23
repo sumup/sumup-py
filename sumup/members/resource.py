@@ -30,17 +30,12 @@ class CreateMerchantMemberBody(pydantic.BaseModel):
 
     attributes: typing.Optional[Attributes] = None
     """
-	Object attributes that modifiable only by SumUp applications.
+	Object attributes that are modifiable only by SumUp applications.
 	"""
 
     is_managed_user: typing.Optional[bool] = None
     """
 	True if the user is managed by the merchant. In this case, we'll created a virtual user with the provided passwordand nickname.
-	"""
-
-    is_service_account: typing.Optional[bool] = None
-    """
-	True if the user is a service account. It can later be used to create OAuth2 clients.
 	"""
 
     metadata: typing.Optional[Metadata] = None
@@ -86,7 +81,7 @@ class UpdateMerchantMemberBody(pydantic.BaseModel):
 
     attributes: typing.Optional[Attributes] = None
     """
-	Object attributes that modifiable only by SumUp applications.
+	Object attributes that are modifiable only by SumUp applications.
 	"""
 
     metadata: typing.Optional[Metadata] = None

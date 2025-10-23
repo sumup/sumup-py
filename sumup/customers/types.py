@@ -4,7 +4,7 @@ import typing
 import pydantic
 
 
-class Address(pydantic.BaseModel):
+class AddressLegacy(pydantic.BaseModel):
     """
     Profile's personal address information.
     """
@@ -45,7 +45,7 @@ class PersonalDetails(pydantic.BaseModel):
     Personal details for the customer.
     """
 
-    address: typing.Optional[Address] = None
+    address: typing.Optional[AddressLegacy] = None
     """
 	Profile's personal address information.
 	"""

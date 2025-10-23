@@ -3,11 +3,11 @@ from .._service import Resource, AsyncResource, HeaderTypes
 from .._exceptions import APIError
 from .types import (
     BankAccount,
-    DoingBusinessAs,
+    DoingBusinessAsLegacy,
     MerchantAccount,
-    MerchantProfile,
+    MerchantProfileLegacy,
     MerchantSettings,
-    PersonalProfile,
+    PersonalProfileLegacy,
 )
 import httpx
 import typing
@@ -54,6 +54,9 @@ class MerchantResource(Resource):
     def __init__(self, client: httpx.Client):
         super().__init__(client)
 
+    @typing_extensions.deprecated(
+        "The _Retrieve a profile_ endpoint is deprecated, please use the `Merchant` object instead (see [Merchants](https://developer.sumup.com/api/merchants))."
+    )
     def get(
         self,
         params: typing.Optional[GetAccountParams] = None,
@@ -76,7 +79,12 @@ class MerchantResource(Resource):
         else:
             raise APIError("Unexpected response", status=resp.status_code, body=resp.text)
 
-    def get_personal_profile(self, headers: typing.Optional[HeaderTypes] = None) -> PersonalProfile:
+    @typing_extensions.deprecated(
+        "The _Retrieve a personal profile_ endpoint is deprecated, please use the `persons` field of the `Merchant` object instead. (see [Merchants](https://developer.sumup.com/api/merchants))."
+    )
+    def get_personal_profile(
+        self, headers: typing.Optional[HeaderTypes] = None
+    ) -> PersonalProfileLegacy:
         """
         Retrieve a personal profile
 
@@ -87,13 +95,18 @@ class MerchantResource(Resource):
             headers=headers,
         )
         if resp.status_code == 200:
-            return pydantic.TypeAdapter(PersonalProfile).validate_python(resp.json())
+            return pydantic.TypeAdapter(PersonalProfileLegacy).validate_python(resp.json())
         elif resp.status_code == 401:
             raise APIError("Unauthorized", status=resp.status_code, body=resp.text)
         else:
             raise APIError("Unexpected response", status=resp.status_code, body=resp.text)
 
-    def get_merchant_profile(self, headers: typing.Optional[HeaderTypes] = None) -> MerchantProfile:
+    @typing_extensions.deprecated(
+        "The _Retrieve a merchant profile_ endpoint is deprecated, please use the `Merchant` object instead (see [Merchants](https://developer.sumup.com/api/merchants))."
+    )
+    def get_merchant_profile(
+        self, headers: typing.Optional[HeaderTypes] = None
+    ) -> MerchantProfileLegacy:
         """
         Retrieve a merchant profile
 
@@ -104,7 +117,7 @@ class MerchantResource(Resource):
             headers=headers,
         )
         if resp.status_code == 200:
-            return pydantic.TypeAdapter(MerchantProfile).validate_python(resp.json())
+            return pydantic.TypeAdapter(MerchantProfileLegacy).validate_python(resp.json())
         elif resp.status_code == 401:
             raise APIError("Unauthorized", status=resp.status_code, body=resp.text)
         elif resp.status_code == 403:
@@ -112,9 +125,12 @@ class MerchantResource(Resource):
         else:
             raise APIError("Unexpected response", status=resp.status_code, body=resp.text)
 
+    @typing_extensions.deprecated(
+        "The _Retrieve DBA_ endpoint is deprecated, please use the `business_profile` field of the `Merchant` object instead (see [Merchants](https://developer.sumup.com/api/merchants))."
+    )
     def get_doing_business_as(
         self, headers: typing.Optional[HeaderTypes] = None
-    ) -> DoingBusinessAs:
+    ) -> DoingBusinessAsLegacy:
         """
         Retrieve DBA
 
@@ -125,7 +141,7 @@ class MerchantResource(Resource):
             headers=headers,
         )
         if resp.status_code == 200:
-            return pydantic.TypeAdapter(DoingBusinessAs).validate_python(resp.json())
+            return pydantic.TypeAdapter(DoingBusinessAsLegacy).validate_python(resp.json())
         elif resp.status_code == 401:
             raise APIError("Unauthorized", status=resp.status_code, body=resp.text)
         else:
@@ -205,6 +221,9 @@ class AsyncMerchantResource(AsyncResource):
     def __init__(self, client: httpx.AsyncClient):
         super().__init__(client)
 
+    @typing_extensions.deprecated(
+        "The _Retrieve a profile_ endpoint is deprecated, please use the `Merchant` object instead (see [Merchants](https://developer.sumup.com/api/merchants))."
+    )
     async def get(
         self,
         params: typing.Optional[GetAccountParams] = None,
@@ -227,9 +246,12 @@ class AsyncMerchantResource(AsyncResource):
         else:
             raise APIError("Unexpected response", status=resp.status_code, body=resp.text)
 
+    @typing_extensions.deprecated(
+        "The _Retrieve a personal profile_ endpoint is deprecated, please use the `persons` field of the `Merchant` object instead. (see [Merchants](https://developer.sumup.com/api/merchants))."
+    )
     async def get_personal_profile(
         self, headers: typing.Optional[HeaderTypes] = None
-    ) -> PersonalProfile:
+    ) -> PersonalProfileLegacy:
         """
         Retrieve a personal profile
 
@@ -240,15 +262,18 @@ class AsyncMerchantResource(AsyncResource):
             headers=headers,
         )
         if resp.status_code == 200:
-            return pydantic.TypeAdapter(PersonalProfile).validate_python(resp.json())
+            return pydantic.TypeAdapter(PersonalProfileLegacy).validate_python(resp.json())
         elif resp.status_code == 401:
             raise APIError("Unauthorized", status=resp.status_code, body=resp.text)
         else:
             raise APIError("Unexpected response", status=resp.status_code, body=resp.text)
 
+    @typing_extensions.deprecated(
+        "The _Retrieve a merchant profile_ endpoint is deprecated, please use the `Merchant` object instead (see [Merchants](https://developer.sumup.com/api/merchants))."
+    )
     async def get_merchant_profile(
         self, headers: typing.Optional[HeaderTypes] = None
-    ) -> MerchantProfile:
+    ) -> MerchantProfileLegacy:
         """
         Retrieve a merchant profile
 
@@ -259,7 +284,7 @@ class AsyncMerchantResource(AsyncResource):
             headers=headers,
         )
         if resp.status_code == 200:
-            return pydantic.TypeAdapter(MerchantProfile).validate_python(resp.json())
+            return pydantic.TypeAdapter(MerchantProfileLegacy).validate_python(resp.json())
         elif resp.status_code == 401:
             raise APIError("Unauthorized", status=resp.status_code, body=resp.text)
         elif resp.status_code == 403:
@@ -267,9 +292,12 @@ class AsyncMerchantResource(AsyncResource):
         else:
             raise APIError("Unexpected response", status=resp.status_code, body=resp.text)
 
+    @typing_extensions.deprecated(
+        "The _Retrieve DBA_ endpoint is deprecated, please use the `business_profile` field of the `Merchant` object instead (see [Merchants](https://developer.sumup.com/api/merchants))."
+    )
     async def get_doing_business_as(
         self, headers: typing.Optional[HeaderTypes] = None
-    ) -> DoingBusinessAs:
+    ) -> DoingBusinessAsLegacy:
         """
         Retrieve DBA
 
@@ -280,7 +308,7 @@ class AsyncMerchantResource(AsyncResource):
             headers=headers,
         )
         if resp.status_code == 200:
-            return pydantic.TypeAdapter(DoingBusinessAs).validate_python(resp.json())
+            return pydantic.TypeAdapter(DoingBusinessAsLegacy).validate_python(resp.json())
         elif resp.status_code == 401:
             raise APIError("Unauthorized", status=resp.status_code, body=resp.text)
         else:
