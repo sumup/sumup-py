@@ -25,7 +25,7 @@ from .resource import (
     DeactivateCheckout200Response,
 )
 from .types import (
-    Address,
+    AddressLegacy,
     Card,
     Checkout,
     CheckoutAccepted,
@@ -69,7 +69,7 @@ __all__ = [
     "DeactivateCheckout200ResponseTransactionEntryMode",
     "DeactivateCheckout200ResponseTransaction",
     "DeactivateCheckout200Response",
-    "Address",
+    "AddressLegacy",
     "Card",
     "Checkout",
     "CheckoutAccepted",

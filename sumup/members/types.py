@@ -92,7 +92,7 @@ Set of user-defined key-value pairs attached to the object. Partial updates are 
 
 Attributes = dict[typing.Any, typing.Any]
 """
-Object attributes that modifiable only by SumUp applications.
+Object attributes that are modifiable only by SumUp applications.
 """
 
 
@@ -114,6 +114,7 @@ class Member(pydantic.BaseModel):
     permissions: list[str]
     """
 	User's permissions.
+	Deprecated: Permissions include only legacy permissions, please use roles instead. Member access is based on roles withina given resource and the permissions these roles grant.
 	"""
 
     roles: list[str]
@@ -133,7 +134,7 @@ class Member(pydantic.BaseModel):
 
     attributes: typing.Optional[Attributes] = None
     """
-	Object attributes that modifiable only by SumUp applications.
+	Object attributes that are modifiable only by SumUp applications.
 	"""
 
     invite: typing.Optional[Invite] = None

@@ -6,7 +6,7 @@ from .resource import (
     UpdateCustomerBody,
 )
 from .types import (
-    Address,
+    AddressLegacy,
     Customer,
     Error,
     ErrorForbidden,
@@ -21,7 +21,7 @@ __all__ = [
     "AsyncCustomersResource",
     "CreateCustomerBody",
     "UpdateCustomerBody",
-    "Address",
+    "AddressLegacy",
     "Customer",
     "Error",
     "ErrorForbidden",

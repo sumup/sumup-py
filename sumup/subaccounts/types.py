@@ -6,28 +6,18 @@ import pydantic
 
 class Permissions(pydantic.BaseModel):
     """
-    User permissions
+    Permissions assigned to an operator or user.
     """
 
-    create_moto_payments: typing.Optional[bool] = None
-    """
-	Create MOTO payments
-	"""
+    admin: bool
 
-    create_referral: typing.Optional[bool] = None
-    """
-	Create referral
-	"""
+    create_moto_payments: bool
 
-    full_transaction_history_view: typing.Optional[bool] = None
-    """
-	Can view full merchant transaction history
-	"""
+    create_referral: bool
 
-    refund_transactions: typing.Optional[bool] = None
-    """
-	Refund transactions
-	"""
+    full_transaction_history_view: bool
+
+    refund_transactions: bool
 
 
 OperatorAccountType = typing.Literal["normal", "operator"]
@@ -54,7 +44,7 @@ class Operator(pydantic.BaseModel):
 
     permissions: Permissions
     """
-	User permissions
+	Permissions assigned to an operator or user.
 	"""
 
     updated_at: datetime.datetime

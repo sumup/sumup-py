@@ -2,15 +2,15 @@
 import typing
 import pydantic
 
-AccountType = typing.Literal["normal", "operator"]
+AccountLegacyType = typing.Literal["normal", "operator"]
 
 
-class Account(pydantic.BaseModel):
+class AccountLegacy(pydantic.BaseModel):
     """
     Profile information.
     """
 
-    type: typing.Optional[AccountType] = None
+    type: typing.Optional[AccountLegacyType] = None
     """
 	The role of the user.
 	"""
@@ -149,7 +149,7 @@ class AddressWithDetails(pydantic.BaseModel):
 	"""
 
 
-class PersonalProfile(pydantic.BaseModel):
+class PersonalProfileLegacy(pydantic.BaseModel):
     """
     Account's personal profile.
     """
@@ -182,7 +182,7 @@ class PersonalProfile(pydantic.BaseModel):
 	"""
 
 
-class LegalType(pydantic.BaseModel):
+class LegalTypeLegacy(pydantic.BaseModel):
     """
     Id of the legal type of the merchant profile
     """
@@ -250,9 +250,9 @@ Business owners information.
 """
 
 
-class DoingBusinessAsAddress(pydantic.BaseModel):
+class DoingBusinessAsLegacyAddress(pydantic.BaseModel):
     """
-    DoingBusinessAsAddress is a schema definition.
+    DoingBusinessAsLegacyAddress is a schema definition.
     """
 
     address_line1: typing.Optional[str] = None
@@ -291,12 +291,12 @@ class DoingBusinessAsAddress(pydantic.BaseModel):
 	"""
 
 
-class DoingBusinessAs(pydantic.BaseModel):
+class DoingBusinessAsLegacy(pydantic.BaseModel):
     """
     Doing Business As information
     """
 
-    address: typing.Optional[DoingBusinessAsAddress] = None
+    address: typing.Optional[DoingBusinessAsLegacyAddress] = None
 
     business_name: typing.Optional[str] = None
     """
@@ -487,7 +487,7 @@ class BankAccount(pydantic.BaseModel):
 	"""
 
 
-class MerchantProfile(pydantic.BaseModel):
+class MerchantProfileLegacy(pydantic.BaseModel):
     """
     Account's merchant profile
     """
@@ -519,7 +519,7 @@ class MerchantProfile(pydantic.BaseModel):
 	Merchant country code formatted according to [ISO3166-1 alpha-2](https://en.wikipedia.org/wiki/ISO_3166-1_alpha-2) &#40;forinternal usage only&#41;
 	"""
 
-    doing_business_as: typing.Optional[DoingBusinessAs] = None
+    doing_business_as: typing.Optional[DoingBusinessAsLegacy] = None
     """
 	Doing Business As information
 	"""
@@ -529,7 +529,7 @@ class MerchantProfile(pydantic.BaseModel):
 	True if the merchant is extdev
 	"""
 
-    legal_type: typing.Optional[LegalType] = None
+    legal_type: typing.Optional[LegalTypeLegacy] = None
     """
 	Id of the legal type of the merchant profile
 	"""
@@ -676,7 +676,7 @@ class AppSettings(pydantic.BaseModel):
 	"""
 
 
-class Permissions(pydantic.BaseModel):
+class PermissionsLegacy(pydantic.BaseModel):
     """
     User permissions
     """
@@ -707,7 +707,7 @@ class MerchantAccount(pydantic.BaseModel):
     Details of the merchant account.
     """
 
-    account: typing.Optional[Account] = None
+    account: typing.Optional[AccountLegacy] = None
     """
 	Profile information.
 	"""
@@ -717,22 +717,17 @@ class MerchantAccount(pydantic.BaseModel):
 	Mobile app settings
 	"""
 
-    is_migrated_payleven_br: typing.Optional[bool] = None
-    """
-	Merchant comes from payleven BR migration
-	"""
-
-    merchant_profile: typing.Optional[MerchantProfile] = None
+    merchant_profile: typing.Optional[MerchantProfileLegacy] = None
     """
 	Account's merchant profile
 	"""
 
-    permissions: typing.Optional[Permissions] = None
+    permissions: typing.Optional[PermissionsLegacy] = None
     """
 	User permissions
 	"""
 
-    personal_profile: typing.Optional[PersonalProfile] = None
+    personal_profile: typing.Optional[PersonalProfileLegacy] = None
     """
 	Account's personal profile.
 	"""

@@ -3,6 +3,14 @@ import datetime
 import typing
 import pydantic
 
+ResourceType = str
+"""
+The kind of the membership resource.
+Possible values are:
+* `merchant` - merchant account(s)
+* `organization` - organization(s)
+"""
+
 
 class Invite(pydantic.BaseModel):
     """
@@ -27,21 +35,14 @@ Set of user-defined key-value pairs attached to the object. Partial updates are 
 
 Attributes = dict[typing.Any, typing.Any]
 """
-Object attributes that modifiable only by SumUp applications.
+Object attributes that are modifiable only by SumUp applications.
 """
-
-MembershipResourceType = typing.Literal["merchant"]
 
 
 class MembershipResource(pydantic.BaseModel):
     """
     Information about the resource the membership is in.
     """
-
-    attributes: Attributes
-    """
-	Object attributes that modifiable only by SumUp applications.
-	"""
 
     created_at: datetime.datetime
     """
@@ -58,11 +59,22 @@ class MembershipResource(pydantic.BaseModel):
 	Display name of the resource.
 	"""
 
-    type: MembershipResourceType
+    type: ResourceType
+    """
+	The kind of the membership resource.
+	Possible values are:
+	* `merchant` - merchant account(s)
+	* `organization` - organization(s)
+	"""
 
     updated_at: datetime.datetime
     """
 	The timestamp of when the membership resource was last updated.
+	"""
+
+    attributes: typing.Optional[Attributes] = None
+    """
+	Object attributes that are modifiable only by SumUp applications.
 	"""
 
     logo: typing.Optional[str] = None
@@ -71,9 +83,6 @@ class MembershipResource(pydantic.BaseModel):
 	Format: uri
 	Max length: 256
 	"""
-
-
-MembershipType = typing.Literal["merchant"]
 
 
 class Membership(pydantic.BaseModel):
@@ -94,6 +103,7 @@ class Membership(pydantic.BaseModel):
     permissions: list[str]
     """
 	User's permissions.
+	Deprecated: Permissions include only legacy permissions, please use roles instead. Member access is based on their roleswithin a given resource and the permissions these roles grant.
 	"""
 
     resource: MembershipResource
@@ -116,9 +126,12 @@ class Membership(pydantic.BaseModel):
 	The status of the membership.
 	"""
 
-    type: MembershipType
+    type: ResourceType
     """
-	Type of the resource the membership is in.
+	The kind of the membership resource.
+	Possible values are:
+	* `merchant` - merchant account(s)
+	* `organization` - organization(s)
 	"""
 
     updated_at: datetime.datetime
@@ -128,7 +141,7 @@ class Membership(pydantic.BaseModel):
 
     attributes: typing.Optional[Attributes] = None
     """
-	Object attributes that modifiable only by SumUp applications.
+	Object attributes that are modifiable only by SumUp applications.
 	"""
 
     invite: typing.Optional[Invite] = None
