@@ -312,7 +312,7 @@ class ReadersResource(Resource):
         else:
             raise APIError("Unexpected response", status=resp.status_code, body=resp.text)
 
-    def create_reader_checkout(
+    def create_checkout(
         self,
         merchant_code: str,
         reader_id: str,
@@ -322,7 +322,7 @@ class ReadersResource(Resource):
         """
         Create a Reader Checkout
 
-        Create a Checkout for a Reader.
+        Creates a Checkout for a Reader.
 
         This process is asynchronous and the actual transaction may take some time to be stared on the device.
 
@@ -364,15 +364,13 @@ class ReadersResource(Resource):
         else:
             raise APIError("Unexpected response", status=resp.status_code, body=resp.text)
 
-    def create_reader_terminate(
+    def terminate_checkout(
         self, merchant_code: str, reader_id: str, headers: typing.Optional[HeaderTypes] = None
     ):
         """
-        Create a Reader Terminate action
+        Terminate a Reader Checkout
 
-        Create a Terminate action for a Reader.
-
-        It stops the current transaction on the target device.
+        Terminate a Reader Checkout stops the current transaction on the target device.
 
         This process is asynchronous and the actual termination may take some time to be performed on the device.
 
@@ -527,7 +525,7 @@ class AsyncReadersResource(AsyncResource):
         else:
             raise APIError("Unexpected response", status=resp.status_code, body=resp.text)
 
-    async def create_reader_checkout(
+    async def create_checkout(
         self,
         merchant_code: str,
         reader_id: str,
@@ -537,7 +535,7 @@ class AsyncReadersResource(AsyncResource):
         """
         Create a Reader Checkout
 
-        Create a Checkout for a Reader.
+        Creates a Checkout for a Reader.
 
         This process is asynchronous and the actual transaction may take some time to be stared on the device.
 
@@ -579,15 +577,13 @@ class AsyncReadersResource(AsyncResource):
         else:
             raise APIError("Unexpected response", status=resp.status_code, body=resp.text)
 
-    async def create_reader_terminate(
+    async def terminate_checkout(
         self, merchant_code: str, reader_id: str, headers: typing.Optional[HeaderTypes] = None
     ):
         """
-        Create a Reader Terminate action
+        Terminate a Reader Checkout
 
-        Create a Terminate action for a Reader.
-
-        It stops the current transaction on the target device.
+        Terminate a Reader Checkout stops the current transaction on the target device.
 
         This process is asynchronous and the actual termination may take some time to be performed on the device.
 
