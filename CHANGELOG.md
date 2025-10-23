@@ -1,5 +1,19 @@
 # Changelog
 
+## [0.0.11](https://github.com/sumup/sumup-py/compare/v0.0.10...v0.0.11) (2025-10-23)
+
+
+### Features
+
+* **builder:** handle empty body correctly ([8b5a56a](https://github.com/sumup/sumup-py/commit/8b5a56acb467d2f471f856eb9efb4f4cc6cc75db))
+* **docs:** more examples in README ([13670a7](https://github.com/sumup/sumup-py/commit/13670a78f518d9ee8c170f56674aeb9c5c4b2786))
+
+
+### Bug Fixes
+
+* **builder:** handle requests and responses without a body correctly ([83f802c](https://github.com/sumup/sumup-py/commit/83f802c4162c568bcfe1730b62988a57e214b2a6))
+* **cd:** generate workflow fix ([d802169](https://github.com/sumup/sumup-py/commit/d8021699dafcba94cfb87ada6fda2a8ddf2a3183))
+
 ## [0.0.10](https://github.com/sumup/sumup-py/compare/v0.0.9...v0.0.10) (2025-08-28)
 
 
