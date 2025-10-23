@@ -90,7 +90,7 @@ type SchemaProxyCollection []*base.SchemaProxy
 
 // Collect the schemas that are referenced in the response body of the given operation.
 func (c *SchemaProxyCollection) collectSchemasInResponse(op *v3.Operation) {
-	if op.Responses == nil {
+	if op.Responses == nil || op.Responses.Codes.Len() == 0 {
 		return
 	}
 
@@ -126,6 +126,10 @@ func (c *SchemaProxyCollection) collectSchemasInRequest(op *v3.Operation) {
 
 // Collect the schemas that are referenced by the given schemas
 func (c *SchemaProxyCollection) collectReferencedSchemas(schema *base.SchemaProxy) {
+	if schema == nil {
+		return
+	}
+
 	if slices.Contains(schema.Schema().Type, "object") {
 		for _, prop := range schema.Schema().Properties.FromOldest() {
 			c.collectReferencedSchemas(prop)

@@ -140,6 +140,10 @@ func (b *Builder) pathsToResponseTypes(paths *v3.Paths) []Writable {
 					continue
 				}
 
+				if content.Schema == nil {
+					continue
+				}
+
 				if content.Schema.IsReference() {
 					name := strcase.ToCamel(strings.TrimPrefix(content.Schema.GetReference(), "#/components/schemas/"))
 					successResponses = append(successResponses, name)
@@ -161,12 +165,7 @@ func (b *Builder) pathsToResponseTypes(paths *v3.Paths) []Writable {
 				}
 			}
 
-			if len(successResponses) > 2 {
-				slog.Info("multiple success responses found",
-					slog.Any("responses", successResponses),
-				)
-			}
-
+			// if there are multiple success responses, we need to create a oneOf type
 			if len(successResponses) > 1 {
 				responseTypes = append(responseTypes, &OneOfDeclaration{
 					Name:    operationName + "Response",
@@ -244,10 +243,12 @@ func (b *Builder) generateSchemaComponents(name string, spec *base.Schema) []Wri
 		types = append(types, additionalTypes...)
 		types = append(types, object)
 	default:
-		slog.Warn("skipping unknown type",
-			slog.Any("name", name),
-			slog.Any("type", spec.Type),
-		)
+		if spec.Type != nil {
+			slog.Warn("skipping unknown type",
+				slog.Any("name", name),
+				slog.Any("type", spec.Type),
+			)
+		}
 	}
 
 	return types
@@ -306,10 +307,12 @@ func (b *Builder) genSchema(sp *base.SchemaProxy, name string) (string, []Writab
 		types = append(types, object)
 		return name, types
 	default:
-		slog.Warn("skipping unknown type",
-			slog.Any("name", name),
-			slog.Any("type", schema.Type),
-		)
+		if schema.Type != nil {
+			slog.Warn("skipping unknown type",
+				slog.Any("name", name),
+				slog.Any("type", schema.Type),
+			)
+		}
 		return "typing.Any", nil
 	}
 }
@@ -518,7 +521,8 @@ func uniqueFunc[T any, C comparable](arr []T, keyFn func(T) C) []T {
 }
 
 func (b *Builder) getResponseName(operationName, responseCode string, content *v3.MediaType) string {
-	if content.Schema.Schema().Title != "" {
+	schema := content.Schema.Schema()
+	if schema != nil && schema.Title != "" {
 		return operationName + strcase.ToCamel(content.Schema.Schema().Title) + "Response"
 	}
 

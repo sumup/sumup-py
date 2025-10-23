@@ -206,7 +206,7 @@ func (b *Builder) getSuccessResponseType(o *v3.Operation) (*string, error) {
 		code    string
 	}
 
-	sucessResponses := make([]responseInfo, 0)
+	successResponses := make([]responseInfo, 0)
 	for name, response := range o.Responses.Codes.FromOldest() {
 		// TODO: throw error here?
 		if name == "default" {
@@ -229,7 +229,7 @@ func (b *Builder) getSuccessResponseType(o *v3.Operation) (*string, error) {
 
 		if content, ok := response.Content.Get("application/json"); ok {
 			if content.Schema != nil {
-				sucessResponses = append(sucessResponses, responseInfo{
+				successResponses = append(successResponses, responseInfo{
 					content: content,
 					code:    name,
 				})
@@ -237,12 +237,12 @@ func (b *Builder) getSuccessResponseType(o *v3.Operation) (*string, error) {
 		}
 	}
 
-	if len(sucessResponses) == 0 {
+	if len(successResponses) == 0 {
 		return nil, nil
 	}
 
-	if len(sucessResponses) == 1 {
-		resp := sucessResponses[0]
+	if len(successResponses) == 1 {
+		resp := successResponses[0]
 		if resp.content.Schema.IsReference() {
 			typ := b.getReferenceSchema(resp.content.Schema)
 			return &typ, nil
@@ -274,6 +274,10 @@ func (b *Builder) responseToType(operationName string, resp *v3.Response, code s
 
 	if content.Schema.IsReference() {
 		return b.getReferenceSchema(content.Schema)
+	}
+
+	if content.Schema.Schema() == nil {
+		return ""
 	}
 
 	return b.getResponseName(operationName, code, content)
