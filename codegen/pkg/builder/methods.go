@@ -127,6 +127,7 @@ func (b *Builder) operationToMethod(method, path string, o *v3.Operation) (*Meth
 		return nil, fmt.Errorf("build path parameters: %w", err)
 	}
 
+	hasBody := false
 	if o.RequestBody != nil {
 		mt, ok := o.RequestBody.Content.Get("application/json")
 		if ok && mt.Schema != nil {
@@ -134,6 +135,7 @@ func (b *Builder) operationToMethod(method, path string, o *v3.Operation) (*Meth
 				Name: "body",
 				Type: strcase.ToCamel(o.OperationId) + "Body",
 			})
+			hasBody = true
 		}
 	}
 
@@ -193,7 +195,7 @@ func (b *Builder) operationToMethod(method, path string, o *v3.Operation) (*Meth
 		Path:              pathBuilder(path),
 		PathParams:        params,
 		QueryParams:       queryParams,
-		HasBody:           o.RequestBody != nil,
+		HasBody:           hasBody,
 		Responses:         responses,
 	}, nil
 }
@@ -226,10 +228,12 @@ func (b *Builder) getSuccessResponseType(o *v3.Operation) (*string, error) {
 		}
 
 		if content, ok := response.Content.Get("application/json"); ok {
-			sucessResponses = append(sucessResponses, responseInfo{
-				content: content,
-				code:    name,
-			})
+			if content.Schema != nil {
+				sucessResponses = append(sucessResponses, responseInfo{
+					content: content,
+					code:    name,
+				})
+			}
 		}
 	}
 
