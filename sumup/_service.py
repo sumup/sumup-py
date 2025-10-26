@@ -7,7 +7,7 @@ HeaderTypes = dict[str, str]
 class BaseResource:
     @staticmethod
     def version():
-        return __version__
+        return f"v{__version__}"
 
 
 class Resource(BaseResource):
