@@ -5,7 +5,7 @@ go 1.24.7
 require (
 	github.com/iancoleman/strcase v0.3.0
 	github.com/lmittmann/tint v1.1.2
-	github.com/pb33f/libopenapi v0.28.0
+	github.com/pb33f/libopenapi v0.28.1
 	github.com/urfave/cli/v2 v2.27.7
 	go.yaml.in/yaml/v4 v4.0.0-rc.2
 )
