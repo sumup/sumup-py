@@ -1,18 +1,7 @@
 import httpx
-import sys
-from pathlib import Path
-import importlib
 
-ROOT = Path(__file__).resolve().parents[1]
-if str(ROOT) not in sys.path:
-    sys.path.insert(0, str(ROOT))
-
-for module in list(sys.modules):
-    if module == "sumup" or module.startswith("sumup."):
-        sys.modules.pop(module, None)
-
-Sumup = importlib.import_module("sumup").Sumup
-GetAccountParams = importlib.import_module("sumup.merchant.resource").GetAccountParams
+from sumup import Sumup
+from sumup.merchant import GetAccountParams
 
 
 def test_query_params_serialized_with_aliases():
