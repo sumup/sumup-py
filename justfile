@@ -28,3 +28,7 @@ check-fix:
 [group('misc')]
 generate: && fmt check-fix
     cd codegen && go run ./... generate --out ../sumup/ ../openapi.json
+
+[group('test')]
+test:
+    uv run pytest

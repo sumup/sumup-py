@@ -27,9 +27,19 @@ class ListMembershipsParams(pydantic.BaseModel):
 
     offset: typing.Optional[int] = None
 
-    resource_attributes_sandbox: typing.Optional[bool] = None
+    resource_attributes_sandbox: typing.Optional[bool] = pydantic.Field(
+        default=None,
+        serialization_alias="resource.attributes.sandbox",
+        validation_alias=pydantic.AliasChoices(
+            "resource.attributes.sandbox", "resource_attributes_sandbox"
+        ),
+    )
 
-    resource_name: typing.Optional[str] = None
+    resource_name: typing.Optional[str] = pydantic.Field(
+        default=None,
+        serialization_alias="resource.name",
+        validation_alias=pydantic.AliasChoices("resource.name", "resource_name"),
+    )
 
 
 class ListMemberships200Response(pydantic.BaseModel):
@@ -58,7 +68,7 @@ class MembershipsResource(Resource):
         """
         resp = self._client.get(
             "/v0.1/memberships",
-            params=params.model_dump() if params else None,
+            params=params.model_dump(by_alias=True, exclude_none=True) if params else None,
             headers=headers,
         )
         if resp.status_code == 200:
@@ -83,7 +93,7 @@ class AsyncMembershipsResource(AsyncResource):
         """
         resp = await self._client.get(
             "/v0.1/memberships",
-            params=params.model_dump() if params else None,
+            params=params.model_dump(by_alias=True, exclude_none=True) if params else None,
             headers=headers,
         )
         if resp.status_code == 200:

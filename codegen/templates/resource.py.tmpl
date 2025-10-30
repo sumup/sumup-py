@@ -35,7 +35,7 @@ class {{.Service}}Resource(Resource):
 			json=body.model_dump(),
 {{- end }}
 {{- with .QueryParams }}
-			params=params.model_dump() if params else None,
+			params=params.model_dump(by_alias=True, exclude_none=True) if params else None,
 {{- end }}
 			headers=headers,
 		)
@@ -83,7 +83,7 @@ class Async{{.Service}}Resource(AsyncResource):
 			json=body.model_dump(),
 {{- end }}
 {{- with .QueryParams }}
-			params=params.model_dump() if params else None,
+			params=params.model_dump(by_alias=True, exclude_none=True) if params else None,
 {{- end }}
 			headers=headers,
 		)

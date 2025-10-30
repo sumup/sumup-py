@@ -20,7 +20,11 @@ class GetAccountParams(pydantic.BaseModel):
     GetAccountParams: query parameters for GetAccount
     """
 
-    include: typing.Optional[list[str]] = None
+    include: typing.Optional[list[str]] = pydantic.Field(
+        default=None,
+        serialization_alias="include[]",
+        validation_alias=pydantic.AliasChoices("include[]", "include"),
+    )
 
 
 class ListBankAccountsV11Params(pydantic.BaseModel):
@@ -69,7 +73,7 @@ class MerchantResource(Resource):
         """
         resp = self._client.get(
             "/v0.1/me",
-            params=params.model_dump() if params else None,
+            params=params.model_dump(by_alias=True, exclude_none=True) if params else None,
             headers=headers,
         )
         if resp.status_code == 200:
@@ -160,7 +164,7 @@ class MerchantResource(Resource):
         """
         resp = self._client.get(
             f"/v1.1/merchants/{merchant_code}/bank-accounts",
-            params=params.model_dump() if params else None,
+            params=params.model_dump(by_alias=True, exclude_none=True) if params else None,
             headers=headers,
         )
         if resp.status_code == 200:
@@ -185,7 +189,7 @@ class MerchantResource(Resource):
         """
         resp = self._client.get(
             "/v0.1/me/merchant-profile/bank-accounts",
-            params=params.model_dump() if params else None,
+            params=params.model_dump(by_alias=True, exclude_none=True) if params else None,
             headers=headers,
         )
         if resp.status_code == 200:
@@ -236,7 +240,7 @@ class AsyncMerchantResource(AsyncResource):
         """
         resp = await self._client.get(
             "/v0.1/me",
-            params=params.model_dump() if params else None,
+            params=params.model_dump(by_alias=True, exclude_none=True) if params else None,
             headers=headers,
         )
         if resp.status_code == 200:
@@ -327,7 +331,7 @@ class AsyncMerchantResource(AsyncResource):
         """
         resp = await self._client.get(
             f"/v1.1/merchants/{merchant_code}/bank-accounts",
-            params=params.model_dump() if params else None,
+            params=params.model_dump(by_alias=True, exclude_none=True) if params else None,
             headers=headers,
         )
         if resp.status_code == 200:
@@ -352,7 +356,7 @@ class AsyncMerchantResource(AsyncResource):
         """
         resp = await self._client.get(
             "/v0.1/me/merchant-profile/bank-accounts",
-            params=params.model_dump() if params else None,
+            params=params.model_dump(by_alias=True, exclude_none=True) if params else None,
             headers=headers,
         )
         if resp.status_code == 200:

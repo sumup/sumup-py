@@ -28,6 +28,8 @@ type OneOfDeclaration struct {
 type Property struct {
 	// Name of the field
 	Name string
+	// SerializedName is the original identifier used when encoding (e.g. query parameter name).
+	SerializedName string
 	// Type of the field, either primitive type (e.g. string) or if the field
 	// is a schema reference then the type of the schema.
 	Type string

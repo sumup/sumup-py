@@ -177,7 +177,7 @@ class TransactionsResource(Resource):
         """
         resp = self._client.get(
             f"/v2.1/merchants/{merchant_code}/transactions",
-            params=params.model_dump() if params else None,
+            params=params.model_dump(by_alias=True, exclude_none=True) if params else None,
             headers=headers,
         )
         if resp.status_code == 200:
@@ -208,7 +208,7 @@ class TransactionsResource(Resource):
         """
         resp = self._client.get(
             "/v0.1/me/transactions",
-            params=params.model_dump() if params else None,
+            params=params.model_dump(by_alias=True, exclude_none=True) if params else None,
             headers=headers,
         )
         if resp.status_code == 200:
@@ -233,7 +233,7 @@ class TransactionsResource(Resource):
         """
         resp = self._client.get(
             f"/v2.1/merchants/{merchant_code}/transactions/history",
-            params=params.model_dump() if params else None,
+            params=params.model_dump(by_alias=True, exclude_none=True) if params else None,
             headers=headers,
         )
         if resp.status_code == 200:
@@ -256,7 +256,7 @@ class TransactionsResource(Resource):
         """
         resp = self._client.get(
             "/v0.1/me/transactions/history",
-            params=params.model_dump() if params else None,
+            params=params.model_dump(by_alias=True, exclude_none=True) if params else None,
             headers=headers,
         )
         if resp.status_code == 200:
@@ -312,7 +312,7 @@ class AsyncTransactionsResource(AsyncResource):
         """
         resp = await self._client.get(
             f"/v2.1/merchants/{merchant_code}/transactions",
-            params=params.model_dump() if params else None,
+            params=params.model_dump(by_alias=True, exclude_none=True) if params else None,
             headers=headers,
         )
         if resp.status_code == 200:
@@ -343,7 +343,7 @@ class AsyncTransactionsResource(AsyncResource):
         """
         resp = await self._client.get(
             "/v0.1/me/transactions",
-            params=params.model_dump() if params else None,
+            params=params.model_dump(by_alias=True, exclude_none=True) if params else None,
             headers=headers,
         )
         if resp.status_code == 200:
@@ -368,7 +368,7 @@ class AsyncTransactionsResource(AsyncResource):
         """
         resp = await self._client.get(
             f"/v2.1/merchants/{merchant_code}/transactions/history",
-            params=params.model_dump() if params else None,
+            params=params.model_dump(by_alias=True, exclude_none=True) if params else None,
             headers=headers,
         )
         if resp.status_code == 200:
@@ -391,7 +391,7 @@ class AsyncTransactionsResource(AsyncResource):
         """
         resp = await self._client.get(
             "/v0.1/me/transactions/history",
-            params=params.model_dump() if params else None,
+            params=params.model_dump(by_alias=True, exclude_none=True) if params else None,
             headers=headers,
         )
         if resp.status_code == 200:

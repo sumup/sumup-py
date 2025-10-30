@@ -27,10 +27,11 @@ class Sumup(Resource):
         api_key: typing.Optional[str] = None,
         base_url: str = BASE_URL,
         timeout: typing.Optional[httpx.Timeout] = None,
+        client: typing.Optional[httpx.Client] = None,
     ):
         self.api_key = api_key or os.getenv("SUMUP_API_KEY")
-        super().__init__(
-            httpx.Client(
+        if client is None:
+            client = httpx.Client(
                 base_url=base_url,
                 timeout=timeout,
                 headers={
@@ -38,7 +39,7 @@ class Sumup(Resource):
                     "Authorization": f"Bearer {self.api_key}",
                 },
             )
-        )
+        super().__init__(client)
 
     @cached_property
     def checkouts(self) -> CheckoutsResource:
@@ -119,10 +120,11 @@ class AsyncSumup(AsyncResource):
         api_key: typing.Optional[str] = None,
         base_url: str = BASE_URL,
         timeout: typing.Optional[httpx.Timeout] = None,
+        client: typing.Optional[httpx.AsyncClient] = None,
     ):
         self.api_key = api_key or os.getenv("SUMUP_API_KEY")
-        super().__init__(
-            httpx.AsyncClient(
+        if client is None:
+            client = httpx.AsyncClient(
                 base_url=base_url,
                 timeout=timeout,
                 headers={
@@ -130,7 +132,7 @@ class AsyncSumup(AsyncResource):
                     "Authorization": f"Bearer {self.api_key}",
                 },
             )
-        )
+        super().__init__(client)
 
     @cached_property
     def checkouts(self) -> AsyncCheckoutsResource:

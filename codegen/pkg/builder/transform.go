@@ -74,6 +74,7 @@ func (b *Builder) pathsToParamTypes(paths *v3.Paths) []Writable {
 					}
 
 					name := p.Name
+					alias := name
 					if p.GoLow().IsReference() {
 						name = strcase.ToCamel(strings.TrimPrefix(p.Schema.GetReference(), "#/components/schemas/"))
 					}
@@ -87,10 +88,11 @@ func (b *Builder) pathsToParamTypes(paths *v3.Paths) []Writable {
 					typ := b.convertToValidPyType("", p.Schema)
 
 					fields = append(fields, Property{
-						Name:     name,
-						Type:     typ,
-						Optional: p.Required == nil || !*p.Required,
-						Comment:  parameterPropertyDoc(p.Schema.Schema()),
+						Name:           name,
+						SerializedName: alias,
+						Type:           typ,
+						Optional:       p.Required == nil || !*p.Required,
+						Comment:        parameterPropertyDoc(p.Schema.Schema()),
 					})
 				}
 
