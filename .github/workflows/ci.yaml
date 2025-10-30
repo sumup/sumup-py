@@ -50,6 +50,12 @@ jobs:
       - name: Install the project
         run: uv sync --all-extras --dev
 
+      - name: Install workspace in editable mode
+        run: uv pip install -e .
+
+      - name: Run tests
+        run: uv run pytest
+
   release-please:
     name: Prepare release
     runs-on: ubuntu-latest

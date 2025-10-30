@@ -114,7 +114,7 @@ class SubaccountsResource(Resource):
         """
         resp = self._client.get(
             "/v0.1/me/accounts",
-            params=params.model_dump() if params else None,
+            params=params.model_dump(by_alias=True, exclude_none=True) if params else None,
             headers=headers,
         )
         if resp.status_code == 200:
@@ -237,7 +237,7 @@ class AsyncSubaccountsResource(AsyncResource):
         """
         resp = await self._client.get(
             "/v0.1/me/accounts",
-            params=params.model_dump() if params else None,
+            params=params.model_dump(by_alias=True, exclude_none=True) if params else None,
             headers=headers,
         )
         if resp.status_code == 200:

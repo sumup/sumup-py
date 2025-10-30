@@ -54,7 +54,7 @@ class MerchantsResource(Resource):
         """
         resp = self._client.get(
             f"/v1/merchants/{merchant_code}",
-            params=params.model_dump() if params else None,
+            params=params.model_dump(by_alias=True, exclude_none=True) if params else None,
             headers=headers,
         )
         if resp.status_code == 200:
@@ -81,7 +81,7 @@ class MerchantsResource(Resource):
         """
         resp = self._client.get(
             f"/v1/merchants/{merchant_code}/persons",
-            params=params.model_dump() if params else None,
+            params=params.model_dump(by_alias=True, exclude_none=True) if params else None,
             headers=headers,
         )
         if resp.status_code == 200:
@@ -113,7 +113,7 @@ class MerchantsResource(Resource):
         """
         resp = self._client.get(
             f"/v1/merchants/{merchant_code}/persons/{person_id}",
-            params=params.model_dump() if params else None,
+            params=params.model_dump(by_alias=True, exclude_none=True) if params else None,
             headers=headers,
         )
         if resp.status_code == 200:
@@ -149,7 +149,7 @@ class AsyncMerchantsResource(AsyncResource):
         """
         resp = await self._client.get(
             f"/v1/merchants/{merchant_code}",
-            params=params.model_dump() if params else None,
+            params=params.model_dump(by_alias=True, exclude_none=True) if params else None,
             headers=headers,
         )
         if resp.status_code == 200:
@@ -176,7 +176,7 @@ class AsyncMerchantsResource(AsyncResource):
         """
         resp = await self._client.get(
             f"/v1/merchants/{merchant_code}/persons",
-            params=params.model_dump() if params else None,
+            params=params.model_dump(by_alias=True, exclude_none=True) if params else None,
             headers=headers,
         )
         if resp.status_code == 200:
@@ -208,7 +208,7 @@ class AsyncMerchantsResource(AsyncResource):
         """
         resp = await self._client.get(
             f"/v1/merchants/{merchant_code}/persons/{person_id}",
-            params=params.model_dump() if params else None,
+            params=params.model_dump(by_alias=True, exclude_none=True) if params else None,
             headers=headers,
         )
         if resp.status_code == 200:

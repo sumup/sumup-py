@@ -66,6 +66,7 @@ func (o *OneOfDeclaration) TypeName() string {
 func (p *Property) String() string {
 	buf := new(strings.Builder)
 	name := p.Name
+	alias := p.SerializedName
 
 	// TODO: extract into helper
 	if strings.HasPrefix(name, "+") {
@@ -81,10 +82,21 @@ func (p *Property) String() string {
 		name = strings.Replace(name, "$", "", 1)
 	}
 
-	if p.Optional {
-		fmt.Fprintf(buf, "%s: typing.Optional[%s] = None\n", name, p.Type)
+	fieldName := name
+
+	useAlias := alias != "" && alias != fieldName
+
+	if useAlias {
+		aliasChoices := fmt.Sprintf("pydantic.AliasChoices(%q, %q)", alias, fieldName)
+		if p.Optional {
+			fmt.Fprintf(buf, "%s: typing.Optional[%s] = pydantic.Field(default=None, serialization_alias=%q, validation_alias=%s)\n", fieldName, p.Type, alias, aliasChoices)
+		} else {
+			fmt.Fprintf(buf, "%s: %s = pydantic.Field(serialization_alias=%q, validation_alias=%s)\n", fieldName, p.Type, alias, aliasChoices)
+		}
+	} else if p.Optional {
+		fmt.Fprintf(buf, "%s: typing.Optional[%s] = None\n", fieldName, p.Type)
 	} else {
-		fmt.Fprintf(buf, "%s: %s\n", name, p.Type)
+		fmt.Fprintf(buf, "%s: %s\n", fieldName, p.Type)
 	}
 	if p.Comment != "" {
 		fmt.Fprintf(buf, "'''\n%s\n'''\n", p.Comment)

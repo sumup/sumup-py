@@ -58,7 +58,7 @@ class PayoutsResource(Resource):
         """
         resp = self._client.get(
             f"/v1.0/merchants/{merchant_code}/payouts",
-            params=params.model_dump() if params else None,
+            params=params.model_dump(by_alias=True, exclude_none=True) if params else None,
             headers=headers,
         )
         if resp.status_code == 200:
@@ -81,7 +81,7 @@ class PayoutsResource(Resource):
         """
         resp = self._client.get(
             "/v0.1/me/financials/payouts",
-            params=params.model_dump() if params else None,
+            params=params.model_dump(by_alias=True, exclude_none=True) if params else None,
             headers=headers,
         )
         if resp.status_code == 200:
@@ -109,7 +109,7 @@ class AsyncPayoutsResource(AsyncResource):
         """
         resp = await self._client.get(
             f"/v1.0/merchants/{merchant_code}/payouts",
-            params=params.model_dump() if params else None,
+            params=params.model_dump(by_alias=True, exclude_none=True) if params else None,
             headers=headers,
         )
         if resp.status_code == 200:
@@ -132,7 +132,7 @@ class AsyncPayoutsResource(AsyncResource):
         """
         resp = await self._client.get(
             "/v0.1/me/financials/payouts",
-            params=params.model_dump() if params else None,
+            params=params.model_dump(by_alias=True, exclude_none=True) if params else None,
             headers=headers,
         )
         if resp.status_code == 200:

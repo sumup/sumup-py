@@ -36,7 +36,7 @@ class ReceiptsResource(Resource):
         """
         resp = self._client.get(
             f"/v1.1/receipts/{id}",
-            params=params.model_dump() if params else None,
+            params=params.model_dump(by_alias=True, exclude_none=True) if params else None,
             headers=headers,
         )
         if resp.status_code == 200:
@@ -66,7 +66,7 @@ class AsyncReceiptsResource(AsyncResource):
         """
         resp = await self._client.get(
             f"/v1.1/receipts/{id}",
-            params=params.model_dump() if params else None,
+            params=params.model_dump(by_alias=True, exclude_none=True) if params else None,
             headers=headers,
         )
         if resp.status_code == 200:
