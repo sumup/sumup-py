@@ -1,31 +1,63 @@
+from collections.abc import Callable
+
 import httpx
+import pytest
 
 from sumup import Sumup
-from sumup.merchant import GetAccountParams
+from sumup.transactions import ListTransactionsV21Params
 
 
-def test_query_params_serialized_with_aliases():
-    captured_request: dict[str, httpx.QueryParams] = {}
+@pytest.fixture
+def sdk_factory():
+    created_clients: list[httpx.Client] = []
+
+    def factory(handler: Callable[[httpx.Request], httpx.Response]) -> Sumup:
+        transport = httpx.MockTransport(handler)
+        sdk = Sumup(api_key="test", base_url="https://api.sumup.test")
+        original_client = sdk._client
+        sdk._client = httpx.Client(
+            base_url=original_client.base_url,
+            timeout=original_client.timeout,
+            headers=original_client.headers,
+            transport=transport,
+        )
+        original_client.close()
+        created_clients.append(sdk._client)
+        return sdk
+
+    yield factory
+
+    for client in created_clients:
+        client.close()
+
+
+@pytest.mark.parametrize(
+    ("params", "expected_query_items"),
+    [
+        (ListTransactionsV21Params(limit=10), [("limit", "10")]),
+        (None, []),
+        (
+            ListTransactionsV21Params(statuses=["SUCCESSFUL", "FAILED"]),
+            [("statuses", "SUCCESSFUL"), ("statuses", "FAILED")],
+        ),
+    ],
+)
+def test_transactions_list_query_params(params, expected_query_items, sdk_factory):
+    captured_request: dict[str, httpx.Request] = {}
 
     def handler(request: httpx.Request) -> httpx.Response:
-        captured_request["params"] = request.url.params
-        return httpx.Response(200, json={})
+        captured_request["request"] = request
+        return httpx.Response(200, json={"items": []})
 
-    transport = httpx.MockTransport(handler)
+    sdk = sdk_factory(handler)
+    kwargs = {}
+    if params is not None:
+        kwargs["params"] = params
 
-    with httpx.Client(base_url="https://api.sumup.test", transport=transport) as mock_client:
-        sdk = Sumup(client=mock_client)
-        params = GetAccountParams(include=["merchant_profile", "permissions"])
-        serialized = params.model_dump(by_alias=True, exclude_none=True)
-        assert serialized == {"include[]": ["merchant_profile", "permissions"]}
+    response = sdk.transactions.list("merchant-123", **kwargs)
 
-        response = sdk.merchant.get(params=params)
-
-    assert response is not None
-    assert "params" in captured_request
-    query_params = captured_request["params"]
-    items = list(query_params.multi_items())
-    assert items == [
-        ("include[]", "merchant_profile"),
-        ("include[]", "permissions"),
-    ]
+    assert response.items == []
+    assert "request" in captured_request
+    request = captured_request["request"]
+    assert request.url.path == "/v2.1/merchants/merchant-123/transactions/history"
+    assert list(request.url.params.multi_items()) == expected_query_items
