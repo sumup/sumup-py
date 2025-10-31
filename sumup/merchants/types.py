@@ -336,6 +336,7 @@ class BusinessProfile(pydantic.BaseModel):
 Meta = dict[typing.Any, typing.Any]
 """
 A set of key-value pairs that you can attach to an object. This can be useful for storing additional informationabout the object in a structured format.
+
 **Warning**: Updating Meta will overwrite the existing data. Make sure to always include the complete JSON object.
 """
 
@@ -478,6 +479,7 @@ class Merchant(pydantic.BaseModel):
     meta: typing.Optional[Meta] = None
     """
 	A set of key-value pairs that you can attach to an object. This can be useful for storing additional informationabout the object in a structured format.
+	
 	**Warning**: Updating Meta will overwrite the existing data. Make sure to always include the complete JSON object.
 	"""
 
