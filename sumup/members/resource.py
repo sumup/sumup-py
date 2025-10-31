@@ -117,6 +117,12 @@ class ListMerchantMembersParams(pydantic.BaseModel):
 	The status of the membership.
 	"""
 
+    user_id: typing.Optional[str] = pydantic.Field(
+        default=None,
+        serialization_alias="user.id",
+        validation_alias=pydantic.AliasChoices("user.id", "user_id"),
+    )
+
 
 class ListMerchantMembers200Response(pydantic.BaseModel):
     """

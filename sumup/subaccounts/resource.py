@@ -123,7 +123,7 @@ class SubaccountsResource(Resource):
             raise APIError("Unexpected response", status=resp.status_code, body=resp.text)
 
     @typing_extensions.deprecated(
-        "Subaccounts API is deprecated, to create an user in your merchant account please use [Create member](https://developer.sumup.com/api/members/create) instead."
+        "Subaccounts API is deprecated, to create a user in your merchant account please use [Create member](https://developer.sumup.com/api/members/create) instead."
     )
     def create_sub_account(
         self, body: CreateSubAccountBody, headers: typing.Optional[HeaderTypes] = None
@@ -148,7 +148,7 @@ class SubaccountsResource(Resource):
             raise APIError("Unexpected response", status=resp.status_code, body=resp.text)
 
     @typing_extensions.deprecated(
-        "Subaccounts API is deprecated, to get an user that's a member of your merchant account please use [Get member](https://developer.sumup.com/api/members/get) instead."
+        "Subaccounts API is deprecated, to get a user that's a member of your merchant account please use [Get member](https://developer.sumup.com/api/members/get) instead."
     )
     def compat_get_operator(
         self, operator_id: int, headers: typing.Optional[HeaderTypes] = None
@@ -168,7 +168,7 @@ class SubaccountsResource(Resource):
             raise APIError("Unexpected response", status=resp.status_code, body=resp.text)
 
     @typing_extensions.deprecated(
-        "Subaccounts API is deprecated, to update an user that's a member of your merchant account please use [Update member](https://developer.sumup.com/api/members/update) instead."
+        "Subaccounts API is deprecated, to update a user that's a member of your merchant account please use [Update member](https://developer.sumup.com/api/members/update) instead."
     )
     def update_sub_account(
         self,
@@ -198,7 +198,7 @@ class SubaccountsResource(Resource):
             raise APIError("Unexpected response", status=resp.status_code, body=resp.text)
 
     @typing_extensions.deprecated(
-        "Subaccounts API is deprecated, to remove an user that's a member of your merchant account please use [Delete member](https://developer.sumup.com/api/members/delete) instead."
+        "Subaccounts API is deprecated, to remove a user that's a member of your merchant account please use [Delete member](https://developer.sumup.com/api/members/delete) instead."
     )
     def deactivate_sub_account(
         self, operator_id: int, headers: typing.Optional[HeaderTypes] = None
@@ -246,7 +246,7 @@ class AsyncSubaccountsResource(AsyncResource):
             raise APIError("Unexpected response", status=resp.status_code, body=resp.text)
 
     @typing_extensions.deprecated(
-        "Subaccounts API is deprecated, to create an user in your merchant account please use [Create member](https://developer.sumup.com/api/members/create) instead."
+        "Subaccounts API is deprecated, to create a user in your merchant account please use [Create member](https://developer.sumup.com/api/members/create) instead."
     )
     async def create_sub_account(
         self, body: CreateSubAccountBody, headers: typing.Optional[HeaderTypes] = None
@@ -271,7 +271,7 @@ class AsyncSubaccountsResource(AsyncResource):
             raise APIError("Unexpected response", status=resp.status_code, body=resp.text)
 
     @typing_extensions.deprecated(
-        "Subaccounts API is deprecated, to get an user that's a member of your merchant account please use [Get member](https://developer.sumup.com/api/members/get) instead."
+        "Subaccounts API is deprecated, to get a user that's a member of your merchant account please use [Get member](https://developer.sumup.com/api/members/get) instead."
     )
     async def compat_get_operator(
         self, operator_id: int, headers: typing.Optional[HeaderTypes] = None
@@ -291,7 +291,7 @@ class AsyncSubaccountsResource(AsyncResource):
             raise APIError("Unexpected response", status=resp.status_code, body=resp.text)
 
     @typing_extensions.deprecated(
-        "Subaccounts API is deprecated, to update an user that's a member of your merchant account please use [Update member](https://developer.sumup.com/api/members/update) instead."
+        "Subaccounts API is deprecated, to update a user that's a member of your merchant account please use [Update member](https://developer.sumup.com/api/members/update) instead."
     )
     async def update_sub_account(
         self,
@@ -321,7 +321,7 @@ class AsyncSubaccountsResource(AsyncResource):
             raise APIError("Unexpected response", status=resp.status_code, body=resp.text)
 
     @typing_extensions.deprecated(
-        "Subaccounts API is deprecated, to remove an user that's a member of your merchant account please use [Delete member](https://developer.sumup.com/api/members/delete) instead."
+        "Subaccounts API is deprecated, to remove a user that's a member of your merchant account please use [Delete member](https://developer.sumup.com/api/members/delete) instead."
     )
     async def deactivate_sub_account(
         self, operator_id: int, headers: typing.Optional[HeaderTypes] = None
