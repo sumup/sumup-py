@@ -1,5 +1,15 @@
 # Changelog
 
+## [0.0.12](https://github.com/sumup/sumup-py/compare/v0.0.11...v0.0.12) (2025-11-03)
+
+
+### Bug Fixes
+
+* **cd:** commit generated SDK using SumUp Bot ([33bb770](https://github.com/sumup/sumup-py/commit/33bb770d90c6232b49ab9878dd4855b450ab00d4))
+* **cd:** run workflows on commits with generated code ([6237e6d](https://github.com/sumup/sumup-py/commit/6237e6d3203ac7a0e04d3b403fc318dd48b0ca08))
+* **sdk:** query params handling ([#97](https://github.com/sumup/sumup-py/issues/97)) ([4bc863a](https://github.com/sumup/sumup-py/commit/4bc863ad44ccdb3613b0d894e199c2ffa2059905))
+* **sumup:** sdk version header string ([75f334c](https://github.com/sumup/sumup-py/commit/75f334c6587a1197064113cc31dfc30494d74670))
+
 ## [0.0.11](https://github.com/sumup/sumup-py/compare/v0.0.10...v0.0.11) (2025-10-23)
 
 0.0.11 brings the Merchants API, allowing access to multiple merchant accounts, depending on the authorization. For users that authenticate using SumUp's SSO you can now access any of the merchant accounts that they have membership in. For API keys the access is still restricted to the merchant account for which the API key was created. We are working on introducing more authentication options to make integrations that need to rely on multiple merchant accounts easier in the future.
