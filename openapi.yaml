@@ -17,7 +17,7 @@ paths:
     get:
       operationId: GetPaymentMethods
       summary: Get available payment methods
-      description: Get payment methods available for the given merchant to use with a checkout.
+      description: Get payment methods available for the given merchant to use with a checkout x.
       parameters:
         - name: merchant_code
           in: path
