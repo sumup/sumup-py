@@ -19,6 +19,12 @@ class CreateReaderBody(pydantic.BaseModel):
     CreateReaderBody is a schema definition.
     """
 
+    name: ReaderName
+    """
+	Custom human-readable, user-defined name for easier identification of the reader.
+	Max length: 500
+	"""
+
     pairing_code: ReaderPairingCode
     """
 	The pairing code is a 8 or 9 character alphanumeric string that is displayed on a SumUp Device after initiatingthe pairing. It is used to link the physical device to the created pairing.
@@ -29,13 +35,8 @@ class CreateReaderBody(pydantic.BaseModel):
     meta: typing.Optional[Meta] = None
     """
 	A set of key-value pairs that you can attach to an object. This can be useful for storing additional informationabout the object in a structured format.
+	
 	**Warning**: Updating Meta will overwrite the existing data. Make sure to always include the complete JSON object.
-	"""
-
-    name: typing.Optional[ReaderName] = None
-    """
-	Custom human-readable, user-defined name for easier identification of the reader.
-	Max length: 500
 	"""
 
 
@@ -47,6 +48,7 @@ class UpdateReaderBody(pydantic.BaseModel):
     meta: typing.Optional[Meta] = None
     """
 	A set of key-value pairs that you can attach to an object. This can be useful for storing additional informationabout the object in a structured format.
+	
 	**Warning**: Updating Meta will overwrite the existing data. Make sure to always include the complete JSON object.
 	"""
 

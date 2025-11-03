@@ -39,7 +39,7 @@ class MerchantsResource(Resource):
     def __init__(self, client: httpx.Client):
         super().__init__(client)
 
-    def get_merchant(
+    def get(
         self,
         merchant_code: str,
         params: typing.Optional[GetMerchantParams] = None,
@@ -134,7 +134,7 @@ class AsyncMerchantsResource(AsyncResource):
     def __init__(self, client: httpx.AsyncClient):
         super().__init__(client)
 
-    async def get_merchant(
+    async def get(
         self,
         merchant_code: str,
         params: typing.Optional[GetMerchantParams] = None,
