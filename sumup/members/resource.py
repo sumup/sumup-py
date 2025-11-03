@@ -25,7 +25,7 @@ class CreateMerchantMemberBody(pydantic.BaseModel):
 
     roles: list[str]
     """
-	List of roles to assign to the new member. In the case of service accounts, the roles are predefined.
+	List of roles to assign to the new member.
 	"""
 
     attributes: typing.Optional[Attributes] = None
@@ -116,6 +116,12 @@ class ListMerchantMembersParams(pydantic.BaseModel):
     """
 	The status of the membership.
 	"""
+
+    user_id: typing.Optional[str] = pydantic.Field(
+        default=None,
+        serialization_alias="user.id",
+        validation_alias=pydantic.AliasChoices("user.id", "user_id"),
+    )
 
 
 class ListMerchantMembers200Response(pydantic.BaseModel):
