@@ -459,7 +459,7 @@ class CheckoutsResource(Resource):
         """
         Get available payment methods
 
-        Get payment methods available for the given merchant to use with a checkout.
+        Get payment methods available for the given merchant to use with a checkout x.
         """
         resp = self._client.get(
             f"/v0.1/merchants/{merchant_code}/payment-methods",
@@ -613,7 +613,7 @@ class AsyncCheckoutsResource(AsyncResource):
         """
         Get available payment methods
 
-        Get payment methods available for the given merchant to use with a checkout.
+        Get payment methods available for the given merchant to use with a checkout x.
         """
         resp = await self._client.get(
             f"/v0.1/merchants/{merchant_code}/payment-methods",
