@@ -46,4 +46,5 @@ jobs:
         with:
           add: .
           message: "chore: generate code"
-          default_author: github_actions
+          default_author: github_actor
+          token: ${{ secrets.GH_ACTIONS_PAT }}
