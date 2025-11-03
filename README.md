@@ -1,6 +1,6 @@
 <div align="center">
 
-# sumup-py
+# SumUp Python SDK
 
 [![pypi](https://img.shields.io/pypi/v/sumup.svg)](https://pypi.python.org/pypi/sumup)
 [![Documentation][docs-badge]](https://developer.sumup.com)
