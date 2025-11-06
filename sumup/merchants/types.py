@@ -592,6 +592,13 @@ class BasePerson(pydantic.BaseModel):
 	Max length: 2
 	"""
 
+    country_of_residence: typing.Optional[str] = None
+    """
+	An [ISO3166-1 alpha-2](https://en.wikipedia.org/wiki/ISO_3166-1_alpha-2) country code representing the countrywhere the person resides.
+	Min length: 2
+	Max length: 2
+	"""
+
     family_name: typing.Optional[str] = None
     """
 	The last name(s) of the individual.
@@ -614,6 +621,11 @@ class BasePerson(pydantic.BaseModel):
     """
 	Middle name(s) of the End-User. Note that in some cultures, people can have multiple middle names; all canbe present, with the names being separated by space characters. Also note that in some cultures, middle namesare not used.
 	Max length: 60
+	"""
+
+    nationality: typing.Optional[str] = None
+    """
+	The persons nationality. May be an [ISO3166-1 alpha-2](https://en.wikipedia.org/wiki/ISO_3166-1_alpha-2) countrycode, but legacy data may not conform to this standard.
 	"""
 
     ownership: typing.Optional[Ownership] = None
@@ -682,6 +694,13 @@ class Person(pydantic.BaseModel):
 	Max length: 2
 	"""
 
+    country_of_residence: typing.Optional[str] = None
+    """
+	An [ISO3166-1 alpha-2](https://en.wikipedia.org/wiki/ISO_3166-1_alpha-2) country code representing the countrywhere the person resides.
+	Min length: 2
+	Max length: 2
+	"""
+
     family_name: typing.Optional[str] = None
     """
 	The last name(s) of the individual.
@@ -704,6 +723,11 @@ class Person(pydantic.BaseModel):
     """
 	Middle name(s) of the End-User. Note that in some cultures, people can have multiple middle names; all canbe present, with the names being separated by space characters. Also note that in some cultures, middle namesare not used.
 	Max length: 60
+	"""
+
+    nationality: typing.Optional[str] = None
+    """
+	The persons nationality. May be an [ISO3166-1 alpha-2](https://en.wikipedia.org/wiki/ISO_3166-1_alpha-2) countrycode, but legacy data may not conform to this standard.
 	"""
 
     ownership: typing.Optional[Ownership] = None
