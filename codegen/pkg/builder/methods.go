@@ -385,6 +385,8 @@ func (b *Builder) getReferenceSchema(v *base.SchemaProxy) string {
 // formatStringType converts a string schema to a valid Go type.
 func formatStringType(t *base.Schema) string {
 	switch t.Format {
+	case "password":
+		return "Secret"
 	case "date-time":
 		return "datetime.datetime"
 	case "date":

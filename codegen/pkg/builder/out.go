@@ -18,15 +18,18 @@ import (
 type typesTemplateData struct {
 	PackageName string
 	Types       []Writable
+	UsesSecret  bool
 }
 
 func (b *Builder) generateResourceTypes(tag *base.Tag, schemas []*base.SchemaProxy) error {
 	types := b.schemasToTypes(schemas)
+	usesSecret := usesSecretType(types)
 
 	typesBuf := bytes.NewBuffer(nil)
 	if err := b.templates.ExecuteTemplate(typesBuf, "types.py.tmpl", typesTemplateData{
 		PackageName: strcase.ToSnake(tag.Name),
 		Types:       types,
+		UsesSecret:  usesSecret,
 	}); err != nil {
 		return err
 	}
@@ -98,6 +101,7 @@ type resourceTemplateData struct {
 	Params      []Writable
 	Service     string
 	Methods     []*Method
+	UsesSecret  bool
 }
 
 func (b *Builder) generateResourceFile(tagName string, paths *v3.Paths) ([]string, error) {
@@ -138,6 +142,8 @@ func (b *Builder) generateResourceFile(tagName string, paths *v3.Paths) ([]strin
 		slog.Int("methods", len(methods)),
 	)
 
+	usesSecret := usesSecretType(innerTypes)
+
 	serviceBuf := bytes.NewBuffer(nil)
 	if err := b.templates.ExecuteTemplate(serviceBuf, "resource.py.tmpl", resourceTemplateData{
 		PackageName: strcase.ToSnake(tag.Name),
@@ -145,6 +151,7 @@ func (b *Builder) generateResourceFile(tagName string, paths *v3.Paths) ([]strin
 		Params:      innerTypes,
 		Service:     strcase.ToCamel(tag.Name),
 		Methods:     methods,
+		UsesSecret:  usesSecret,
 	}); err != nil {
 		return nil, err
 	}
@@ -199,6 +206,31 @@ func (b *Builder) generateResource(tagName string, paths *v3.Paths) error {
 	}
 
 	return nil
+}
+
+func usesSecretType(writables []Writable) bool {
+	for _, w := range writables {
+		if writableUsesSecret(w) {
+			return true
+		}
+	}
+	return false
+}
+
+func writableUsesSecret(w Writable) bool {
+	switch typed := w.(type) {
+	case *ClassDeclaration:
+		for _, f := range typed.Fields {
+			if strings.Contains(f.Type, "Secret") {
+				return true
+			}
+		}
+	case *TypeAlias:
+		if strings.Contains(typed.Type, "Secret") {
+			return true
+		}
+	}
+	return false
 }
 
 func (b *Builder) writeClientFile(fname string, tags []string) error {
