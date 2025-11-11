@@ -1,7 +1,7 @@
 [project]
 name = "sumup"
 description = "Official Python SDK for the SumUp API."
-version = "0.0.12"
+version = "0.0.13"
 readme = "README.md"
 requires-python = ">=3.9"
 keywords = ["sdk", "sumup", "payments"]
