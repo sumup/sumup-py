@@ -2,11 +2,9 @@
 from .._service import Resource, AsyncResource, HeaderTypes
 from .._exceptions import APIError
 from .types import (
-    BankAccount,
     DoingBusinessAsLegacy,
     MerchantAccount,
     MerchantProfileLegacy,
-    MerchantSettings,
     PersonalProfileLegacy,
 )
 import httpx
@@ -25,33 +23,6 @@ class GetAccountParams(pydantic.BaseModel):
         serialization_alias="include[]",
         validation_alias=pydantic.AliasChoices("include[]", "include"),
     )
-
-
-class ListBankAccountsV11Params(pydantic.BaseModel):
-    """
-    ListBankAccountsV11Params: query parameters for ListBankAccountsV11
-    """
-
-    primary: typing.Optional[bool] = None
-
-
-class ListBankAccountsParams(pydantic.BaseModel):
-    """
-    ListBankAccountsParams: query parameters for ListBankAccounts
-    """
-
-    primary: typing.Optional[bool] = None
-
-
-ListBankAccountsV11200Response = list[BankAccount]
-"""
-ListBankAccountsV11200Response is a schema definition.
-"""
-
-ListBankAccounts200Response = list[BankAccount]
-"""
-ListBankAccounts200Response is a schema definition.
-"""
 
 
 class MerchantResource(Resource):
@@ -151,75 +122,6 @@ class MerchantResource(Resource):
         else:
             raise APIError("Unexpected response", status=resp.status_code, body=resp.text)
 
-    def list_bank_accounts(
-        self,
-        merchant_code: str,
-        params: typing.Optional[ListBankAccountsV11Params] = None,
-        headers: typing.Optional[HeaderTypes] = None,
-    ) -> ListBankAccountsV11200Response:
-        """
-        List bank accounts
-
-        Retrieves bank accounts of the merchant.
-        """
-        resp = self._client.get(
-            f"/v1.1/merchants/{merchant_code}/bank-accounts",
-            params=params.model_dump(by_alias=True, exclude_none=True) if params else None,
-            headers=headers,
-        )
-        if resp.status_code == 200:
-            return pydantic.TypeAdapter(ListBankAccountsV11200Response).validate_python(resp.json())
-        elif resp.status_code == 401:
-            raise APIError("Unauthorized", status=resp.status_code, body=resp.text)
-        elif resp.status_code == 403:
-            raise APIError("Forbidden", status=resp.status_code, body=resp.text)
-        else:
-            raise APIError("Unexpected response", status=resp.status_code, body=resp.text)
-
-    @typing_extensions.deprecated("This method is deprecated")
-    def list_bank_accounts_deprecated(
-        self,
-        params: typing.Optional[ListBankAccountsParams] = None,
-        headers: typing.Optional[HeaderTypes] = None,
-    ) -> ListBankAccounts200Response:
-        """
-        List bank accounts
-
-        Retrieves bank accounts of the merchant.
-        """
-        resp = self._client.get(
-            "/v0.1/me/merchant-profile/bank-accounts",
-            params=params.model_dump(by_alias=True, exclude_none=True) if params else None,
-            headers=headers,
-        )
-        if resp.status_code == 200:
-            return pydantic.TypeAdapter(ListBankAccounts200Response).validate_python(resp.json())
-        elif resp.status_code == 401:
-            raise APIError("Unauthorized", status=resp.status_code, body=resp.text)
-        elif resp.status_code == 403:
-            raise APIError("Forbidden", status=resp.status_code, body=resp.text)
-        else:
-            raise APIError("Unexpected response", status=resp.status_code, body=resp.text)
-
-    def get_settings(self, headers: typing.Optional[HeaderTypes] = None) -> MerchantSettings:
-        """
-        Get settings
-
-        Retrieves merchant settings.
-        """
-        resp = self._client.get(
-            "/v0.1/me/merchant-profile/settings",
-            headers=headers,
-        )
-        if resp.status_code == 200:
-            return pydantic.TypeAdapter(MerchantSettings).validate_python(resp.json())
-        elif resp.status_code == 401:
-            raise APIError("Unauthorized", status=resp.status_code, body=resp.text)
-        elif resp.status_code == 403:
-            raise APIError("Forbidden", status=resp.status_code, body=resp.text)
-        else:
-            raise APIError("Unexpected response", status=resp.status_code, body=resp.text)
-
 
 class AsyncMerchantResource(AsyncResource):
     def __init__(self, client: httpx.AsyncClient):
@@ -315,74 +217,5 @@ class AsyncMerchantResource(AsyncResource):
             return pydantic.TypeAdapter(DoingBusinessAsLegacy).validate_python(resp.json())
         elif resp.status_code == 401:
             raise APIError("Unauthorized", status=resp.status_code, body=resp.text)
-        else:
-            raise APIError("Unexpected response", status=resp.status_code, body=resp.text)
-
-    async def list_bank_accounts(
-        self,
-        merchant_code: str,
-        params: typing.Optional[ListBankAccountsV11Params] = None,
-        headers: typing.Optional[HeaderTypes] = None,
-    ) -> ListBankAccountsV11200Response:
-        """
-        List bank accounts
-
-        Retrieves bank accounts of the merchant.
-        """
-        resp = await self._client.get(
-            f"/v1.1/merchants/{merchant_code}/bank-accounts",
-            params=params.model_dump(by_alias=True, exclude_none=True) if params else None,
-            headers=headers,
-        )
-        if resp.status_code == 200:
-            return pydantic.TypeAdapter(ListBankAccountsV11200Response).validate_python(resp.json())
-        elif resp.status_code == 401:
-            raise APIError("Unauthorized", status=resp.status_code, body=resp.text)
-        elif resp.status_code == 403:
-            raise APIError("Forbidden", status=resp.status_code, body=resp.text)
-        else:
-            raise APIError("Unexpected response", status=resp.status_code, body=resp.text)
-
-    @typing_extensions.deprecated("This method is deprecated")
-    async def list_bank_accounts_deprecated(
-        self,
-        params: typing.Optional[ListBankAccountsParams] = None,
-        headers: typing.Optional[HeaderTypes] = None,
-    ) -> ListBankAccounts200Response:
-        """
-        List bank accounts
-
-        Retrieves bank accounts of the merchant.
-        """
-        resp = await self._client.get(
-            "/v0.1/me/merchant-profile/bank-accounts",
-            params=params.model_dump(by_alias=True, exclude_none=True) if params else None,
-            headers=headers,
-        )
-        if resp.status_code == 200:
-            return pydantic.TypeAdapter(ListBankAccounts200Response).validate_python(resp.json())
-        elif resp.status_code == 401:
-            raise APIError("Unauthorized", status=resp.status_code, body=resp.text)
-        elif resp.status_code == 403:
-            raise APIError("Forbidden", status=resp.status_code, body=resp.text)
-        else:
-            raise APIError("Unexpected response", status=resp.status_code, body=resp.text)
-
-    async def get_settings(self, headers: typing.Optional[HeaderTypes] = None) -> MerchantSettings:
-        """
-        Get settings
-
-        Retrieves merchant settings.
-        """
-        resp = await self._client.get(
-            "/v0.1/me/merchant-profile/settings",
-            headers=headers,
-        )
-        if resp.status_code == 200:
-            return pydantic.TypeAdapter(MerchantSettings).validate_python(resp.json())
-        elif resp.status_code == 401:
-            raise APIError("Unauthorized", status=resp.status_code, body=resp.text)
-        elif resp.status_code == 403:
-            raise APIError("Forbidden", status=resp.status_code, body=resp.text)
         else:
             raise APIError("Unexpected response", status=resp.status_code, body=resp.text)
