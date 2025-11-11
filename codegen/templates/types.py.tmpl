@@ -3,6 +3,9 @@ from ._service import Service
 import datetime
 import typing
 import pydantic
+{{- if .UsesSecret }}
+from .._secret import Secret
+{{- end }}
 
 
 {{- range $type := .Types }}
