@@ -3,8 +3,6 @@ from .resource import (
     MerchantResource,
     AsyncMerchantResource,
     GetAccountParams,
-    ListBankAccountsV11Params,
-    ListBankAccountsParams,
 )
 from .types import (
     AccountLegacy,
@@ -31,8 +29,6 @@ __all__ = [
     "MerchantResource",
     "AsyncMerchantResource",
     "GetAccountParams",
-    "ListBankAccountsV11Params",
-    "ListBankAccountsParams",
     "AccountLegacy",
     "AddressWithDetails",
     "AppSettings",
