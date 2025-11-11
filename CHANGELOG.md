@@ -1,5 +1,13 @@
 # Changelog
 
+## [0.0.13](https://github.com/sumup/sumup-py/compare/v0.0.12...v0.0.13) (2025-11-11)
+
+
+### Features
+
+* **docs:** update README title ([c265db5](https://github.com/sumup/sumup-py/commit/c265db59d9d02ecc853ba1c81632d78b385a70be))
+* **sdk:** add type for secrets ([#109](https://github.com/sumup/sumup-py/issues/109)) ([6d5a686](https://github.com/sumup/sumup-py/commit/6d5a686aca2c5b794e2b4a87112df9029b83ba77))
+
 ## [0.0.12](https://github.com/sumup/sumup-py/compare/v0.0.11...v0.0.12) (2025-11-03)
 
 
