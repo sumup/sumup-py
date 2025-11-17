@@ -21,7 +21,7 @@ CreateCheckoutBodyStatus = typing.Literal["FAILED", "PAID", "PENDING"]
 
 CreateCheckoutBodyTransactionStatus = typing.Literal["CANCELLED", "FAILED", "PENDING", "SUCCESSFUL"]
 
-CreateCheckoutBodyTransactionPaymentType = typing.Literal["BOLETO", "ECOM", "RECURRING"]
+CreateCheckoutBodyTransactionPaymentType = typing.Literal["BOLETO", "ECOM", "POS", "RECURRING"]
 
 CreateCheckoutBodyTransactionEntryMode = typing.Literal["BOLETO", "CUSTOMER_ENTRY"]
 
@@ -278,172 +278,6 @@ ListCheckouts200Response is a schema definition.
 """
 
 ProcessCheckoutResponse = typing.Union[CheckoutSuccess, CheckoutAccepted]
-DeactivateCheckout200ResponsePurpose = typing.Literal["CHECKOUT", "SETUP_RECURRING_PAYMENT"]
-
-DeactivateCheckout200ResponseStatus = typing.Literal["EXPIRED"]
-
-DeactivateCheckout200ResponseTransactionStatus = typing.Literal[
-    "CANCELLED", "FAILED", "PENDING", "SUCCESSFUL"
-]
-
-DeactivateCheckout200ResponseTransactionPaymentType = typing.Literal["BOLETO", "ECOM", "RECURRING"]
-
-DeactivateCheckout200ResponseTransactionEntryMode = typing.Literal["BOLETO", "CUSTOMER_ENTRY"]
-
-
-class DeactivateCheckout200ResponseTransaction(pydantic.BaseModel):
-    """
-    DeactivateCheckout200ResponseTransaction is a schema definition.
-    """
-
-    amount: typing.Optional[float] = None
-    """
-	Total amount of the transaction.
-	"""
-
-    auth_code: typing.Optional[str] = None
-    """
-	Authorization code for the transaction sent by the payment card issuer or bank. Applicable only to card payments.
-	"""
-
-    currency: typing.Optional[Currency] = None
-    """
-	Three-letter [ISO4217](https://en.wikipedia.org/wiki/ISO_4217) code of the currency for the amount. Currently supportedcurrency values are enumerated above.
-	"""
-
-    entry_mode: typing.Optional[DeactivateCheckout200ResponseTransactionEntryMode] = None
-    """
-	Entry mode of the payment details.
-	"""
-
-    id: typing.Optional[str] = None
-    """
-	Unique ID of the transaction.
-	"""
-
-    installments_count: typing.Optional[int] = None
-    """
-	Current number of the installment for deferred payments.
-	Min: 1
-	"""
-
-    internal_id: typing.Optional[int] = None
-    """
-	Internal unique ID of the transaction on the SumUp platform.
-	"""
-
-    merchant_code: typing.Optional[str] = None
-    """
-	Unique code of the registered merchant to whom the payment is made.
-	"""
-
-    payment_type: typing.Optional[DeactivateCheckout200ResponseTransactionPaymentType] = None
-    """
-	Payment type used for the transaction.
-	"""
-
-    status: typing.Optional[DeactivateCheckout200ResponseTransactionStatus] = None
-    """
-	Current status of the transaction.
-	"""
-
-    timestamp: typing.Optional[datetime.datetime] = None
-    """
-	Date and time of the creation of the transaction. Response format expressed according to [ISO8601](https://en.wikipedia.org/wiki/ISO_8601) code.
-	"""
-
-    tip_amount: typing.Optional[float] = None
-    """
-	Amount of the tip (out of the total transaction amount).
-	"""
-
-    transaction_code: typing.Optional[str] = None
-    """
-	Transaction code returned by the acquirer/processing entity after processing the transaction.
-	"""
-
-    vat_amount: typing.Optional[float] = None
-    """
-	Amount of the applicable VAT (out of the total transaction amount).
-	"""
-
-
-class DeactivateCheckout200Response(pydantic.BaseModel):
-    """
-    Details of the deleted checkout.
-    """
-
-    amount: typing.Optional[float] = None
-    """
-	Amount of the payment.
-	"""
-
-    checkout_reference: typing.Optional[str] = None
-    """
-	Unique ID of the payment checkout specified by the client application when creating the checkout resource.
-	Max length: 90
-	"""
-
-    currency: typing.Optional[Currency] = None
-    """
-	Three-letter [ISO4217](https://en.wikipedia.org/wiki/ISO_4217) code of the currency for the amount. Currently supportedcurrency values are enumerated above.
-	"""
-
-    date: typing.Optional[datetime.datetime] = None
-    """
-	Date and time of the creation of the payment checkout. Response format expressed according to [ISO8601](https://en.wikipedia.org/wiki/ISO_8601) code.
-	Readonly
-	"""
-
-    description: typing.Optional[str] = None
-    """
-	Short description of the checkout visible in the SumUp dashboard. The description can contribute to reporting, allowingeasier identification of a checkout.
-	"""
-
-    id: typing.Optional[str] = None
-    """
-	Unique ID of the checkout resource.
-	Read only
-	"""
-
-    merchant_code: typing.Optional[str] = None
-    """
-	Unique identifying code of the merchant profile.
-	"""
-
-    merchant_country: typing.Optional[str] = None
-    """
-	The merchant's country
-	"""
-
-    merchant_name: typing.Optional[str] = None
-    """
-	Merchant name
-	"""
-
-    purpose: typing.Optional[DeactivateCheckout200ResponsePurpose] = None
-    """
-	Purpose of the checkout creation initially
-	"""
-
-    status: typing.Optional[DeactivateCheckout200ResponseStatus] = None
-    """
-	Current status of the checkout.
-	Read only
-	"""
-
-    transactions: typing.Optional[list[DeactivateCheckout200ResponseTransaction]] = None
-    """
-	List of transactions related to the payment.
-	Read only
-	Unique items only
-	"""
-
-    valid_until: typing.Optional[datetime.datetime] = None
-    """
-	Date and time of the checkout expiration before which the client application needs to send a processing request.If no value is present, the checkout does not have an expiration time.
-	Read only
-	"""
 
 
 class CheckoutsResource(Resource):
@@ -576,9 +410,7 @@ class CheckoutsResource(Resource):
         else:
             raise APIError("Unexpected response", status=resp.status_code, body=resp.text)
 
-    def deactivate(
-        self, id: str, headers: typing.Optional[HeaderTypes] = None
-    ) -> DeactivateCheckout200Response:
+    def deactivate(self, id: str, headers: typing.Optional[HeaderTypes] = None) -> Checkout:
         """
         Deactivate a checkout
 
@@ -589,7 +421,7 @@ class CheckoutsResource(Resource):
             headers=headers,
         )
         if resp.status_code == 200:
-            return pydantic.TypeAdapter(DeactivateCheckout200Response).validate_python(resp.json())
+            return pydantic.TypeAdapter(Checkout).validate_python(resp.json())
         elif resp.status_code == 401:
             raise APIError("Unauthorized", status=resp.status_code, body=resp.text)
         elif resp.status_code == 404:
@@ -730,9 +562,7 @@ class AsyncCheckoutsResource(AsyncResource):
         else:
             raise APIError("Unexpected response", status=resp.status_code, body=resp.text)
 
-    async def deactivate(
-        self, id: str, headers: typing.Optional[HeaderTypes] = None
-    ) -> DeactivateCheckout200Response:
+    async def deactivate(self, id: str, headers: typing.Optional[HeaderTypes] = None) -> Checkout:
         """
         Deactivate a checkout
 
@@ -743,7 +573,7 @@ class AsyncCheckoutsResource(AsyncResource):
             headers=headers,
         )
         if resp.status_code == 200:
-            return pydantic.TypeAdapter(DeactivateCheckout200Response).validate_python(resp.json())
+            return pydantic.TypeAdapter(Checkout).validate_python(resp.json())
         elif resp.status_code == 401:
             raise APIError("Unauthorized", status=resp.status_code, body=resp.text)
         elif resp.status_code == 404:

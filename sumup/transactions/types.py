@@ -40,7 +40,7 @@ Currency = typing.Literal[
 
 TransactionMixinBaseStatus = typing.Literal["CANCELLED", "FAILED", "PENDING", "SUCCESSFUL"]
 
-TransactionMixinBasePaymentType = typing.Literal["BOLETO", "ECOM", "RECURRING"]
+TransactionMixinBasePaymentType = typing.Literal["BOLETO", "ECOM", "POS", "RECURRING"]
 
 
 class TransactionMixinBase(pydantic.BaseModel):
@@ -457,7 +457,7 @@ class Event(pydantic.BaseModel):
 
 TransactionFullStatus = typing.Literal["CANCELLED", "FAILED", "PENDING", "SUCCESSFUL"]
 
-TransactionFullPaymentType = typing.Literal["BOLETO", "ECOM", "RECURRING"]
+TransactionFullPaymentType = typing.Literal["BOLETO", "ECOM", "POS", "RECURRING"]
 
 TransactionFullEntryMode = typing.Literal["BOLETO", "CUSTOMER_ENTRY"]
 
@@ -709,7 +709,7 @@ class TransactionFull(pydantic.BaseModel):
 
 TransactionHistoryStatus = typing.Literal["CANCELLED", "FAILED", "PENDING", "SUCCESSFUL"]
 
-TransactionHistoryPaymentType = typing.Literal["BOLETO", "ECOM", "RECURRING"]
+TransactionHistoryPaymentType = typing.Literal["BOLETO", "ECOM", "POS", "RECURRING"]
 
 TransactionHistoryPayoutPlan = typing.Literal[
     "ACCELERATED_INSTALLMENT", "SINGLE_PAYMENT", "TRUE_INSTALLMENT"
