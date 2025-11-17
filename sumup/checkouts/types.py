@@ -95,7 +95,7 @@ class MandateResponse(pydantic.BaseModel):
 
 TransactionMixinBaseStatus = typing.Literal["CANCELLED", "FAILED", "PENDING", "SUCCESSFUL"]
 
-TransactionMixinBasePaymentType = typing.Literal["BOLETO", "ECOM", "RECURRING"]
+TransactionMixinBasePaymentType = typing.Literal["BOLETO", "ECOM", "POS", "RECURRING"]
 
 
 class TransactionMixinBase(pydantic.BaseModel):
@@ -188,7 +188,7 @@ CheckoutStatus = typing.Literal["FAILED", "PAID", "PENDING"]
 
 CheckoutTransactionStatus = typing.Literal["CANCELLED", "FAILED", "PENDING", "SUCCESSFUL"]
 
-CheckoutTransactionPaymentType = typing.Literal["BOLETO", "ECOM", "RECURRING"]
+CheckoutTransactionPaymentType = typing.Literal["BOLETO", "ECOM", "POS", "RECURRING"]
 
 CheckoutTransactionEntryMode = typing.Literal["BOLETO", "CUSTOMER_ENTRY"]
 
@@ -395,7 +395,7 @@ CheckoutCreateRequestTransactionStatus = typing.Literal[
     "CANCELLED", "FAILED", "PENDING", "SUCCESSFUL"
 ]
 
-CheckoutCreateRequestTransactionPaymentType = typing.Literal["BOLETO", "ECOM", "RECURRING"]
+CheckoutCreateRequestTransactionPaymentType = typing.Literal["BOLETO", "ECOM", "POS", "RECURRING"]
 
 CheckoutCreateRequestTransactionEntryMode = typing.Literal["BOLETO", "CUSTOMER_ENTRY"]
 
@@ -565,7 +565,7 @@ CheckoutSuccessStatus = typing.Literal["FAILED", "PAID", "PENDING"]
 
 CheckoutSuccessTransactionStatus = typing.Literal["CANCELLED", "FAILED", "PENDING", "SUCCESSFUL"]
 
-CheckoutSuccessTransactionPaymentType = typing.Literal["BOLETO", "ECOM", "RECURRING"]
+CheckoutSuccessTransactionPaymentType = typing.Literal["BOLETO", "ECOM", "POS", "RECURRING"]
 
 CheckoutSuccessTransactionEntryMode = typing.Literal["BOLETO", "CUSTOMER_ENTRY"]
 
