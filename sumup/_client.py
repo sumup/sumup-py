@@ -2,7 +2,6 @@
 import os
 import httpx
 import typing
-from functools import cached_property
 
 from ._service import Resource, AsyncResource
 from .checkouts import CheckoutsResource, AsyncCheckoutsResource
@@ -40,73 +39,73 @@ class Sumup(Resource):
             )
         )
 
-    @cached_property
+    @property
     def checkouts(self) -> CheckoutsResource:
         from .checkouts.resource import CheckoutsResource
 
         return CheckoutsResource(self._client)
 
-    @cached_property
+    @property
     def customers(self) -> CustomersResource:
         from .customers.resource import CustomersResource
 
         return CustomersResource(self._client)
 
-    @cached_property
+    @property
     def members(self) -> MembersResource:
         from .members.resource import MembersResource
 
         return MembersResource(self._client)
 
-    @cached_property
+    @property
     def memberships(self) -> MembershipsResource:
         from .memberships.resource import MembershipsResource
 
         return MembershipsResource(self._client)
 
-    @cached_property
+    @property
     def merchant(self) -> MerchantResource:
         from .merchant.resource import MerchantResource
 
         return MerchantResource(self._client)
 
-    @cached_property
+    @property
     def merchants(self) -> MerchantsResource:
         from .merchants.resource import MerchantsResource
 
         return MerchantsResource(self._client)
 
-    @cached_property
+    @property
     def payouts(self) -> PayoutsResource:
         from .payouts.resource import PayoutsResource
 
         return PayoutsResource(self._client)
 
-    @cached_property
+    @property
     def readers(self) -> ReadersResource:
         from .readers.resource import ReadersResource
 
         return ReadersResource(self._client)
 
-    @cached_property
+    @property
     def receipts(self) -> ReceiptsResource:
         from .receipts.resource import ReceiptsResource
 
         return ReceiptsResource(self._client)
 
-    @cached_property
+    @property
     def roles(self) -> RolesResource:
         from .roles.resource import RolesResource
 
         return RolesResource(self._client)
 
-    @cached_property
+    @property
     def subaccounts(self) -> SubaccountsResource:
         from .subaccounts.resource import SubaccountsResource
 
         return SubaccountsResource(self._client)
 
-    @cached_property
+    @property
     def transactions(self) -> TransactionsResource:
         from .transactions.resource import TransactionsResource
 
@@ -132,73 +131,73 @@ class AsyncSumup(AsyncResource):
             )
         )
 
-    @cached_property
+    @property
     def checkouts(self) -> AsyncCheckoutsResource:
         from .checkouts.resource import AsyncCheckoutsResource
 
         return AsyncCheckoutsResource(self._client)
 
-    @cached_property
+    @property
     def customers(self) -> AsyncCustomersResource:
         from .customers.resource import AsyncCustomersResource
 
         return AsyncCustomersResource(self._client)
 
-    @cached_property
+    @property
     def members(self) -> AsyncMembersResource:
         from .members.resource import AsyncMembersResource
 
         return AsyncMembersResource(self._client)
 
-    @cached_property
+    @property
     def memberships(self) -> AsyncMembershipsResource:
         from .memberships.resource import AsyncMembershipsResource
 
         return AsyncMembershipsResource(self._client)
 
-    @cached_property
+    @property
     def merchant(self) -> AsyncMerchantResource:
         from .merchant.resource import AsyncMerchantResource
 
         return AsyncMerchantResource(self._client)
 
-    @cached_property
+    @property
     def merchants(self) -> AsyncMerchantsResource:
         from .merchants.resource import AsyncMerchantsResource
 
         return AsyncMerchantsResource(self._client)
 
-    @cached_property
+    @property
     def payouts(self) -> AsyncPayoutsResource:
         from .payouts.resource import AsyncPayoutsResource
 
         return AsyncPayoutsResource(self._client)
 
-    @cached_property
+    @property
     def readers(self) -> AsyncReadersResource:
         from .readers.resource import AsyncReadersResource
 
         return AsyncReadersResource(self._client)
 
-    @cached_property
+    @property
     def receipts(self) -> AsyncReceiptsResource:
         from .receipts.resource import AsyncReceiptsResource
 
         return AsyncReceiptsResource(self._client)
 
-    @cached_property
+    @property
     def roles(self) -> AsyncRolesResource:
         from .roles.resource import AsyncRolesResource
 
         return AsyncRolesResource(self._client)
 
-    @cached_property
+    @property
     def subaccounts(self) -> AsyncSubaccountsResource:
         from .subaccounts.resource import AsyncSubaccountsResource
 
         return AsyncSubaccountsResource(self._client)
 
-    @cached_property
+    @property
     def transactions(self) -> AsyncTransactionsResource:
         from .transactions.resource import AsyncTransactionsResource
 

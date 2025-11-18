@@ -2,7 +2,6 @@
 import os
 import httpx
 import typing
-from functools import cached_property
 
 from ._service import Resource, AsyncResource
 {{- range .Resources }}
@@ -30,7 +29,7 @@ class Sumup(Resource):
         ))
 
 {{- range .Resources }}
-    @cached_property
+    @property
     def {{ .Package }}(self) -> {{ .Name }}Resource:
         from .{{ .Package }}.resource import {{ .Name }}Resource
 
@@ -56,7 +55,7 @@ class AsyncSumup(AsyncResource):
         ))
 
 {{- range .Resources }}
-    @cached_property
+    @property
     def {{ .Package }}(self) -> Async{{ .Name }}Resource:
         from .{{ .Package }}.resource import Async{{ .Name }}Resource
 
