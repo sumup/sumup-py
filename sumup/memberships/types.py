@@ -5,7 +5,7 @@ import pydantic
 
 ResourceType = str
 """
-The kind of the membership resource.
+The type of the membership resource.
 Possible values are:
 * `merchant` - merchant account(s)
 * `organization` - organization(s)
@@ -61,7 +61,7 @@ class MembershipResource(pydantic.BaseModel):
 
     type: ResourceType
     """
-	The kind of the membership resource.
+	The type of the membership resource.
 	Possible values are:
 	* `merchant` - merchant account(s)
 	* `organization` - organization(s)
@@ -128,7 +128,7 @@ class Membership(pydantic.BaseModel):
 
     type: ResourceType
     """
-	The kind of the membership resource.
+	The type of the membership resource.
 	Possible values are:
 	* `merchant` - merchant account(s)
 	* `organization` - organization(s)

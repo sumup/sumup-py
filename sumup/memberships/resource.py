@@ -3,6 +3,7 @@ from .._service import Resource, AsyncResource, HeaderTypes
 from .._exceptions import APIError
 from .types import (
     Membership,
+    MembershipStatus,
     ResourceType,
 )
 import httpx
@@ -17,7 +18,7 @@ class ListMembershipsParams(pydantic.BaseModel):
 
     kind: typing.Optional[ResourceType] = None
     """
-	The kind of the membership resource.
+	The type of the membership resource.
 	Possible values are:
 	* `merchant` - merchant account(s)
 	* `organization` - organization(s)
@@ -40,6 +41,23 @@ class ListMembershipsParams(pydantic.BaseModel):
         serialization_alias="resource.name",
         validation_alias=pydantic.AliasChoices("resource.name", "resource_name"),
     )
+
+    resource_type: typing.Optional[ResourceType] = pydantic.Field(
+        default=None,
+        serialization_alias="resource.type",
+        validation_alias=pydantic.AliasChoices("resource.type", "resource_type"),
+    )
+    """
+	The type of the membership resource.
+	Possible values are:
+	* `merchant` - merchant account(s)
+	* `organization` - organization(s)
+	"""
+
+    status: typing.Optional[MembershipStatus] = None
+    """
+	The status of the membership.
+	"""
 
 
 class ListMemberships200Response(pydantic.BaseModel):
