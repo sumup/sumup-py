@@ -23,7 +23,6 @@ from .types import (
     Checkout,
     CheckoutAccepted,
     CheckoutCreateRequest,
-    CheckoutProcessMixin,
     CheckoutSuccess,
     Currency,
     DetailsError,
@@ -33,8 +32,9 @@ from .types import (
     MandatePayload,
     MandateResponse,
     PersonalDetails,
-    TransactionMixinBase,
-    TransactionMixinCheckout,
+    ProcessCheckout,
+    TransactionBase,
+    TransactionCheckoutInfo,
 )
 
 
@@ -60,7 +60,6 @@ __all__ = [
     "Checkout",
     "CheckoutAccepted",
     "CheckoutCreateRequest",
-    "CheckoutProcessMixin",
     "CheckoutSuccess",
     "Currency",
     "DetailsError",
@@ -70,6 +69,7 @@ __all__ = [
     "MandatePayload",
     "MandateResponse",
     "PersonalDetails",
-    "TransactionMixinBase",
-    "TransactionMixinCheckout",
+    "ProcessCheckout",
+    "TransactionBase",
+    "TransactionCheckoutInfo",
 ]

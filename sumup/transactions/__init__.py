@@ -26,12 +26,12 @@ from .types import (
     Lon,
     Product,
     TimestampEvent,
+    TransactionBase,
+    TransactionCheckoutInfo,
     TransactionEvent,
     TransactionFull,
     TransactionHistory,
     TransactionId,
-    TransactionMixinBase,
-    TransactionMixinCheckout,
     TransactionMixinHistory,
 )
 
@@ -61,11 +61,11 @@ __all__ = [
     "Lon",
     "Product",
     "TimestampEvent",
+    "TransactionBase",
+    "TransactionCheckoutInfo",
     "TransactionEvent",
     "TransactionFull",
     "TransactionHistory",
     "TransactionId",
-    "TransactionMixinBase",
-    "TransactionMixinCheckout",
     "TransactionMixinHistory",
 ]
