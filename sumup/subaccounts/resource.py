@@ -142,7 +142,7 @@ class SubaccountsResource(Resource):
             return pydantic.TypeAdapter(Operator).validate_python(resp.json())
         elif resp.status_code == 403:
             raise APIError(
-                "Error response for compat API calls.", status=resp.status_code, body=resp.text
+                "Operator creation was forbidden.", status=resp.status_code, body=resp.text
             )
         else:
             raise APIError("Unexpected response", status=resp.status_code, body=resp.text)
@@ -265,7 +265,7 @@ class AsyncSubaccountsResource(AsyncResource):
             return pydantic.TypeAdapter(Operator).validate_python(resp.json())
         elif resp.status_code == 403:
             raise APIError(
-                "Error response for compat API calls.", status=resp.status_code, body=resp.text
+                "Operator creation was forbidden.", status=resp.status_code, body=resp.text
             )
         else:
             raise APIError("Unexpected response", status=resp.status_code, body=resp.text)

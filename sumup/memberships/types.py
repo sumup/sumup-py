@@ -30,7 +30,8 @@ MembershipStatus = typing.Literal["accepted", "disabled", "expired", "pending", 
 
 Metadata = dict[typing.Any, typing.Any]
 """
-Set of user-defined key-value pairs attached to the object. Partial updates are not supported. When updating, alwayssubmit whole metadata.
+Set of user-defined key-value pairs attached to the object. Partial updates are not supported. When updating, alwayssubmit whole metadata. Maximum of 64 parameters are allowed in the object.
+Max properties: 64
 """
 
 Attributes = dict[typing.Any, typing.Any]
@@ -151,5 +152,6 @@ class Membership(pydantic.BaseModel):
 
     metadata: typing.Optional[Metadata] = None
     """
-	Set of user-defined key-value pairs attached to the object. Partial updates are not supported. When updating, alwayssubmit whole metadata.
+	Set of user-defined key-value pairs attached to the object. Partial updates are not supported. When updating, alwayssubmit whole metadata. Maximum of 64 parameters are allowed in the object.
+	Max properties: 64
 	"""

@@ -8,6 +8,7 @@ from .resource import (
 )
 from .types import (
     Metadata,
+    Problem,
     Role,
 )
 
@@ -19,5 +20,6 @@ __all__ = [
     "UpdateMerchantRoleBody",
     "ListMerchantRoles200Response",
     "Metadata",
+    "Problem",
     "Role",
 ]

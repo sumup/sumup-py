@@ -9,9 +9,9 @@ from .resource import (
     ListSubAccountsParams,
 )
 from .types import (
-    CompatError,
     Operator,
     Permissions,
+    Problem,
 )
 
 
@@ -23,7 +23,7 @@ __all__ = [
     "UpdateSubAccountBodyPermissions",
     "UpdateSubAccountBody",
     "ListSubAccountsParams",
-    "CompatError",
     "Operator",
     "Permissions",
+    "Problem",
 ]

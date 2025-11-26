@@ -16,6 +16,7 @@ from .types import (
     MembershipUser,
     MembershipUserClassic,
     Metadata,
+    Problem,
 )
 
 
@@ -34,4 +35,5 @@ __all__ = [
     "MembershipUser",
     "MembershipUserClassic",
     "Metadata",
+    "Problem",
 ]
