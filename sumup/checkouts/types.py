@@ -93,12 +93,12 @@ class MandateResponse(pydantic.BaseModel):
 	"""
 
 
-TransactionMixinBaseStatus = typing.Literal["CANCELLED", "FAILED", "PENDING", "SUCCESSFUL"]
+TransactionBaseStatus = typing.Literal["CANCELLED", "FAILED", "PENDING", "SUCCESSFUL"]
 
-TransactionMixinBasePaymentType = typing.Literal["BOLETO", "ECOM", "POS", "RECURRING"]
+TransactionBasePaymentType = typing.Literal["BOLETO", "ECOM", "POS", "RECURRING"]
 
 
-class TransactionMixinBase(pydantic.BaseModel):
+class TransactionBase(pydantic.BaseModel):
     """
     Details of the transaction.
     """
@@ -124,12 +124,12 @@ class TransactionMixinBase(pydantic.BaseModel):
 	Min: 1
 	"""
 
-    payment_type: typing.Optional[TransactionMixinBasePaymentType] = None
+    payment_type: typing.Optional[TransactionBasePaymentType] = None
     """
 	Payment type used for the transaction.
 	"""
 
-    status: typing.Optional[TransactionMixinBaseStatus] = None
+    status: typing.Optional[TransactionBaseStatus] = None
     """
 	Current status of the transaction.
 	"""
@@ -145,12 +145,12 @@ class TransactionMixinBase(pydantic.BaseModel):
 	"""
 
 
-TransactionMixinCheckoutEntryMode = typing.Literal["BOLETO", "CUSTOMER_ENTRY"]
+TransactionCheckoutInfoEntryMode = typing.Literal["BOLETO", "CUSTOMER_ENTRY"]
 
 
-class TransactionMixinCheckout(pydantic.BaseModel):
+class TransactionCheckoutInfo(pydantic.BaseModel):
     """
-    TransactionMixinCheckout is a schema definition.
+    TransactionCheckoutInfo is a schema definition.
     """
 
     auth_code: typing.Optional[str] = None
@@ -158,7 +158,7 @@ class TransactionMixinCheckout(pydantic.BaseModel):
 	Authorization code for the transaction sent by the payment card issuer or bank. Applicable only to card payments.
 	"""
 
-    entry_mode: typing.Optional[TransactionMixinCheckoutEntryMode] = None
+    entry_mode: typing.Optional[TransactionCheckoutInfoEntryMode] = None
     """
 	Entry mode of the payment details.
 	"""
@@ -1004,15 +1004,15 @@ class PersonalDetails(pydantic.BaseModel):
 	"""
 
 
-CheckoutProcessMixinPaymentType = typing.Literal["bancontact", "blik", "boleto", "card", "ideal"]
+ProcessCheckoutPaymentType = typing.Literal["bancontact", "blik", "boleto", "card", "ideal"]
 
 
-class CheckoutProcessMixin(pydantic.BaseModel):
+class ProcessCheckout(pydantic.BaseModel):
     """
     Details of the payment instrument for processing the checkout.
     """
 
-    payment_type: CheckoutProcessMixinPaymentType
+    payment_type: ProcessCheckoutPaymentType
     """
 	Describes the payment method used to attempt processing
 	"""
