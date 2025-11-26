@@ -3,7 +3,7 @@ from .._service import Resource, AsyncResource, HeaderTypes
 from .._exceptions import APIError
 from .types import (
     CreateReaderCheckoutResponse,
-    Meta,
+    Metadata,
     Reader,
     ReaderId,
     ReaderName,
@@ -32,11 +32,10 @@ class CreateReaderBody(pydantic.BaseModel):
 	Max length: 9
 	"""
 
-    meta: typing.Optional[Meta] = None
+    metadata: typing.Optional[Metadata] = None
     """
-	A set of key-value pairs that you can attach to an object. This can be useful for storing additional informationabout the object in a structured format.
-	
-	**Warning**: Updating Meta will overwrite the existing data. Make sure to always include the complete JSON object.
+	Set of user-defined key-value pairs attached to the object. Partial updates are not supported. When updating, alwayssubmit whole metadata. Maximum of 64 parameters are allowed in the object.
+	Max properties: 64
 	"""
 
 
@@ -45,11 +44,10 @@ class UpdateReaderBody(pydantic.BaseModel):
     UpdateReaderBody is a schema definition.
     """
 
-    meta: typing.Optional[Meta] = None
+    metadata: typing.Optional[Metadata] = None
     """
-	A set of key-value pairs that you can attach to an object. This can be useful for storing additional informationabout the object in a structured format.
-	
-	**Warning**: Updating Meta will overwrite the existing data. Make sure to always include the complete JSON object.
+	Set of user-defined key-value pairs attached to the object. Partial updates are not supported. When updating, alwayssubmit whole metadata. Maximum of 64 parameters are allowed in the object.
+	Max properties: 64
 	"""
 
     name: typing.Optional[ReaderName] = None
@@ -243,6 +241,18 @@ class ReadersResource(Resource):
         )
         if resp.status_code == 201:
             return pydantic.TypeAdapter(Reader).validate_python(resp.json())
+        elif resp.status_code == 400:
+            raise APIError("The request is invalid.", status=resp.status_code, body=resp.text)
+        elif resp.status_code == 404:
+            raise APIError(
+                "There's no pending reader for the submitted pairing code.",
+                status=resp.status_code,
+                body=resp.text,
+            )
+        elif resp.status_code == 409:
+            raise APIError(
+                "The Reader is not in a pending state.", status=resp.status_code, body=resp.text
+            )
         else:
             raise APIError("Unexpected response", status=resp.status_code, body=resp.text)
 
@@ -269,7 +279,7 @@ class ReadersResource(Resource):
         else:
             raise APIError("Unexpected response", status=resp.status_code, body=resp.text)
 
-    def delete_reader(
+    def delete(
         self, merchant_code: str, id: ReaderId, headers: typing.Optional[HeaderTypes] = None
     ):
         """
@@ -283,6 +293,12 @@ class ReadersResource(Resource):
         )
         if resp.status_code == 200:
             return
+        elif resp.status_code == 404:
+            raise APIError(
+                "The requested Reader resource does not exists.",
+                status=resp.status_code,
+                body=resp.text,
+            )
         else:
             raise APIError("Unexpected response", status=resp.status_code, body=resp.text)
 
@@ -307,7 +323,13 @@ class ReadersResource(Resource):
             return pydantic.TypeAdapter(Reader).validate_python(resp.json())
         elif resp.status_code == 403:
             raise APIError(
-                "The reader is not linked to the merchant account.",
+                "The request isn't sufficiently authorized to modify the reader.",
+                status=resp.status_code,
+                body=resp.text,
+            )
+        elif resp.status_code == 404:
+            raise APIError(
+                "The requested Reader resource does not exists.",
                 status=resp.status_code,
                 body=resp.text,
             )
@@ -456,6 +478,18 @@ class AsyncReadersResource(AsyncResource):
         )
         if resp.status_code == 201:
             return pydantic.TypeAdapter(Reader).validate_python(resp.json())
+        elif resp.status_code == 400:
+            raise APIError("The request is invalid.", status=resp.status_code, body=resp.text)
+        elif resp.status_code == 404:
+            raise APIError(
+                "There's no pending reader for the submitted pairing code.",
+                status=resp.status_code,
+                body=resp.text,
+            )
+        elif resp.status_code == 409:
+            raise APIError(
+                "The Reader is not in a pending state.", status=resp.status_code, body=resp.text
+            )
         else:
             raise APIError("Unexpected response", status=resp.status_code, body=resp.text)
 
@@ -482,7 +516,7 @@ class AsyncReadersResource(AsyncResource):
         else:
             raise APIError("Unexpected response", status=resp.status_code, body=resp.text)
 
-    async def delete_reader(
+    async def delete(
         self, merchant_code: str, id: ReaderId, headers: typing.Optional[HeaderTypes] = None
     ):
         """
@@ -496,6 +530,12 @@ class AsyncReadersResource(AsyncResource):
         )
         if resp.status_code == 200:
             return
+        elif resp.status_code == 404:
+            raise APIError(
+                "The requested Reader resource does not exists.",
+                status=resp.status_code,
+                body=resp.text,
+            )
         else:
             raise APIError("Unexpected response", status=resp.status_code, body=resp.text)
 
@@ -520,7 +560,13 @@ class AsyncReadersResource(AsyncResource):
             return pydantic.TypeAdapter(Reader).validate_python(resp.json())
         elif resp.status_code == 403:
             raise APIError(
-                "The reader is not linked to the merchant account.",
+                "The request isn't sufficiently authorized to modify the reader.",
+                status=resp.status_code,
+                body=resp.text,
+            )
+        elif resp.status_code == 404:
+            raise APIError(
+                "The requested Reader resource does not exists.",
                 status=resp.status_code,
                 body=resp.text,
             )
