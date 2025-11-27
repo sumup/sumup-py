@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.0.14](https://github.com/sumup/sumup-py/compare/v0.0.13...v0.0.14) (2025-11-26)
+
+
+### Bug Fixes
+
+* **ci:** use GITHUB_TOKEN ([12a5890](https://github.com/sumup/sumup-py/commit/12a5890119c67dcf095e5165e0b862a4eab54273))
+
 ## [0.0.13](https://github.com/sumup/sumup-py/compare/v0.0.12...v0.0.13) (2025-11-11)
 
 
