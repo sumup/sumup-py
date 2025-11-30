@@ -1,5 +1,13 @@
 # Changelog
 
+## [0.0.14](https://github.com/sumup/sumup-py/compare/v0.0.13...v0.0.14) (2025-11-30)
+
+
+### Bug Fixes
+
+* **ci:** use bot for release PRs ([643194b](https://github.com/sumup/sumup-py/commit/643194bd5b77379fd64e636c57069ddb13cdb749))
+* **ci:** use GITHUB_TOKEN ([12a5890](https://github.com/sumup/sumup-py/commit/12a5890119c67dcf095e5165e0b862a4eab54273))
+
 ## [0.0.13](https://github.com/sumup/sumup-py/compare/v0.0.12...v0.0.13) (2025-11-11)
 
 
