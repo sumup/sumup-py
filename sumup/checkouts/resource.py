@@ -65,6 +65,7 @@ class CreateCheckoutBodyTransaction(pydantic.BaseModel):
     internal_id: typing.Optional[int] = None
     """
 	Internal unique ID of the transaction on the SumUp platform.
+	Format: int64
 	"""
 
     merchant_code: typing.Optional[str] = None

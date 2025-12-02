@@ -163,6 +163,10 @@ class CreateReaderCheckoutBody(pydantic.BaseModel):
 	Number of installments for the transaction.
 	It may vary according to the merchant country.
 	For example, in Brazil, the maximum number of installments is 12.
+	
+	Omit if the merchant country does support installments.
+	Otherwise, the checkout will be rejected.
+	Min: 1
 	"""
 
     return_url: typing.Optional[str] = None
