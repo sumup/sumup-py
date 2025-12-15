@@ -35,7 +35,7 @@ class {{.Service}}Resource(Resource):
 {{- end }}
 		resp = self._client.{{.Method}}({{.Path}},
 {{- if .HasBody }}
-			json=body.model_dump(),
+			json=body.model_dump(exclude_unset=True),
 {{- end }}
 {{- with .QueryParams }}
 			params=params.model_dump(by_alias=True, exclude_none=True) if params else None,
@@ -83,7 +83,7 @@ class Async{{.Service}}Resource(AsyncResource):
 {{- end }}
 		resp = await self._client.{{.Method}}({{.Path}},
 {{- if .HasBody }}
-			json=body.model_dump(),
+			json=body.model_dump(exclude_unset=True),
 {{- end }}
 {{- with .QueryParams }}
 			params=params.model_dump(by_alias=True, exclude_none=True) if params else None,
