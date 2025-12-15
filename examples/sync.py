@@ -1,7 +1,7 @@
 import os
 
 from sumup import Sumup, APIError
-from sumup.checkouts.resource import CreateCheckoutBody, ListCheckoutsParams
+from sumup.checkouts import CreateCheckoutBody, Currency, ListCheckoutsParams
 
 client = Sumup()
 
@@ -23,7 +23,7 @@ try:
             merchant_code=merchant.merchant_code,
             amount=100.50,
             checkout_reference="unique-checkout-ref-123",
-            currency="EUR",
+            currency=Currency.EUR,
         )
     )
     print(checkout)

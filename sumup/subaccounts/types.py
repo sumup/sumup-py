@@ -2,6 +2,7 @@
 import datetime
 import typing
 import pydantic
+from .._enum import _OpenStrEnum
 
 
 class Permissions(pydantic.BaseModel):
@@ -20,7 +21,13 @@ class Permissions(pydantic.BaseModel):
     refund_transactions: bool
 
 
-OperatorAccountType = typing.Literal["normal", "operator"]
+class OperatorAccountType(_OpenStrEnum):
+    """
+    OperatorAccountType is a schema definition.
+    """
+
+    NORMAL: "OperatorAccountType" = typing.cast("OperatorAccountType", "normal")
+    OPERATOR: "OperatorAccountType" = typing.cast("OperatorAccountType", "operator")
 
 
 class Operator(pydantic.BaseModel):

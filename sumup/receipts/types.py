@@ -2,6 +2,7 @@
 import datetime
 import typing
 import pydantic
+from .._enum import _OpenStrEnum
 
 
 class ReceiptCard(pydantic.BaseModel):
@@ -31,9 +32,30 @@ TransactionId = str
 Unique ID of the transaction.
 """
 
-EventType = typing.Literal["CHARGE_BACK", "PAYOUT", "PAYOUT_DEDUCTION", "REFUND"]
 
-EventStatus = typing.Literal["FAILED", "PAID_OUT", "PENDING", "REFUNDED", "SCHEDULED", "SUCCESSFUL"]
+class EventType(_OpenStrEnum):
+    """
+    Type of the transaction event.
+    """
+
+    CHARGE_BACK: "EventType" = typing.cast("EventType", "CHARGE_BACK")
+    PAYOUT: "EventType" = typing.cast("EventType", "PAYOUT")
+    PAYOUT_DEDUCTION: "EventType" = typing.cast("EventType", "PAYOUT_DEDUCTION")
+    REFUND: "EventType" = typing.cast("EventType", "REFUND")
+
+
+class EventStatus(_OpenStrEnum):
+    """
+    Status of the transaction event.
+    """
+
+    FAILED: "EventStatus" = typing.cast("EventStatus", "FAILED")
+    PAID_OUT: "EventStatus" = typing.cast("EventStatus", "PAID_OUT")
+    PENDING: "EventStatus" = typing.cast("EventStatus", "PENDING")
+    REFUNDED: "EventStatus" = typing.cast("EventStatus", "REFUNDED")
+    SCHEDULED: "EventStatus" = typing.cast("EventStatus", "SCHEDULED")
+    SUCCESSFUL: "EventStatus" = typing.cast("EventStatus", "SUCCESSFUL")
+
 
 AmountEvent = float
 """

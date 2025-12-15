@@ -2,16 +2,34 @@
 import datetime
 import typing
 import pydantic
+from .._enum import _OpenStrEnum
 
-FinancialPayoutStatus = typing.Literal["FAILED", "SUCCESSFUL"]
 
-FinancialPayoutType = typing.Literal[
-    "BALANCE_DEDUCTION",
-    "CHARGE_BACK_DEDUCTION",
-    "DD_RETURN_DEDUCTION",
-    "PAYOUT",
-    "REFUND_DEDUCTION",
-]
+class FinancialPayoutStatus(_OpenStrEnum):
+    """
+    FinancialPayoutStatus is a schema definition.
+    """
+
+    FAILED: "FinancialPayoutStatus" = typing.cast("FinancialPayoutStatus", "FAILED")
+    SUCCESSFUL: "FinancialPayoutStatus" = typing.cast("FinancialPayoutStatus", "SUCCESSFUL")
+
+
+class FinancialPayoutType(_OpenStrEnum):
+    """
+    FinancialPayoutType is a schema definition.
+    """
+
+    BALANCE_DEDUCTION: "FinancialPayoutType" = typing.cast(
+        "FinancialPayoutType", "BALANCE_DEDUCTION"
+    )
+    CHARGE_BACK_DEDUCTION: "FinancialPayoutType" = typing.cast(
+        "FinancialPayoutType", "CHARGE_BACK_DEDUCTION"
+    )
+    DD_RETURN_DEDUCTION: "FinancialPayoutType" = typing.cast(
+        "FinancialPayoutType", "DD_RETURN_DEDUCTION"
+    )
+    PAYOUT: "FinancialPayoutType" = typing.cast("FinancialPayoutType", "PAYOUT")
+    REFUND_DEDUCTION: "FinancialPayoutType" = typing.cast("FinancialPayoutType", "REFUND_DEDUCTION")
 
 
 class FinancialPayout(pydantic.BaseModel):

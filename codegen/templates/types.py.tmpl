@@ -3,6 +3,7 @@ from ._service import Service
 import datetime
 import typing
 import pydantic
+from .._enum import _OpenIntEnum, _OpenFloatEnum, _OpenStrEnum
 {{- if .UsesSecret }}
 from .._secret import Secret
 {{- end }}

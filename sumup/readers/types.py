@@ -2,6 +2,7 @@
 import datetime
 import typing
 import pydantic
+from .._enum import _OpenStrEnum
 
 ReaderId = str
 """
@@ -18,9 +19,32 @@ Custom human-readable, user-defined name for easier identification of the reader
 Max length: 500
 """
 
-ReaderStatus = typing.Literal["expired", "paired", "processing", "unknown"]
 
-ReaderDeviceModel = typing.Literal["solo", "virtual-solo"]
+class ReaderStatus(_OpenStrEnum):
+    """
+            The status of the reader object gives information about the current state of the reader.
+
+    Possible values:
+
+    - `unknown` - The reader status is unknown.
+    - `processing` - The reader is created and waits for the physical device to confirm the pairing.
+    - `paired` - The reader is paired with a merchant account and can be used with SumUp APIs.
+    - `expired` - The pairing is expired and no longer usable with the account. The resource needs to get recreated.
+    """
+
+    EXPIRED: "ReaderStatus" = typing.cast("ReaderStatus", "expired")
+    PAIRED: "ReaderStatus" = typing.cast("ReaderStatus", "paired")
+    PROCESSING: "ReaderStatus" = typing.cast("ReaderStatus", "processing")
+    UNKNOWN: "ReaderStatus" = typing.cast("ReaderStatus", "unknown")
+
+
+class ReaderDeviceModel(_OpenStrEnum):
+    """
+    Identifier of the model of the device.
+    """
+
+    SOLO: "ReaderDeviceModel" = typing.cast("ReaderDeviceModel", "solo")
+    VIRTUAL_SOLO: "ReaderDeviceModel" = typing.cast("ReaderDeviceModel", "virtual-solo")
 
 
 class ReaderDevice(pydantic.BaseModel):
@@ -238,7 +262,18 @@ class CreateReaderCheckoutRequestAffiliate(pydantic.BaseModel):
 	"""
 
 
-CreateReaderCheckoutRequestCardType = typing.Literal["credit", "debit"]
+class CreateReaderCheckoutRequestCardType(_OpenStrEnum):
+    """
+            The card type of the card used for the transaction.
+    Is is required only for some countries (e.g: Brazil).
+    """
+
+    CREDIT: "CreateReaderCheckoutRequestCardType" = typing.cast(
+        "CreateReaderCheckoutRequestCardType", "credit"
+    )
+    DEBIT: "CreateReaderCheckoutRequestCardType" = typing.cast(
+        "CreateReaderCheckoutRequestCardType", "debit"
+    )
 
 
 class CreateReaderCheckoutRequestTotalAmount(pydantic.BaseModel):

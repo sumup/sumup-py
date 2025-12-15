@@ -2,6 +2,7 @@
 import datetime
 import typing
 import pydantic
+from .._enum import _OpenStrEnum
 
 ResourceType = str
 """
@@ -26,7 +27,17 @@ class Invite(pydantic.BaseModel):
     expires_at: datetime.datetime
 
 
-MembershipStatus = typing.Literal["accepted", "disabled", "expired", "pending", "unknown"]
+class MembershipStatus(_OpenStrEnum):
+    """
+    The status of the membership.
+    """
+
+    ACCEPTED: "MembershipStatus" = typing.cast("MembershipStatus", "accepted")
+    DISABLED: "MembershipStatus" = typing.cast("MembershipStatus", "disabled")
+    EXPIRED: "MembershipStatus" = typing.cast("MembershipStatus", "expired")
+    PENDING: "MembershipStatus" = typing.cast("MembershipStatus", "pending")
+    UNKNOWN: "MembershipStatus" = typing.cast("MembershipStatus", "unknown")
+
 
 Metadata = dict[typing.Any, typing.Any]
 """

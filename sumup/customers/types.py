@@ -2,6 +2,7 @@
 import datetime
 import typing
 import pydantic
+from .._enum import _OpenStrEnum
 
 
 class AddressLegacy(pydantic.BaseModel):
@@ -157,24 +158,62 @@ class MandateResponse(pydantic.BaseModel):
 	"""
 
 
-PaymentInstrumentResponseType = typing.Literal["card"]
+class PaymentInstrumentResponseType(_OpenStrEnum):
+    """
+    Type of the payment instrument.
+    """
 
-PaymentInstrumentResponseCardType = typing.Literal[
-    "AMEX",
-    "CUP",
-    "DINERS",
-    "DISCOVER",
-    "ELO",
-    "ELV",
-    "HIPERCARD",
-    "JCB",
-    "MAESTRO",
-    "MASTERCARD",
-    "UNKNOWN",
-    "VISA",
-    "VISA_ELECTRON",
-    "VISA_VPAY",
-]
+    CARD: "PaymentInstrumentResponseType" = typing.cast("PaymentInstrumentResponseType", "card")
+
+
+class PaymentInstrumentResponseCardType(_OpenStrEnum):
+    """
+            Issuing card network of the payment card.
+    Read only
+    """
+
+    AMEX: "PaymentInstrumentResponseCardType" = typing.cast(
+        "PaymentInstrumentResponseCardType", "AMEX"
+    )
+    CUP: "PaymentInstrumentResponseCardType" = typing.cast(
+        "PaymentInstrumentResponseCardType", "CUP"
+    )
+    DINERS: "PaymentInstrumentResponseCardType" = typing.cast(
+        "PaymentInstrumentResponseCardType", "DINERS"
+    )
+    DISCOVER: "PaymentInstrumentResponseCardType" = typing.cast(
+        "PaymentInstrumentResponseCardType", "DISCOVER"
+    )
+    ELO: "PaymentInstrumentResponseCardType" = typing.cast(
+        "PaymentInstrumentResponseCardType", "ELO"
+    )
+    ELV: "PaymentInstrumentResponseCardType" = typing.cast(
+        "PaymentInstrumentResponseCardType", "ELV"
+    )
+    HIPERCARD: "PaymentInstrumentResponseCardType" = typing.cast(
+        "PaymentInstrumentResponseCardType", "HIPERCARD"
+    )
+    JCB: "PaymentInstrumentResponseCardType" = typing.cast(
+        "PaymentInstrumentResponseCardType", "JCB"
+    )
+    MAESTRO: "PaymentInstrumentResponseCardType" = typing.cast(
+        "PaymentInstrumentResponseCardType", "MAESTRO"
+    )
+    MASTERCARD: "PaymentInstrumentResponseCardType" = typing.cast(
+        "PaymentInstrumentResponseCardType", "MASTERCARD"
+    )
+    UNKNOWN: "PaymentInstrumentResponseCardType" = typing.cast(
+        "PaymentInstrumentResponseCardType", "UNKNOWN"
+    )
+    VISA: "PaymentInstrumentResponseCardType" = typing.cast(
+        "PaymentInstrumentResponseCardType", "VISA"
+    )
+    VISA_ELECTRON: "PaymentInstrumentResponseCardType" = typing.cast(
+        "PaymentInstrumentResponseCardType", "VISA_ELECTRON"
+    )
+    VISA_VPAY: "PaymentInstrumentResponseCardType" = typing.cast(
+        "PaymentInstrumentResponseCardType", "VISA_VPAY"
+    )
 
 
 class PaymentInstrumentResponseCard(pydantic.BaseModel):

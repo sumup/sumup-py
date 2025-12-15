@@ -58,7 +58,7 @@ asyncio.run(main())
 
 ```python
 from sumup import Sumup
-from sumup.checkouts import CreateCheckoutBody
+from sumup.checkouts import CreateCheckoutBody, Currency
 import uuid
 
 client = Sumup(api_key="sup_sk_MvxmLOl0...")
@@ -71,7 +71,7 @@ merchant_code = merchant.merchant_profile.merchant_code
 checkout = client.checkouts.create(
     body=CreateCheckoutBody(
         amount=10.00,
-        currency="EUR",
+        currency=Currency.EUR,
         checkout_reference=str(uuid.uuid4()),
         merchant_code=merchant_code,
         description="Test payment",
@@ -108,6 +108,11 @@ reader_checkout = client.readers.create_checkout(
 
 print(f"Reader checkout created: {reader_checkout}")
 ```
+
+## Examples
+
+- `examples/card_reader_checkout.py` – create a checkout on a physical reader asynchronously.
+- `examples/online_checkout.py` – create an online checkout and pick a currency via the generated `Currency` enum.
 
 ## Version support policy
 

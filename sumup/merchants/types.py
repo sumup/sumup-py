@@ -2,6 +2,7 @@
 import datetime
 import typing
 import pydantic
+from .._enum import _OpenStrEnum
 
 LegalType = str
 """
@@ -515,9 +516,20 @@ class BaseError(pydantic.BaseModel):
 	"""
 
 
-ErrorCategoryClient = typing.Literal["client_error"]
+class ErrorCategoryClient(_OpenStrEnum):
+    """
+    The category of the error.
+    """
 
-ErrorCodeNotFound = typing.Literal["not_found"]
+    CLIENT_ERROR: "ErrorCategoryClient" = typing.cast("ErrorCategoryClient", "client_error")
+
+
+class ErrorCodeNotFound(_OpenStrEnum):
+    """
+    An error code specifying the exact error that occurred.
+    """
+
+    NOT_FOUND: "ErrorCodeNotFound" = typing.cast("ErrorCodeNotFound", "not_found")
 
 
 class Ownership(pydantic.BaseModel):
@@ -764,6 +776,19 @@ class ListPersonsResponseBody(pydantic.BaseModel):
     items: list[Person]
 
 
-ErrorCategoryServer = typing.Literal["server_error"]
+class ErrorCategoryServer(_OpenStrEnum):
+    """
+    The category of the error.
+    """
 
-ErrorCodeInternalServerError = typing.Literal["internal_error"]
+    SERVER_ERROR: "ErrorCategoryServer" = typing.cast("ErrorCategoryServer", "server_error")
+
+
+class ErrorCodeInternalServerError(_OpenStrEnum):
+    """
+    An error code specifying the exact error that occurred.
+    """
+
+    INTERNAL_ERROR: "ErrorCodeInternalServerError" = typing.cast(
+        "ErrorCodeInternalServerError", "internal_error"
+    )

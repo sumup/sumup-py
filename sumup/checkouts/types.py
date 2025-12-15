@@ -2,6 +2,7 @@
 import datetime
 import typing
 import pydantic
+from .._enum import _OpenStrEnum
 
 
 class DetailsErrorFailedConstraint(pydantic.BaseModel):
@@ -53,23 +54,26 @@ class Error(pydantic.BaseModel):
 	"""
 
 
-Currency = typing.Literal[
-    "BGN",
-    "BRL",
-    "CHF",
-    "CLP",
-    "CZK",
-    "DKK",
-    "EUR",
-    "GBP",
-    "HRK",
-    "HUF",
-    "NOK",
-    "PLN",
-    "RON",
-    "SEK",
-    "USD",
-]
+class Currency(_OpenStrEnum):
+    """
+    Three-letter [ISO4217](https://en.wikipedia.org/wiki/ISO_4217) code of the currency for the amount. Currently supportedcurrency values are enumerated above.
+    """
+
+    BGN: "Currency" = typing.cast("Currency", "BGN")
+    BRL: "Currency" = typing.cast("Currency", "BRL")
+    CHF: "Currency" = typing.cast("Currency", "CHF")
+    CLP: "Currency" = typing.cast("Currency", "CLP")
+    CZK: "Currency" = typing.cast("Currency", "CZK")
+    DKK: "Currency" = typing.cast("Currency", "DKK")
+    EUR: "Currency" = typing.cast("Currency", "EUR")
+    GBP: "Currency" = typing.cast("Currency", "GBP")
+    HRK: "Currency" = typing.cast("Currency", "HRK")
+    HUF: "Currency" = typing.cast("Currency", "HUF")
+    NOK: "Currency" = typing.cast("Currency", "NOK")
+    PLN: "Currency" = typing.cast("Currency", "PLN")
+    RON: "Currency" = typing.cast("Currency", "RON")
+    SEK: "Currency" = typing.cast("Currency", "SEK")
+    USD: "Currency" = typing.cast("Currency", "USD")
 
 
 class MandateResponse(pydantic.BaseModel):
@@ -93,9 +97,26 @@ class MandateResponse(pydantic.BaseModel):
 	"""
 
 
-TransactionBaseStatus = typing.Literal["CANCELLED", "FAILED", "PENDING", "SUCCESSFUL"]
+class TransactionBaseStatus(_OpenStrEnum):
+    """
+    Current status of the transaction.
+    """
 
-TransactionBasePaymentType = typing.Literal["BOLETO", "ECOM", "POS", "RECURRING"]
+    CANCELLED: "TransactionBaseStatus" = typing.cast("TransactionBaseStatus", "CANCELLED")
+    FAILED: "TransactionBaseStatus" = typing.cast("TransactionBaseStatus", "FAILED")
+    PENDING: "TransactionBaseStatus" = typing.cast("TransactionBaseStatus", "PENDING")
+    SUCCESSFUL: "TransactionBaseStatus" = typing.cast("TransactionBaseStatus", "SUCCESSFUL")
+
+
+class TransactionBasePaymentType(_OpenStrEnum):
+    """
+    Payment type used for the transaction.
+    """
+
+    BOLETO: "TransactionBasePaymentType" = typing.cast("TransactionBasePaymentType", "BOLETO")
+    ECOM: "TransactionBasePaymentType" = typing.cast("TransactionBasePaymentType", "ECOM")
+    POS: "TransactionBasePaymentType" = typing.cast("TransactionBasePaymentType", "POS")
+    RECURRING: "TransactionBasePaymentType" = typing.cast("TransactionBasePaymentType", "RECURRING")
 
 
 class TransactionBase(pydantic.BaseModel):
@@ -145,7 +166,17 @@ class TransactionBase(pydantic.BaseModel):
 	"""
 
 
-TransactionCheckoutInfoEntryMode = typing.Literal["BOLETO", "CUSTOMER_ENTRY"]
+class TransactionCheckoutInfoEntryMode(_OpenStrEnum):
+    """
+    Entry mode of the payment details.
+    """
+
+    BOLETO: "TransactionCheckoutInfoEntryMode" = typing.cast(
+        "TransactionCheckoutInfoEntryMode", "BOLETO"
+    )
+    CUSTOMER_ENTRY: "TransactionCheckoutInfoEntryMode" = typing.cast(
+        "TransactionCheckoutInfoEntryMode", "CUSTOMER_ENTRY"
+    )
 
 
 class TransactionCheckoutInfo(pydantic.BaseModel):
@@ -185,13 +216,52 @@ class TransactionCheckoutInfo(pydantic.BaseModel):
 	"""
 
 
-CheckoutStatus = typing.Literal["EXPIRED", "FAILED", "PAID", "PENDING"]
+class CheckoutStatus(_OpenStrEnum):
+    """
+    Current status of the checkout.
+    """
 
-CheckoutTransactionStatus = typing.Literal["CANCELLED", "FAILED", "PENDING", "SUCCESSFUL"]
+    EXPIRED: "CheckoutStatus" = typing.cast("CheckoutStatus", "EXPIRED")
+    FAILED: "CheckoutStatus" = typing.cast("CheckoutStatus", "FAILED")
+    PAID: "CheckoutStatus" = typing.cast("CheckoutStatus", "PAID")
+    PENDING: "CheckoutStatus" = typing.cast("CheckoutStatus", "PENDING")
 
-CheckoutTransactionPaymentType = typing.Literal["BOLETO", "ECOM", "POS", "RECURRING"]
 
-CheckoutTransactionEntryMode = typing.Literal["BOLETO", "CUSTOMER_ENTRY"]
+class CheckoutTransactionStatus(_OpenStrEnum):
+    """
+    Current status of the transaction.
+    """
+
+    CANCELLED: "CheckoutTransactionStatus" = typing.cast("CheckoutTransactionStatus", "CANCELLED")
+    FAILED: "CheckoutTransactionStatus" = typing.cast("CheckoutTransactionStatus", "FAILED")
+    PENDING: "CheckoutTransactionStatus" = typing.cast("CheckoutTransactionStatus", "PENDING")
+    SUCCESSFUL: "CheckoutTransactionStatus" = typing.cast("CheckoutTransactionStatus", "SUCCESSFUL")
+
+
+class CheckoutTransactionPaymentType(_OpenStrEnum):
+    """
+    Payment type used for the transaction.
+    """
+
+    BOLETO: "CheckoutTransactionPaymentType" = typing.cast(
+        "CheckoutTransactionPaymentType", "BOLETO"
+    )
+    ECOM: "CheckoutTransactionPaymentType" = typing.cast("CheckoutTransactionPaymentType", "ECOM")
+    POS: "CheckoutTransactionPaymentType" = typing.cast("CheckoutTransactionPaymentType", "POS")
+    RECURRING: "CheckoutTransactionPaymentType" = typing.cast(
+        "CheckoutTransactionPaymentType", "RECURRING"
+    )
+
+
+class CheckoutTransactionEntryMode(_OpenStrEnum):
+    """
+    Entry mode of the payment details.
+    """
+
+    BOLETO: "CheckoutTransactionEntryMode" = typing.cast("CheckoutTransactionEntryMode", "BOLETO")
+    CUSTOMER_ENTRY: "CheckoutTransactionEntryMode" = typing.cast(
+        "CheckoutTransactionEntryMode", "CUSTOMER_ENTRY"
+    )
 
 
 class CheckoutTransaction(pydantic.BaseModel):
@@ -389,17 +459,80 @@ class ErrorForbidden(pydantic.BaseModel):
 	"""
 
 
-CheckoutCreateRequestPurpose = typing.Literal["CHECKOUT", "SETUP_RECURRING_PAYMENT"]
+class CheckoutCreateRequestPurpose(_OpenStrEnum):
+    """
+            Purpose of the checkout.
+    Default: "CHECKOUT"
+    """
 
-CheckoutCreateRequestStatus = typing.Literal["FAILED", "PAID", "PENDING"]
+    CHECKOUT: "CheckoutCreateRequestPurpose" = typing.cast(
+        "CheckoutCreateRequestPurpose", "CHECKOUT"
+    )
+    SETUP_RECURRING_PAYMENT: "CheckoutCreateRequestPurpose" = typing.cast(
+        "CheckoutCreateRequestPurpose", "SETUP_RECURRING_PAYMENT"
+    )
 
-CheckoutCreateRequestTransactionStatus = typing.Literal[
-    "CANCELLED", "FAILED", "PENDING", "SUCCESSFUL"
-]
 
-CheckoutCreateRequestTransactionPaymentType = typing.Literal["BOLETO", "ECOM", "POS", "RECURRING"]
+class CheckoutCreateRequestStatus(_OpenStrEnum):
+    """
+            Current status of the checkout.
+    Read only
+    """
 
-CheckoutCreateRequestTransactionEntryMode = typing.Literal["BOLETO", "CUSTOMER_ENTRY"]
+    FAILED: "CheckoutCreateRequestStatus" = typing.cast("CheckoutCreateRequestStatus", "FAILED")
+    PAID: "CheckoutCreateRequestStatus" = typing.cast("CheckoutCreateRequestStatus", "PAID")
+    PENDING: "CheckoutCreateRequestStatus" = typing.cast("CheckoutCreateRequestStatus", "PENDING")
+
+
+class CheckoutCreateRequestTransactionStatus(_OpenStrEnum):
+    """
+    Current status of the transaction.
+    """
+
+    CANCELLED: "CheckoutCreateRequestTransactionStatus" = typing.cast(
+        "CheckoutCreateRequestTransactionStatus", "CANCELLED"
+    )
+    FAILED: "CheckoutCreateRequestTransactionStatus" = typing.cast(
+        "CheckoutCreateRequestTransactionStatus", "FAILED"
+    )
+    PENDING: "CheckoutCreateRequestTransactionStatus" = typing.cast(
+        "CheckoutCreateRequestTransactionStatus", "PENDING"
+    )
+    SUCCESSFUL: "CheckoutCreateRequestTransactionStatus" = typing.cast(
+        "CheckoutCreateRequestTransactionStatus", "SUCCESSFUL"
+    )
+
+
+class CheckoutCreateRequestTransactionPaymentType(_OpenStrEnum):
+    """
+    Payment type used for the transaction.
+    """
+
+    BOLETO: "CheckoutCreateRequestTransactionPaymentType" = typing.cast(
+        "CheckoutCreateRequestTransactionPaymentType", "BOLETO"
+    )
+    ECOM: "CheckoutCreateRequestTransactionPaymentType" = typing.cast(
+        "CheckoutCreateRequestTransactionPaymentType", "ECOM"
+    )
+    POS: "CheckoutCreateRequestTransactionPaymentType" = typing.cast(
+        "CheckoutCreateRequestTransactionPaymentType", "POS"
+    )
+    RECURRING: "CheckoutCreateRequestTransactionPaymentType" = typing.cast(
+        "CheckoutCreateRequestTransactionPaymentType", "RECURRING"
+    )
+
+
+class CheckoutCreateRequestTransactionEntryMode(_OpenStrEnum):
+    """
+    Entry mode of the payment details.
+    """
+
+    BOLETO: "CheckoutCreateRequestTransactionEntryMode" = typing.cast(
+        "CheckoutCreateRequestTransactionEntryMode", "BOLETO"
+    )
+    CUSTOMER_ENTRY: "CheckoutCreateRequestTransactionEntryMode" = typing.cast(
+        "CheckoutCreateRequestTransactionEntryMode", "CUSTOMER_ENTRY"
+    )
 
 
 class CheckoutCreateRequestTransaction(pydantic.BaseModel):
@@ -564,13 +697,66 @@ class CheckoutCreateRequest(pydantic.BaseModel):
 	"""
 
 
-CheckoutSuccessStatus = typing.Literal["EXPIRED", "FAILED", "PAID", "PENDING"]
+class CheckoutSuccessStatus(_OpenStrEnum):
+    """
+    Current status of the checkout.
+    """
 
-CheckoutSuccessTransactionStatus = typing.Literal["CANCELLED", "FAILED", "PENDING", "SUCCESSFUL"]
+    EXPIRED: "CheckoutSuccessStatus" = typing.cast("CheckoutSuccessStatus", "EXPIRED")
+    FAILED: "CheckoutSuccessStatus" = typing.cast("CheckoutSuccessStatus", "FAILED")
+    PAID: "CheckoutSuccessStatus" = typing.cast("CheckoutSuccessStatus", "PAID")
+    PENDING: "CheckoutSuccessStatus" = typing.cast("CheckoutSuccessStatus", "PENDING")
 
-CheckoutSuccessTransactionPaymentType = typing.Literal["BOLETO", "ECOM", "POS", "RECURRING"]
 
-CheckoutSuccessTransactionEntryMode = typing.Literal["BOLETO", "CUSTOMER_ENTRY"]
+class CheckoutSuccessTransactionStatus(_OpenStrEnum):
+    """
+    Current status of the transaction.
+    """
+
+    CANCELLED: "CheckoutSuccessTransactionStatus" = typing.cast(
+        "CheckoutSuccessTransactionStatus", "CANCELLED"
+    )
+    FAILED: "CheckoutSuccessTransactionStatus" = typing.cast(
+        "CheckoutSuccessTransactionStatus", "FAILED"
+    )
+    PENDING: "CheckoutSuccessTransactionStatus" = typing.cast(
+        "CheckoutSuccessTransactionStatus", "PENDING"
+    )
+    SUCCESSFUL: "CheckoutSuccessTransactionStatus" = typing.cast(
+        "CheckoutSuccessTransactionStatus", "SUCCESSFUL"
+    )
+
+
+class CheckoutSuccessTransactionPaymentType(_OpenStrEnum):
+    """
+    Payment type used for the transaction.
+    """
+
+    BOLETO: "CheckoutSuccessTransactionPaymentType" = typing.cast(
+        "CheckoutSuccessTransactionPaymentType", "BOLETO"
+    )
+    ECOM: "CheckoutSuccessTransactionPaymentType" = typing.cast(
+        "CheckoutSuccessTransactionPaymentType", "ECOM"
+    )
+    POS: "CheckoutSuccessTransactionPaymentType" = typing.cast(
+        "CheckoutSuccessTransactionPaymentType", "POS"
+    )
+    RECURRING: "CheckoutSuccessTransactionPaymentType" = typing.cast(
+        "CheckoutSuccessTransactionPaymentType", "RECURRING"
+    )
+
+
+class CheckoutSuccessTransactionEntryMode(_OpenStrEnum):
+    """
+    Entry mode of the payment details.
+    """
+
+    BOLETO: "CheckoutSuccessTransactionEntryMode" = typing.cast(
+        "CheckoutSuccessTransactionEntryMode", "BOLETO"
+    )
+    CUSTOMER_ENTRY: "CheckoutSuccessTransactionEntryMode" = typing.cast(
+        "CheckoutSuccessTransactionEntryMode", "CUSTOMER_ENTRY"
+    )
 
 
 class CheckoutSuccessTransaction(pydantic.BaseModel):
@@ -764,7 +950,17 @@ class CheckoutSuccess(pydantic.BaseModel):
 	"""
 
 
-CheckoutAcceptedNextStepMechanism = typing.Literal["browser", "iframe"]
+class CheckoutAcceptedNextStepMechanism(_OpenStrEnum):
+    """
+    CheckoutAcceptedNextStepMechanism is a schema definition.
+    """
+
+    BROWSER: "CheckoutAcceptedNextStepMechanism" = typing.cast(
+        "CheckoutAcceptedNextStepMechanism", "browser"
+    )
+    IFRAME: "CheckoutAcceptedNextStepMechanism" = typing.cast(
+        "CheckoutAcceptedNextStepMechanism", "iframe"
+    )
 
 
 class CheckoutAcceptedNextStepPayload(pydantic.BaseModel):
@@ -821,7 +1017,12 @@ class CheckoutAccepted(pydantic.BaseModel):
 	"""
 
 
-MandatePayloadType = typing.Literal["recurrent"]
+class MandatePayloadType(_OpenStrEnum):
+    """
+    Indicates the mandate type
+    """
+
+    RECURRENT: "MandatePayloadType" = typing.cast("MandatePayloadType", "recurrent")
 
 
 class MandatePayload(pydantic.BaseModel):
@@ -845,26 +1046,46 @@ class MandatePayload(pydantic.BaseModel):
 	"""
 
 
-CardExpiryMonth = typing.Literal[
-    "01", "02", "03", "04", "05", "06", "07", "08", "09", "10", "11", "12"
-]
+class CardExpiryMonth(_OpenStrEnum):
+    """
+            Month from the expiration time of the payment card. Accepted format is `MM`.
+    Write only
+    """
 
-CardType = typing.Literal[
-    "AMEX",
-    "CUP",
-    "DINERS",
-    "DISCOVER",
-    "ELO",
-    "ELV",
-    "HIPERCARD",
-    "JCB",
-    "MAESTRO",
-    "MASTERCARD",
-    "UNKNOWN",
-    "VISA",
-    "VISA_ELECTRON",
-    "VISA_VPAY",
-]
+    VALUE_01: "CardExpiryMonth" = typing.cast("CardExpiryMonth", "01")
+    VALUE_02: "CardExpiryMonth" = typing.cast("CardExpiryMonth", "02")
+    VALUE_03: "CardExpiryMonth" = typing.cast("CardExpiryMonth", "03")
+    VALUE_04: "CardExpiryMonth" = typing.cast("CardExpiryMonth", "04")
+    VALUE_05: "CardExpiryMonth" = typing.cast("CardExpiryMonth", "05")
+    VALUE_06: "CardExpiryMonth" = typing.cast("CardExpiryMonth", "06")
+    VALUE_07: "CardExpiryMonth" = typing.cast("CardExpiryMonth", "07")
+    VALUE_08: "CardExpiryMonth" = typing.cast("CardExpiryMonth", "08")
+    VALUE_09: "CardExpiryMonth" = typing.cast("CardExpiryMonth", "09")
+    VALUE_10: "CardExpiryMonth" = typing.cast("CardExpiryMonth", "10")
+    VALUE_11: "CardExpiryMonth" = typing.cast("CardExpiryMonth", "11")
+    VALUE_12: "CardExpiryMonth" = typing.cast("CardExpiryMonth", "12")
+
+
+class CardType(_OpenStrEnum):
+    """
+            Issuing card network of the payment card.
+    Read only
+    """
+
+    AMEX: "CardType" = typing.cast("CardType", "AMEX")
+    CUP: "CardType" = typing.cast("CardType", "CUP")
+    DINERS: "CardType" = typing.cast("CardType", "DINERS")
+    DISCOVER: "CardType" = typing.cast("CardType", "DISCOVER")
+    ELO: "CardType" = typing.cast("CardType", "ELO")
+    ELV: "CardType" = typing.cast("CardType", "ELV")
+    HIPERCARD: "CardType" = typing.cast("CardType", "HIPERCARD")
+    JCB: "CardType" = typing.cast("CardType", "JCB")
+    MAESTRO: "CardType" = typing.cast("CardType", "MAESTRO")
+    MASTERCARD: "CardType" = typing.cast("CardType", "MASTERCARD")
+    UNKNOWN: "CardType" = typing.cast("CardType", "UNKNOWN")
+    VISA: "CardType" = typing.cast("CardType", "VISA")
+    VISA_ELECTRON: "CardType" = typing.cast("CardType", "VISA_ELECTRON")
+    VISA_VPAY: "CardType" = typing.cast("CardType", "VISA_VPAY")
 
 
 class Card(pydantic.BaseModel):
@@ -1008,7 +1229,18 @@ class PersonalDetails(pydantic.BaseModel):
 	"""
 
 
-ProcessCheckoutPaymentType = typing.Literal["bancontact", "blik", "boleto", "card", "ideal"]
+class ProcessCheckoutPaymentType(_OpenStrEnum):
+    """
+    Describes the payment method used to attempt processing
+    """
+
+    BANCONTACT: "ProcessCheckoutPaymentType" = typing.cast(
+        "ProcessCheckoutPaymentType", "bancontact"
+    )
+    BLIK: "ProcessCheckoutPaymentType" = typing.cast("ProcessCheckoutPaymentType", "blik")
+    BOLETO: "ProcessCheckoutPaymentType" = typing.cast("ProcessCheckoutPaymentType", "boleto")
+    CARD: "ProcessCheckoutPaymentType" = typing.cast("ProcessCheckoutPaymentType", "card")
+    IDEAL: "ProcessCheckoutPaymentType" = typing.cast("ProcessCheckoutPaymentType", "ideal")
 
 
 class ProcessCheckout(pydantic.BaseModel):

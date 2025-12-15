@@ -2,6 +2,7 @@
 import datetime
 import typing
 import pydantic
+from .._enum import _OpenStrEnum
 
 
 class Error(pydantic.BaseModel):
@@ -20,27 +21,48 @@ class Error(pydantic.BaseModel):
 	"""
 
 
-Currency = typing.Literal[
-    "BGN",
-    "BRL",
-    "CHF",
-    "CLP",
-    "CZK",
-    "DKK",
-    "EUR",
-    "GBP",
-    "HRK",
-    "HUF",
-    "NOK",
-    "PLN",
-    "RON",
-    "SEK",
-    "USD",
-]
+class Currency(_OpenStrEnum):
+    """
+    Three-letter [ISO4217](https://en.wikipedia.org/wiki/ISO_4217) code of the currency for the amount. Currently supportedcurrency values are enumerated above.
+    """
 
-TransactionBaseStatus = typing.Literal["CANCELLED", "FAILED", "PENDING", "SUCCESSFUL"]
+    BGN: "Currency" = typing.cast("Currency", "BGN")
+    BRL: "Currency" = typing.cast("Currency", "BRL")
+    CHF: "Currency" = typing.cast("Currency", "CHF")
+    CLP: "Currency" = typing.cast("Currency", "CLP")
+    CZK: "Currency" = typing.cast("Currency", "CZK")
+    DKK: "Currency" = typing.cast("Currency", "DKK")
+    EUR: "Currency" = typing.cast("Currency", "EUR")
+    GBP: "Currency" = typing.cast("Currency", "GBP")
+    HRK: "Currency" = typing.cast("Currency", "HRK")
+    HUF: "Currency" = typing.cast("Currency", "HUF")
+    NOK: "Currency" = typing.cast("Currency", "NOK")
+    PLN: "Currency" = typing.cast("Currency", "PLN")
+    RON: "Currency" = typing.cast("Currency", "RON")
+    SEK: "Currency" = typing.cast("Currency", "SEK")
+    USD: "Currency" = typing.cast("Currency", "USD")
 
-TransactionBasePaymentType = typing.Literal["BOLETO", "ECOM", "POS", "RECURRING"]
+
+class TransactionBaseStatus(_OpenStrEnum):
+    """
+    Current status of the transaction.
+    """
+
+    CANCELLED: "TransactionBaseStatus" = typing.cast("TransactionBaseStatus", "CANCELLED")
+    FAILED: "TransactionBaseStatus" = typing.cast("TransactionBaseStatus", "FAILED")
+    PENDING: "TransactionBaseStatus" = typing.cast("TransactionBaseStatus", "PENDING")
+    SUCCESSFUL: "TransactionBaseStatus" = typing.cast("TransactionBaseStatus", "SUCCESSFUL")
+
+
+class TransactionBasePaymentType(_OpenStrEnum):
+    """
+    Payment type used for the transaction.
+    """
+
+    BOLETO: "TransactionBasePaymentType" = typing.cast("TransactionBasePaymentType", "BOLETO")
+    ECOM: "TransactionBasePaymentType" = typing.cast("TransactionBasePaymentType", "ECOM")
+    POS: "TransactionBasePaymentType" = typing.cast("TransactionBasePaymentType", "POS")
+    RECURRING: "TransactionBasePaymentType" = typing.cast("TransactionBasePaymentType", "RECURRING")
 
 
 class TransactionBase(pydantic.BaseModel):
@@ -90,7 +112,17 @@ class TransactionBase(pydantic.BaseModel):
 	"""
 
 
-TransactionCheckoutInfoEntryMode = typing.Literal["BOLETO", "CUSTOMER_ENTRY"]
+class TransactionCheckoutInfoEntryMode(_OpenStrEnum):
+    """
+    Entry mode of the payment details.
+    """
+
+    BOLETO: "TransactionCheckoutInfoEntryMode" = typing.cast(
+        "TransactionCheckoutInfoEntryMode", "BOLETO"
+    )
+    CUSTOMER_ENTRY: "TransactionCheckoutInfoEntryMode" = typing.cast(
+        "TransactionCheckoutInfoEntryMode", "CUSTOMER_ENTRY"
+    )
 
 
 class TransactionCheckoutInfo(pydantic.BaseModel):
@@ -130,9 +162,20 @@ class TransactionCheckoutInfo(pydantic.BaseModel):
 	"""
 
 
-TransactionMixinHistoryPayoutPlan = typing.Literal[
-    "ACCELERATED_INSTALLMENT", "SINGLE_PAYMENT", "TRUE_INSTALLMENT"
-]
+class TransactionMixinHistoryPayoutPlan(_OpenStrEnum):
+    """
+    Payout plan of the registered user at the time when the transaction was made.
+    """
+
+    ACCELERATED_INSTALLMENT: "TransactionMixinHistoryPayoutPlan" = typing.cast(
+        "TransactionMixinHistoryPayoutPlan", "ACCELERATED_INSTALLMENT"
+    )
+    SINGLE_PAYMENT: "TransactionMixinHistoryPayoutPlan" = typing.cast(
+        "TransactionMixinHistoryPayoutPlan", "SINGLE_PAYMENT"
+    )
+    TRUE_INSTALLMENT: "TransactionMixinHistoryPayoutPlan" = typing.cast(
+        "TransactionMixinHistoryPayoutPlan", "TRUE_INSTALLMENT"
+    )
 
 
 class TransactionMixinHistory(pydantic.BaseModel):
@@ -180,22 +223,27 @@ HorizontalAccuracy = float
 Indication of the precision of the geographical position received from the payment terminal.
 """
 
-CardResponseType = typing.Literal[
-    "AMEX",
-    "CUP",
-    "DINERS",
-    "DISCOVER",
-    "ELO",
-    "ELV",
-    "HIPERCARD",
-    "JCB",
-    "MAESTRO",
-    "MASTERCARD",
-    "UNKNOWN",
-    "VISA",
-    "VISA_ELECTRON",
-    "VISA_VPAY",
-]
+
+class CardResponseType(_OpenStrEnum):
+    """
+            Issuing card network of the payment card.
+    Read only
+    """
+
+    AMEX: "CardResponseType" = typing.cast("CardResponseType", "AMEX")
+    CUP: "CardResponseType" = typing.cast("CardResponseType", "CUP")
+    DINERS: "CardResponseType" = typing.cast("CardResponseType", "DINERS")
+    DISCOVER: "CardResponseType" = typing.cast("CardResponseType", "DISCOVER")
+    ELO: "CardResponseType" = typing.cast("CardResponseType", "ELO")
+    ELV: "CardResponseType" = typing.cast("CardResponseType", "ELV")
+    HIPERCARD: "CardResponseType" = typing.cast("CardResponseType", "HIPERCARD")
+    JCB: "CardResponseType" = typing.cast("CardResponseType", "JCB")
+    MAESTRO: "CardResponseType" = typing.cast("CardResponseType", "MAESTRO")
+    MASTERCARD: "CardResponseType" = typing.cast("CardResponseType", "MASTERCARD")
+    UNKNOWN: "CardResponseType" = typing.cast("CardResponseType", "UNKNOWN")
+    VISA: "CardResponseType" = typing.cast("CardResponseType", "VISA")
+    VISA_ELECTRON: "CardResponseType" = typing.cast("CardResponseType", "VISA_ELECTRON")
+    VISA_VPAY: "CardResponseType" = typing.cast("CardResponseType", "VISA_VPAY")
 
 
 class CardResponse(pydantic.BaseModel):
@@ -275,9 +323,30 @@ Unique ID of the transaction event.
 Format: int64
 """
 
-EventType = typing.Literal["CHARGE_BACK", "PAYOUT", "PAYOUT_DEDUCTION", "REFUND"]
 
-EventStatus = typing.Literal["FAILED", "PAID_OUT", "PENDING", "REFUNDED", "SCHEDULED", "SUCCESSFUL"]
+class EventType(_OpenStrEnum):
+    """
+    Type of the transaction event.
+    """
+
+    CHARGE_BACK: "EventType" = typing.cast("EventType", "CHARGE_BACK")
+    PAYOUT: "EventType" = typing.cast("EventType", "PAYOUT")
+    PAYOUT_DEDUCTION: "EventType" = typing.cast("EventType", "PAYOUT_DEDUCTION")
+    REFUND: "EventType" = typing.cast("EventType", "REFUND")
+
+
+class EventStatus(_OpenStrEnum):
+    """
+    Status of the transaction event.
+    """
+
+    FAILED: "EventStatus" = typing.cast("EventStatus", "FAILED")
+    PAID_OUT: "EventStatus" = typing.cast("EventStatus", "PAID_OUT")
+    PENDING: "EventStatus" = typing.cast("EventStatus", "PENDING")
+    REFUNDED: "EventStatus" = typing.cast("EventStatus", "REFUNDED")
+    SCHEDULED: "EventStatus" = typing.cast("EventStatus", "SCHEDULED")
+    SUCCESSFUL: "EventStatus" = typing.cast("EventStatus", "SUCCESSFUL")
+
 
 AmountEvent = float
 """
@@ -456,43 +525,145 @@ class Event(pydantic.BaseModel):
 	"""
 
 
-TransactionFullStatus = typing.Literal["CANCELLED", "FAILED", "PENDING", "SUCCESSFUL"]
+class TransactionFullStatus(_OpenStrEnum):
+    """
+    Current status of the transaction.
+    """
 
-TransactionFullPaymentType = typing.Literal["BOLETO", "ECOM", "POS", "RECURRING"]
+    CANCELLED: "TransactionFullStatus" = typing.cast("TransactionFullStatus", "CANCELLED")
+    FAILED: "TransactionFullStatus" = typing.cast("TransactionFullStatus", "FAILED")
+    PENDING: "TransactionFullStatus" = typing.cast("TransactionFullStatus", "PENDING")
+    SUCCESSFUL: "TransactionFullStatus" = typing.cast("TransactionFullStatus", "SUCCESSFUL")
 
-TransactionFullEntryMode = typing.Literal["BOLETO", "CUSTOMER_ENTRY"]
 
-TransactionFullPayoutPlan = typing.Literal[
-    "ACCELERATED_INSTALLMENT", "SINGLE_PAYMENT", "TRUE_INSTALLMENT"
-]
+class TransactionFullPaymentType(_OpenStrEnum):
+    """
+    Payment type used for the transaction.
+    """
 
-TransactionFullSimplePaymentType = typing.Literal[
-    "CASH", "CC_CUSTOMER_ENTERED", "CC_SIGNATURE", "ELV", "EMV", "MANUAL_ENTRY", "MOTO"
-]
+    BOLETO: "TransactionFullPaymentType" = typing.cast("TransactionFullPaymentType", "BOLETO")
+    ECOM: "TransactionFullPaymentType" = typing.cast("TransactionFullPaymentType", "ECOM")
+    POS: "TransactionFullPaymentType" = typing.cast("TransactionFullPaymentType", "POS")
+    RECURRING: "TransactionFullPaymentType" = typing.cast("TransactionFullPaymentType", "RECURRING")
 
-TransactionFullVerificationMethod = typing.Literal[
-    "confirmation code verified",
-    "na",
-    "none",
-    "offline PIN",
-    "offline PIN + signature",
-    "online PIN",
-    "signature",
-]
 
-TransactionFullPayoutType = typing.Literal["BALANCE", "BANK_ACCOUNT", "PREPAID_CARD"]
+class TransactionFullEntryMode(_OpenStrEnum):
+    """
+    Entry mode of the payment details.
+    """
 
-TransactionFullSimpleStatus = typing.Literal[
-    "CANCELLED",
-    "CANCEL_FAILED",
-    "CHARGEBACK",
-    "FAILED",
-    "NON_COLLECTION",
-    "PAID_OUT",
-    "REFUNDED",
-    "REFUND_FAILED",
-    "SUCCESSFUL",
-]
+    BOLETO: "TransactionFullEntryMode" = typing.cast("TransactionFullEntryMode", "BOLETO")
+    CUSTOMER_ENTRY: "TransactionFullEntryMode" = typing.cast(
+        "TransactionFullEntryMode", "CUSTOMER_ENTRY"
+    )
+
+
+class TransactionFullPayoutPlan(_OpenStrEnum):
+    """
+    Payout plan of the registered user at the time when the transaction was made.
+    """
+
+    ACCELERATED_INSTALLMENT: "TransactionFullPayoutPlan" = typing.cast(
+        "TransactionFullPayoutPlan", "ACCELERATED_INSTALLMENT"
+    )
+    SINGLE_PAYMENT: "TransactionFullPayoutPlan" = typing.cast(
+        "TransactionFullPayoutPlan", "SINGLE_PAYMENT"
+    )
+    TRUE_INSTALLMENT: "TransactionFullPayoutPlan" = typing.cast(
+        "TransactionFullPayoutPlan", "TRUE_INSTALLMENT"
+    )
+
+
+class TransactionFullSimplePaymentType(_OpenStrEnum):
+    """
+    Simple name of the payment type.
+    """
+
+    CASH: "TransactionFullSimplePaymentType" = typing.cast(
+        "TransactionFullSimplePaymentType", "CASH"
+    )
+    CC_CUSTOMER_ENTERED: "TransactionFullSimplePaymentType" = typing.cast(
+        "TransactionFullSimplePaymentType", "CC_CUSTOMER_ENTERED"
+    )
+    CC_SIGNATURE: "TransactionFullSimplePaymentType" = typing.cast(
+        "TransactionFullSimplePaymentType", "CC_SIGNATURE"
+    )
+    ELV: "TransactionFullSimplePaymentType" = typing.cast("TransactionFullSimplePaymentType", "ELV")
+    EMV: "TransactionFullSimplePaymentType" = typing.cast("TransactionFullSimplePaymentType", "EMV")
+    MANUAL_ENTRY: "TransactionFullSimplePaymentType" = typing.cast(
+        "TransactionFullSimplePaymentType", "MANUAL_ENTRY"
+    )
+    MOTO: "TransactionFullSimplePaymentType" = typing.cast(
+        "TransactionFullSimplePaymentType", "MOTO"
+    )
+
+
+class TransactionFullVerificationMethod(_OpenStrEnum):
+    """
+    Verification method used for the transaction.
+    """
+
+    CONFIRMATION_CODE_VERIFIED: "TransactionFullVerificationMethod" = typing.cast(
+        "TransactionFullVerificationMethod", "confirmation code verified"
+    )
+    NA: "TransactionFullVerificationMethod" = typing.cast("TransactionFullVerificationMethod", "na")
+    NONE: "TransactionFullVerificationMethod" = typing.cast(
+        "TransactionFullVerificationMethod", "none"
+    )
+    OFFLINE_PIN: "TransactionFullVerificationMethod" = typing.cast(
+        "TransactionFullVerificationMethod", "offline PIN"
+    )
+    OFFLINE_PIN_SIGNATURE: "TransactionFullVerificationMethod" = typing.cast(
+        "TransactionFullVerificationMethod", "offline PIN + signature"
+    )
+    ONLINE_PIN: "TransactionFullVerificationMethod" = typing.cast(
+        "TransactionFullVerificationMethod", "online PIN"
+    )
+    SIGNATURE: "TransactionFullVerificationMethod" = typing.cast(
+        "TransactionFullVerificationMethod", "signature"
+    )
+
+
+class TransactionFullPayoutType(_OpenStrEnum):
+    """
+    Payout type for the transaction.
+    """
+
+    BALANCE: "TransactionFullPayoutType" = typing.cast("TransactionFullPayoutType", "BALANCE")
+    BANK_ACCOUNT: "TransactionFullPayoutType" = typing.cast(
+        "TransactionFullPayoutType", "BANK_ACCOUNT"
+    )
+    PREPAID_CARD: "TransactionFullPayoutType" = typing.cast(
+        "TransactionFullPayoutType", "PREPAID_CARD"
+    )
+
+
+class TransactionFullSimpleStatus(_OpenStrEnum):
+    """
+    Status generated from the processing status and the latest transaction state.
+    """
+
+    CANCELLED: "TransactionFullSimpleStatus" = typing.cast(
+        "TransactionFullSimpleStatus", "CANCELLED"
+    )
+    CANCEL_FAILED: "TransactionFullSimpleStatus" = typing.cast(
+        "TransactionFullSimpleStatus", "CANCEL_FAILED"
+    )
+    CHARGEBACK: "TransactionFullSimpleStatus" = typing.cast(
+        "TransactionFullSimpleStatus", "CHARGEBACK"
+    )
+    FAILED: "TransactionFullSimpleStatus" = typing.cast("TransactionFullSimpleStatus", "FAILED")
+    NON_COLLECTION: "TransactionFullSimpleStatus" = typing.cast(
+        "TransactionFullSimpleStatus", "NON_COLLECTION"
+    )
+    PAID_OUT: "TransactionFullSimpleStatus" = typing.cast("TransactionFullSimpleStatus", "PAID_OUT")
+    REFUNDED: "TransactionFullSimpleStatus" = typing.cast("TransactionFullSimpleStatus", "REFUNDED")
+    REFUND_FAILED: "TransactionFullSimpleStatus" = typing.cast(
+        "TransactionFullSimpleStatus", "REFUND_FAILED"
+    )
+    SUCCESSFUL: "TransactionFullSimpleStatus" = typing.cast(
+        "TransactionFullSimpleStatus", "SUCCESSFUL"
+    )
 
 
 class TransactionFullLocation(pydantic.BaseModel):
@@ -710,32 +881,79 @@ class TransactionFull(pydantic.BaseModel):
 	"""
 
 
-TransactionHistoryStatus = typing.Literal["CANCELLED", "FAILED", "PENDING", "SUCCESSFUL"]
+class TransactionHistoryStatus(_OpenStrEnum):
+    """
+    Current status of the transaction.
+    """
 
-TransactionHistoryPaymentType = typing.Literal["BOLETO", "ECOM", "POS", "RECURRING"]
+    CANCELLED: "TransactionHistoryStatus" = typing.cast("TransactionHistoryStatus", "CANCELLED")
+    FAILED: "TransactionHistoryStatus" = typing.cast("TransactionHistoryStatus", "FAILED")
+    PENDING: "TransactionHistoryStatus" = typing.cast("TransactionHistoryStatus", "PENDING")
+    SUCCESSFUL: "TransactionHistoryStatus" = typing.cast("TransactionHistoryStatus", "SUCCESSFUL")
 
-TransactionHistoryPayoutPlan = typing.Literal[
-    "ACCELERATED_INSTALLMENT", "SINGLE_PAYMENT", "TRUE_INSTALLMENT"
-]
 
-TransactionHistoryType = typing.Literal["CHARGE_BACK", "PAYMENT", "REFUND"]
+class TransactionHistoryPaymentType(_OpenStrEnum):
+    """
+    Payment type used for the transaction.
+    """
 
-TransactionHistoryCardType = typing.Literal[
-    "AMEX",
-    "CUP",
-    "DINERS",
-    "DISCOVER",
-    "ELO",
-    "ELV",
-    "HIPERCARD",
-    "JCB",
-    "MAESTRO",
-    "MASTERCARD",
-    "UNKNOWN",
-    "VISA",
-    "VISA_ELECTRON",
-    "VISA_VPAY",
-]
+    BOLETO: "TransactionHistoryPaymentType" = typing.cast("TransactionHistoryPaymentType", "BOLETO")
+    ECOM: "TransactionHistoryPaymentType" = typing.cast("TransactionHistoryPaymentType", "ECOM")
+    POS: "TransactionHistoryPaymentType" = typing.cast("TransactionHistoryPaymentType", "POS")
+    RECURRING: "TransactionHistoryPaymentType" = typing.cast(
+        "TransactionHistoryPaymentType", "RECURRING"
+    )
+
+
+class TransactionHistoryPayoutPlan(_OpenStrEnum):
+    """
+    Payout plan of the registered user at the time when the transaction was made.
+    """
+
+    ACCELERATED_INSTALLMENT: "TransactionHistoryPayoutPlan" = typing.cast(
+        "TransactionHistoryPayoutPlan", "ACCELERATED_INSTALLMENT"
+    )
+    SINGLE_PAYMENT: "TransactionHistoryPayoutPlan" = typing.cast(
+        "TransactionHistoryPayoutPlan", "SINGLE_PAYMENT"
+    )
+    TRUE_INSTALLMENT: "TransactionHistoryPayoutPlan" = typing.cast(
+        "TransactionHistoryPayoutPlan", "TRUE_INSTALLMENT"
+    )
+
+
+class TransactionHistoryType(_OpenStrEnum):
+    """
+    Type of the transaction for the registered user specified in the `user` property.
+    """
+
+    CHARGE_BACK: "TransactionHistoryType" = typing.cast("TransactionHistoryType", "CHARGE_BACK")
+    PAYMENT: "TransactionHistoryType" = typing.cast("TransactionHistoryType", "PAYMENT")
+    REFUND: "TransactionHistoryType" = typing.cast("TransactionHistoryType", "REFUND")
+
+
+class TransactionHistoryCardType(_OpenStrEnum):
+    """
+    Issuing card network of the payment card used for the transaction.
+    """
+
+    AMEX: "TransactionHistoryCardType" = typing.cast("TransactionHistoryCardType", "AMEX")
+    CUP: "TransactionHistoryCardType" = typing.cast("TransactionHistoryCardType", "CUP")
+    DINERS: "TransactionHistoryCardType" = typing.cast("TransactionHistoryCardType", "DINERS")
+    DISCOVER: "TransactionHistoryCardType" = typing.cast("TransactionHistoryCardType", "DISCOVER")
+    ELO: "TransactionHistoryCardType" = typing.cast("TransactionHistoryCardType", "ELO")
+    ELV: "TransactionHistoryCardType" = typing.cast("TransactionHistoryCardType", "ELV")
+    HIPERCARD: "TransactionHistoryCardType" = typing.cast("TransactionHistoryCardType", "HIPERCARD")
+    JCB: "TransactionHistoryCardType" = typing.cast("TransactionHistoryCardType", "JCB")
+    MAESTRO: "TransactionHistoryCardType" = typing.cast("TransactionHistoryCardType", "MAESTRO")
+    MASTERCARD: "TransactionHistoryCardType" = typing.cast(
+        "TransactionHistoryCardType", "MASTERCARD"
+    )
+    UNKNOWN: "TransactionHistoryCardType" = typing.cast("TransactionHistoryCardType", "UNKNOWN")
+    VISA: "TransactionHistoryCardType" = typing.cast("TransactionHistoryCardType", "VISA")
+    VISA_ELECTRON: "TransactionHistoryCardType" = typing.cast(
+        "TransactionHistoryCardType", "VISA_ELECTRON"
+    )
+    VISA_VPAY: "TransactionHistoryCardType" = typing.cast("TransactionHistoryCardType", "VISA_VPAY")
 
 
 class TransactionHistory(pydantic.BaseModel):

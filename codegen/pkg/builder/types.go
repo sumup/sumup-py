@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"slices"
 	"strings"
+	"unicode"
 )
 
 type Writable interface {
@@ -107,18 +108,90 @@ func (p *Property) String() string {
 
 func (e *EnumDeclaration[E]) String() string {
 	buf := new(strings.Builder)
-	fmt.Fprintf(buf, "%s = typing.Literal[", e.Name)
-	slices.Sort(e.Values)
-	for i, v := range e.Values {
-		if i != 0 {
-			fmt.Fprint(buf, ", ")
-		}
-		fmt.Fprintf(buf, "%#v", v)
+	fmt.Fprintf(buf, "class %s(%s):\n", e.Name, e.pythonBaseType())
+	if e.Comment != "" {
+		fmt.Fprintf(buf, "\t'''\n\t%s\n\t'''\n", e.Comment)
 	}
-	fmt.Fprint(buf, "]\n")
+
+	slices.Sort(e.Values)
+	if len(e.Values) == 0 {
+		fmt.Fprint(buf, "\tpass\n\n")
+		return buf.String()
+	}
+
+	usedNames := map[string]int{}
+	for i, v := range e.Values {
+		if i == 0 && e.Comment != "" {
+			fmt.Fprint(buf, "\n")
+		}
+		valueName := uniqueEnumFieldName(enumFieldName(fmt.Sprint(v)), usedNames)
+		fmt.Fprintf(buf, "\t%s: %q = typing.cast(%q, %#v)\n", valueName, e.Name, e.Name, v)
+	}
+	fmt.Fprint(buf, "\n")
 	return buf.String()
 }
 
 func (e *EnumDeclaration[E]) TypeName() string {
 	return e.Name
+}
+
+func (e *EnumDeclaration[E]) pythonBaseType() string {
+	switch e.Type {
+	case "string":
+		return "_OpenStrEnum"
+	case "int", "int64":
+		return "_OpenIntEnum"
+	case "float":
+		return "_OpenFloatEnum"
+	default:
+		return "_OpenStrEnum"
+	}
+}
+
+func enumFieldName(raw string) string {
+	raw = strings.TrimSpace(raw)
+	if raw == "" {
+		raw = "VALUE"
+	}
+
+	var b strings.Builder
+	lastUnderscore := false
+	for _, r := range raw {
+		switch {
+		case unicode.IsLetter(r):
+			b.WriteRune(unicode.ToUpper(r))
+			lastUnderscore = false
+		case unicode.IsDigit(r):
+			b.WriteRune(r)
+			lastUnderscore = false
+		default:
+			if !lastUnderscore && b.Len() > 0 {
+				b.WriteRune('_')
+				lastUnderscore = true
+			}
+		}
+	}
+
+	name := strings.Trim(b.String(), "_")
+	if name == "" {
+		name = "VALUE"
+	}
+	if unicode.IsDigit(rune(name[0])) {
+		name = "VALUE_" + name
+	}
+
+	return name
+}
+
+func uniqueEnumFieldName(base string, used map[string]int) string {
+	if base == "" {
+		base = "VALUE"
+	}
+	if count, ok := used[base]; ok {
+		count++
+		used[base] = count
+		return fmt.Sprintf("%s_%d", base, count)
+	}
+	used[base] = 1
+	return base
 }
