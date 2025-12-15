@@ -472,10 +472,11 @@ TransactionFullSimplePaymentType = typing.Literal[
 
 TransactionFullVerificationMethod = typing.Literal[
     "confirmation code verified",
+    "na",
     "none",
-    "offline pin",
-    "offline pin + signature",
-    "online pin",
+    "offline PIN",
+    "offline PIN + signature",
+    "online PIN",
     "signature",
 ]
 

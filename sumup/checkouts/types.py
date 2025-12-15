@@ -185,7 +185,7 @@ class TransactionCheckoutInfo(pydantic.BaseModel):
 	"""
 
 
-CheckoutStatus = typing.Literal["FAILED", "PAID", "PENDING"]
+CheckoutStatus = typing.Literal["EXPIRED", "FAILED", "PAID", "PENDING"]
 
 CheckoutTransactionStatus = typing.Literal["CANCELLED", "FAILED", "PENDING", "SUCCESSFUL"]
 
@@ -564,7 +564,7 @@ class CheckoutCreateRequest(pydantic.BaseModel):
 	"""
 
 
-CheckoutSuccessStatus = typing.Literal["FAILED", "PAID", "PENDING"]
+CheckoutSuccessStatus = typing.Literal["EXPIRED", "FAILED", "PAID", "PENDING"]
 
 CheckoutSuccessTransactionStatus = typing.Literal["CANCELLED", "FAILED", "PENDING", "SUCCESSFUL"]
 

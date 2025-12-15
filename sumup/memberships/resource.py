@@ -72,6 +72,8 @@ class ListMembershipsParams(pydantic.BaseModel):
 	* `organization` - organization(s)
 	"""
 
+    roles: typing.Optional[list[str]] = None
+
     status: typing.Optional[MembershipStatus] = None
     """
 	The status of the membership.
