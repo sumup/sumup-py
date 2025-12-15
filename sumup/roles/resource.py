@@ -101,7 +101,7 @@ class RolesResource(Resource):
         """
         resp = self._client.post(
             f"/v0.1/merchants/{merchant_code}/roles",
-            json=body.model_dump(),
+            json=body.model_dump(exclude_unset=True),
             headers=headers,
         )
         if resp.status_code == 201:
@@ -167,7 +167,7 @@ class RolesResource(Resource):
         """
         resp = self._client.patch(
             f"/v0.1/merchants/{merchant_code}/roles/{role_id}",
-            json=body.model_dump(),
+            json=body.model_dump(exclude_unset=True),
             headers=headers,
         )
         if resp.status_code == 200:
@@ -216,7 +216,7 @@ class AsyncRolesResource(AsyncResource):
         """
         resp = await self._client.post(
             f"/v0.1/merchants/{merchant_code}/roles",
-            json=body.model_dump(),
+            json=body.model_dump(exclude_unset=True),
             headers=headers,
         )
         if resp.status_code == 201:
@@ -282,7 +282,7 @@ class AsyncRolesResource(AsyncResource):
         """
         resp = await self._client.patch(
             f"/v0.1/merchants/{merchant_code}/roles/{role_id}",
-            json=body.model_dump(),
+            json=body.model_dump(exclude_unset=True),
             headers=headers,
         )
         if resp.status_code == 200:

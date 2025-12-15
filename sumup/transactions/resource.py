@@ -146,7 +146,7 @@ class TransactionsResource(Resource):
         """
         resp = self._client.post(
             f"/v0.1/me/refund/{txn_id}",
-            json=body.model_dump(),
+            json=body.model_dump(exclude_unset=True),
             headers=headers,
         )
         if resp.status_code == 204:
@@ -281,7 +281,7 @@ class AsyncTransactionsResource(AsyncResource):
         """
         resp = await self._client.post(
             f"/v0.1/me/refund/{txn_id}",
-            json=body.model_dump(),
+            json=body.model_dump(exclude_unset=True),
             headers=headers,
         )
         if resp.status_code == 204:
