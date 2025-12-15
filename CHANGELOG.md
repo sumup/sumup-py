@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.0.15](https://github.com/sumup/sumup-py/compare/v0.0.14...v0.0.15) (2025-12-15)
+
+
+### Bug Fixes
+
+* **sdk:** serialization of unset values ([#143](https://github.com/sumup/sumup-py/issues/143)) ([58fea10](https://github.com/sumup/sumup-py/commit/58fea10c2ae244ebcdc9b240845997b5ee2c0584))
+
 ## [0.0.14](https://github.com/sumup/sumup-py/compare/v0.0.13...v0.0.14) (2025-11-30)
 
 
