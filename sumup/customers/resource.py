@@ -58,7 +58,7 @@ class CustomersResource(Resource):
         """
         resp = self._client.post(
             "/v0.1/customers",
-            json=body.model_dump(),
+            json=body.model_dump(exclude_unset=True),
             headers=headers,
         )
         if resp.status_code == 201:
@@ -108,7 +108,7 @@ class CustomersResource(Resource):
         """
         resp = self._client.put(
             f"/v0.1/customers/{customer_id}",
-            json=body.model_dump(),
+            json=body.model_dump(exclude_unset=True),
             headers=headers,
         )
         if resp.status_code == 200:
@@ -185,7 +185,7 @@ class AsyncCustomersResource(AsyncResource):
         """
         resp = await self._client.post(
             "/v0.1/customers",
-            json=body.model_dump(),
+            json=body.model_dump(exclude_unset=True),
             headers=headers,
         )
         if resp.status_code == 201:
@@ -235,7 +235,7 @@ class AsyncCustomersResource(AsyncResource):
         """
         resp = await self._client.put(
             f"/v0.1/customers/{customer_id}",
-            json=body.model_dump(),
+            json=body.model_dump(exclude_unset=True),
             headers=headers,
         )
         if resp.status_code == 200:

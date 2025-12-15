@@ -177,7 +177,7 @@ class MembersResource(Resource):
         """
         resp = self._client.post(
             f"/v0.1/merchants/{merchant_code}/members",
-            json=body.model_dump(),
+            json=body.model_dump(exclude_unset=True),
             headers=headers,
         )
         if resp.status_code == 201:
@@ -228,7 +228,7 @@ class MembersResource(Resource):
         """
         resp = self._client.put(
             f"/v0.1/merchants/{merchant_code}/members/{member_id}",
-            json=body.model_dump(),
+            json=body.model_dump(exclude_unset=True),
             headers=headers,
         )
         if resp.status_code == 200:
@@ -316,7 +316,7 @@ class AsyncMembersResource(AsyncResource):
         """
         resp = await self._client.post(
             f"/v0.1/merchants/{merchant_code}/members",
-            json=body.model_dump(),
+            json=body.model_dump(exclude_unset=True),
             headers=headers,
         )
         if resp.status_code == 201:
@@ -367,7 +367,7 @@ class AsyncMembersResource(AsyncResource):
         """
         resp = await self._client.put(
             f"/v0.1/merchants/{merchant_code}/members/{member_id}",
-            json=body.model_dump(),
+            json=body.model_dump(exclude_unset=True),
             headers=headers,
         )
         if resp.status_code == 200:

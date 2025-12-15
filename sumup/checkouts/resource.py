@@ -324,7 +324,7 @@ class CheckoutsResource(Resource):
         """
         resp = self._client.post(
             "/v0.1/checkouts",
-            json=body.model_dump(),
+            json=body.model_dump(exclude_unset=True),
             headers=headers,
         )
         if resp.status_code == 201:
@@ -393,7 +393,7 @@ class CheckoutsResource(Resource):
         """
         resp = self._client.put(
             f"/v0.1/checkouts/{id}",
-            json=body.model_dump(),
+            json=body.model_dump(exclude_unset=True),
             headers=headers,
         )
         if resp.status_code == 200:
@@ -476,7 +476,7 @@ class AsyncCheckoutsResource(AsyncResource):
         """
         resp = await self._client.post(
             "/v0.1/checkouts",
-            json=body.model_dump(),
+            json=body.model_dump(exclude_unset=True),
             headers=headers,
         )
         if resp.status_code == 201:
@@ -545,7 +545,7 @@ class AsyncCheckoutsResource(AsyncResource):
         """
         resp = await self._client.put(
             f"/v0.1/checkouts/{id}",
-            json=body.model_dump(),
+            json=body.model_dump(exclude_unset=True),
             headers=headers,
         )
         if resp.status_code == 200:

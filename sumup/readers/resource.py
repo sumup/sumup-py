@@ -240,7 +240,7 @@ class ReadersResource(Resource):
         """
         resp = self._client.post(
             f"/v0.1/merchants/{merchant_code}/readers",
-            json=body.model_dump(),
+            json=body.model_dump(exclude_unset=True),
             headers=headers,
         )
         if resp.status_code == 201:
@@ -320,7 +320,7 @@ class ReadersResource(Resource):
         """
         resp = self._client.patch(
             f"/v0.1/merchants/{merchant_code}/readers/{id}",
-            json=body.model_dump(),
+            json=body.model_dump(exclude_unset=True),
             headers=headers,
         )
         if resp.status_code == 200:
@@ -364,7 +364,7 @@ class ReadersResource(Resource):
         """
         resp = self._client.post(
             f"/v0.1/merchants/{merchant_code}/readers/{reader_id}/checkout",
-            json=body.model_dump(),
+            json=body.model_dump(exclude_unset=True),
             headers=headers,
         )
         if resp.status_code == 201:
@@ -477,7 +477,7 @@ class AsyncReadersResource(AsyncResource):
         """
         resp = await self._client.post(
             f"/v0.1/merchants/{merchant_code}/readers",
-            json=body.model_dump(),
+            json=body.model_dump(exclude_unset=True),
             headers=headers,
         )
         if resp.status_code == 201:
@@ -557,7 +557,7 @@ class AsyncReadersResource(AsyncResource):
         """
         resp = await self._client.patch(
             f"/v0.1/merchants/{merchant_code}/readers/{id}",
-            json=body.model_dump(),
+            json=body.model_dump(exclude_unset=True),
             headers=headers,
         )
         if resp.status_code == 200:
@@ -601,7 +601,7 @@ class AsyncReadersResource(AsyncResource):
         """
         resp = await self._client.post(
             f"/v0.1/merchants/{merchant_code}/readers/{reader_id}/checkout",
-            json=body.model_dump(),
+            json=body.model_dump(exclude_unset=True),
             headers=headers,
         )
         if resp.status_code == 201:
