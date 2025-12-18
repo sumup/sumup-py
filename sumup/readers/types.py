@@ -340,6 +340,146 @@ class CreateReaderCheckoutRequest(pydantic.BaseModel):
 	"""
 
 
+class StatusResponse(pydantic.BaseModel):
+    """
+    Status of a device
+    """
+
+    data: typing.Any
+
+
+BadRequestErrorsType = typing.Literal[
+    "DUPLICATE_HEADERS", "INVALID_BEARER_TOKEN", "INVALID_USER_AGENT", "NOT_ENOUGH_UNPAID_PAYOUTS"
+]
+
+
+class BadRequestErrors(pydantic.BaseModel):
+    """
+    BadRequestErrors is a schema definition.
+    """
+
+    type: BadRequestErrorsType
+    """
+	Key indicating type of error
+	"""
+
+    detail: typing.Optional[str] = None
+    """
+	Fuller message giving context to error
+	"""
+
+
+class BadRequest(pydantic.BaseModel):
+    """
+    400 Bad Request
+    """
+
+    errors: BadRequestErrors
+
+
+UnauthorizedErrorsType = typing.Literal["INVALID_ACCESS_TOKEN", "INVALID_PASSWORD"]
+
+
+class UnauthorizedErrors(pydantic.BaseModel):
+    """
+    UnauthorizedErrors is a schema definition.
+    """
+
+    type: UnauthorizedErrorsType
+    """
+	Key indicating type of error
+	"""
+
+    detail: typing.Optional[str] = None
+    """
+	Fuller message giving context to error
+	"""
+
+
+class Unauthorized(pydantic.BaseModel):
+    """
+    401 Unauthorized
+    """
+
+    errors: UnauthorizedErrors
+
+
+class NotFoundErrors(pydantic.BaseModel):
+    """
+    NotFoundErrors is a schema definition.
+    """
+
+    detail: str
+    """
+	Fuller message giving context to error
+	"""
+
+
+class NotFound(pydantic.BaseModel):
+    """
+    404 Not Found
+    """
+
+    errors: NotFoundErrors
+
+
+class InternalServerErrorErrors(pydantic.BaseModel):
+    """
+    InternalServerErrorErrors is a schema definition.
+    """
+
+    detail: str
+    """
+	Fuller message giving context to error
+	"""
+
+
+class InternalServerError(pydantic.BaseModel):
+    """
+    500 Internal Server Error
+    """
+
+    errors: InternalServerErrorErrors
+
+
+class BadGatewayErrors(pydantic.BaseModel):
+    """
+    BadGatewayErrors is a schema definition.
+    """
+
+    detail: str
+    """
+	Fuller message giving context to error
+	"""
+
+
+class BadGateway(pydantic.BaseModel):
+    """
+    502 Bad Gateway
+    """
+
+    errors: BadGatewayErrors
+
+
+class GatewayTimeoutErrors(pydantic.BaseModel):
+    """
+    GatewayTimeoutErrors is a schema definition.
+    """
+
+    detail: str
+    """
+	Fuller message giving context to error
+	"""
+
+
+class GatewayTimeout(pydantic.BaseModel):
+    """
+    504 Gateway Timeout
+    """
+
+    errors: GatewayTimeoutErrors
+
+
 class CreateReaderTerminateErrorErrors(pydantic.BaseModel):
     """
     CreateReaderTerminateErrorErrors is a schema definition.

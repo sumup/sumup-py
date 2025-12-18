@@ -40,7 +40,19 @@ Currency = typing.Literal[
 
 TransactionBaseStatus = typing.Literal["CANCELLED", "FAILED", "PENDING", "SUCCESSFUL"]
 
-TransactionBasePaymentType = typing.Literal["BOLETO", "ECOM", "POS", "RECURRING"]
+TransactionBasePaymentType = typing.Literal[
+    "APM",
+    "BALANCE",
+    "BITCOIN",
+    "BOLETO",
+    "CASH",
+    "DIRECT_DEBIT",
+    "ECOM",
+    "MOTO",
+    "POS",
+    "RECURRING",
+    "UNKNOWN",
+]
 
 
 class TransactionBase(pydantic.BaseModel):
@@ -458,7 +470,19 @@ class Event(pydantic.BaseModel):
 
 TransactionFullStatus = typing.Literal["CANCELLED", "FAILED", "PENDING", "SUCCESSFUL"]
 
-TransactionFullPaymentType = typing.Literal["BOLETO", "ECOM", "POS", "RECURRING"]
+TransactionFullPaymentType = typing.Literal[
+    "APM",
+    "BALANCE",
+    "BITCOIN",
+    "BOLETO",
+    "CASH",
+    "DIRECT_DEBIT",
+    "ECOM",
+    "MOTO",
+    "POS",
+    "RECURRING",
+    "UNKNOWN",
+]
 
 TransactionFullEntryMode = typing.Literal["BOLETO", "CUSTOMER_ENTRY"]
 
@@ -712,7 +736,19 @@ class TransactionFull(pydantic.BaseModel):
 
 TransactionHistoryStatus = typing.Literal["CANCELLED", "FAILED", "PENDING", "SUCCESSFUL"]
 
-TransactionHistoryPaymentType = typing.Literal["BOLETO", "ECOM", "POS", "RECURRING"]
+TransactionHistoryPaymentType = typing.Literal[
+    "APM",
+    "BALANCE",
+    "BITCOIN",
+    "BOLETO",
+    "CASH",
+    "DIRECT_DEBIT",
+    "ECOM",
+    "MOTO",
+    "POS",
+    "RECURRING",
+    "UNKNOWN",
+]
 
 TransactionHistoryPayoutPlan = typing.Literal[
     "ACCELERATED_INSTALLMENT", "SINGLE_PAYMENT", "TRUE_INSTALLMENT"
