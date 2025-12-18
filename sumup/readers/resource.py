@@ -8,6 +8,7 @@ from .types import (
     ReaderId,
     ReaderName,
     ReaderPairingCode,
+    StatusResponse,
 )
 import httpx
 import typing
@@ -392,6 +393,75 @@ class ReadersResource(Resource):
         else:
             raise APIError("Unexpected response", status=resp.status_code, body=resp.text)
 
+    def show_reader_status(
+        self, merchant_code: str, reader_id: str, headers: typing.Optional[HeaderTypes] = None
+    ) -> StatusResponse:
+        """
+        Show a Reader Status
+
+        Show the last known status for a Reader.
+
+        This endpoint allows you to retrieve updates from the connected card reader, including the current screen beingdisplayed during the payment process and the device status (battery level, connectivity, and update state).
+
+        Supported States
+
+        * `IDLE` – Reader ready for next transaction
+        * `SELECTING_TIP` – Waiting for tip input
+        * `WAITING_FOR_CARD` – Awaiting card insert/tap
+        * `WAITING_FOR_PIN` – Waiting for PIN entry
+        * `WAITING_FOR_SIGNATURE` – Waiting for customer signature
+        * `UPDATING_FIRMWARE` – Firmware update in progress
+
+        Device Status
+
+        * `ONLINE` – Device connected and operational
+        * `OFFLINE` – Device disconnected (last state persisted)
+
+        **Note**: If the target device is a Solo, it must be in version 3.3.39.0 or higher.
+        """
+        resp = self._client.get(
+            f"/v0.1/merchants/{merchant_code}/readers/{reader_id}/status",
+            headers=headers,
+        )
+        if resp.status_code == 200:
+            return pydantic.TypeAdapter(StatusResponse).validate_python(resp.json())
+        elif resp.status_code == 400:
+            raise APIError(
+                "Response when given params (or one of them) are invalid",
+                status=resp.status_code,
+                body=resp.text,
+            )
+        elif resp.status_code == 401:
+            raise APIError(
+                "Response when given merchant's token is invalid",
+                status=resp.status_code,
+                body=resp.text,
+            )
+        elif resp.status_code == 404:
+            raise APIError(
+                "Response when given reader is not found", status=resp.status_code, body=resp.text
+            )
+        elif resp.status_code == 500:
+            raise APIError(
+                "Generic error response for backend failure",
+                status=resp.status_code,
+                body=resp.text,
+            )
+        elif resp.status_code == 502:
+            raise APIError(
+                "Generic error response for an upstream service failure",
+                status=resp.status_code,
+                body=resp.text,
+            )
+        elif resp.status_code == 504:
+            raise APIError(
+                "Generic error response for an upstream service timeout",
+                status=resp.status_code,
+                body=resp.text,
+            )
+        else:
+            raise APIError("Unexpected response", status=resp.status_code, body=resp.text)
+
     def terminate_checkout(
         self, merchant_code: str, reader_id: str, headers: typing.Optional[HeaderTypes] = None
     ):
@@ -626,6 +696,75 @@ class AsyncReadersResource(AsyncResource):
             raise APIError("Bad Gateway", status=resp.status_code, body=resp.text)
         elif resp.status_code == 504:
             raise APIError("Gateway Timeout", status=resp.status_code, body=resp.text)
+        else:
+            raise APIError("Unexpected response", status=resp.status_code, body=resp.text)
+
+    async def show_reader_status(
+        self, merchant_code: str, reader_id: str, headers: typing.Optional[HeaderTypes] = None
+    ) -> StatusResponse:
+        """
+        Show a Reader Status
+
+        Show the last known status for a Reader.
+
+        This endpoint allows you to retrieve updates from the connected card reader, including the current screen beingdisplayed during the payment process and the device status (battery level, connectivity, and update state).
+
+        Supported States
+
+        * `IDLE` – Reader ready for next transaction
+        * `SELECTING_TIP` – Waiting for tip input
+        * `WAITING_FOR_CARD` – Awaiting card insert/tap
+        * `WAITING_FOR_PIN` – Waiting for PIN entry
+        * `WAITING_FOR_SIGNATURE` – Waiting for customer signature
+        * `UPDATING_FIRMWARE` – Firmware update in progress
+
+        Device Status
+
+        * `ONLINE` – Device connected and operational
+        * `OFFLINE` – Device disconnected (last state persisted)
+
+        **Note**: If the target device is a Solo, it must be in version 3.3.39.0 or higher.
+        """
+        resp = await self._client.get(
+            f"/v0.1/merchants/{merchant_code}/readers/{reader_id}/status",
+            headers=headers,
+        )
+        if resp.status_code == 200:
+            return pydantic.TypeAdapter(StatusResponse).validate_python(resp.json())
+        elif resp.status_code == 400:
+            raise APIError(
+                "Response when given params (or one of them) are invalid",
+                status=resp.status_code,
+                body=resp.text,
+            )
+        elif resp.status_code == 401:
+            raise APIError(
+                "Response when given merchant's token is invalid",
+                status=resp.status_code,
+                body=resp.text,
+            )
+        elif resp.status_code == 404:
+            raise APIError(
+                "Response when given reader is not found", status=resp.status_code, body=resp.text
+            )
+        elif resp.status_code == 500:
+            raise APIError(
+                "Generic error response for backend failure",
+                status=resp.status_code,
+                body=resp.text,
+            )
+        elif resp.status_code == 502:
+            raise APIError(
+                "Generic error response for an upstream service failure",
+                status=resp.status_code,
+                body=resp.text,
+            )
+        elif resp.status_code == 504:
+            raise APIError(
+                "Generic error response for an upstream service timeout",
+                status=resp.status_code,
+                body=resp.text,
+            )
         else:
             raise APIError("Unexpected response", status=resp.status_code, body=resp.text)
 

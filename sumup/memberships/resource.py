@@ -53,12 +53,6 @@ class ListMembershipsParams(pydantic.BaseModel):
         serialization_alias="resource.parent.type",
         validation_alias=pydantic.AliasChoices("resource.parent.type", "resource_parent_type"),
     )
-    """
-	The type of the membership resource.
-	Possible values are:
-	* `merchant` - merchant account(s)
-	* `organization` - organization(s)
-	"""
 
     resource_type: typing.Optional[ResourceType] = pydantic.Field(
         default=None,

@@ -21,7 +21,19 @@ CreateCheckoutBodyStatus = typing.Literal["FAILED", "PAID", "PENDING"]
 
 CreateCheckoutBodyTransactionStatus = typing.Literal["CANCELLED", "FAILED", "PENDING", "SUCCESSFUL"]
 
-CreateCheckoutBodyTransactionPaymentType = typing.Literal["BOLETO", "ECOM", "POS", "RECURRING"]
+CreateCheckoutBodyTransactionPaymentType = typing.Literal[
+    "APM",
+    "BALANCE",
+    "BITCOIN",
+    "BOLETO",
+    "CASH",
+    "DIRECT_DEBIT",
+    "ECOM",
+    "MOTO",
+    "POS",
+    "RECURRING",
+    "UNKNOWN",
+]
 
 CreateCheckoutBodyTransactionEntryMode = typing.Literal["BOLETO", "CUSTOMER_ENTRY"]
 

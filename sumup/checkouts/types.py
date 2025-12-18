@@ -95,7 +95,19 @@ class MandateResponse(pydantic.BaseModel):
 
 TransactionBaseStatus = typing.Literal["CANCELLED", "FAILED", "PENDING", "SUCCESSFUL"]
 
-TransactionBasePaymentType = typing.Literal["BOLETO", "ECOM", "POS", "RECURRING"]
+TransactionBasePaymentType = typing.Literal[
+    "APM",
+    "BALANCE",
+    "BITCOIN",
+    "BOLETO",
+    "CASH",
+    "DIRECT_DEBIT",
+    "ECOM",
+    "MOTO",
+    "POS",
+    "RECURRING",
+    "UNKNOWN",
+]
 
 
 class TransactionBase(pydantic.BaseModel):
@@ -189,7 +201,19 @@ CheckoutStatus = typing.Literal["EXPIRED", "FAILED", "PAID", "PENDING"]
 
 CheckoutTransactionStatus = typing.Literal["CANCELLED", "FAILED", "PENDING", "SUCCESSFUL"]
 
-CheckoutTransactionPaymentType = typing.Literal["BOLETO", "ECOM", "POS", "RECURRING"]
+CheckoutTransactionPaymentType = typing.Literal[
+    "APM",
+    "BALANCE",
+    "BITCOIN",
+    "BOLETO",
+    "CASH",
+    "DIRECT_DEBIT",
+    "ECOM",
+    "MOTO",
+    "POS",
+    "RECURRING",
+    "UNKNOWN",
+]
 
 CheckoutTransactionEntryMode = typing.Literal["BOLETO", "CUSTOMER_ENTRY"]
 
@@ -397,7 +421,19 @@ CheckoutCreateRequestTransactionStatus = typing.Literal[
     "CANCELLED", "FAILED", "PENDING", "SUCCESSFUL"
 ]
 
-CheckoutCreateRequestTransactionPaymentType = typing.Literal["BOLETO", "ECOM", "POS", "RECURRING"]
+CheckoutCreateRequestTransactionPaymentType = typing.Literal[
+    "APM",
+    "BALANCE",
+    "BITCOIN",
+    "BOLETO",
+    "CASH",
+    "DIRECT_DEBIT",
+    "ECOM",
+    "MOTO",
+    "POS",
+    "RECURRING",
+    "UNKNOWN",
+]
 
 CheckoutCreateRequestTransactionEntryMode = typing.Literal["BOLETO", "CUSTOMER_ENTRY"]
 
@@ -568,7 +604,19 @@ CheckoutSuccessStatus = typing.Literal["EXPIRED", "FAILED", "PAID", "PENDING"]
 
 CheckoutSuccessTransactionStatus = typing.Literal["CANCELLED", "FAILED", "PENDING", "SUCCESSFUL"]
 
-CheckoutSuccessTransactionPaymentType = typing.Literal["BOLETO", "ECOM", "POS", "RECURRING"]
+CheckoutSuccessTransactionPaymentType = typing.Literal[
+    "APM",
+    "BALANCE",
+    "BITCOIN",
+    "BOLETO",
+    "CASH",
+    "DIRECT_DEBIT",
+    "ECOM",
+    "MOTO",
+    "POS",
+    "RECURRING",
+    "UNKNOWN",
+]
 
 CheckoutSuccessTransactionEntryMode = typing.Literal["BOLETO", "CUSTOMER_ENTRY"]
 
