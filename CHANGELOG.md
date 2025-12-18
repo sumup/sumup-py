@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.0.16](https://github.com/sumup/sumup-py/compare/v0.0.15...v0.0.16) (2025-12-18)
+
+
+### Bug Fixes
+
+* payment_type enum ([#146](https://github.com/sumup/sumup-py/issues/146)) ([5a2211c](https://github.com/sumup/sumup-py/commit/5a2211ccb5f1cee1304ad84bc383a3853416cd9a))
+
 ## [0.0.15](https://github.com/sumup/sumup-py/compare/v0.0.14...v0.0.15) (2025-12-15)
 
 
