@@ -9,14 +9,9 @@ from .resource import (
     ListMerchantMembers200Response,
 )
 from .types import (
-    Attributes,
-    Invite,
     Member,
-    MembershipStatus,
     MembershipUser,
     MembershipUserClassic,
-    Metadata,
-    Problem,
 )
 
 
@@ -28,12 +23,7 @@ __all__ = [
     "UpdateMerchantMemberBody",
     "ListMerchantMembersParams",
     "ListMerchantMembers200Response",
-    "Attributes",
-    "Invite",
     "Member",
-    "MembershipStatus",
     "MembershipUser",
     "MembershipUserClassic",
-    "Metadata",
-    "Problem",
 ]

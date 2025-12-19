@@ -6,7 +6,6 @@ from .resource import (
     ListPayoutsParams,
 )
 from .types import (
-    Error,
     FinancialPayouts,
 )
 
@@ -16,6 +15,5 @@ __all__ = [
     "AsyncPayoutsResource",
     "ListPayoutsV1Params",
     "ListPayoutsParams",
-    "Error",
     "FinancialPayouts",
 ]

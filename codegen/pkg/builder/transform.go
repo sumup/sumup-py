@@ -261,11 +261,21 @@ func (b *Builder) generateSchemaComponents(name string, spec *base.Schema) []Wri
 func (b *Builder) genSchema(sp *base.SchemaProxy, name string) (string, []Writable) {
 	if sp.GetReference() != "" {
 		ref := strings.TrimPrefix(sp.GetReference(), "#/components/schemas/")
+		typeName := strcase.ToCamel(ref)
 		if len(sp.Schema().Enum) > 0 {
-			return strcase.ToCamel(stringx.MakeSingular(ref)), nil
+			typeName = strcase.ToCamel(stringx.MakeSingular(ref))
 		}
 
-		return strcase.ToCamel(ref), nil
+		// Check if this is a shared schema and we're not generating the shared file itself
+		if b.currentTag != "_shared" && b.isSharedSchema(sp) {
+			typeName = "_shared." + typeName
+		} else if b.currentTag == "_shared" && b.isSharedSchema(sp) {
+			// When generating _shared.py, use string forward reference for shared schemas
+			// to avoid ordering issues
+			typeName = "\"" + typeName + "\""
+		}
+
+		return typeName, nil
 	}
 
 	types := make([]Writable, 0)
@@ -317,6 +327,18 @@ func (b *Builder) genSchema(sp *base.SchemaProxy, name string) (string, []Writab
 		}
 		return "typing.Any", nil
 	}
+}
+
+// isSharedSchema checks if a schema is in the shared schemas collection
+func (b *Builder) isSharedSchema(sp *base.SchemaProxy) bool {
+	if sharedSchemas, ok := b.schemasByTag["_shared"]; ok {
+		for _, shared := range sharedSchemas {
+			if shared.GetReference() == sp.GetReference() {
+				return true
+			}
+		}
+	}
+	return false
 }
 
 // createObject converts openapi schema into golang object.

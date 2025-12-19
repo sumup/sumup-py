@@ -45,19 +45,3 @@ FinancialPayouts = list[FinancialPayout]
 """
 FinancialPayouts is a schema definition.
 """
-
-
-class Error(pydantic.BaseModel):
-    """
-    Error message structure.
-    """
-
-    error_code: typing.Optional[str] = None
-    """
-	Platform code for the error.
-	"""
-
-    message: typing.Optional[str] = None
-    """
-	Short description of the error.
-	"""

@@ -6,14 +6,8 @@ from .resource import (
     UpdateCustomerBody,
 )
 from .types import (
-    AddressLegacy,
-    CardType,
     Customer,
-    Error,
-    ErrorForbidden,
-    MandateResponse,
     PaymentInstrumentResponse,
-    PersonalDetails,
 )
 
 
@@ -22,12 +16,6 @@ __all__ = [
     "AsyncCustomersResource",
     "CreateCustomerBody",
     "UpdateCustomerBody",
-    "AddressLegacy",
-    "CardType",
     "Customer",
-    "Error",
-    "ErrorForbidden",
-    "MandateResponse",
     "PaymentInstrumentResponse",
-    "PersonalDetails",
 ]

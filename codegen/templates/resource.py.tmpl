@@ -4,6 +4,9 @@ from .._exceptions import APIError
 {{- if .UsesSecret }}
 from .._secret import Secret
 {{- end }}
+{{- if .UsesShared }}
+{{ .SharedImport }}
+{{- end }}
 {{- with .TypeNames }}
 from .types import {{ join ", " . }}
 {{- end }}

@@ -375,11 +375,17 @@ func (b *Builder) convertToValidPyType(property string, r *base.SchemaProxy) str
 func (b *Builder) getReferenceSchema(v *base.SchemaProxy) string {
 	if v.GoLow().IsReference() {
 		ref := strings.TrimPrefix(v.GetReference(), "#/components/schemas/")
+		typeName := strcase.ToCamel(ref)
 		if len(v.Schema().Enum) > 0 {
-			return strcase.ToCamel(stringx.MakeSingular(ref))
+			typeName = strcase.ToCamel(stringx.MakeSingular(ref))
 		}
 
-		return strcase.ToCamel(ref)
+		// Check if this is a shared schema and we're not generating the shared file itself
+		if b.currentTag != "_shared" && b.isSharedSchema(v) {
+			typeName = "_shared." + typeName
+		}
+
+		return typeName
 	}
 
 	return ""

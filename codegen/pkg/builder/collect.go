@@ -49,6 +49,8 @@ func (b *Builder) collectPaths() {
 func (b *Builder) collectSchemas() {
 	// Map of schemas grouped by tag
 	schemasByTag := make(map[string][]*base.SchemaProxy)
+	// Track which tags reference each schema
+	schemaRefs := make(map[string][]string)
 
 	for path, pathItem := range b.spec.Paths.PathItems.FromOldest() {
 		for method, op := range pathItem.GetOperations().FromOldest() {
@@ -78,7 +80,81 @@ func (b *Builder) collectSchemas() {
 					}) {
 						schemasByTag[tagLower] = append(schemasByTag[tagLower], schema)
 					}
+					if !slices.Contains(schemaRefs[schema.GetReference()], tagLower) {
+						schemaRefs[schema.GetReference()] = append(schemaRefs[schema.GetReference()], tagLower)
+					}
 				}
+			}
+		}
+	}
+
+	// Identify schemas that are referenced by multiple tags and move them to shared
+	for schemaRef, tags := range schemaRefs {
+		if len(tags) > 1 {
+			// Remove from individual tags
+			for _, tag := range tags {
+				tagLower := strings.ToLower(tag)
+				idx := slices.IndexFunc(schemasByTag[tagLower], func(sp *base.SchemaProxy) bool {
+					return sp.GetReference() == schemaRef
+				})
+				if idx != -1 {
+					schemasByTag[tagLower] = append(schemasByTag[tagLower][:idx], schemasByTag[tagLower][idx+1:]...)
+				}
+			}
+			// Add to shared
+			if schemasByTag["_shared"] == nil {
+				schemasByTag["_shared"] = make([]*base.SchemaProxy, 0)
+			}
+			// Find the schema proxy to add
+			for _, schemas := range schemasByTag {
+				for _, sp := range schemas {
+					if sp.GetReference() == schemaRef {
+						if !slices.ContainsFunc(schemasByTag["_shared"], func(existing *base.SchemaProxy) bool {
+							return existing.GetReference() == schemaRef
+						}) {
+							schemasByTag["_shared"] = append(schemasByTag["_shared"], sp)
+						}
+						break
+					}
+				}
+			}
+		}
+	}
+
+	// Need to find schemas that were removed from other tags but not added yet
+	for schemaRef, tags := range schemaRefs {
+		if len(tags) > 1 {
+			// Try to find this schema in any tag's collection from the original data
+			var foundSchema *base.SchemaProxy
+			for _, pathItem := range b.spec.Paths.PathItems.FromOldest() {
+				for _, op := range pathItem.GetOperations().FromOldest() {
+					c := make(SchemaProxyCollection, 0, 100)
+					c.collectSchemasInResponse(op)
+					c.collectSchemasInParams(op)
+					c.collectSchemasInRequest(op)
+					
+					for _, schema := range c {
+						if schema.GetReference() == schemaRef {
+							foundSchema = schema
+							break
+						}
+					}
+					if foundSchema != nil {
+						break
+					}
+				}
+				if foundSchema != nil {
+					break
+				}
+			}
+			
+			if foundSchema != nil && !slices.ContainsFunc(schemasByTag["_shared"], func(sp *base.SchemaProxy) bool {
+				return sp.GetReference() == schemaRef
+			}) {
+				if schemasByTag["_shared"] == nil {
+					schemasByTag["_shared"] = make([]*base.SchemaProxy, 0)
+				}
+				schemasByTag["_shared"] = append(schemasByTag["_shared"], foundSchema)
 			}
 		}
 	}

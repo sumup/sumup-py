@@ -16,20 +16,26 @@ import (
 )
 
 type typesTemplateData struct {
-	PackageName string
-	Types       []Writable
-	UsesSecret  bool
+	PackageName  string
+	Types        []Writable
+	UsesSecret   bool
+	UsesShared   bool
+	SharedImport string
 }
 
 func (b *Builder) generateResourceTypes(tag *base.Tag, schemas []*base.SchemaProxy) error {
+	b.currentTag = strings.ToLower(tag.Name)
 	types := b.schemasToTypes(schemas)
 	usesSecret := usesSecretType(types)
+	usesShared, sharedImport := b.usesSharedTypes(types, nil)
 
 	typesBuf := bytes.NewBuffer(nil)
 	if err := b.templates.ExecuteTemplate(typesBuf, "types.py.tmpl", typesTemplateData{
-		PackageName: strcase.ToSnake(tag.Name),
-		Types:       types,
-		UsesSecret:  usesSecret,
+		PackageName:  strcase.ToSnake(tag.Name),
+		Types:        types,
+		UsesSecret:   usesSecret,
+		UsesShared:   usesShared,
+		SharedImport: sharedImport,
 	}); err != nil {
 		return err
 	}
@@ -96,16 +102,19 @@ func (b *Builder) generateResourceIndex(tagName string, resourceTypes []string) 
 }
 
 type resourceTemplateData struct {
-	PackageName string
-	TypeNames   []string
-	Params      []Writable
-	Service     string
-	Methods     []*Method
-	UsesSecret  bool
+	PackageName  string
+	TypeNames    []string
+	Params       []Writable
+	Service      string
+	Methods      []*Method
+	UsesSecret   bool
+	UsesShared   bool
+	SharedImport string
 }
 
 func (b *Builder) generateResourceFile(tagName string, paths *v3.Paths) ([]string, error) {
 	tag := b.tagByTagName(tagName)
+	b.currentTag = strings.ToLower(tag.Name)
 
 	resolvedSchemas := b.schemasByTag[tagName]
 	if err := b.generateResourceTypes(tag, b.schemasByTag[tagName]); err != nil {
@@ -143,15 +152,18 @@ func (b *Builder) generateResourceFile(tagName string, paths *v3.Paths) ([]strin
 	)
 
 	usesSecret := usesSecretType(innerTypes)
+	usesShared, sharedImport := b.usesSharedTypes(innerTypes, methods)
 
 	serviceBuf := bytes.NewBuffer(nil)
 	if err := b.templates.ExecuteTemplate(serviceBuf, "resource.py.tmpl", resourceTemplateData{
-		PackageName: strcase.ToSnake(tag.Name),
-		TypeNames:   typeNames,
-		Params:      innerTypes,
-		Service:     strcase.ToCamel(tag.Name),
-		Methods:     methods,
-		UsesSecret:  usesSecret,
+		PackageName:  strcase.ToSnake(tag.Name),
+		TypeNames:    typeNames,
+		Params:       innerTypes,
+		Service:      strcase.ToCamel(tag.Name),
+		Methods:      methods,
+		UsesSecret:   usesSecret,
+		UsesShared:   usesShared,
+		SharedImport: sharedImport,
 	}); err != nil {
 		return nil, err
 	}
@@ -178,6 +190,40 @@ func (b *Builder) generateResourceFile(tagName string, paths *v3.Paths) ([]strin
 	}
 
 	return resourceTypes, nil
+}
+
+func (b *Builder) generateSharedResource(schemas []*base.SchemaProxy) error {
+	b.currentTag = "_shared"
+	types := b.schemasToTypes(schemas)
+	usesSecret := usesSecretType(types)
+
+	slog.Info("generating shared schemas",
+		slog.Int("schema_count", len(schemas)),
+	)
+
+	typesBuf := bytes.NewBuffer(nil)
+	if err := b.templates.ExecuteTemplate(typesBuf, "types.py.tmpl", typesTemplateData{
+		PackageName: "_shared",
+		Types:       types,
+		UsesSecret:  usesSecret,
+	}); err != nil {
+		return err
+	}
+
+	sharedFileName := path.Join(b.cfg.Out, "_shared.py")
+	sharedFile, err := openGeneratedFile(sharedFileName)
+	if err != nil {
+		return err
+	}
+	defer func() {
+		_ = sharedFile.Close()
+	}()
+
+	if _, err := sharedFile.Write(typesBuf.Bytes()); err != nil {
+		return err
+	}
+
+	return nil
 }
 
 func (b *Builder) generateResource(tagName string, paths *v3.Paths) error {
@@ -227,6 +273,51 @@ func writableUsesSecret(w Writable) bool {
 		}
 	case *TypeAlias:
 		if strings.Contains(typed.Type, "Secret") {
+			return true
+		}
+	}
+	return false
+}
+
+// usesSharedTypes checks if any types or methods reference shared schemas
+// Returns whether shared is used and the import statement if needed
+func (b *Builder) usesSharedTypes(writables []Writable, methods []*Method) (bool, string) {
+	// Check if we have any shared schemas at all
+	if _, ok := b.schemasByTag["_shared"]; !ok {
+		return false, ""
+	}
+
+	// Check writables for _shared references
+	for _, w := range writables {
+		if containsSharedRef(w) {
+			return true, "from .. import _shared"
+		}
+	}
+
+	// Check methods for _shared references (only if methods are provided)
+	if methods != nil {
+		for _, m := range methods {
+			for _, r := range m.Responses {
+				if r.Type != "" && strings.Contains(r.Type, "_shared.") {
+					return true, "from .. import _shared"
+				}
+			}
+		}
+	}
+
+	return false, ""
+}
+
+func containsSharedRef(w Writable) bool {
+	switch typed := w.(type) {
+	case *ClassDeclaration:
+		for _, f := range typed.Fields {
+			if strings.Contains(f.Type, "_shared.") {
+				return true
+			}
+		}
+	case *TypeAlias:
+		if strings.Contains(typed.Type, "_shared.") {
 			return true
 		}
 	}

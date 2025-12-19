@@ -35,6 +35,10 @@ type Builder struct {
 	templates *template.Template
 
 	start time.Time
+
+	// currentTag is used to track which tag we're currently generating
+	// to determine if we need to add _shared. prefix
+	currentTag string
 }
 
 // Config is builder configuration which configures output options.
@@ -88,6 +92,13 @@ func (b *Builder) Load(spec *v3.Document) error {
 func (b *Builder) Build() error {
 	if b.spec == nil {
 		return fmt.Errorf("missing specs: call Load to load the specs first")
+	}
+
+	// Generate shared schemas first if they exist
+	if sharedSchemas, ok := b.schemasByTag["_shared"]; ok && len(sharedSchemas) > 0 {
+		if err := b.generateSharedResource(sharedSchemas); err != nil {
+			return fmt.Errorf("generate shared resource: %w", err)
+		}
 	}
 
 	for tagName, paths := range b.pathsByTag {

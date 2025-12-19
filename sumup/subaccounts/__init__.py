@@ -11,7 +11,6 @@ from .resource import (
 from .types import (
     Operator,
     Permissions,
-    Problem,
 )
 
 
@@ -25,5 +24,4 @@ __all__ = [
     "ListSubAccountsParams",
     "Operator",
     "Permissions",
-    "Problem",
 ]
