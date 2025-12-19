@@ -157,7 +157,34 @@ class TransactionBase(pydantic.BaseModel):
 	"""
 
 
-TransactionCheckoutInfoEntryMode = typing.Literal["BOLETO", "CUSTOMER_ENTRY"]
+TransactionCheckoutInfoEntryMode = typing.Literal[
+    "APPLE_PAY",
+    "BANCONTACT",
+    "BLIK",
+    "BOLETO",
+    "CHIP",
+    "CONTACTLESS",
+    "CONTACTLESS_MAGSTRIPE",
+    "CUSTOMER_ENTRY",
+    "DIRECT_DEBIT",
+    "EPS",
+    "GIROPAY",
+    "GOOGLE_PAY",
+    "IDEAL",
+    "MAGSTRIPE",
+    "MAGSTRIPE_FALLBACK",
+    "MANUAL_ENTRY",
+    "MOTO",
+    "MYBANK",
+    "N/A",
+    "NONE",
+    "P24",
+    "PAYPAL",
+    "PIX",
+    "QR_CODE_PIX",
+    "SATISPAY",
+    "SOFORT",
+]
 
 
 class TransactionCheckoutInfo(pydantic.BaseModel):
@@ -215,7 +242,34 @@ CheckoutTransactionPaymentType = typing.Literal[
     "UNKNOWN",
 ]
 
-CheckoutTransactionEntryMode = typing.Literal["BOLETO", "CUSTOMER_ENTRY"]
+CheckoutTransactionEntryMode = typing.Literal[
+    "APPLE_PAY",
+    "BANCONTACT",
+    "BLIK",
+    "BOLETO",
+    "CHIP",
+    "CONTACTLESS",
+    "CONTACTLESS_MAGSTRIPE",
+    "CUSTOMER_ENTRY",
+    "DIRECT_DEBIT",
+    "EPS",
+    "GIROPAY",
+    "GOOGLE_PAY",
+    "IDEAL",
+    "MAGSTRIPE",
+    "MAGSTRIPE_FALLBACK",
+    "MANUAL_ENTRY",
+    "MOTO",
+    "MYBANK",
+    "N/A",
+    "NONE",
+    "P24",
+    "PAYPAL",
+    "PIX",
+    "QR_CODE_PIX",
+    "SATISPAY",
+    "SOFORT",
+]
 
 
 class CheckoutTransaction(pydantic.BaseModel):
@@ -435,7 +489,34 @@ CheckoutCreateRequestTransactionPaymentType = typing.Literal[
     "UNKNOWN",
 ]
 
-CheckoutCreateRequestTransactionEntryMode = typing.Literal["BOLETO", "CUSTOMER_ENTRY"]
+CheckoutCreateRequestTransactionEntryMode = typing.Literal[
+    "APPLE_PAY",
+    "BANCONTACT",
+    "BLIK",
+    "BOLETO",
+    "CHIP",
+    "CONTACTLESS",
+    "CONTACTLESS_MAGSTRIPE",
+    "CUSTOMER_ENTRY",
+    "DIRECT_DEBIT",
+    "EPS",
+    "GIROPAY",
+    "GOOGLE_PAY",
+    "IDEAL",
+    "MAGSTRIPE",
+    "MAGSTRIPE_FALLBACK",
+    "MANUAL_ENTRY",
+    "MOTO",
+    "MYBANK",
+    "N/A",
+    "NONE",
+    "P24",
+    "PAYPAL",
+    "PIX",
+    "QR_CODE_PIX",
+    "SATISPAY",
+    "SOFORT",
+]
 
 
 class CheckoutCreateRequestTransaction(pydantic.BaseModel):
@@ -618,7 +699,34 @@ CheckoutSuccessTransactionPaymentType = typing.Literal[
     "UNKNOWN",
 ]
 
-CheckoutSuccessTransactionEntryMode = typing.Literal["BOLETO", "CUSTOMER_ENTRY"]
+CheckoutSuccessTransactionEntryMode = typing.Literal[
+    "APPLE_PAY",
+    "BANCONTACT",
+    "BLIK",
+    "BOLETO",
+    "CHIP",
+    "CONTACTLESS",
+    "CONTACTLESS_MAGSTRIPE",
+    "CUSTOMER_ENTRY",
+    "DIRECT_DEBIT",
+    "EPS",
+    "GIROPAY",
+    "GOOGLE_PAY",
+    "IDEAL",
+    "MAGSTRIPE",
+    "MAGSTRIPE_FALLBACK",
+    "MANUAL_ENTRY",
+    "MOTO",
+    "MYBANK",
+    "N/A",
+    "NONE",
+    "P24",
+    "PAYPAL",
+    "PIX",
+    "QR_CODE_PIX",
+    "SATISPAY",
+    "SOFORT",
+]
 
 
 class CheckoutSuccessTransaction(pydantic.BaseModel):

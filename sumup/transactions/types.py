@@ -102,7 +102,34 @@ class TransactionBase(pydantic.BaseModel):
 	"""
 
 
-TransactionCheckoutInfoEntryMode = typing.Literal["BOLETO", "CUSTOMER_ENTRY"]
+TransactionCheckoutInfoEntryMode = typing.Literal[
+    "APPLE_PAY",
+    "BANCONTACT",
+    "BLIK",
+    "BOLETO",
+    "CHIP",
+    "CONTACTLESS",
+    "CONTACTLESS_MAGSTRIPE",
+    "CUSTOMER_ENTRY",
+    "DIRECT_DEBIT",
+    "EPS",
+    "GIROPAY",
+    "GOOGLE_PAY",
+    "IDEAL",
+    "MAGSTRIPE",
+    "MAGSTRIPE_FALLBACK",
+    "MANUAL_ENTRY",
+    "MOTO",
+    "MYBANK",
+    "N/A",
+    "NONE",
+    "P24",
+    "PAYPAL",
+    "PIX",
+    "QR_CODE_PIX",
+    "SATISPAY",
+    "SOFORT",
+]
 
 
 class TransactionCheckoutInfo(pydantic.BaseModel):
@@ -484,7 +511,34 @@ TransactionFullPaymentType = typing.Literal[
     "UNKNOWN",
 ]
 
-TransactionFullEntryMode = typing.Literal["BOLETO", "CUSTOMER_ENTRY"]
+TransactionFullEntryMode = typing.Literal[
+    "APPLE_PAY",
+    "BANCONTACT",
+    "BLIK",
+    "BOLETO",
+    "CHIP",
+    "CONTACTLESS",
+    "CONTACTLESS_MAGSTRIPE",
+    "CUSTOMER_ENTRY",
+    "DIRECT_DEBIT",
+    "EPS",
+    "GIROPAY",
+    "GOOGLE_PAY",
+    "IDEAL",
+    "MAGSTRIPE",
+    "MAGSTRIPE_FALLBACK",
+    "MANUAL_ENTRY",
+    "MOTO",
+    "MYBANK",
+    "N/A",
+    "NONE",
+    "P24",
+    "PAYPAL",
+    "PIX",
+    "QR_CODE_PIX",
+    "SATISPAY",
+    "SOFORT",
+]
 
 TransactionFullPayoutPlan = typing.Literal[
     "ACCELERATED_INSTALLMENT", "SINGLE_PAYMENT", "TRUE_INSTALLMENT"
