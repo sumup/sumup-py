@@ -38,9 +38,7 @@ Currency = typing.Literal[
     "USD",
 ]
 
-TransactionBaseStatus = typing.Literal["CANCELLED", "FAILED", "PENDING", "SUCCESSFUL"]
-
-TransactionBasePaymentType = typing.Literal[
+PaymentType = typing.Literal[
     "APM",
     "BALANCE",
     "BITCOIN",
@@ -53,6 +51,8 @@ TransactionBasePaymentType = typing.Literal[
     "RECURRING",
     "UNKNOWN",
 ]
+
+TransactionBaseStatus = typing.Literal["CANCELLED", "FAILED", "PENDING", "SUCCESSFUL"]
 
 
 class TransactionBase(pydantic.BaseModel):
@@ -81,7 +81,7 @@ class TransactionBase(pydantic.BaseModel):
 	Min: 1
 	"""
 
-    payment_type: typing.Optional[TransactionBasePaymentType] = None
+    payment_type: typing.Optional[PaymentType] = None
     """
 	Payment type used for the transaction.
 	"""
@@ -102,7 +102,7 @@ class TransactionBase(pydantic.BaseModel):
 	"""
 
 
-TransactionCheckoutInfoEntryMode = typing.Literal[
+EntryMode = typing.Literal[
     "APPLE_PAY",
     "BANCONTACT",
     "BLIK",
@@ -142,7 +142,7 @@ class TransactionCheckoutInfo(pydantic.BaseModel):
 	Authorization code for the transaction sent by the payment card issuer or bank. Applicable only to card payments.
 	"""
 
-    entry_mode: typing.Optional[TransactionCheckoutInfoEntryMode] = None
+    entry_mode: typing.Optional[EntryMode] = None
     """
 	Entry mode of the payment details.
 	"""
@@ -497,49 +497,6 @@ class Event(pydantic.BaseModel):
 
 TransactionFullStatus = typing.Literal["CANCELLED", "FAILED", "PENDING", "SUCCESSFUL"]
 
-TransactionFullPaymentType = typing.Literal[
-    "APM",
-    "BALANCE",
-    "BITCOIN",
-    "BOLETO",
-    "CASH",
-    "DIRECT_DEBIT",
-    "ECOM",
-    "MOTO",
-    "POS",
-    "RECURRING",
-    "UNKNOWN",
-]
-
-TransactionFullEntryMode = typing.Literal[
-    "APPLE_PAY",
-    "BANCONTACT",
-    "BLIK",
-    "BOLETO",
-    "CHIP",
-    "CONTACTLESS",
-    "CONTACTLESS_MAGSTRIPE",
-    "CUSTOMER_ENTRY",
-    "DIRECT_DEBIT",
-    "EPS",
-    "GIROPAY",
-    "GOOGLE_PAY",
-    "IDEAL",
-    "MAGSTRIPE",
-    "MAGSTRIPE_FALLBACK",
-    "MANUAL_ENTRY",
-    "MOTO",
-    "MYBANK",
-    "N/A",
-    "NONE",
-    "P24",
-    "PAYPAL",
-    "PIX",
-    "QR_CODE_PIX",
-    "SATISPAY",
-    "SOFORT",
-]
-
 TransactionFullPayoutPlan = typing.Literal[
     "ACCELERATED_INSTALLMENT", "SINGLE_PAYMENT", "TRUE_INSTALLMENT"
 ]
@@ -623,7 +580,7 @@ class TransactionFull(pydantic.BaseModel):
 	Three-letter [ISO4217](https://en.wikipedia.org/wiki/ISO_4217) code of the currency for the amount. Currently supportedcurrency values are enumerated above.
 	"""
 
-    entry_mode: typing.Optional[TransactionFullEntryMode] = None
+    entry_mode: typing.Optional[EntryMode] = None
     """
 	Entry mode of the payment details.
 	"""
@@ -691,7 +648,7 @@ class TransactionFull(pydantic.BaseModel):
 	Unique code of the registered merchant to whom the payment is made.
 	"""
 
-    payment_type: typing.Optional[TransactionFullPaymentType] = None
+    payment_type: typing.Optional[PaymentType] = None
     """
 	Payment type used for the transaction.
 	"""
@@ -788,29 +745,7 @@ class TransactionFull(pydantic.BaseModel):
 	"""
 
 
-TransactionHistoryStatus = typing.Literal["CANCELLED", "FAILED", "PENDING", "SUCCESSFUL"]
-
-TransactionHistoryPaymentType = typing.Literal[
-    "APM",
-    "BALANCE",
-    "BITCOIN",
-    "BOLETO",
-    "CASH",
-    "DIRECT_DEBIT",
-    "ECOM",
-    "MOTO",
-    "POS",
-    "RECURRING",
-    "UNKNOWN",
-]
-
-TransactionHistoryPayoutPlan = typing.Literal[
-    "ACCELERATED_INSTALLMENT", "SINGLE_PAYMENT", "TRUE_INSTALLMENT"
-]
-
-TransactionHistoryType = typing.Literal["CHARGE_BACK", "PAYMENT", "REFUND"]
-
-TransactionHistoryCardType = typing.Literal[
+CardType = typing.Literal[
     "AMEX",
     "CUP",
     "DINERS",
@@ -827,6 +762,14 @@ TransactionHistoryCardType = typing.Literal[
     "VISA_VPAY",
 ]
 
+TransactionHistoryStatus = typing.Literal["CANCELLED", "FAILED", "PENDING", "SUCCESSFUL"]
+
+TransactionHistoryPayoutPlan = typing.Literal[
+    "ACCELERATED_INSTALLMENT", "SINGLE_PAYMENT", "TRUE_INSTALLMENT"
+]
+
+TransactionHistoryType = typing.Literal["CHARGE_BACK", "PAYMENT", "REFUND"]
+
 
 class TransactionHistory(pydantic.BaseModel):
     """
@@ -838,7 +781,7 @@ class TransactionHistory(pydantic.BaseModel):
 	Total amount of the transaction.
 	"""
 
-    card_type: typing.Optional[TransactionHistoryCardType] = None
+    card_type: typing.Optional[CardType] = None
     """
 	Issuing card network of the payment card used for the transaction.
 	"""
@@ -864,7 +807,7 @@ class TransactionHistory(pydantic.BaseModel):
 	Min: 1
 	"""
 
-    payment_type: typing.Optional[TransactionHistoryPaymentType] = None
+    payment_type: typing.Optional[PaymentType] = None
     """
 	Payment type used for the transaction.
 	"""

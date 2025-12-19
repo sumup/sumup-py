@@ -93,9 +93,7 @@ class MandateResponse(pydantic.BaseModel):
 	"""
 
 
-TransactionBaseStatus = typing.Literal["CANCELLED", "FAILED", "PENDING", "SUCCESSFUL"]
-
-TransactionBasePaymentType = typing.Literal[
+PaymentType = typing.Literal[
     "APM",
     "BALANCE",
     "BITCOIN",
@@ -108,6 +106,8 @@ TransactionBasePaymentType = typing.Literal[
     "RECURRING",
     "UNKNOWN",
 ]
+
+TransactionBaseStatus = typing.Literal["CANCELLED", "FAILED", "PENDING", "SUCCESSFUL"]
 
 
 class TransactionBase(pydantic.BaseModel):
@@ -136,7 +136,7 @@ class TransactionBase(pydantic.BaseModel):
 	Min: 1
 	"""
 
-    payment_type: typing.Optional[TransactionBasePaymentType] = None
+    payment_type: typing.Optional[PaymentType] = None
     """
 	Payment type used for the transaction.
 	"""
@@ -157,7 +157,7 @@ class TransactionBase(pydantic.BaseModel):
 	"""
 
 
-TransactionCheckoutInfoEntryMode = typing.Literal[
+EntryMode = typing.Literal[
     "APPLE_PAY",
     "BANCONTACT",
     "BLIK",
@@ -197,7 +197,7 @@ class TransactionCheckoutInfo(pydantic.BaseModel):
 	Authorization code for the transaction sent by the payment card issuer or bank. Applicable only to card payments.
 	"""
 
-    entry_mode: typing.Optional[TransactionCheckoutInfoEntryMode] = None
+    entry_mode: typing.Optional[EntryMode] = None
     """
 	Entry mode of the payment details.
 	"""
@@ -228,49 +228,6 @@ CheckoutStatus = typing.Literal["EXPIRED", "FAILED", "PAID", "PENDING"]
 
 CheckoutTransactionStatus = typing.Literal["CANCELLED", "FAILED", "PENDING", "SUCCESSFUL"]
 
-CheckoutTransactionPaymentType = typing.Literal[
-    "APM",
-    "BALANCE",
-    "BITCOIN",
-    "BOLETO",
-    "CASH",
-    "DIRECT_DEBIT",
-    "ECOM",
-    "MOTO",
-    "POS",
-    "RECURRING",
-    "UNKNOWN",
-]
-
-CheckoutTransactionEntryMode = typing.Literal[
-    "APPLE_PAY",
-    "BANCONTACT",
-    "BLIK",
-    "BOLETO",
-    "CHIP",
-    "CONTACTLESS",
-    "CONTACTLESS_MAGSTRIPE",
-    "CUSTOMER_ENTRY",
-    "DIRECT_DEBIT",
-    "EPS",
-    "GIROPAY",
-    "GOOGLE_PAY",
-    "IDEAL",
-    "MAGSTRIPE",
-    "MAGSTRIPE_FALLBACK",
-    "MANUAL_ENTRY",
-    "MOTO",
-    "MYBANK",
-    "N/A",
-    "NONE",
-    "P24",
-    "PAYPAL",
-    "PIX",
-    "QR_CODE_PIX",
-    "SATISPAY",
-    "SOFORT",
-]
-
 
 class CheckoutTransaction(pydantic.BaseModel):
     """
@@ -292,7 +249,7 @@ class CheckoutTransaction(pydantic.BaseModel):
 	Three-letter [ISO4217](https://en.wikipedia.org/wiki/ISO_4217) code of the currency for the amount. Currently supportedcurrency values are enumerated above.
 	"""
 
-    entry_mode: typing.Optional[CheckoutTransactionEntryMode] = None
+    entry_mode: typing.Optional[EntryMode] = None
     """
 	Entry mode of the payment details.
 	"""
@@ -319,7 +276,7 @@ class CheckoutTransaction(pydantic.BaseModel):
 	Unique code of the registered merchant to whom the payment is made.
 	"""
 
-    payment_type: typing.Optional[CheckoutTransactionPaymentType] = None
+    payment_type: typing.Optional[PaymentType] = None
     """
 	Payment type used for the transaction.
 	"""
@@ -475,49 +432,6 @@ CheckoutCreateRequestTransactionStatus = typing.Literal[
     "CANCELLED", "FAILED", "PENDING", "SUCCESSFUL"
 ]
 
-CheckoutCreateRequestTransactionPaymentType = typing.Literal[
-    "APM",
-    "BALANCE",
-    "BITCOIN",
-    "BOLETO",
-    "CASH",
-    "DIRECT_DEBIT",
-    "ECOM",
-    "MOTO",
-    "POS",
-    "RECURRING",
-    "UNKNOWN",
-]
-
-CheckoutCreateRequestTransactionEntryMode = typing.Literal[
-    "APPLE_PAY",
-    "BANCONTACT",
-    "BLIK",
-    "BOLETO",
-    "CHIP",
-    "CONTACTLESS",
-    "CONTACTLESS_MAGSTRIPE",
-    "CUSTOMER_ENTRY",
-    "DIRECT_DEBIT",
-    "EPS",
-    "GIROPAY",
-    "GOOGLE_PAY",
-    "IDEAL",
-    "MAGSTRIPE",
-    "MAGSTRIPE_FALLBACK",
-    "MANUAL_ENTRY",
-    "MOTO",
-    "MYBANK",
-    "N/A",
-    "NONE",
-    "P24",
-    "PAYPAL",
-    "PIX",
-    "QR_CODE_PIX",
-    "SATISPAY",
-    "SOFORT",
-]
-
 
 class CheckoutCreateRequestTransaction(pydantic.BaseModel):
     """
@@ -539,7 +453,7 @@ class CheckoutCreateRequestTransaction(pydantic.BaseModel):
 	Three-letter [ISO4217](https://en.wikipedia.org/wiki/ISO_4217) code of the currency for the amount. Currently supportedcurrency values are enumerated above.
 	"""
 
-    entry_mode: typing.Optional[CheckoutCreateRequestTransactionEntryMode] = None
+    entry_mode: typing.Optional[EntryMode] = None
     """
 	Entry mode of the payment details.
 	"""
@@ -566,7 +480,7 @@ class CheckoutCreateRequestTransaction(pydantic.BaseModel):
 	Unique code of the registered merchant to whom the payment is made.
 	"""
 
-    payment_type: typing.Optional[CheckoutCreateRequestTransactionPaymentType] = None
+    payment_type: typing.Optional[PaymentType] = None
     """
 	Payment type used for the transaction.
 	"""
@@ -685,49 +599,6 @@ CheckoutSuccessStatus = typing.Literal["EXPIRED", "FAILED", "PAID", "PENDING"]
 
 CheckoutSuccessTransactionStatus = typing.Literal["CANCELLED", "FAILED", "PENDING", "SUCCESSFUL"]
 
-CheckoutSuccessTransactionPaymentType = typing.Literal[
-    "APM",
-    "BALANCE",
-    "BITCOIN",
-    "BOLETO",
-    "CASH",
-    "DIRECT_DEBIT",
-    "ECOM",
-    "MOTO",
-    "POS",
-    "RECURRING",
-    "UNKNOWN",
-]
-
-CheckoutSuccessTransactionEntryMode = typing.Literal[
-    "APPLE_PAY",
-    "BANCONTACT",
-    "BLIK",
-    "BOLETO",
-    "CHIP",
-    "CONTACTLESS",
-    "CONTACTLESS_MAGSTRIPE",
-    "CUSTOMER_ENTRY",
-    "DIRECT_DEBIT",
-    "EPS",
-    "GIROPAY",
-    "GOOGLE_PAY",
-    "IDEAL",
-    "MAGSTRIPE",
-    "MAGSTRIPE_FALLBACK",
-    "MANUAL_ENTRY",
-    "MOTO",
-    "MYBANK",
-    "N/A",
-    "NONE",
-    "P24",
-    "PAYPAL",
-    "PIX",
-    "QR_CODE_PIX",
-    "SATISPAY",
-    "SOFORT",
-]
-
 
 class CheckoutSuccessTransaction(pydantic.BaseModel):
     """
@@ -749,7 +620,7 @@ class CheckoutSuccessTransaction(pydantic.BaseModel):
 	Three-letter [ISO4217](https://en.wikipedia.org/wiki/ISO_4217) code of the currency for the amount. Currently supportedcurrency values are enumerated above.
 	"""
 
-    entry_mode: typing.Optional[CheckoutSuccessTransactionEntryMode] = None
+    entry_mode: typing.Optional[EntryMode] = None
     """
 	Entry mode of the payment details.
 	"""
@@ -776,7 +647,7 @@ class CheckoutSuccessTransaction(pydantic.BaseModel):
 	Unique code of the registered merchant to whom the payment is made.
 	"""
 
-    payment_type: typing.Optional[CheckoutSuccessTransactionPaymentType] = None
+    payment_type: typing.Optional[PaymentType] = None
     """
 	Payment type used for the transaction.
 	"""
@@ -1001,10 +872,6 @@ class MandatePayload(pydantic.BaseModel):
 	"""
 
 
-CardExpiryMonth = typing.Literal[
-    "01", "02", "03", "04", "05", "06", "07", "08", "09", "10", "11", "12"
-]
-
 CardType = typing.Literal[
     "AMEX",
     "CUP",
@@ -1020,6 +887,10 @@ CardType = typing.Literal[
     "VISA",
     "VISA_ELECTRON",
     "VISA_VPAY",
+]
+
+CardExpiryMonth = typing.Literal[
+    "01", "02", "03", "04", "05", "06", "07", "08", "09", "10", "11", "12"
 ]
 
 
@@ -1072,8 +943,7 @@ class Card(pydantic.BaseModel):
 
     type: CardType
     """
-	Issuing card network of the payment card.
-	Read only
+	Issuing card network of the payment card used for the transaction.
 	"""
 
     zip_code: typing.Optional[str] = None

@@ -345,12 +345,15 @@ func (b *Builder) convertToValidPyType(property string, r *base.SchemaProxy) str
 	case slices.Contains(schema.Type, "boolean"):
 		return "bool"
 	case slices.Contains(schema.Type, "array"):
-		reference := b.getReferenceSchema(schema.Items.A)
-		if reference != "" {
-			return fmt.Sprintf("[]%s", reference)
+		itemType := "typing.Any"
+		if schema.Items != nil && schema.Items.A != nil {
+			if reference := b.getReferenceSchema(schema.Items.A); reference != "" {
+				itemType = reference
+			} else {
+				itemType = b.convertToValidPyType(property, schema.Items.A)
+			}
 		}
-		// TODO: handle if it is not a reference.
-		return "list[str]"
+		return fmt.Sprintf("list[%s]", itemType)
 	case slices.Contains(schema.Type, "object"):
 		if schema.Properties.Len() == 0 {
 			// TODO: generate type alias?
