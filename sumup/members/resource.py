@@ -2,12 +2,8 @@
 from .._service import Resource, AsyncResource, HeaderTypes
 from .._exceptions import APIError
 from .._secret import Secret
-from .types import (
-    Attributes,
-    Member,
-    MembershipStatus,
-    Metadata,
-)
+from .. import _shared
+from .types import Member
 import httpx
 import typing
 import pydantic
@@ -29,7 +25,7 @@ class CreateMerchantMemberBody(pydantic.BaseModel):
 	List of roles to assign to the new member.
 	"""
 
-    attributes: typing.Optional[Attributes] = None
+    attributes: typing.Optional[_shared.Attributes] = None
     """
 	Object attributes that are modifiable only by SumUp applications.
 	"""
@@ -39,7 +35,7 @@ class CreateMerchantMemberBody(pydantic.BaseModel):
 	True if the user is managed by the merchant. In this case, we'll created a virtual user with the provided passwordand nickname.
 	"""
 
-    metadata: typing.Optional[Metadata] = None
+    metadata: typing.Optional[_shared.Metadata] = None
     """
 	Set of user-defined key-value pairs attached to the object. Partial updates are not supported. When updating, alwayssubmit whole metadata. Maximum of 64 parameters are allowed in the object.
 	Max properties: 64
@@ -81,12 +77,12 @@ class UpdateMerchantMemberBody(pydantic.BaseModel):
     UpdateMerchantMemberBody is a schema definition.
     """
 
-    attributes: typing.Optional[Attributes] = None
+    attributes: typing.Optional[_shared.Attributes] = None
     """
 	Object attributes that are modifiable only by SumUp applications.
 	"""
 
-    metadata: typing.Optional[Metadata] = None
+    metadata: typing.Optional[_shared.Metadata] = None
     """
 	Set of user-defined key-value pairs attached to the object. Partial updates are not supported. When updating, alwayssubmit whole metadata. Maximum of 64 parameters are allowed in the object.
 	Max properties: 64
@@ -115,7 +111,7 @@ class ListMerchantMembersParams(pydantic.BaseModel):
 
     scroll: typing.Optional[bool] = None
 
-    status: typing.Optional[MembershipStatus] = None
+    status: typing.Optional[_shared.MembershipStatus] = None
     """
 	The status of the membership.
 	"""

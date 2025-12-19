@@ -8,7 +8,6 @@ from .resource import (
 )
 from .types import (
     Address,
-    Attributes,
     BaseError,
     BasePerson,
     Branding,
@@ -43,7 +42,6 @@ __all__ = [
     "ListPersonsParams",
     "GetPersonParams",
     "Address",
-    "Attributes",
     "BaseError",
     "BasePerson",
     "Branding",

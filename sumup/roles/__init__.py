@@ -7,8 +7,6 @@ from .resource import (
     ListMerchantRoles200Response,
 )
 from .types import (
-    Metadata,
-    Problem,
     Role,
 )
 
@@ -19,7 +17,5 @@ __all__ = [
     "CreateMerchantRoleBody",
     "UpdateMerchantRoleBody",
     "ListMerchantRoles200Response",
-    "Metadata",
-    "Problem",
     "Role",
 ]
