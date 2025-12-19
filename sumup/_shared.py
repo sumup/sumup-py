@@ -3,7 +3,60 @@ import datetime
 import typing
 import pydantic
 
-EventType = typing.Literal["CHARGE_BACK", "PAYOUT", "PAYOUT_DEDUCTION", "REFUND"]
+
+class PersonalDetails(pydantic.BaseModel):
+    """
+    Personal details for the customer.
+    """
+
+    address: typing.Optional["AddressLegacy"] = None
+    """
+	Profile's personal address information.
+	"""
+
+    birth_date: typing.Optional[datetime.date] = None
+    """
+	Date of birth of the customer.
+	Format: date
+	"""
+
+    email: typing.Optional[str] = None
+    """
+	Email address of the customer.
+	"""
+
+    first_name: typing.Optional[str] = None
+    """
+	First name of the customer.
+	"""
+
+    last_name: typing.Optional[str] = None
+    """
+	Last name of the customer.
+	"""
+
+    phone: typing.Optional[str] = None
+    """
+	Phone number of the customer.
+	"""
+
+    tax_id: typing.Optional[str] = None
+    """
+	An identification number user for tax purposes (e.g. CPF)
+	Max length: 255
+	"""
+
+
+EventId = int
+"""
+Unique ID of the transaction event.
+Format: int64
+"""
+
+TimestampEvent = str
+"""
+Date and time of the transaction event.
+"""
 
 
 class Problem(pydantic.BaseModel):
@@ -43,31 +96,194 @@ class Problem(pydantic.BaseModel):
 	"""
 
 
-class MandateResponse(pydantic.BaseModel):
+class AddressLegacy(pydantic.BaseModel):
     """
-    Created mandate
+    Profile's personal address information.
     """
 
-    merchant_code: typing.Optional[str] = None
+    city: typing.Optional[str] = None
     """
-	Merchant code which has the mandate
+	City name from the address.
 	"""
 
-    status: typing.Optional[str] = None
+    country: typing.Optional[str] = None
     """
-	Mandate status
+	Two letter country code formatted according to [ISO3166-1 alpha-2](https://en.wikipedia.org/wiki/ISO_3166-1_alpha-2).
 	"""
 
-    type: typing.Optional[str] = None
+    line_1: typing.Optional[str] = None
     """
-	Indicates the mandate type
+	First line of the address with details of the street name and number.
 	"""
 
+    line_2: typing.Optional[str] = None
+    """
+	Second line of the address with details of the building, unit, apartment, and floor numbers.
+	"""
+
+    postal_code: typing.Optional[str] = None
+    """
+	Postal code from the address.
+	"""
+
+    state: typing.Optional[str] = None
+    """
+	State name or abbreviation from the address.
+	"""
+
+
+EventStatus = typing.Literal["FAILED", "PAID_OUT", "PENDING", "REFUNDED", "SCHEDULED", "SUCCESSFUL"]
+
+MembershipStatus = typing.Literal["accepted", "disabled", "expired", "pending", "unknown"]
+
+
+class ErrorForbidden(pydantic.BaseModel):
+    """
+    Error message for forbidden requests.
+    """
+
+    error_code: typing.Optional[str] = None
+    """
+	Platform code for the error.
+	"""
+
+    error_message: typing.Optional[str] = None
+    """
+	Short description of the error.
+	"""
+
+    status_code: typing.Optional[str] = None
+    """
+	HTTP status code for the error.
+	"""
+
+
+class Error(pydantic.BaseModel):
+    """
+    Error message structure.
+    """
+
+    error_code: typing.Optional[str] = None
+    """
+	Platform code for the error.
+	"""
+
+    message: typing.Optional[str] = None
+    """
+	Short description of the error.
+	"""
+
+
+CardType = typing.Literal[
+    "AMEX",
+    "CUP",
+    "DINERS",
+    "DISCOVER",
+    "ELO",
+    "ELV",
+    "HIPERCARD",
+    "JCB",
+    "MAESTRO",
+    "MASTERCARD",
+    "UNKNOWN",
+    "VISA",
+    "VISA_ELECTRON",
+    "VISA_VPAY",
+]
+
+PaymentType = typing.Literal[
+    "APM",
+    "BALANCE",
+    "BITCOIN",
+    "BOLETO",
+    "CASH",
+    "DIRECT_DEBIT",
+    "ECOM",
+    "MOTO",
+    "POS",
+    "RECURRING",
+    "UNKNOWN",
+]
+
+Metadata = dict[typing.Any, typing.Any]
+"""
+Set of user-defined key-value pairs attached to the object. Partial updates are not supported. When updating, alwayssubmit whole metadata. Maximum of 64 parameters are allowed in the object.
+Max properties: 64
+"""
+
+Attributes = dict[typing.Any, typing.Any]
+"""
+Object attributes that are modifiable only by SumUp applications.
+"""
 
 AmountEvent = float
 """
 Amount of the event.
 """
+
+EntryMode = typing.Literal[
+    "APPLE_PAY",
+    "BANCONTACT",
+    "BLIK",
+    "BOLETO",
+    "CHIP",
+    "CONTACTLESS",
+    "CONTACTLESS_MAGSTRIPE",
+    "CUSTOMER_ENTRY",
+    "DIRECT_DEBIT",
+    "EPS",
+    "GIROPAY",
+    "GOOGLE_PAY",
+    "IDEAL",
+    "MAGSTRIPE",
+    "MAGSTRIPE_FALLBACK",
+    "MANUAL_ENTRY",
+    "MOTO",
+    "MYBANK",
+    "N/A",
+    "NONE",
+    "P24",
+    "PAYPAL",
+    "PIX",
+    "QR_CODE_PIX",
+    "SATISPAY",
+    "SOFORT",
+]
+
+
+class Invite(pydantic.BaseModel):
+    """
+    Pending invitation for membership.
+    """
+
+    email: str
+    """
+	Email address of the invited user.
+	Format: email
+	"""
+
+    expires_at: datetime.datetime
+
+
+EventType = typing.Literal["CHARGE_BACK", "PAYOUT", "PAYOUT_DEDUCTION", "REFUND"]
+
+Currency = typing.Literal[
+    "BGN",
+    "BRL",
+    "CHF",
+    "CLP",
+    "CZK",
+    "DKK",
+    "EUR",
+    "GBP",
+    "HRK",
+    "HUF",
+    "NOK",
+    "PLN",
+    "RON",
+    "SEK",
+    "USD",
+]
 
 TransactionBaseStatus = typing.Literal["CANCELLED", "FAILED", "PENDING", "SUCCESSFUL"]
 
@@ -124,138 +340,6 @@ TransactionId = str
 Unique ID of the transaction.
 """
 
-PaymentType = typing.Literal[
-    "APM",
-    "BALANCE",
-    "BITCOIN",
-    "BOLETO",
-    "CASH",
-    "DIRECT_DEBIT",
-    "ECOM",
-    "MOTO",
-    "POS",
-    "RECURRING",
-    "UNKNOWN",
-]
-
-EventStatus = typing.Literal["FAILED", "PAID_OUT", "PENDING", "REFUNDED", "SCHEDULED", "SUCCESSFUL"]
-
-Attributes = dict[typing.Any, typing.Any]
-"""
-Object attributes that are modifiable only by SumUp applications.
-"""
-
-Metadata = dict[typing.Any, typing.Any]
-"""
-Set of user-defined key-value pairs attached to the object. Partial updates are not supported. When updating, alwayssubmit whole metadata. Maximum of 64 parameters are allowed in the object.
-Max properties: 64
-"""
-
-EntryMode = typing.Literal[
-    "APPLE_PAY",
-    "BANCONTACT",
-    "BLIK",
-    "BOLETO",
-    "CHIP",
-    "CONTACTLESS",
-    "CONTACTLESS_MAGSTRIPE",
-    "CUSTOMER_ENTRY",
-    "DIRECT_DEBIT",
-    "EPS",
-    "GIROPAY",
-    "GOOGLE_PAY",
-    "IDEAL",
-    "MAGSTRIPE",
-    "MAGSTRIPE_FALLBACK",
-    "MANUAL_ENTRY",
-    "MOTO",
-    "MYBANK",
-    "N/A",
-    "NONE",
-    "P24",
-    "PAYPAL",
-    "PIX",
-    "QR_CODE_PIX",
-    "SATISPAY",
-    "SOFORT",
-]
-
-CardType = typing.Literal[
-    "AMEX",
-    "CUP",
-    "DINERS",
-    "DISCOVER",
-    "ELO",
-    "ELV",
-    "HIPERCARD",
-    "JCB",
-    "MAESTRO",
-    "MASTERCARD",
-    "UNKNOWN",
-    "VISA",
-    "VISA_ELECTRON",
-    "VISA_VPAY",
-]
-
-
-class PersonalDetails(pydantic.BaseModel):
-    """
-    Personal details for the customer.
-    """
-
-    address: typing.Optional["AddressLegacy"] = None
-    """
-	Profile's personal address information.
-	"""
-
-    birth_date: typing.Optional[datetime.date] = None
-    """
-	Date of birth of the customer.
-	Format: date
-	"""
-
-    email: typing.Optional[str] = None
-    """
-	Email address of the customer.
-	"""
-
-    first_name: typing.Optional[str] = None
-    """
-	First name of the customer.
-	"""
-
-    last_name: typing.Optional[str] = None
-    """
-	Last name of the customer.
-	"""
-
-    phone: typing.Optional[str] = None
-    """
-	Phone number of the customer.
-	"""
-
-    tax_id: typing.Optional[str] = None
-    """
-	An identification number user for tax purposes (e.g. CPF)
-	Max length: 255
-	"""
-
-
-class Error(pydantic.BaseModel):
-    """
-    Error message structure.
-    """
-
-    error_code: typing.Optional[str] = None
-    """
-	Platform code for the error.
-	"""
-
-    message: typing.Optional[str] = None
-    """
-	Short description of the error.
-	"""
-
 
 class TransactionCheckoutInfo(pydantic.BaseModel):
     """
@@ -294,105 +378,22 @@ class TransactionCheckoutInfo(pydantic.BaseModel):
 	"""
 
 
-EventId = int
-"""
-Unique ID of the transaction event.
-Format: int64
-"""
-
-TimestampEvent = str
-"""
-Date and time of the transaction event.
-"""
-
-MembershipStatus = typing.Literal["accepted", "disabled", "expired", "pending", "unknown"]
-
-
-class ErrorForbidden(pydantic.BaseModel):
+class MandateResponse(pydantic.BaseModel):
     """
-    Error message for forbidden requests.
+    Created mandate
     """
 
-    error_code: typing.Optional[str] = None
+    merchant_code: typing.Optional[str] = None
     """
-	Platform code for the error.
+	Merchant code which has the mandate
 	"""
 
-    error_message: typing.Optional[str] = None
+    status: typing.Optional[str] = None
     """
-	Short description of the error.
+	Mandate status
 	"""
 
-    status_code: typing.Optional[str] = None
+    type: typing.Optional[str] = None
     """
-	HTTP status code for the error.
+	Indicates the mandate type
 	"""
-
-
-class Invite(pydantic.BaseModel):
-    """
-    Pending invitation for membership.
-    """
-
-    email: str
-    """
-	Email address of the invited user.
-	Format: email
-	"""
-
-    expires_at: datetime.datetime
-
-
-class AddressLegacy(pydantic.BaseModel):
-    """
-    Profile's personal address information.
-    """
-
-    city: typing.Optional[str] = None
-    """
-	City name from the address.
-	"""
-
-    country: typing.Optional[str] = None
-    """
-	Two letter country code formatted according to [ISO3166-1 alpha-2](https://en.wikipedia.org/wiki/ISO_3166-1_alpha-2).
-	"""
-
-    line_1: typing.Optional[str] = None
-    """
-	First line of the address with details of the street name and number.
-	"""
-
-    line_2: typing.Optional[str] = None
-    """
-	Second line of the address with details of the building, unit, apartment, and floor numbers.
-	"""
-
-    postal_code: typing.Optional[str] = None
-    """
-	Postal code from the address.
-	"""
-
-    state: typing.Optional[str] = None
-    """
-	State name or abbreviation from the address.
-	"""
-
-
-Currency = typing.Literal[
-    "BGN",
-    "BRL",
-    "CHF",
-    "CLP",
-    "CZK",
-    "DKK",
-    "EUR",
-    "GBP",
-    "HRK",
-    "HUF",
-    "NOK",
-    "PLN",
-    "RON",
-    "SEK",
-    "USD",
-]
