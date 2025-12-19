@@ -1,5 +1,17 @@
 # Changelog
 
+## [0.0.17](https://github.com/sumup/sumup-py/compare/v0.0.16...v0.0.17) (2025-12-19)
+
+
+### Features
+
+* **sdk:** improve enum types ([a2d5cf6](https://github.com/sumup/sumup-py/commit/a2d5cf63397decf6c7ad58c880b383b8f7b07591))
+
+
+### Bug Fixes
+
+* transactions entry_mode enum ([05b0f5a](https://github.com/sumup/sumup-py/commit/05b0f5a1fb7543e3cd9948f7d3c7b117e7ccbef5))
+
 ## [0.0.16](https://github.com/sumup/sumup-py/compare/v0.0.15...v0.0.16) (2025-12-18)
 
 
