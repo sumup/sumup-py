@@ -340,12 +340,71 @@ class CreateReaderCheckoutRequest(pydantic.BaseModel):
 	"""
 
 
+StatusResponseDataConnectionType = typing.Literal[
+    "Wi-Fi", "btle", "edge", "gprs", "lte", "umts", "usb"
+]
+
+StatusResponseDataState = typing.Literal[
+    "IDLE",
+    "SELECTING_TIP",
+    "UPDATING_FIRMWARE",
+    "WAITING_FOR_CARD",
+    "WAITING_FOR_PIN",
+    "WAITING_FOR_SIGNATURE",
+]
+
+StatusResponseDataStatus = typing.Literal["OFFLINE", "ONLINE"]
+
+
+class StatusResponseData(pydantic.BaseModel):
+    """
+    StatusResponseData is a schema definition.
+    """
+
+    status: StatusResponseDataStatus
+    """
+	Status of a device
+	"""
+
+    battery_level: typing.Optional[typing.Any] = None
+    """
+	Battery level percentage
+	Min: 0
+	Max: 100
+	"""
+
+    battery_temperature: typing.Optional[int] = None
+    """
+	Battery temperature in Celsius
+	"""
+
+    connection_type: typing.Optional[StatusResponseDataConnectionType] = None
+    """
+	Type of connection used by the device
+	"""
+
+    firmware_version: typing.Optional[str] = None
+    """
+	Firmware version of the device
+	"""
+
+    last_activity: typing.Optional[datetime.datetime] = None
+    """
+	Timestamp of the last activity from the device
+	"""
+
+    state: typing.Optional[StatusResponseDataState] = None
+    """
+	Latest state of the device
+	"""
+
+
 class StatusResponse(pydantic.BaseModel):
     """
     Status of a device
     """
 
-    data: typing.Any
+    data: StatusResponseData
 
 
 BadRequestErrorsType = typing.Literal[
