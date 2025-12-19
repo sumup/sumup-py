@@ -393,13 +393,13 @@ class ReadersResource(Resource):
         else:
             raise APIError("Unexpected response", status=resp.status_code, body=resp.text)
 
-    def show_reader_status(
+    def get_status(
         self, merchant_code: str, reader_id: str, headers: typing.Optional[HeaderTypes] = None
     ) -> StatusResponse:
         """
-        Show a Reader Status
+        Get a Reader Status
 
-        Show the last known status for a Reader.
+        Provides the last known status for a Reader.
 
         This endpoint allows you to retrieve updates from the connected card reader, including the current screen beingdisplayed during the payment process and the device status (battery level, connectivity, and update state).
 
@@ -699,13 +699,13 @@ class AsyncReadersResource(AsyncResource):
         else:
             raise APIError("Unexpected response", status=resp.status_code, body=resp.text)
 
-    async def show_reader_status(
+    async def get_status(
         self, merchant_code: str, reader_id: str, headers: typing.Optional[HeaderTypes] = None
     ) -> StatusResponse:
         """
-        Show a Reader Status
+        Get a Reader Status
 
-        Show the last known status for a Reader.
+        Provides the last known status for a Reader.
 
         This endpoint allows you to retrieve updates from the connected card reader, including the current screen beingdisplayed during the payment process and the device status (battery level, connectivity, and update state).
 
