@@ -132,7 +132,7 @@ func (b *Builder) collectSchemas() {
 					c.collectSchemasInResponse(op)
 					c.collectSchemasInParams(op)
 					c.collectSchemasInRequest(op)
-					
+
 					for _, schema := range c {
 						if schema.GetReference() == schemaRef {
 							foundSchema = schema
@@ -147,7 +147,7 @@ func (b *Builder) collectSchemas() {
 					break
 				}
 			}
-			
+
 			if foundSchema != nil && !slices.ContainsFunc(schemasByTag["_shared"], func(sp *base.SchemaProxy) bool {
 				return sp.GetReference() == schemaRef
 			}) {
@@ -157,6 +157,13 @@ func (b *Builder) collectSchemas() {
 				schemasByTag["_shared"] = append(schemasByTag["_shared"], foundSchema)
 			}
 		}
+	}
+
+	// Sort shared schemas to ensure deterministic order
+	if sharedSchemas, ok := schemasByTag["_shared"]; ok {
+		slices.SortFunc(sharedSchemas, func(a, b *base.SchemaProxy) int {
+			return strings.Compare(a.GetReference(), b.GetReference())
+		})
 	}
 
 	b.schemasByTag = schemasByTag

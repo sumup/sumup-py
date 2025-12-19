@@ -255,12 +255,7 @@ func (b *Builder) generateResource(tagName string, paths *v3.Paths) error {
 }
 
 func usesSecretType(writables []Writable) bool {
-	for _, w := range writables {
-		if writableUsesSecret(w) {
-			return true
-		}
-	}
-	return false
+	return slices.ContainsFunc(writables, writableUsesSecret)
 }
 
 func writableUsesSecret(w Writable) bool {
@@ -288,19 +283,15 @@ func (b *Builder) usesSharedTypes(writables []Writable, methods []*Method) (bool
 	}
 
 	// Check writables for _shared references
-	for _, w := range writables {
-		if containsSharedRef(w) {
-			return true, "from .. import _shared"
-		}
+	if slices.ContainsFunc(writables, containsSharedRef) {
+		return true, "from .. import _shared"
 	}
 
 	// Check methods for _shared references (only if methods are provided)
-	if methods != nil {
-		for _, m := range methods {
-			for _, r := range m.Responses {
-				if r.Type != "" && strings.Contains(r.Type, "_shared.") {
-					return true, "from .. import _shared"
-				}
+	for _, m := range methods {
+		for _, r := range m.Responses {
+			if r.Type != "" && strings.Contains(r.Type, "_shared.") {
+				return true, "from .. import _shared"
 			}
 		}
 	}
