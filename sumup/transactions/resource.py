@@ -3,6 +3,7 @@ from .._service import Resource, AsyncResource, HeaderTypes
 from .._exceptions import APIError
 from .types import (
     Link,
+    PaymentType,
     TransactionFull,
     TransactionHistory,
 )
@@ -71,7 +72,7 @@ class ListTransactionsV21Params(pydantic.BaseModel):
 
     order: typing.Optional[str] = None
 
-    payment_types: typing.Optional[list[str]] = None
+    payment_types: typing.Optional[list[PaymentType]] = None
 
     statuses: typing.Optional[list[str]] = None
 
@@ -101,7 +102,7 @@ class ListTransactionsParams(pydantic.BaseModel):
 
     order: typing.Optional[str] = None
 
-    payment_types: typing.Optional[list[str]] = None
+    payment_types: typing.Optional[list[PaymentType]] = None
 
     statuses: typing.Optional[list[str]] = None
 

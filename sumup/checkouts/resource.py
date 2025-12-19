@@ -7,7 +7,9 @@ from .types import (
     CheckoutAccepted,
     CheckoutSuccess,
     Currency,
+    EntryMode,
     MandatePayload,
+    PaymentType,
     PersonalDetails,
 )
 import datetime
@@ -20,49 +22,6 @@ CreateCheckoutBodyPurpose = typing.Literal["CHECKOUT", "SETUP_RECURRING_PAYMENT"
 CreateCheckoutBodyStatus = typing.Literal["FAILED", "PAID", "PENDING"]
 
 CreateCheckoutBodyTransactionStatus = typing.Literal["CANCELLED", "FAILED", "PENDING", "SUCCESSFUL"]
-
-CreateCheckoutBodyTransactionPaymentType = typing.Literal[
-    "APM",
-    "BALANCE",
-    "BITCOIN",
-    "BOLETO",
-    "CASH",
-    "DIRECT_DEBIT",
-    "ECOM",
-    "MOTO",
-    "POS",
-    "RECURRING",
-    "UNKNOWN",
-]
-
-CreateCheckoutBodyTransactionEntryMode = typing.Literal[
-    "APPLE_PAY",
-    "BANCONTACT",
-    "BLIK",
-    "BOLETO",
-    "CHIP",
-    "CONTACTLESS",
-    "CONTACTLESS_MAGSTRIPE",
-    "CUSTOMER_ENTRY",
-    "DIRECT_DEBIT",
-    "EPS",
-    "GIROPAY",
-    "GOOGLE_PAY",
-    "IDEAL",
-    "MAGSTRIPE",
-    "MAGSTRIPE_FALLBACK",
-    "MANUAL_ENTRY",
-    "MOTO",
-    "MYBANK",
-    "N/A",
-    "NONE",
-    "P24",
-    "PAYPAL",
-    "PIX",
-    "QR_CODE_PIX",
-    "SATISPAY",
-    "SOFORT",
-]
 
 
 class CreateCheckoutBodyTransaction(pydantic.BaseModel):
@@ -85,7 +44,7 @@ class CreateCheckoutBodyTransaction(pydantic.BaseModel):
 	Three-letter [ISO4217](https://en.wikipedia.org/wiki/ISO_4217) code of the currency for the amount. Currently supportedcurrency values are enumerated above.
 	"""
 
-    entry_mode: typing.Optional[CreateCheckoutBodyTransactionEntryMode] = None
+    entry_mode: typing.Optional[EntryMode] = None
     """
 	Entry mode of the payment details.
 	"""
@@ -112,7 +71,7 @@ class CreateCheckoutBodyTransaction(pydantic.BaseModel):
 	Unique code of the registered merchant to whom the payment is made.
 	"""
 
-    payment_type: typing.Optional[CreateCheckoutBodyTransactionPaymentType] = None
+    payment_type: typing.Optional[PaymentType] = None
     """
 	Payment type used for the transaction.
 	"""

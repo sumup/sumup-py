@@ -136,6 +136,24 @@ class ErrorForbidden(pydantic.BaseModel):
 	"""
 
 
+CardType = typing.Literal[
+    "AMEX",
+    "CUP",
+    "DINERS",
+    "DISCOVER",
+    "ELO",
+    "ELV",
+    "HIPERCARD",
+    "JCB",
+    "MAESTRO",
+    "MASTERCARD",
+    "UNKNOWN",
+    "VISA",
+    "VISA_ELECTRON",
+    "VISA_VPAY",
+]
+
+
 class MandateResponse(pydantic.BaseModel):
     """
     Created mandate
@@ -159,23 +177,6 @@ class MandateResponse(pydantic.BaseModel):
 
 PaymentInstrumentResponseType = typing.Literal["card"]
 
-PaymentInstrumentResponseCardType = typing.Literal[
-    "AMEX",
-    "CUP",
-    "DINERS",
-    "DISCOVER",
-    "ELO",
-    "ELV",
-    "HIPERCARD",
-    "JCB",
-    "MAESTRO",
-    "MASTERCARD",
-    "UNKNOWN",
-    "VISA",
-    "VISA_ELECTRON",
-    "VISA_VPAY",
-]
-
 
 class PaymentInstrumentResponseCard(pydantic.BaseModel):
     """
@@ -190,10 +191,9 @@ class PaymentInstrumentResponseCard(pydantic.BaseModel):
 	Max length: 4
 	"""
 
-    type: typing.Optional[PaymentInstrumentResponseCardType] = None
+    type: typing.Optional[CardType] = None
     """
-	Issuing card network of the payment card.
-	Read only
+	Issuing card network of the payment card used for the transaction.
 	"""
 
 

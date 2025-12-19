@@ -7,6 +7,7 @@ from .resource import (
 )
 from .types import (
     AddressLegacy,
+    CardType,
     Customer,
     Error,
     ErrorForbidden,
@@ -22,6 +23,7 @@ __all__ = [
     "CreateCustomerBody",
     "UpdateCustomerBody",
     "AddressLegacy",
+    "CardType",
     "Customer",
     "Error",
     "ErrorForbidden",
