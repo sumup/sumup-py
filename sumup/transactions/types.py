@@ -219,7 +219,7 @@ HorizontalAccuracy = float
 Indication of the precision of the geographical position received from the payment terminal.
 """
 
-CardResponseType = typing.Literal[
+CardType = typing.Literal[
     "AMEX",
     "CUP",
     "DINERS",
@@ -250,10 +250,9 @@ class CardResponse(pydantic.BaseModel):
 	Max length: 4
 	"""
 
-    type: typing.Optional[CardResponseType] = None
+    type: typing.Optional[CardType] = None
     """
-	Issuing card network of the payment card.
-	Read only
+	Issuing card network of the payment card used for the transaction.
 	"""
 
 
@@ -744,23 +743,6 @@ class TransactionFull(pydantic.BaseModel):
 	Verification method used for the transaction.
 	"""
 
-
-CardType = typing.Literal[
-    "AMEX",
-    "CUP",
-    "DINERS",
-    "DISCOVER",
-    "ELO",
-    "ELV",
-    "HIPERCARD",
-    "JCB",
-    "MAESTRO",
-    "MASTERCARD",
-    "UNKNOWN",
-    "VISA",
-    "VISA_ELECTRON",
-    "VISA_VPAY",
-]
 
 TransactionHistoryStatus = typing.Literal["CANCELLED", "FAILED", "PENDING", "SUCCESSFUL"]
 
