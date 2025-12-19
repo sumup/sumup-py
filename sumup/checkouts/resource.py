@@ -35,7 +35,34 @@ CreateCheckoutBodyTransactionPaymentType = typing.Literal[
     "UNKNOWN",
 ]
 
-CreateCheckoutBodyTransactionEntryMode = typing.Literal["BOLETO", "CUSTOMER_ENTRY"]
+CreateCheckoutBodyTransactionEntryMode = typing.Literal[
+    "APPLE_PAY",
+    "BANCONTACT",
+    "BLIK",
+    "BOLETO",
+    "CHIP",
+    "CONTACTLESS",
+    "CONTACTLESS_MAGSTRIPE",
+    "CUSTOMER_ENTRY",
+    "DIRECT_DEBIT",
+    "EPS",
+    "GIROPAY",
+    "GOOGLE_PAY",
+    "IDEAL",
+    "MAGSTRIPE",
+    "MAGSTRIPE_FALLBACK",
+    "MANUAL_ENTRY",
+    "MOTO",
+    "MYBANK",
+    "N/A",
+    "NONE",
+    "P24",
+    "PAYPAL",
+    "PIX",
+    "QR_CODE_PIX",
+    "SATISPAY",
+    "SOFORT",
+]
 
 
 class CreateCheckoutBodyTransaction(pydantic.BaseModel):
