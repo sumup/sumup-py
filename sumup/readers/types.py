@@ -366,7 +366,7 @@ class StatusResponseData(pydantic.BaseModel):
 	Status of a device
 	"""
 
-    battery_level: typing.Optional[typing.Any] = None
+    battery_level: typing.Optional[float] = None
     """
 	Battery level percentage
 	Min: 0
