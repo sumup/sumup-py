@@ -13,7 +13,6 @@ dependencies = [
     "ty==0.0.7",
     "typing-extensions>=4.13.2",
 ]
-license-files = ["LICENSE"]
 classifiers = [
     "Typing :: Typed",
     "Development Status :: 4 - Beta",
