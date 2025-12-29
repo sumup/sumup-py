@@ -1,5 +1,47 @@
 # Changelog
 
+## [0.0.18](https://github.com/sumup/sumup-py/compare/v0.0.17...v0.0.18) (2025-12-29)
+
+
+### Features
+
+* add resource index files ([#9](https://github.com/sumup/sumup-py/issues/9)) ([3852a51](https://github.com/sumup/sumup-py/commit/3852a5160365f4dee5a75b3e0341b85d7a468fb5))
+* add ty for typechecking ([#49](https://github.com/sumup/sumup-py/issues/49)) ([f15e1b1](https://github.com/sumup/sumup-py/commit/f15e1b1fca9cbe66bd83f6f242094dc1d5eaa29a))
+* **builder:** handle empty body correctly ([8b5a56a](https://github.com/sumup/sumup-py/commit/8b5a56acb467d2f471f856eb9efb4f4cc6cc75db))
+* **codegen:** move codegen here ([#33](https://github.com/sumup/sumup-py/issues/33)) ([feb4675](https://github.com/sumup/sumup-py/commit/feb46752d9b2b2d0a0ede30210d8a6e60986708c))
+* **docs:** more examples in README ([13670a7](https://github.com/sumup/sumup-py/commit/13670a78f518d9ee8c170f56674aeb9c5c4b2786))
+* **docs:** update README title ([c265db5](https://github.com/sumup/sumup-py/commit/c265db59d9d02ecc853ba1c81632d78b385a70be))
+* init ([368d894](https://github.com/sumup/sumup-py/commit/368d894de2b75deefae8f9f0efdaaf212c73683c))
+* **readme:** badges ([#25](https://github.com/sumup/sumup-py/issues/25)) ([5fee228](https://github.com/sumup/sumup-py/commit/5fee228f07cc03ace06a8102d522900c3b31301d))
+* **sdk:** add type for secrets ([#109](https://github.com/sumup/sumup-py/issues/109)) ([6d5a686](https://github.com/sumup/sumup-py/commit/6d5a686aca2c5b794e2b4a87112df9029b83ba77))
+* **sdk:** improve enum types ([a2d5cf6](https://github.com/sumup/sumup-py/commit/a2d5cf63397decf6c7ad58c880b383b8f7b07591))
+
+
+### Bug Fixes
+
+* **builder:** handle requests and responses without a body correctly ([83f802c](https://github.com/sumup/sumup-py/commit/83f802c4162c568bcfe1730b62988a57e214b2a6))
+* **build:** packaging ([#47](https://github.com/sumup/sumup-py/issues/47)) ([5fef66a](https://github.com/sumup/sumup-py/commit/5fef66ad1d0d222fde6f7962f4e7d3f0bc612d84))
+* **cd:** commit generated SDK using SumUp Bot ([33bb770](https://github.com/sumup/sumup-py/commit/33bb770d90c6232b49ab9878dd4855b450ab00d4))
+* **cd:** generate workflow fix ([d802169](https://github.com/sumup/sumup-py/commit/d8021699dafcba94cfb87ada6fda2a8ddf2a3183))
+* **cd:** run workflows on commits with generated code ([6237e6d](https://github.com/sumup/sumup-py/commit/6237e6d3203ac7a0e04d3b403fc318dd48b0ca08))
+* **ci:** use bot for release PRs ([643194b](https://github.com/sumup/sumup-py/commit/643194bd5b77379fd64e636c57069ddb13cdb749))
+* **ci:** use GITHUB_TOKEN ([12a5890](https://github.com/sumup/sumup-py/commit/12a5890119c67dcf095e5165e0b862a4eab54273))
+* **codegen:** response status code handling ([91583a0](https://github.com/sumup/sumup-py/commit/91583a0cbb7b596a06fff66d1177e75bde1058af))
+* **dist:** distributed package missing files ([#56](https://github.com/sumup/sumup-py/issues/56)) ([bd8c10d](https://github.com/sumup/sumup-py/commit/bd8c10d8cfe092e6417cc7f23f2277f6a3f2967c))
+* for build using setuptools ([#157](https://github.com/sumup/sumup-py/issues/157)) ([d7b1bce](https://github.com/sumup/sumup-py/commit/d7b1bce4e8f65dd6fad692896cef6d867d1b9255))
+* payment_type enum ([#146](https://github.com/sumup/sumup-py/issues/146)) ([5a2211c](https://github.com/sumup/sumup-py/commit/5a2211ccb5f1cee1304ad84bc383a3853416cd9a))
+* reader status battery_level type ([c85e84f](https://github.com/sumup/sumup-py/commit/c85e84ffd867945effa817906171a1d393098f81))
+* reader status call response ([7eee94b](https://github.com/sumup/sumup-py/commit/7eee94b817305d9c5459d9d15a1d43e8adc5cc93))
+* **readme:** downloads badge period ([#26](https://github.com/sumup/sumup-py/issues/26)) ([d1a3912](https://github.com/sumup/sumup-py/commit/d1a3912034ae7749f6fe4fef1eebe16df33765a5))
+* **sdk:** query params handling ([#97](https://github.com/sumup/sumup-py/issues/97)) ([4bc863a](https://github.com/sumup/sumup-py/commit/4bc863ad44ccdb3613b0d894e199c2ffa2059905))
+* **sdk:** serialization of unset values ([#143](https://github.com/sumup/sumup-py/issues/143)) ([58fea10](https://github.com/sumup/sumup-py/commit/58fea10c2ae244ebcdc9b240845997b5ee2c0584))
+* serialization of request objects ([4b10d52](https://github.com/sumup/sumup-py/commit/4b10d52d804364a1be73a8e1f4a07938d39e4b9d))
+* **sumup:** sdk version header string ([75f334c](https://github.com/sumup/sumup-py/commit/75f334c6587a1197064113cc31dfc30494d74670))
+* **tools:** release pr titles ([f614a39](https://github.com/sumup/sumup-py/commit/f614a39296388183d6545ab2039298c08f256103))
+* transactions entry_mode enum ([05b0f5a](https://github.com/sumup/sumup-py/commit/05b0f5a1fb7543e3cd9948f7d3c7b117e7ccbef5))
+* update uv.lock file during releases ([#11](https://github.com/sumup/sumup-py/issues/11)) ([9127f01](https://github.com/sumup/sumup-py/commit/9127f01dae3f98e9ae37e39247d7fc6d1d6d91a0))
+* version header ([#22](https://github.com/sumup/sumup-py/issues/22)) ([d74ac22](https://github.com/sumup/sumup-py/commit/d74ac223f78bb2c660e2898d558af9584c731483))
+
 ## [0.0.17](https://github.com/sumup/sumup-py/compare/v0.0.16...v0.0.17) (2025-12-19)
 
 
