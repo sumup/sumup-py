@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.0.19](https://github.com/sumup/sumup-py/compare/v0.0.18...v0.0.19) (2025-12-29)
+
+
+### Bug Fixes
+
+* license-files tag conflict with the auto embedded LICENSE file. ([#161](https://github.com/sumup/sumup-py/issues/161)) ([b49b78b](https://github.com/sumup/sumup-py/commit/b49b78b67e69519b5053e3124d2fa46986594f59))
+
 ## [0.0.18](https://github.com/sumup/sumup-py/compare/v0.0.17...v0.0.18) (2025-12-29)
 
 
