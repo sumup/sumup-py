@@ -1,6 +1,6 @@
 [build-system]
 requires = ["setuptools"]
-build-backend = "setuptools.build_meta
+build-backend = "setuptools.build_meta"
 
 [project]
 name = "sumup"
@@ -17,6 +17,7 @@ dependencies = [
     "ty==0.0.5",
     "typing-extensions>=4.13.2",
 ]
+license-files = ["LICENSE"]
 classifiers = [
     "Typing :: Typed",
     "Development Status :: 4 - Beta",
