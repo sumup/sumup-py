@@ -6,7 +6,7 @@ readme = "README.md"
 requires-python = ">=3.9"
 keywords = ["sdk", "sumup", "payments"]
 authors = [{name = "SumUp", email = "support@sumup.com"}]
-dynamic = ["dependencies"]
+dynamic = ["dependencies", "optional-dependencies"]
 classifiers = [
     "Typing :: Typed",
     "Development Status :: 4 - Beta",
@@ -43,10 +43,11 @@ build-backend = "setuptools.build_meta"
 
 [tool.setuptools.dynamic]
 dependencies = {file = ["requirements.txt"]}
-optional-dependencies = {
-  dev = { file = ["requirements-dev.txt"] }
-  test = { file = ["requirements-test.txt"] }
-}
+
+
+[tool.setuptools.dynamic.optional-dependencies]
+dev = { file = ["requirements-dev.txt" ,"requirements-test.txt"] }
+test = { file = ["requirements-test.txt"] }
 
 [tool.setuptools.packages.find]
 include = ["sumup*"]
