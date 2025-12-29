@@ -6,14 +6,7 @@ readme = "README.md"
 requires-python = ">=3.9"
 keywords = ["sdk", "sumup", "payments"]
 authors = [{name = "SumUp", email = "support@sumup.com"}]
-dependencies = [
-    "httpx>=0.28.1",
-    "pydantic>=2.11.3",
-    "ruff==0.14.10",
-    "ty==0.0.7",
-    "typing-extensions>=4.13.2",
-]
-license-files = ["LICENSE"]
+dynamic = ["dependencies"]
 classifiers = [
     "Typing :: Typed",
     "Development Status :: 4 - Beta",
@@ -39,14 +32,6 @@ classifiers = [
     "Topic :: Software Development :: Libraries :: Python Modules",
 ]
 
-[dependency-groups]
-dev = [
-    "asyncio>=3.4.3",
-    "pytest>=8.3.2",
-    "ruff>=0.11.5",
-    "ty>=0.0.1a19",
-]
-
 [project.urls]
 Homepage = "https://github.com/sumup/sumup-py"
 Issues = "https://github.com/sumup/sumup-py/issues"
@@ -55,6 +40,13 @@ Issues = "https://github.com/sumup/sumup-py/issues"
 [build-system]
 requires = ["setuptools"]
 build-backend = "setuptools.build_meta"
+
+[tool.setuptools.dynamic]
+dependencies = {file = ["requirements.txt"]}
+optional-dependencies = {
+  dev = { file = ["requirements-dev.txt"] }
+  test = { file = ["requirements-test.txt"] }
+}
 
 [tool.setuptools.packages.find]
 include = ["sumup*"]
