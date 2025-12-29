@@ -10,7 +10,7 @@ dependencies = [
     "httpx>=0.28.1",
     "pydantic>=2.11.3",
     "ruff==0.14.10",
-    "ty==0.0.5",
+    "ty==0.0.7",
     "typing-extensions>=4.13.2",
 ]
 license = "Apache-2.0"
