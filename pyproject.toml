@@ -9,8 +9,6 @@ authors = [{name = "SumUp", email = "support@sumup.com"}]
 dependencies = [
     "httpx>=0.28.1",
     "pydantic>=2.11.3",
-    "ruff==0.14.10",
-    "ty==0.0.7",
     "typing-extensions>=4.13.2",
 ]
 classifiers = [
@@ -20,14 +18,11 @@ classifiers = [
     "Programming Language :: Python",
     "Programming Language :: Python :: 3",
     "Programming Language :: Python :: 3 :: Only",
-    "Programming Language :: Python :: 3.6",
-    "Programming Language :: Python :: 3.7",
-    "Programming Language :: Python :: 3.8",
     "Programming Language :: Python :: 3.9",
     "Programming Language :: Python :: 3.10",
     "Programming Language :: Python :: 3.11",
     "Programming Language :: Python :: 3.12",
-    
+
     "Operating System :: OS Independent",
 
     "Intended Audience :: Developers",
@@ -38,13 +33,16 @@ classifiers = [
     "Topic :: Software Development :: Libraries :: Python Modules",
 ]
 
-[dependency-groups]
-dev = [
-    "asyncio>=3.4.3",
+[project.optional-dependencies]
+test = [
     "pytest>=8.3.2",
-    "ruff>=0.11.5",
-    "ty>=0.0.1a19",
 ]
+
+[dependency-groups]
+test = ["pytest>=8.3.2"]
+lint = ["ruff>=0.11.5"]
+typecheck = ["ty>=0.0.8"]
+dev = ["pytest>=8.3.2", "ruff>=0.11.5", "ty>=0.0.8"]
 
 [project.urls]
 Homepage = "https://github.com/sumup/sumup-py"
@@ -57,6 +55,9 @@ build-backend = "setuptools.build_meta"
 
 [tool.setuptools.packages.find]
 include = ["sumup*"]
+
+[tool.setuptools.package-data]
+sumup = ["py.typed"]
 
 [tool.ruff]
 line-length = 100
