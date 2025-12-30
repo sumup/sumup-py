@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.0.20](https://github.com/sumup/sumup-py/compare/v0.0.19...v0.0.20) (2025-12-30)
+
+
+### Features
+
+* update pyproject.toml ([#164](https://github.com/sumup/sumup-py/issues/164)) ([9dd300c](https://github.com/sumup/sumup-py/commit/9dd300c4e8897df2560b24601c5e96d634047c5e))
+
 ## [0.0.19](https://github.com/sumup/sumup-py/compare/v0.0.18...v0.0.19) (2025-12-29)
 
 
