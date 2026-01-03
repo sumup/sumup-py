@@ -95,6 +95,7 @@ client = Sumup(api_key="sup_sk_MvxmLOl0...")
 # Create a reader checkout
 reader_checkout = client.readers.create_checkout(
     reader_id="your-reader-id",
+    merchant_code="your-merchant-code",
     body=CreateReaderCheckoutBody(
         total_amount=CreateReaderCheckoutAmount(
             value=1000,  # 10.00 EUR (amount in cents)
