@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.0.21](https://github.com/sumup/sumup-py/compare/v0.0.20...v0.0.21) (2026-01-06)
+
+
+### Bug Fixes
+
+* **docs:** required merchant_code for checkout ([#167](https://github.com/sumup/sumup-py/issues/167)) ([20e8589](https://github.com/sumup/sumup-py/commit/20e8589aa99049553f484fc1f68cef78600a93c6))
+
 ## [0.0.20](https://github.com/sumup/sumup-py/compare/v0.0.19...v0.0.20) (2025-12-30)
 
 
