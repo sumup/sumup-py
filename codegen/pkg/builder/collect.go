@@ -104,7 +104,7 @@ func (c *SchemaProxyCollection) collectSchemasInResponse(op *v3.Operation) {
 
 // Collect the schemas that are referenced in the request parameters of the given operation.
 func (c *SchemaProxyCollection) collectSchemasInParams(op *v3.Operation) {
-	if op.RequestBody == nil {
+	if len(op.Parameters) == 0 {
 		return
 	}
 
