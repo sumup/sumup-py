@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.0.22](https://github.com/sumup/sumup-py/compare/v0.0.21...v0.0.22) (2026-01-19)
+
+
+### Bug Fixes
+
+* CardType enum values ([8daf2ea](https://github.com/sumup/sumup-py/commit/8daf2ea560f7e11441b7e5f9dd76d41054a9c994))
+
 ## [0.0.21](https://github.com/sumup/sumup-py/compare/v0.0.20...v0.0.21) (2026-01-06)
 
 
