@@ -137,20 +137,30 @@ class ErrorForbidden(pydantic.BaseModel):
 
 
 CardType = typing.Literal[
+    "ALELO",
     "AMEX",
+    "CONECS",
     "CUP",
     "DINERS",
     "DISCOVER",
+    "EFTPOS",
     "ELO",
     "ELV",
+    "GIROCARD",
     "HIPERCARD",
+    "INTERAC",
     "JCB",
     "MAESTRO",
     "MASTERCARD",
+    "PLUXEE",
+    "SWILE",
+    "TICKET",
     "UNKNOWN",
     "VISA",
     "VISA_ELECTRON",
     "VISA_VPAY",
+    "VPAY",
+    "VR",
 ]
 
 
