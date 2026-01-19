@@ -277,7 +277,7 @@ class ReadersResource(Resource):
             return pydantic.TypeAdapter(Reader).validate_python(resp.json())
         elif resp.status_code == 404:
             raise APIError(
-                "The requested Reader resource does not exists.",
+                "The requested Reader resource does not exist.",
                 status=resp.status_code,
                 body=resp.text,
             )
@@ -300,7 +300,7 @@ class ReadersResource(Resource):
             return
         elif resp.status_code == 404:
             raise APIError(
-                "The requested Reader resource does not exists.",
+                "The requested Reader resource does not exist.",
                 status=resp.status_code,
                 body=resp.text,
             )
@@ -334,7 +334,7 @@ class ReadersResource(Resource):
             )
         elif resp.status_code == 404:
             raise APIError(
-                "The requested Reader resource does not exists.",
+                "The requested Reader resource does not exist.",
                 status=resp.status_code,
                 body=resp.text,
             )
@@ -583,7 +583,7 @@ class AsyncReadersResource(AsyncResource):
             return pydantic.TypeAdapter(Reader).validate_python(resp.json())
         elif resp.status_code == 404:
             raise APIError(
-                "The requested Reader resource does not exists.",
+                "The requested Reader resource does not exist.",
                 status=resp.status_code,
                 body=resp.text,
             )
@@ -606,7 +606,7 @@ class AsyncReadersResource(AsyncResource):
             return
         elif resp.status_code == 404:
             raise APIError(
-                "The requested Reader resource does not exists.",
+                "The requested Reader resource does not exist.",
                 status=resp.status_code,
                 body=resp.text,
             )
@@ -640,7 +640,7 @@ class AsyncReadersResource(AsyncResource):
             )
         elif resp.status_code == 404:
             raise APIError(
-                "The requested Reader resource does not exists.",
+                "The requested Reader resource does not exist.",
                 status=resp.status_code,
                 body=resp.text,
             )

@@ -220,20 +220,30 @@ Indication of the precision of the geographical position received from the payme
 """
 
 CardType = typing.Literal[
+    "ALELO",
     "AMEX",
+    "CONECS",
     "CUP",
     "DINERS",
     "DISCOVER",
+    "EFTPOS",
     "ELO",
     "ELV",
+    "GIROCARD",
     "HIPERCARD",
+    "INTERAC",
     "JCB",
     "MAESTRO",
     "MASTERCARD",
+    "PLUXEE",
+    "SWILE",
+    "TICKET",
     "UNKNOWN",
     "VISA",
     "VISA_ELECTRON",
     "VISA_VPAY",
+    "VPAY",
+    "VR",
 ]
 
 
