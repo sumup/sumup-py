@@ -272,6 +272,24 @@ func (b *Builder) writeClientFile(fname string, tags []string) error {
 	return nil
 }
 
+func (b *Builder) writeAPIVersionFile(fname string) error {
+	f, err := os.OpenFile(fname, os.O_RDWR|os.O_CREATE|os.O_TRUNC, os.FileMode(0o755))
+	if err != nil {
+		return fmt.Errorf("create %q: %w", fname, err)
+	}
+	defer func() {
+		_ = f.Close()
+	}()
+
+	if err := b.templates.ExecuteTemplate(f, "api_version.py.tmpl", map[string]any{
+		"Version": b.spec.Info.Version,
+	}); err != nil {
+		return fmt.Errorf("generate api version: %w", err)
+	}
+
+	return nil
+}
+
 func openGeneratedFile(filename string) (*os.File, error) {
 	cwd, err := os.Getwd()
 	if err != nil {
