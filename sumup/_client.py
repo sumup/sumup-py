@@ -3,7 +3,7 @@ import os
 import httpx
 import typing
 
-from ._service import Resource, AsyncResource
+from ._service import Resource, AsyncResource, runtime_headers
 from .checkouts import CheckoutsResource, AsyncCheckoutsResource
 from .customers import CustomersResource, AsyncCustomersResource
 from .members import MembersResource, AsyncMembersResource
@@ -35,6 +35,7 @@ class Sumup(Resource):
                 headers={
                     "User-Agent": f"sumup-py/{self.version()}",
                     "Authorization": f"Bearer {self.api_key}",
+                    **runtime_headers(),
                 },
             )
         )
@@ -127,6 +128,7 @@ class AsyncSumup(AsyncResource):
                 headers={
                     "User-Agent": f"sumup-py/{self.version()}",
                     "Authorization": f"Bearer {self.api_key}",
+                    **runtime_headers(),
                 },
             )
         )

@@ -100,6 +100,10 @@ func (b *Builder) Build() error {
 		return err
 	}
 
+	if err := b.writeAPIVersionFile(path.Join(b.cfg.Out, "_api_version.py")); err != nil {
+		return err
+	}
+
 	took := time.Since(b.start)
 	slog.Info("sdk generated", slog.Duration("took", took))
 
