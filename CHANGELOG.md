@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.0.23](https://github.com/sumup/sumup-py/compare/v0.0.22...v0.0.23) (2026-01-22)
+
+
+### Features
+
+* report runtime properties ([#182](https://github.com/sumup/sumup-py/issues/182)) ([e51f50a](https://github.com/sumup/sumup-py/commit/e51f50ab3f8c8dbf177a285e77df7abe8dbdb7bc))
+
 ## [0.0.22](https://github.com/sumup/sumup-py/compare/v0.0.21...v0.0.22) (2026-01-19)
 
 
