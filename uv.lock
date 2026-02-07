@@ -371,7 +371,7 @@ wheels = [
 
 [[package]]
 name = "sumup"
-version = "0.0.22"
+version = "0.0.23"
 source = { editable = "." }
 dependencies = [
     { name = "httpx" },
