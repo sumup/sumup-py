@@ -327,23 +327,13 @@ EventType = typing.Literal["CHARGE_BACK", "PAYOUT", "PAYOUT_DEDUCTION", "REFUND"
 
 EventStatus = typing.Literal["FAILED", "PAID_OUT", "PENDING", "REFUNDED", "SCHEDULED", "SUCCESSFUL"]
 
-AmountEvent = float
-"""
-Amount of the event.
-"""
-
-TimestampEvent = str
-"""
-Date and time of the transaction event.
-"""
-
 
 class TransactionEvent(pydantic.BaseModel):
     """
     Details of a transaction event.
     """
 
-    amount: typing.Optional[AmountEvent] = None
+    amount: typing.Optional[float] = None
     """
 	Amount of the event.
 	"""
@@ -381,7 +371,7 @@ class TransactionEvent(pydantic.BaseModel):
 	Status of the transaction event.
 	"""
 
-    timestamp: typing.Optional[TimestampEvent] = None
+    timestamp: typing.Optional[datetime.datetime] = None
     """
 	Date and time of the transaction event.
 	"""
@@ -452,7 +442,7 @@ class Event(pydantic.BaseModel):
     Event is a schema definition.
     """
 
-    amount: typing.Optional[AmountEvent] = None
+    amount: typing.Optional[float] = None
     """
 	Amount of the event.
 	"""
@@ -488,7 +478,7 @@ class Event(pydantic.BaseModel):
 	Status of the transaction event.
 	"""
 
-    timestamp: typing.Optional[TimestampEvent] = None
+    timestamp: typing.Optional[datetime.datetime] = None
     """
 	Date and time of the transaction event.
 	"""

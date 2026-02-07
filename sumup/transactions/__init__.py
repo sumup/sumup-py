@@ -11,7 +11,6 @@ from .resource import (
     ListTransactions200Response,
 )
 from .types import (
-    AmountEvent,
     CardResponse,
     CardType,
     Currency,
@@ -29,7 +28,6 @@ from .types import (
     Lon,
     PaymentType,
     Product,
-    TimestampEvent,
     TransactionBase,
     TransactionCheckoutInfo,
     TransactionEvent,
@@ -50,7 +48,6 @@ __all__ = [
     "ListTransactionsParams",
     "ListTransactionsV21200Response",
     "ListTransactions200Response",
-    "AmountEvent",
     "CardResponse",
     "CardType",
     "Currency",
@@ -68,7 +65,6 @@ __all__ = [
     "Lon",
     "PaymentType",
     "Product",
-    "TimestampEvent",
     "TransactionBase",
     "TransactionCheckoutInfo",
     "TransactionEvent",
