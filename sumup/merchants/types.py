@@ -19,6 +19,7 @@ country code. This definition users `oneOf` with a two-character string
 type to allow for support of future countries in client code.
 Min length: 2
 Max length: 2
+Pattern: ^[A-Z]{2}$
 """
 
 
@@ -36,6 +37,7 @@ class Address(pydantic.BaseModel):
 	type to allow for support of future countries in client code.
 	Min length: 2
 	Max length: 2
+	Pattern: ^[A-Z]{2}$
 	"""
 
     autonomous_community: typing.Optional[str] = None
@@ -399,6 +401,7 @@ class Merchant(pydantic.BaseModel):
 	type to allow for support of future countries in client code.
 	Min length: 2
 	Max length: 2
+	Pattern: ^[A-Z]{2}$
 	"""
 
     created_at: datetime.datetime
@@ -542,11 +545,13 @@ class PersonalIdentifier(pydantic.BaseModel):
     ref: str
     """
 	The unique reference for the personal identifier type.
+	Max length: 32
 	"""
 
     value: str
     """
 	The company identifier value.
+	Max length: 128
 	"""
 
 
@@ -590,6 +595,7 @@ class BasePerson(pydantic.BaseModel):
 	type to allow for support of future countries in client code.
 	Min length: 2
 	Max length: 2
+	Pattern: ^[A-Z]{2}$
 	"""
 
     country_of_residence: typing.Optional[str] = None
@@ -692,6 +698,7 @@ class Person(pydantic.BaseModel):
 	type to allow for support of future countries in client code.
 	Min length: 2
 	Max length: 2
+	Pattern: ^[A-Z]{2}$
 	"""
 
     country_of_residence: typing.Optional[str] = None

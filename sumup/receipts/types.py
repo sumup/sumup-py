@@ -35,25 +35,16 @@ EventType = typing.Literal["CHARGE_BACK", "PAYOUT", "PAYOUT_DEDUCTION", "REFUND"
 
 EventStatus = typing.Literal["FAILED", "PAID_OUT", "PENDING", "REFUNDED", "SCHEDULED", "SUCCESSFUL"]
 
-AmountEvent = float
-"""
-Amount of the event.
-"""
-
-TimestampEvent = str
-"""
-Date and time of the transaction event.
-"""
-
 
 class ReceiptEvent(pydantic.BaseModel):
     """
     ReceiptEvent is a schema definition.
     """
 
-    amount: typing.Optional[AmountEvent] = None
+    amount: typing.Optional[str] = None
     """
 	Amount of the event.
+	Format: double
 	"""
 
     id: typing.Optional[EventId] = None
@@ -69,7 +60,7 @@ class ReceiptEvent(pydantic.BaseModel):
 	Status of the transaction event.
 	"""
 
-    timestamp: typing.Optional[TimestampEvent] = None
+    timestamp: typing.Optional[datetime.datetime] = None
     """
 	Date and time of the transaction event.
 	"""
@@ -90,29 +81,57 @@ class ReceiptTransactionProduct(pydantic.BaseModel):
     ReceiptTransactionProduct is a schema definition.
     """
 
-    description: typing.Optional[str] = None
-    """
-	Product description.
-	"""
-
     name: typing.Optional[str] = None
     """
-	Product name.
+	Product name
 	"""
 
-    price: typing.Optional[float] = None
+    price: typing.Optional[str] = None
     """
-	Product price.
+	Product price
+	Format: double
+	"""
+
+    price_with_vat: typing.Optional[str] = None
+    """
+	Product price including VAT
+	Format: double
 	"""
 
     quantity: typing.Optional[int] = None
     """
-	Product quantity.
+	Product quantity
+	Format: int64
 	"""
 
-    total_price: typing.Optional[float] = None
+    single_vat_amount: typing.Optional[str] = None
     """
-	Quantity x product price.
+	VAT amount for a single product
+	Format: double
+	"""
+
+    total_price: typing.Optional[str] = None
+    """
+	Quantity x product price
+	Format: double
+	"""
+
+    total_with_vat: typing.Optional[str] = None
+    """
+	Total price including VAT
+	Format: double
+	"""
+
+    vat_amount: typing.Optional[str] = None
+    """
+	VAT amount
+	Format: double
+	"""
+
+    vat_rate: typing.Optional[str] = None
+    """
+	VAT rate
+	Format: double
 	"""
 
 
