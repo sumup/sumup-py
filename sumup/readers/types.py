@@ -99,6 +99,14 @@ class Reader(pydantic.BaseModel):
 	Max properties: 64
 	"""
 
+    service_account_id: typing.Optional[str] = None
+    """
+	Identifier of the system-managed service account associated with this reader.
+	Present only for readers that are already paired.
+	This field is currently in beta and may change.
+	Format: uuid
+	"""
+
 
 class Problem(pydantic.BaseModel):
     """
