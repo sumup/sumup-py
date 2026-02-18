@@ -4,9 +4,16 @@ on:
   workflow_dispatch: {}
   pull_request:
     paths:
-      - "codegen/**"
+      - openapi.json
     branches:
       - main
+
+concurrency:
+  group: generate-${{ github.ref }}
+  cancel-in-progress: true
+
+permissions:
+  contents: write
 
 jobs:
   generate:
