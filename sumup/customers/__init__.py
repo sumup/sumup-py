@@ -5,7 +5,7 @@ from .resource import (
     CreateCustomerBody,
     UpdateCustomerBody,
 )
-from .types import (
+from ..types import (
     AddressLegacy,
     CardType,
     Customer,

@@ -4,7 +4,7 @@ from .resource import (
     AsyncMerchantResource,
     GetAccountParams,
 )
-from .types import (
+from ..types import (
     AccountLegacy,
     AddressWithDetails,
     AppSettings,

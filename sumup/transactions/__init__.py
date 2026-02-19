@@ -10,7 +10,7 @@ from .resource import (
     ListTransactionsV21200Response,
     ListTransactions200Response,
 )
-from .types import (
+from ..types import (
     CardResponse,
     CardType,
     Currency,

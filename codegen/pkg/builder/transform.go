@@ -14,19 +14,6 @@ import (
 	"github.com/sumup/sumup-py/codegen/internal/stringx"
 )
 
-// schemasToTypes converts openapi3 schemas to golang struct and enum types.
-func (b *Builder) schemasToTypes(schemas []*base.SchemaProxy) []Writable {
-	var allTypes []Writable
-
-	for _, s := range schemas {
-		name := strcase.ToCamel(strings.TrimPrefix(s.GetReference(), "#/components/schemas/"))
-		typeTpl := b.generateSchemaComponents(name, s.Schema())
-		allTypes = append(allTypes, typeTpl...)
-	}
-
-	return allTypes
-}
-
 // TODO: is this different from respToTypes?
 func (b *Builder) pathsToBodyTypes(paths *v3.Paths) []Writable {
 	if paths == nil {

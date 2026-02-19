@@ -6,7 +6,7 @@ from .resource import (
     ListPersonsParams,
     GetPersonParams,
 )
-from .types import (
+from ..types import (
     Address,
     Attributes,
     BasePerson,

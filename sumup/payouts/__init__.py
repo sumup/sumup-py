@@ -5,7 +5,7 @@ from .resource import (
     ListPayoutsV1Params,
     ListPayoutsParams,
 )
-from .types import (
+from ..types import (
     Error,
     FinancialPayouts,
 )

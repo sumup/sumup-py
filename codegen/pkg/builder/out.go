@@ -16,26 +16,38 @@ import (
 )
 
 type typesTemplateData struct {
-	PackageName string
-	Types       []Writable
-	UsesSecret  bool
+	Types      []Writable
+	UsesSecret bool
 }
 
-func (b *Builder) generateResourceTypes(tag *base.Tag, schemas []*base.SchemaProxy) error {
-	types := b.schemasToTypes(schemas)
+func (b *Builder) generateSharedTypes() error {
+	types := make([]Writable, 0)
+	if b.spec != nil && b.spec.Components != nil && b.spec.Components.Schemas != nil {
+		for _, name := range b.orderedComponentSchemaNames() {
+			schema, ok := b.spec.Components.Schemas.Get(name)
+			if !ok {
+				continue
+			}
+			typeName := strcase.ToCamel(name)
+			types = append(types, b.generateSchemaComponents(typeName, schema.Schema())...)
+		}
+	}
 	usesSecret := usesSecretType(types)
 
 	typesBuf := bytes.NewBuffer(nil)
 	if err := b.templates.ExecuteTemplate(typesBuf, "types.py.tmpl", typesTemplateData{
-		PackageName: strcase.ToSnake(tag.Name),
-		Types:       types,
-		UsesSecret:  usesSecret,
+		Types:      types,
+		UsesSecret: usesSecret,
 	}); err != nil {
 		return err
 	}
 
-	dir := path.Join(b.cfg.Out, strcase.ToSnake(tag.Name))
-	typeFileName := path.Join(dir, "types.py")
+	dir := path.Join(b.cfg.Out, "types")
+	if err := os.MkdirAll(dir, os.ModePerm); err != nil {
+		return err
+	}
+
+	typeFileName := path.Join(dir, "__init__.py")
 	typesFile, err := openGeneratedFile(typeFileName)
 	if err != nil {
 		return err
@@ -59,15 +71,7 @@ type indexTemplateData struct {
 
 func (b *Builder) generateResourceIndex(tagName string, resourceTypes []string) error {
 	tag := b.tagByTagName(tagName)
-
-	resolvedSchemas := b.schemasByTag[tagName]
-	typeNames := make([]string, 0, len(resolvedSchemas))
-	for _, s := range resolvedSchemas {
-		if name := b.getReferenceSchema(s); name != "" {
-			typeNames = append(typeNames, name)
-		}
-	}
-	slices.Sort(typeNames)
+	typeNames := b.schemaTypeNamesByTag(tagName)
 
 	typesBuf := bytes.NewBuffer(nil)
 	if err := b.templates.ExecuteTemplate(typesBuf, "index.py.tmpl", indexTemplateData{
@@ -107,18 +111,7 @@ type resourceTemplateData struct {
 func (b *Builder) generateResourceFile(tagName string, paths *v3.Paths) ([]string, error) {
 	tag := b.tagByTagName(tagName)
 
-	resolvedSchemas := b.schemasByTag[tagName]
-	if err := b.generateResourceTypes(tag, b.schemasByTag[tagName]); err != nil {
-		return nil, err
-	}
-
-	typeNames := make([]string, 0, len(resolvedSchemas))
-	for _, s := range resolvedSchemas {
-		if name := b.getReferenceSchema(s); name != "" {
-			typeNames = append(typeNames, name)
-		}
-	}
-	slices.Sort(typeNames)
+	typeNames := b.schemaTypeNamesByTag(tagName)
 
 	bodyTypes := b.pathsToBodyTypes(paths)
 	innerTypes := bodyTypes
@@ -189,10 +182,6 @@ func (b *Builder) generateResource(tagName string, paths *v3.Paths) error {
 
 	dir := path.Join(b.cfg.Out, strcase.ToSnake(tag.Name))
 	if err := os.MkdirAll(dir, os.ModePerm); err != nil {
-		return err
-	}
-
-	if err := b.generateResourceTypes(tag, b.schemasByTag[tagName]); err != nil {
 		return err
 	}
 
@@ -316,4 +305,16 @@ func (b *Builder) tagByTagName(name string) *base.Tag {
 		tag = b.spec.Tags[idx]
 	}
 	return tag
+}
+
+func (b *Builder) schemaTypeNamesByTag(tagName string) []string {
+	resolvedSchemas := b.schemasByTag[tagName]
+	typeNames := make([]string, 0, len(resolvedSchemas))
+	for _, s := range resolvedSchemas {
+		if name := b.getReferenceSchema(s); name != "" {
+			typeNames = append(typeNames, name)
+		}
+	}
+	slices.Sort(typeNames)
+	return typeNames
 }

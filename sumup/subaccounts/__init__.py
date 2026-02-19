@@ -8,7 +8,7 @@ from .resource import (
     UpdateSubAccountBody,
     ListSubAccountsParams,
 )
-from .types import (
+from ..types import (
     Operator,
     Permissions,
     Problem,

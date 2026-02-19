@@ -1,4 +1,4 @@
-from sumup.merchants.types import Problem
+from sumup.types import Problem
 
 
 def test_problem_collects_and_serializes_additional_properties():

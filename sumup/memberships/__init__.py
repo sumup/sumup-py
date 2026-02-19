@@ -5,7 +5,7 @@ from .resource import (
     ListMembershipsParams,
     ListMemberships200Response,
 )
-from .types import (
+from ..types import (
     Attributes,
     Invite,
     Membership,
