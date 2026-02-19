@@ -58,7 +58,7 @@ class UpdateReaderBody(pydantic.BaseModel):
 	"""
 
 
-CreateReaderCheckoutBodyAffiliateTags = dict[str, typing.Any]
+CreateReaderCheckoutBodyAffiliateTags = dict[str, object]
 """
 Additional metadata for the transaction.
 It is key-value object that can be associated with the transaction.
@@ -208,7 +208,7 @@ class ListReaders200Response(pydantic.BaseModel):
 
 
 class ReadersResource(Resource):
-    def __init__(self, client: httpx.Client):
+    def __init__(self, client: httpx.Client) -> None:
         super().__init__(client)
 
     def list(
@@ -514,7 +514,7 @@ class ReadersResource(Resource):
 
 
 class AsyncReadersResource(AsyncResource):
-    def __init__(self, client: httpx.AsyncClient):
+    def __init__(self, client: httpx.AsyncClient) -> None:
         super().__init__(client)
 
     async def list(

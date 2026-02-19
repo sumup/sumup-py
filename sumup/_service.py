@@ -1,17 +1,18 @@
 import httpx
 import platform
 import sys
+import typing
 from functools import lru_cache
 
 from ._api_version import __api_version__
 from ._version import __version__
 
-HeaderTypes = dict[str, str]
+HeaderTypes = typing.Mapping[str, str]
 
 
 class BaseResource:
     @staticmethod
-    def version():
+    def version() -> str:
         return f"v{__version__}"
 
 

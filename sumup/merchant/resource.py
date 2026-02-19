@@ -26,7 +26,7 @@ class GetAccountParams(pydantic.BaseModel):
 
 
 class MerchantResource(Resource):
-    def __init__(self, client: httpx.Client):
+    def __init__(self, client: httpx.Client) -> None:
         super().__init__(client)
 
     @typing_extensions.deprecated(
@@ -124,7 +124,7 @@ class MerchantResource(Resource):
 
 
 class AsyncMerchantResource(AsyncResource):
-    def __init__(self, client: httpx.AsyncClient):
+    def __init__(self, client: httpx.AsyncClient) -> None:
         super().__init__(client)
 
     @typing_extensions.deprecated(

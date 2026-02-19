@@ -45,7 +45,7 @@ ListPaymentInstruments200Response is a schema definition.
 
 
 class CustomersResource(Resource):
-    def __init__(self, client: httpx.Client):
+    def __init__(self, client: httpx.Client) -> None:
         super().__init__(client)
 
     def create(
@@ -172,7 +172,7 @@ class CustomersResource(Resource):
 
 
 class AsyncCustomersResource(AsyncResource):
-    def __init__(self, client: httpx.AsyncClient):
+    def __init__(self, client: httpx.AsyncClient) -> None:
         super().__init__(client)
 
     async def create(

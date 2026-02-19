@@ -96,7 +96,7 @@ ListSubAccounts200Response is a schema definition.
 
 
 class SubaccountsResource(Resource):
-    def __init__(self, client: httpx.Client):
+    def __init__(self, client: httpx.Client) -> None:
         super().__init__(client)
 
     @typing_extensions.deprecated(
@@ -219,7 +219,7 @@ class SubaccountsResource(Resource):
 
 
 class AsyncSubaccountsResource(AsyncResource):
-    def __init__(self, client: httpx.AsyncClient):
+    def __init__(self, client: httpx.AsyncClient) -> None:
         super().__init__(client)
 
     @typing_extensions.deprecated(

@@ -28,13 +28,13 @@ class Invite(pydantic.BaseModel):
 
 MembershipStatus = typing.Literal["accepted", "disabled", "expired", "pending", "unknown"]
 
-Metadata = dict[str, typing.Any]
+Metadata = dict[str, object]
 """
 Set of user-defined key-value pairs attached to the object. Partial updates are not supported. When updating, alwayssubmit whole metadata. Maximum of 64 parameters are allowed in the object.
 Max properties: 64
 """
 
-Attributes = dict[str, typing.Any]
+Attributes = dict[str, object]
 """
 Object attributes that are modifiable only by SumUp applications.
 """

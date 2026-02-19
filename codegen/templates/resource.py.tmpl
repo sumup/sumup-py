@@ -20,7 +20,7 @@ import typing_extensions
 
 
 class {{.Service}}Resource(Resource):
-	def __init__(self, client: httpx.Client):
+	def __init__(self, client: httpx.Client) -> None:
 		super().__init__(client)
 
 {{ range $method := .Methods }}
@@ -68,7 +68,7 @@ class {{.Service}}Resource(Resource):
 {{end}}
 
 class Async{{.Service}}Resource(AsyncResource):
-	def __init__(self, client: httpx.AsyncClient):
+	def __init__(self, client: httpx.AsyncClient) -> None:
 		super().__init__(client)
 
 {{ range $method := .Methods }}

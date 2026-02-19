@@ -66,7 +66,7 @@ class ListMerchantRoles200Response(pydantic.BaseModel):
 
 
 class RolesResource(Resource):
-    def __init__(self, client: httpx.Client):
+    def __init__(self, client: httpx.Client) -> None:
         super().__init__(client)
 
     def list(
@@ -181,7 +181,7 @@ class RolesResource(Resource):
 
 
 class AsyncRolesResource(AsyncResource):
-    def __init__(self, client: httpx.AsyncClient):
+    def __init__(self, client: httpx.AsyncClient) -> None:
         super().__init__(client)
 
     async def list(

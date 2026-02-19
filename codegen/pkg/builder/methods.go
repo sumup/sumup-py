@@ -345,7 +345,7 @@ func (b *Builder) convertToValidPyType(property string, r *base.SchemaProxy) str
 	case slices.Contains(schema.Type, "boolean"):
 		return "bool"
 	case slices.Contains(schema.Type, "array"):
-		itemType := "typing.Any"
+		itemType := "object"
 		if schema.Items != nil && schema.Items.A != nil {
 			if reference := b.getReferenceSchema(schema.Items.A); reference != "" {
 				itemType = reference
@@ -358,17 +358,17 @@ func (b *Builder) convertToValidPyType(property string, r *base.SchemaProxy) str
 		if schema.Properties.Len() == 0 {
 			// TODO: generate type alias?
 			slog.Warn("object with empty properties", slog.String("property", property))
-			return "typing.Any"
+			return "object"
 		}
 		// Most likely this is a local object, we will handle it.
 		// TODO:
 		return strcase.ToCamel(property)
 	default:
-		slog.Warn("unknown type, falling back to 'typing.Any'",
+		slog.Warn("unknown type, falling back to 'object'",
 			slog.Any("property", property),
 			slog.Any("type", schema.Type),
 		)
-		return "typing.Any"
+		return "object"
 	}
 }
 
