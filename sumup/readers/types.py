@@ -18,9 +18,9 @@ Custom human-readable, user-defined name for easier identification of the reader
 Max length: 500
 """
 
-ReaderStatus = typing.Literal["expired", "paired", "processing", "unknown"]
+ReaderStatus = typing.Union[typing.Literal["expired", "paired", "processing", "unknown"], str]
 
-ReaderDeviceModel = typing.Literal["solo", "virtual-solo"]
+ReaderDeviceModel = typing.Union[typing.Literal["solo", "virtual-solo"], str]
 
 
 class ReaderDevice(pydantic.BaseModel):
@@ -274,7 +274,7 @@ class CreateReaderCheckoutRequestAffiliate(pydantic.BaseModel):
 	"""
 
 
-CreateReaderCheckoutRequestCardType = typing.Literal["credit", "debit"]
+CreateReaderCheckoutRequestCardType = typing.Union[typing.Literal["credit", "debit"], str]
 
 
 class CreateReaderCheckoutRequestTotalAmount(pydantic.BaseModel):
@@ -376,20 +376,23 @@ class CreateReaderCheckoutRequest(pydantic.BaseModel):
 	"""
 
 
-StatusResponseDataConnectionType = typing.Literal[
-    "Wi-Fi", "btle", "edge", "gprs", "lte", "umts", "usb"
+StatusResponseDataConnectionType = typing.Union[
+    typing.Literal["Wi-Fi", "btle", "edge", "gprs", "lte", "umts", "usb"], str
 ]
 
-StatusResponseDataState = typing.Literal[
-    "IDLE",
-    "SELECTING_TIP",
-    "UPDATING_FIRMWARE",
-    "WAITING_FOR_CARD",
-    "WAITING_FOR_PIN",
-    "WAITING_FOR_SIGNATURE",
+StatusResponseDataState = typing.Union[
+    typing.Literal[
+        "IDLE",
+        "SELECTING_TIP",
+        "UPDATING_FIRMWARE",
+        "WAITING_FOR_CARD",
+        "WAITING_FOR_PIN",
+        "WAITING_FOR_SIGNATURE",
+    ],
+    str,
 ]
 
-StatusResponseDataStatus = typing.Literal["OFFLINE", "ONLINE"]
+StatusResponseDataStatus = typing.Union[typing.Literal["OFFLINE", "ONLINE"], str]
 
 
 class StatusResponseData(pydantic.BaseModel):
@@ -443,8 +446,14 @@ class StatusResponse(pydantic.BaseModel):
     data: StatusResponseData
 
 
-BadRequestErrorsType = typing.Literal[
-    "DUPLICATE_HEADERS", "INVALID_BEARER_TOKEN", "INVALID_USER_AGENT", "NOT_ENOUGH_UNPAID_PAYOUTS"
+BadRequestErrorsType = typing.Union[
+    typing.Literal[
+        "DUPLICATE_HEADERS",
+        "INVALID_BEARER_TOKEN",
+        "INVALID_USER_AGENT",
+        "NOT_ENOUGH_UNPAID_PAYOUTS",
+    ],
+    str,
 ]
 
 
@@ -472,7 +481,9 @@ class BadRequest(pydantic.BaseModel):
     errors: BadRequestErrors
 
 
-UnauthorizedErrorsType = typing.Literal["INVALID_ACCESS_TOKEN", "INVALID_PASSWORD"]
+UnauthorizedErrorsType = typing.Union[
+    typing.Literal["INVALID_ACCESS_TOKEN", "INVALID_PASSWORD"], str
+]
 
 
 class UnauthorizedErrors(pydantic.BaseModel):

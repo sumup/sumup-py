@@ -53,22 +53,25 @@ class Error(pydantic.BaseModel):
 	"""
 
 
-Currency = typing.Literal[
-    "BGN",
-    "BRL",
-    "CHF",
-    "CLP",
-    "CZK",
-    "DKK",
-    "EUR",
-    "GBP",
-    "HRK",
-    "HUF",
-    "NOK",
-    "PLN",
-    "RON",
-    "SEK",
-    "USD",
+Currency = typing.Union[
+    typing.Literal[
+        "BGN",
+        "BRL",
+        "CHF",
+        "CLP",
+        "CZK",
+        "DKK",
+        "EUR",
+        "GBP",
+        "HRK",
+        "HUF",
+        "NOK",
+        "PLN",
+        "RON",
+        "SEK",
+        "USD",
+    ],
+    str,
 ]
 
 
@@ -93,21 +96,26 @@ class MandateResponse(pydantic.BaseModel):
 	"""
 
 
-PaymentType = typing.Literal[
-    "APM",
-    "BALANCE",
-    "BITCOIN",
-    "BOLETO",
-    "CASH",
-    "DIRECT_DEBIT",
-    "ECOM",
-    "MOTO",
-    "POS",
-    "RECURRING",
-    "UNKNOWN",
+PaymentType = typing.Union[
+    typing.Literal[
+        "APM",
+        "BALANCE",
+        "BITCOIN",
+        "BOLETO",
+        "CASH",
+        "DIRECT_DEBIT",
+        "ECOM",
+        "MOTO",
+        "POS",
+        "RECURRING",
+        "UNKNOWN",
+    ],
+    str,
 ]
 
-TransactionBaseStatus = typing.Literal["CANCELLED", "FAILED", "PENDING", "SUCCESSFUL"]
+TransactionBaseStatus = typing.Union[
+    typing.Literal["CANCELLED", "FAILED", "PENDING", "SUCCESSFUL"], str
+]
 
 
 class TransactionBase(pydantic.BaseModel):
@@ -157,33 +165,36 @@ class TransactionBase(pydantic.BaseModel):
 	"""
 
 
-EntryMode = typing.Literal[
-    "apple pay",
-    "bancontact",
-    "blik",
-    "boleto",
-    "chip",
-    "contactless",
-    "contactless magstripe",
-    "customer entry",
-    "direct debit",
-    "eps",
-    "giropay",
-    "google pay",
-    "ideal",
-    "magstripe",
-    "magstripe fallback",
-    "manual entry",
-    "moto",
-    "mybank",
-    "na",
-    "none",
-    "p24",
-    "paypal",
-    "pix",
-    "qr code pix",
-    "satispay",
-    "sofort",
+EntryMode = typing.Union[
+    typing.Literal[
+        "apple pay",
+        "bancontact",
+        "blik",
+        "boleto",
+        "chip",
+        "contactless",
+        "contactless magstripe",
+        "customer entry",
+        "direct debit",
+        "eps",
+        "giropay",
+        "google pay",
+        "ideal",
+        "magstripe",
+        "magstripe fallback",
+        "manual entry",
+        "moto",
+        "mybank",
+        "na",
+        "none",
+        "p24",
+        "paypal",
+        "pix",
+        "qr code pix",
+        "satispay",
+        "sofort",
+    ],
+    str,
 ]
 
 
@@ -224,9 +235,11 @@ class TransactionCheckoutInfo(pydantic.BaseModel):
 	"""
 
 
-CheckoutStatus = typing.Literal["EXPIRED", "FAILED", "PAID", "PENDING"]
+CheckoutStatus = typing.Union[typing.Literal["EXPIRED", "FAILED", "PAID", "PENDING"], str]
 
-CheckoutTransactionStatus = typing.Literal["CANCELLED", "FAILED", "PENDING", "SUCCESSFUL"]
+CheckoutTransactionStatus = typing.Union[
+    typing.Literal["CANCELLED", "FAILED", "PENDING", "SUCCESSFUL"], str
+]
 
 
 class CheckoutTransaction(pydantic.BaseModel):
@@ -424,12 +437,14 @@ class ErrorForbidden(pydantic.BaseModel):
 	"""
 
 
-CheckoutCreateRequestPurpose = typing.Literal["CHECKOUT", "SETUP_RECURRING_PAYMENT"]
+CheckoutCreateRequestPurpose = typing.Union[
+    typing.Literal["CHECKOUT", "SETUP_RECURRING_PAYMENT"], str
+]
 
-CheckoutCreateRequestStatus = typing.Literal["FAILED", "PAID", "PENDING"]
+CheckoutCreateRequestStatus = typing.Union[typing.Literal["FAILED", "PAID", "PENDING"], str]
 
-CheckoutCreateRequestTransactionStatus = typing.Literal[
-    "CANCELLED", "FAILED", "PENDING", "SUCCESSFUL"
+CheckoutCreateRequestTransactionStatus = typing.Union[
+    typing.Literal["CANCELLED", "FAILED", "PENDING", "SUCCESSFUL"], str
 ]
 
 
@@ -595,9 +610,11 @@ class CheckoutCreateRequest(pydantic.BaseModel):
 	"""
 
 
-CheckoutSuccessStatus = typing.Literal["EXPIRED", "FAILED", "PAID", "PENDING"]
+CheckoutSuccessStatus = typing.Union[typing.Literal["EXPIRED", "FAILED", "PAID", "PENDING"], str]
 
-CheckoutSuccessTransactionStatus = typing.Literal["CANCELLED", "FAILED", "PENDING", "SUCCESSFUL"]
+CheckoutSuccessTransactionStatus = typing.Union[
+    typing.Literal["CANCELLED", "FAILED", "PENDING", "SUCCESSFUL"], str
+]
 
 
 class CheckoutSuccessTransaction(pydantic.BaseModel):
@@ -791,7 +808,7 @@ class CheckoutSuccess(pydantic.BaseModel):
 	"""
 
 
-CheckoutAcceptedNextStepMechanism = typing.Literal["browser", "iframe"]
+CheckoutAcceptedNextStepMechanism = typing.Union[typing.Literal["browser", "iframe"], str]
 
 
 class CheckoutAcceptedNextStepPayload(pydantic.BaseModel):
@@ -848,7 +865,7 @@ class CheckoutAccepted(pydantic.BaseModel):
 	"""
 
 
-MandatePayloadType = typing.Literal["recurrent"]
+MandatePayloadType = typing.Union[typing.Literal["recurrent"], str]
 
 
 class MandatePayload(pydantic.BaseModel):
@@ -872,35 +889,38 @@ class MandatePayload(pydantic.BaseModel):
 	"""
 
 
-CardType = typing.Literal[
-    "ALELO",
-    "AMEX",
-    "CONECS",
-    "CUP",
-    "DINERS",
-    "DISCOVER",
-    "EFTPOS",
-    "ELO",
-    "ELV",
-    "GIROCARD",
-    "HIPERCARD",
-    "INTERAC",
-    "JCB",
-    "MAESTRO",
-    "MASTERCARD",
-    "PLUXEE",
-    "SWILE",
-    "TICKET",
-    "UNKNOWN",
-    "VISA",
-    "VISA_ELECTRON",
-    "VISA_VPAY",
-    "VPAY",
-    "VR",
+CardType = typing.Union[
+    typing.Literal[
+        "ALELO",
+        "AMEX",
+        "CONECS",
+        "CUP",
+        "DINERS",
+        "DISCOVER",
+        "EFTPOS",
+        "ELO",
+        "ELV",
+        "GIROCARD",
+        "HIPERCARD",
+        "INTERAC",
+        "JCB",
+        "MAESTRO",
+        "MASTERCARD",
+        "PLUXEE",
+        "SWILE",
+        "TICKET",
+        "UNKNOWN",
+        "VISA",
+        "VISA_ELECTRON",
+        "VISA_VPAY",
+        "VPAY",
+        "VR",
+    ],
+    str,
 ]
 
-CardExpiryMonth = typing.Literal[
-    "01", "02", "03", "04", "05", "06", "07", "08", "09", "10", "11", "12"
+CardExpiryMonth = typing.Union[
+    typing.Literal["01", "02", "03", "04", "05", "06", "07", "08", "09", "10", "11", "12"], str
 ]
 
 
@@ -1044,7 +1064,9 @@ class PersonalDetails(pydantic.BaseModel):
 	"""
 
 
-ProcessCheckoutPaymentType = typing.Literal["bancontact", "blik", "boleto", "card", "ideal"]
+ProcessCheckoutPaymentType = typing.Union[
+    typing.Literal["bancontact", "blik", "boleto", "card", "ideal"], str
+]
 
 
 class ProcessCheckout(pydantic.BaseModel):

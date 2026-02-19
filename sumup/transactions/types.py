@@ -20,39 +20,47 @@ class Error(pydantic.BaseModel):
 	"""
 
 
-Currency = typing.Literal[
-    "BGN",
-    "BRL",
-    "CHF",
-    "CLP",
-    "CZK",
-    "DKK",
-    "EUR",
-    "GBP",
-    "HRK",
-    "HUF",
-    "NOK",
-    "PLN",
-    "RON",
-    "SEK",
-    "USD",
+Currency = typing.Union[
+    typing.Literal[
+        "BGN",
+        "BRL",
+        "CHF",
+        "CLP",
+        "CZK",
+        "DKK",
+        "EUR",
+        "GBP",
+        "HRK",
+        "HUF",
+        "NOK",
+        "PLN",
+        "RON",
+        "SEK",
+        "USD",
+    ],
+    str,
 ]
 
-PaymentType = typing.Literal[
-    "APM",
-    "BALANCE",
-    "BITCOIN",
-    "BOLETO",
-    "CASH",
-    "DIRECT_DEBIT",
-    "ECOM",
-    "MOTO",
-    "POS",
-    "RECURRING",
-    "UNKNOWN",
+PaymentType = typing.Union[
+    typing.Literal[
+        "APM",
+        "BALANCE",
+        "BITCOIN",
+        "BOLETO",
+        "CASH",
+        "DIRECT_DEBIT",
+        "ECOM",
+        "MOTO",
+        "POS",
+        "RECURRING",
+        "UNKNOWN",
+    ],
+    str,
 ]
 
-TransactionBaseStatus = typing.Literal["CANCELLED", "FAILED", "PENDING", "SUCCESSFUL"]
+TransactionBaseStatus = typing.Union[
+    typing.Literal["CANCELLED", "FAILED", "PENDING", "SUCCESSFUL"], str
+]
 
 
 class TransactionBase(pydantic.BaseModel):
@@ -102,33 +110,36 @@ class TransactionBase(pydantic.BaseModel):
 	"""
 
 
-EntryMode = typing.Literal[
-    "apple pay",
-    "bancontact",
-    "blik",
-    "boleto",
-    "chip",
-    "contactless",
-    "contactless magstripe",
-    "customer entry",
-    "direct debit",
-    "eps",
-    "giropay",
-    "google pay",
-    "ideal",
-    "magstripe",
-    "magstripe fallback",
-    "manual entry",
-    "moto",
-    "mybank",
-    "na",
-    "none",
-    "p24",
-    "paypal",
-    "pix",
-    "qr code pix",
-    "satispay",
-    "sofort",
+EntryMode = typing.Union[
+    typing.Literal[
+        "apple pay",
+        "bancontact",
+        "blik",
+        "boleto",
+        "chip",
+        "contactless",
+        "contactless magstripe",
+        "customer entry",
+        "direct debit",
+        "eps",
+        "giropay",
+        "google pay",
+        "ideal",
+        "magstripe",
+        "magstripe fallback",
+        "manual entry",
+        "moto",
+        "mybank",
+        "na",
+        "none",
+        "p24",
+        "paypal",
+        "pix",
+        "qr code pix",
+        "satispay",
+        "sofort",
+    ],
+    str,
 ]
 
 
@@ -169,8 +180,8 @@ class TransactionCheckoutInfo(pydantic.BaseModel):
 	"""
 
 
-TransactionMixinHistoryPayoutPlan = typing.Literal[
-    "ACCELERATED_INSTALLMENT", "SINGLE_PAYMENT", "TRUE_INSTALLMENT"
+TransactionMixinHistoryPayoutPlan = typing.Union[
+    typing.Literal["ACCELERATED_INSTALLMENT", "SINGLE_PAYMENT", "TRUE_INSTALLMENT"], str
 ]
 
 
@@ -219,31 +230,34 @@ HorizontalAccuracy = float
 Indication of the precision of the geographical position received from the payment terminal.
 """
 
-CardType = typing.Literal[
-    "ALELO",
-    "AMEX",
-    "CONECS",
-    "CUP",
-    "DINERS",
-    "DISCOVER",
-    "EFTPOS",
-    "ELO",
-    "ELV",
-    "GIROCARD",
-    "HIPERCARD",
-    "INTERAC",
-    "JCB",
-    "MAESTRO",
-    "MASTERCARD",
-    "PLUXEE",
-    "SWILE",
-    "TICKET",
-    "UNKNOWN",
-    "VISA",
-    "VISA_ELECTRON",
-    "VISA_VPAY",
-    "VPAY",
-    "VR",
+CardType = typing.Union[
+    typing.Literal[
+        "ALELO",
+        "AMEX",
+        "CONECS",
+        "CUP",
+        "DINERS",
+        "DISCOVER",
+        "EFTPOS",
+        "ELO",
+        "ELV",
+        "GIROCARD",
+        "HIPERCARD",
+        "INTERAC",
+        "JCB",
+        "MAESTRO",
+        "MASTERCARD",
+        "PLUXEE",
+        "SWILE",
+        "TICKET",
+        "UNKNOWN",
+        "VISA",
+        "VISA_ELECTRON",
+        "VISA_VPAY",
+        "VPAY",
+        "VR",
+    ],
+    str,
 ]
 
 
@@ -323,9 +337,11 @@ Unique ID of the transaction event.
 Format: int64
 """
 
-EventType = typing.Literal["CHARGE_BACK", "PAYOUT", "PAYOUT_DEDUCTION", "REFUND"]
+EventType = typing.Union[typing.Literal["CHARGE_BACK", "PAYOUT", "PAYOUT_DEDUCTION", "REFUND"], str]
 
-EventStatus = typing.Literal["FAILED", "PAID_OUT", "PENDING", "REFUNDED", "SCHEDULED", "SUCCESSFUL"]
+EventStatus = typing.Union[
+    typing.Literal["FAILED", "PAID_OUT", "PENDING", "REFUNDED", "SCHEDULED", "SUCCESSFUL"], str
+]
 
 
 class TransactionEvent(pydantic.BaseModel):
@@ -494,38 +510,51 @@ class Event(pydantic.BaseModel):
 	"""
 
 
-TransactionFullStatus = typing.Literal["CANCELLED", "FAILED", "PENDING", "SUCCESSFUL"]
-
-TransactionFullPayoutPlan = typing.Literal[
-    "ACCELERATED_INSTALLMENT", "SINGLE_PAYMENT", "TRUE_INSTALLMENT"
+TransactionFullStatus = typing.Union[
+    typing.Literal["CANCELLED", "FAILED", "PENDING", "SUCCESSFUL"], str
 ]
 
-TransactionFullSimplePaymentType = typing.Literal[
-    "CASH", "CC_CUSTOMER_ENTERED", "CC_SIGNATURE", "ELV", "EMV", "MANUAL_ENTRY", "MOTO"
+TransactionFullPayoutPlan = typing.Union[
+    typing.Literal["ACCELERATED_INSTALLMENT", "SINGLE_PAYMENT", "TRUE_INSTALLMENT"], str
 ]
 
-TransactionFullVerificationMethod = typing.Literal[
-    "confirmation code verified",
-    "na",
-    "none",
-    "offline PIN",
-    "offline PIN + signature",
-    "online PIN",
-    "signature",
+TransactionFullSimplePaymentType = typing.Union[
+    typing.Literal[
+        "CASH", "CC_CUSTOMER_ENTERED", "CC_SIGNATURE", "ELV", "EMV", "MANUAL_ENTRY", "MOTO"
+    ],
+    str,
 ]
 
-TransactionFullPayoutType = typing.Literal["BALANCE", "BANK_ACCOUNT", "PREPAID_CARD"]
+TransactionFullVerificationMethod = typing.Union[
+    typing.Literal[
+        "confirmation code verified",
+        "na",
+        "none",
+        "offline PIN",
+        "offline PIN + signature",
+        "online PIN",
+        "signature",
+    ],
+    str,
+]
 
-TransactionFullSimpleStatus = typing.Literal[
-    "CANCELLED",
-    "CANCEL_FAILED",
-    "CHARGEBACK",
-    "FAILED",
-    "NON_COLLECTION",
-    "PAID_OUT",
-    "REFUNDED",
-    "REFUND_FAILED",
-    "SUCCESSFUL",
+TransactionFullPayoutType = typing.Union[
+    typing.Literal["BALANCE", "BANK_ACCOUNT", "PREPAID_CARD"], str
+]
+
+TransactionFullSimpleStatus = typing.Union[
+    typing.Literal[
+        "CANCELLED",
+        "CANCEL_FAILED",
+        "CHARGEBACK",
+        "FAILED",
+        "NON_COLLECTION",
+        "PAID_OUT",
+        "REFUNDED",
+        "REFUND_FAILED",
+        "SUCCESSFUL",
+    ],
+    str,
 ]
 
 
@@ -744,13 +773,15 @@ class TransactionFull(pydantic.BaseModel):
 	"""
 
 
-TransactionHistoryStatus = typing.Literal["CANCELLED", "FAILED", "PENDING", "SUCCESSFUL"]
-
-TransactionHistoryPayoutPlan = typing.Literal[
-    "ACCELERATED_INSTALLMENT", "SINGLE_PAYMENT", "TRUE_INSTALLMENT"
+TransactionHistoryStatus = typing.Union[
+    typing.Literal["CANCELLED", "FAILED", "PENDING", "SUCCESSFUL"], str
 ]
 
-TransactionHistoryType = typing.Literal["CHARGE_BACK", "PAYMENT", "REFUND"]
+TransactionHistoryPayoutPlan = typing.Union[
+    typing.Literal["ACCELERATED_INSTALLMENT", "SINGLE_PAYMENT", "TRUE_INSTALLMENT"], str
+]
+
+TransactionHistoryType = typing.Union[typing.Literal["CHARGE_BACK", "PAYMENT", "REFUND"], str]
 
 
 class TransactionHistory(pydantic.BaseModel):
@@ -846,31 +877,34 @@ class TransactionHistory(pydantic.BaseModel):
 	"""
 
 
-EntryModeFilter = typing.Literal[
-    "APPLE_PAY",
-    "BANCONTACT",
-    "BLIK",
-    "BOLETO",
-    "CHIP",
-    "CONTACTLESS",
-    "CONTACTLESS_MAGSTRIPE",
-    "CUSTOMER_ENTRY",
-    "DIRECT_DEBIT",
-    "EPS",
-    "GIROPAY",
-    "GOOGLE_PAY",
-    "IDEAL",
-    "MAGSTRIPE",
-    "MAGSTRIPE_FALLBACK",
-    "MANUAL_ENTRY",
-    "MOTO",
-    "MYBANK",
-    "N/A",
-    "NONE",
-    "P24",
-    "PAYPAL",
-    "PIX",
-    "QR_CODE_PIX",
-    "SATISPAY",
-    "SOFORT",
+EntryModeFilter = typing.Union[
+    typing.Literal[
+        "APPLE_PAY",
+        "BANCONTACT",
+        "BLIK",
+        "BOLETO",
+        "CHIP",
+        "CONTACTLESS",
+        "CONTACTLESS_MAGSTRIPE",
+        "CUSTOMER_ENTRY",
+        "DIRECT_DEBIT",
+        "EPS",
+        "GIROPAY",
+        "GOOGLE_PAY",
+        "IDEAL",
+        "MAGSTRIPE",
+        "MAGSTRIPE_FALLBACK",
+        "MANUAL_ENTRY",
+        "MOTO",
+        "MYBANK",
+        "N/A",
+        "NONE",
+        "P24",
+        "PAYPAL",
+        "PIX",
+        "QR_CODE_PIX",
+        "SATISPAY",
+        "SOFORT",
+    ],
+    str,
 ]

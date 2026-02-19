@@ -97,7 +97,7 @@ class CreateReaderCheckoutBodyAffiliate(pydantic.BaseModel):
 	"""
 
 
-CreateReaderCheckoutBodyCardType = typing.Literal["credit", "debit"]
+CreateReaderCheckoutBodyCardType = typing.Union[typing.Literal["credit", "debit"], str]
 
 
 class CreateReaderCheckoutBodyTotalAmount(pydantic.BaseModel):

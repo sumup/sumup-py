@@ -125,7 +125,7 @@ func (p *Property) String() string {
 
 func (e *EnumDeclaration[E]) String() string {
 	buf := new(strings.Builder)
-	fmt.Fprintf(buf, "%s = typing.Literal[", e.Name)
+	fmt.Fprintf(buf, "%s = typing.Union[typing.Literal[", e.Name)
 	slices.Sort(e.Values)
 	for i, v := range e.Values {
 		if i != 0 {
@@ -133,7 +133,7 @@ func (e *EnumDeclaration[E]) String() string {
 		}
 		fmt.Fprintf(buf, "%#v", v)
 	}
-	fmt.Fprint(buf, "]\n")
+	fmt.Fprintf(buf, "], %s]\n", pythonEnumBaseType(e.Type))
 	return buf.String()
 }
 
@@ -156,4 +156,17 @@ func pythonFieldName(name string) string {
 	}
 
 	return name
+}
+
+func pythonEnumBaseType(typeName string) string {
+	switch typeName {
+	case "string":
+		return "str"
+	case "integer", "int", "int64":
+		return "int"
+	case "number", "float":
+		return "float"
+	default:
+		return "typing.Any"
+	}
 }

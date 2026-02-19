@@ -2,7 +2,7 @@
 import typing
 import pydantic
 
-AccountLegacyType = typing.Literal["normal", "operator"]
+AccountLegacyType = typing.Union[typing.Literal["normal", "operator"], str]
 
 
 class AccountLegacy(pydantic.BaseModel):
@@ -324,7 +324,9 @@ class DoingBusinessAsLegacy(pydantic.BaseModel):
 	"""
 
 
-MerchantSettingsMotoPayment = typing.Literal["ENFORCED", "OFF", "ON", "UNAVAILABLE"]
+MerchantSettingsMotoPayment = typing.Union[
+    typing.Literal["ENFORCED", "OFF", "ON", "UNAVAILABLE"], str
+]
 
 
 class MerchantSettings(pydantic.BaseModel):

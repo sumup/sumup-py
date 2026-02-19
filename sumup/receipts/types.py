@@ -31,9 +31,11 @@ TransactionId = str
 Unique ID of the transaction.
 """
 
-EventType = typing.Literal["CHARGE_BACK", "PAYOUT", "PAYOUT_DEDUCTION", "REFUND"]
+EventType = typing.Union[typing.Literal["CHARGE_BACK", "PAYOUT", "PAYOUT_DEDUCTION", "REFUND"], str]
 
-EventStatus = typing.Literal["FAILED", "PAID_OUT", "PENDING", "REFUNDED", "SCHEDULED", "SUCCESSFUL"]
+EventStatus = typing.Union[
+    typing.Literal["FAILED", "PAID_OUT", "PENDING", "REFUNDED", "SCHEDULED", "SUCCESSFUL"], str
+]
 
 
 class ReceiptEvent(pydantic.BaseModel):

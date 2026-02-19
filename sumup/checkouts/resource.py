@@ -17,11 +17,13 @@ import httpx
 import typing
 import pydantic
 
-CreateCheckoutBodyPurpose = typing.Literal["CHECKOUT", "SETUP_RECURRING_PAYMENT"]
+CreateCheckoutBodyPurpose = typing.Union[typing.Literal["CHECKOUT", "SETUP_RECURRING_PAYMENT"], str]
 
-CreateCheckoutBodyStatus = typing.Literal["FAILED", "PAID", "PENDING"]
+CreateCheckoutBodyStatus = typing.Union[typing.Literal["FAILED", "PAID", "PENDING"], str]
 
-CreateCheckoutBodyTransactionStatus = typing.Literal["CANCELLED", "FAILED", "PENDING", "SUCCESSFUL"]
+CreateCheckoutBodyTransactionStatus = typing.Union[
+    typing.Literal["CANCELLED", "FAILED", "PENDING", "SUCCESSFUL"], str
+]
 
 
 class CreateCheckoutBodyTransaction(pydantic.BaseModel):
@@ -186,7 +188,9 @@ class CreateCheckoutBody(pydantic.BaseModel):
 	"""
 
 
-ProcessCheckoutBodyPaymentType = typing.Literal["bancontact", "blik", "boleto", "card", "ideal"]
+ProcessCheckoutBodyPaymentType = typing.Union[
+    typing.Literal["bancontact", "blik", "boleto", "card", "ideal"], str
+]
 
 
 class ProcessCheckoutBody(pydantic.BaseModel):

@@ -2,12 +2,7 @@
 from .._service import Resource, AsyncResource, HeaderTypes
 from .._exceptions import APIError
 from .._secret import Secret
-from .types import (
-    Attributes,
-    Member,
-    MembershipStatus,
-    Metadata,
-)
+from .types import Attributes, Member, MembershipStatus, Metadata
 import httpx
 import typing
 import pydantic
