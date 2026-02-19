@@ -61,7 +61,7 @@ class MerchantsResource(Resource):
             return pydantic.TypeAdapter(Merchant).validate_python(resp.json())
         elif resp.status_code == 404:
             raise APIError(
-                "No user with the specified ID exists.", status=resp.status_code, body=resp.text
+                "The requested Merchant does not exist.", status=resp.status_code, body=resp.text
             )
         else:
             raise APIError("Unexpected response", status=resp.status_code, body=resp.text)
@@ -88,7 +88,7 @@ class MerchantsResource(Resource):
             return pydantic.TypeAdapter(ListPersonsResponseBody).validate_python(resp.json())
         elif resp.status_code == 404:
             raise APIError(
-                "No user with the specified ID exists.", status=resp.status_code, body=resp.text
+                "The requested Merchant does not exist.", status=resp.status_code, body=resp.text
             )
         elif resp.status_code == 500:
             raise APIError(
@@ -120,7 +120,7 @@ class MerchantsResource(Resource):
             return pydantic.TypeAdapter(Person).validate_python(resp.json())
         elif resp.status_code == 404:
             raise APIError(
-                "No user with the specified ID exists.", status=resp.status_code, body=resp.text
+                "The requested Person does not exist.", status=resp.status_code, body=resp.text
             )
         elif resp.status_code == 500:
             raise APIError(
@@ -156,7 +156,7 @@ class AsyncMerchantsResource(AsyncResource):
             return pydantic.TypeAdapter(Merchant).validate_python(resp.json())
         elif resp.status_code == 404:
             raise APIError(
-                "No user with the specified ID exists.", status=resp.status_code, body=resp.text
+                "The requested Merchant does not exist.", status=resp.status_code, body=resp.text
             )
         else:
             raise APIError("Unexpected response", status=resp.status_code, body=resp.text)
@@ -183,7 +183,7 @@ class AsyncMerchantsResource(AsyncResource):
             return pydantic.TypeAdapter(ListPersonsResponseBody).validate_python(resp.json())
         elif resp.status_code == 404:
             raise APIError(
-                "No user with the specified ID exists.", status=resp.status_code, body=resp.text
+                "The requested Merchant does not exist.", status=resp.status_code, body=resp.text
             )
         elif resp.status_code == 500:
             raise APIError(
@@ -215,7 +215,7 @@ class AsyncMerchantsResource(AsyncResource):
             return pydantic.TypeAdapter(Person).validate_python(resp.json())
         elif resp.status_code == 404:
             raise APIError(
-                "No user with the specified ID exists.", status=resp.status_code, body=resp.text
+                "The requested Person does not exist.", status=resp.status_code, body=resp.text
             )
         elif resp.status_code == 500:
             raise APIError(
