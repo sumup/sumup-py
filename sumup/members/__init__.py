@@ -8,7 +8,7 @@ from .resource import (
     ListMerchantMembersParams,
     ListMerchantMembers200Response,
 )
-from .types import (
+from ..types import (
     Attributes,
     Invite,
     Member,

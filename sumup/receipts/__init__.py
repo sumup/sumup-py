@@ -4,7 +4,7 @@ from .resource import (
     AsyncReceiptsResource,
     GetReceiptParams,
 )
-from .types import (
+from ..types import (
     Error,
     EventId,
     EventStatus,

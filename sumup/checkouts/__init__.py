@@ -15,7 +15,7 @@ from .resource import (
     GetPaymentMethods200Response,
     ProcessCheckoutResponse,
 )
-from .types import (
+from ..types import (
     AddressLegacy,
     Card,
     CardType,

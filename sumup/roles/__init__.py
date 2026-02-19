@@ -6,7 +6,7 @@ from .resource import (
     UpdateMerchantRoleBody,
     ListMerchantRoles200Response,
 )
-from .types import (
+from ..types import (
     Metadata,
     Problem,
     Role,

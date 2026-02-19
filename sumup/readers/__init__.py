@@ -10,7 +10,7 @@ from .resource import (
     CreateReaderCheckoutBody,
     ListReaders200Response,
 )
-from .types import (
+from ..types import (
     BadGateway,
     BadRequest,
     CreateReaderCheckoutError,

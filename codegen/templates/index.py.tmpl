@@ -7,7 +7,7 @@ from .resource import (
 {{- end }}
 )
 {{- with .TypeNames }}
-from .types import (
+from ..types import (
 {{- range . }}
 	{{ . }},
 {{- end }}

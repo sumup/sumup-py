@@ -90,6 +90,10 @@ func (b *Builder) Build() error {
 		return fmt.Errorf("missing specs: call Load to load the specs first")
 	}
 
+	if err := b.generateSharedTypes(); err != nil {
+		return err
+	}
+
 	for tagName, paths := range b.pathsByTag {
 		if err := b.generateResource(tagName, paths); err != nil {
 			return err
