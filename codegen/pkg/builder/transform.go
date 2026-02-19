@@ -321,24 +321,38 @@ func (b *Builder) genSchema(sp *base.SchemaProxy, name string) (string, []Writab
 
 // createObject converts openapi schema into golang object.
 func (b *Builder) createObject(schema *base.Schema, name string) (Writable, []Writable) {
-	if (schema.Properties == nil || schema.Properties.Len() == 0) &&
-		schema.AdditionalProperties != nil &&
-		((schema.AdditionalProperties.IsB() && schema.AdditionalProperties.B) ||
-			(schema.AdditionalProperties.IsA())) {
+	hasProperties := schema.Properties != nil && schema.Properties.Len() > 0
+	hasAdditionalProperties := schema.AdditionalProperties != nil &&
+		((schema.AdditionalProperties.IsB() && schema.AdditionalProperties.B) || schema.AdditionalProperties.IsA())
 
+	additionalPropertyType := ""
+	additionalTypes := []Writable{}
+	if hasAdditionalProperties {
+		additionalPropertyType = "typing.Any"
+		if schema.AdditionalProperties.IsA() {
+			var generatedType string
+			generatedType, additionalTypes = b.genSchema(schema.AdditionalProperties.A, name+"AdditionalProperty")
+			additionalPropertyType = generatedType
+		}
+	}
+
+	if !hasProperties && hasAdditionalProperties {
 		return &TypeAlias{
 			Comment: schemaDoc(name, schema),
 			Name:    name,
-			Type:    "dict[typing.Any, typing.Any]",
-		}, nil
+			Type:    "dict[str, " + additionalPropertyType + "]",
+		}, additionalTypes
 	}
 
-	fields, additionalTypes := b.createFields(schema.Properties, name, schema.Required)
+	fields, fieldTypes := b.createFields(schema.Properties, name, schema.Required)
+	additionalTypes = append(additionalTypes, fieldTypes...)
+
 	return &ClassDeclaration{
-		Description: schemaDoc(name, schema),
-		Name:        name,
-		Type:        "class",
-		Fields:      fields,
+		Description:              schemaDoc(name, schema),
+		Name:                     name,
+		Type:                     "class",
+		Fields:                   fields,
+		AdditionalPropertiesType: additionalPropertyType,
 	}, additionalTypes
 }
 
@@ -346,6 +360,9 @@ func (b *Builder) createObject(schema *base.Schema, name string) (Writable, []Wr
 func (b *Builder) createFields(properties *orderedmap.Map[string, *base.SchemaProxy], name string, required []string) ([]Property, []Writable) {
 	fields := []Property{}
 	types := []Writable{}
+	if properties == nil {
+		return fields, types
+	}
 
 	for property, schema := range properties.FromOldest() {
 		typeName, moreTypes := b.genSchema(schema, name+strcase.ToCamel(property))

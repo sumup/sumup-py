@@ -15,7 +15,7 @@ on:
       - ".github/workflows/codegen.yaml"
 
 env:
-  GOLANGCI_LINT_VERSION: v2.6.2
+  GOLANGCI_LINT_VERSION: v2.9.0
 
 permissions:
   contents: read

@@ -166,7 +166,7 @@ A publicly available phone number in [E.164](https://en.wikipedia.org/wiki/E.164
 Max length: 64
 """
 
-Attributes = dict[typing.Any, typing.Any]
+Attributes = dict[str, typing.Any]
 """
 Object attributes that are modifiable only by SumUp applications.
 """
@@ -335,7 +335,7 @@ class BusinessProfile(pydantic.BaseModel):
 	"""
 
 
-Meta = dict[typing.Any, typing.Any]
+Meta = dict[str, str]
 """
 A set of key-value pairs that you can attach to an object. This can be useful for storing additional informationabout the object in a structured format.
 
@@ -535,6 +535,35 @@ class Problem(pydantic.BaseModel):
     """
 	A short, human-readable summary of the problem type.
 	"""
+
+    model_config = pydantic.ConfigDict(extra="allow")
+
+    @pydantic.model_validator(mode="before")
+    @classmethod
+    def _merge_additional_properties(cls, values: typing.Any) -> typing.Any:
+        if not isinstance(values, dict):
+            return values
+
+        additional = values.get("additional_properties")
+        if not isinstance(additional, dict):
+            return values
+
+        merged = dict(additional)
+        for key, value in values.items():
+            if key != "additional_properties":
+                merged[key] = value
+
+        return merged
+
+    @property
+    def additional_properties(self) -> dict[str, typing.Any]:
+        if self.model_extra is None:
+            object.__setattr__(self, "__pydantic_extra__", {})
+        return typing.cast(dict[str, typing.Any], self.model_extra)
+
+    @additional_properties.setter
+    def additional_properties(self, value: dict[str, typing.Any]) -> None:
+        object.__setattr__(self, "__pydantic_extra__", dict(value))
 
 
 class Ownership(pydantic.BaseModel):

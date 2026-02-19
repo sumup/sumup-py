@@ -58,7 +58,7 @@ class UpdateReaderBody(pydantic.BaseModel):
 	"""
 
 
-CreateReaderCheckoutBodyAffiliateTags = dict[typing.Any, typing.Any]
+CreateReaderCheckoutBodyAffiliateTags = dict[str, typing.Any]
 """
 Additional metadata for the transaction.
 It is key-value object that can be associated with the transaction.
