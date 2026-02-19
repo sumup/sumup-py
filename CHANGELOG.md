@@ -1,5 +1,16 @@
 # Changelog
 
+## [0.1.0](https://github.com/sumup/sumup-py/compare/v0.0.22...v0.1.0) (2026-02-19)
+
+
+### Features
+
+* **codegen:** generate open enums in Python SDK types ([#207](https://github.com/sumup/sumup-py/issues/207)) ([bce9e7c](https://github.com/sumup/sumup-py/commit/bce9e7ca34256426932783d2987b9144c5d67024))
+* move types into dedicated folder ([#208](https://github.com/sumup/sumup-py/issues/208)) ([a8bac91](https://github.com/sumup/sumup-py/commit/a8bac91de0cc2c745fd247cc6a93ed14ef366b9f))
+* release 0.1.0 ([0b097d1](https://github.com/sumup/sumup-py/commit/0b097d16dbef767532f7c17ffff4ab71c32d8c18))
+* report runtime properties ([#182](https://github.com/sumup/sumup-py/issues/182)) ([e51f50a](https://github.com/sumup/sumup-py/commit/e51f50ab3f8c8dbf177a285e77df7abe8dbdb7bc))
+* support schemas with additional properties ([#205](https://github.com/sumup/sumup-py/issues/205)) ([f59128c](https://github.com/sumup/sumup-py/commit/f59128cdad129351b0c54ac11b212eb64f902d13))
+
 ## [0.0.22](https://github.com/sumup/sumup-py/compare/v0.0.21...v0.0.22) (2026-01-19)
 
 
