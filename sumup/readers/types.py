@@ -39,7 +39,7 @@ class ReaderDevice(pydantic.BaseModel):
 	"""
 
 
-Metadata = dict[typing.Any, typing.Any]
+Metadata = dict[str, typing.Any]
 """
 Set of user-defined key-value pairs attached to the object. Partial updates are not supported. When updating, alwayssubmit whole metadata. Maximum of 64 parameters are allowed in the object.
 Max properties: 64
@@ -142,6 +142,35 @@ class Problem(pydantic.BaseModel):
 	A short, human-readable summary of the problem type.
 	"""
 
+    model_config = pydantic.ConfigDict(extra="allow")
+
+    @pydantic.model_validator(mode="before")
+    @classmethod
+    def _merge_additional_properties(cls, values: typing.Any) -> typing.Any:
+        if not isinstance(values, dict):
+            return values
+
+        additional = values.get("additional_properties")
+        if not isinstance(additional, dict):
+            return values
+
+        merged = dict(additional)
+        for key, value in values.items():
+            if key != "additional_properties":
+                merged[key] = value
+
+        return merged
+
+    @property
+    def additional_properties(self) -> dict[str, typing.Any]:
+        if self.model_extra is None:
+            object.__setattr__(self, "__pydantic_extra__", {})
+        return typing.cast(dict[str, typing.Any], self.model_extra)
+
+    @additional_properties.setter
+    def additional_properties(self, value: dict[str, typing.Any]) -> None:
+        object.__setattr__(self, "__pydantic_extra__", dict(value))
+
 
 ReaderPairingCode = str
 """
@@ -191,7 +220,7 @@ class CreateReaderCheckoutError(pydantic.BaseModel):
     errors: CreateReaderCheckoutErrorErrors
 
 
-CreateReaderCheckoutUnprocessableEntityErrors = dict[typing.Any, typing.Any]
+CreateReaderCheckoutUnprocessableEntityErrors = dict[str, typing.Any]
 """
 CreateReaderCheckoutUnprocessableEntityErrors is a schema definition.
 """
@@ -205,7 +234,7 @@ class CreateReaderCheckoutUnprocessableEntity(pydantic.BaseModel):
     errors: CreateReaderCheckoutUnprocessableEntityErrors
 
 
-CreateReaderCheckoutRequestAffiliateTags = dict[typing.Any, typing.Any]
+CreateReaderCheckoutRequestAffiliateTags = dict[str, typing.Any]
 """
 Additional metadata for the transaction.
 It is key-value object that can be associated with the transaction.
@@ -564,7 +593,7 @@ class CreateReaderTerminateError(pydantic.BaseModel):
     errors: CreateReaderTerminateErrorErrors
 
 
-CreateReaderTerminateUnprocessableEntityErrors = dict[typing.Any, typing.Any]
+CreateReaderTerminateUnprocessableEntityErrors = dict[str, typing.Any]
 """
 CreateReaderTerminateUnprocessableEntityErrors is a schema definition.
 """

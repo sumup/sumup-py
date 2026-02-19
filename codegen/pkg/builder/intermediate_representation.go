@@ -17,6 +17,8 @@ type ClassDeclaration struct {
 	Fields []Property
 	// Description holds the description of the type
 	Description string
+	// AdditionalPropertiesType holds the value type for additional properties if enabled.
+	AdditionalPropertiesType string
 }
 
 type OneOfDeclaration struct {

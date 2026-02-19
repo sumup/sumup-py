@@ -43,6 +43,37 @@ func (c *ClassDeclaration) String() string {
 			fmt.Fprint(buf, indent(1, ft.String()))
 		}
 	}
+	if c.AdditionalPropertiesType != "" {
+		fmt.Fprint(buf, "\n")
+		fmt.Fprint(buf, "\tmodel_config = pydantic.ConfigDict(extra=\"allow\")\n")
+		fmt.Fprint(buf, "\n")
+		fmt.Fprint(buf, "\t@pydantic.model_validator(mode=\"before\")\n")
+		fmt.Fprint(buf, "\t@classmethod\n")
+		fmt.Fprint(buf, "\tdef _merge_additional_properties(cls, values: typing.Any) -> typing.Any:\n")
+		fmt.Fprint(buf, "\t\tif not isinstance(values, dict):\n")
+		fmt.Fprint(buf, "\t\t\treturn values\n")
+		fmt.Fprint(buf, "\n")
+		fmt.Fprint(buf, "\t\tadditional = values.get(\"additional_properties\")\n")
+		fmt.Fprint(buf, "\t\tif not isinstance(additional, dict):\n")
+		fmt.Fprint(buf, "\t\t\treturn values\n")
+		fmt.Fprint(buf, "\n")
+		fmt.Fprint(buf, "\t\tmerged = dict(additional)\n")
+		fmt.Fprint(buf, "\t\tfor key, value in values.items():\n")
+		fmt.Fprint(buf, "\t\t\tif key != \"additional_properties\":\n")
+		fmt.Fprint(buf, "\t\t\t\tmerged[key] = value\n")
+		fmt.Fprint(buf, "\n")
+		fmt.Fprint(buf, "\t\treturn merged\n")
+		fmt.Fprint(buf, "\n")
+		fmt.Fprint(buf, "\t@property\n")
+		fmt.Fprintf(buf, "\tdef additional_properties(self) -> dict[str, %s]:\n", c.AdditionalPropertiesType)
+		fmt.Fprint(buf, "\t\tif self.model_extra is None:\n")
+		fmt.Fprint(buf, "\t\t\tobject.__setattr__(self, \"__pydantic_extra__\", {})\n")
+		fmt.Fprintf(buf, "\t\treturn typing.cast(dict[str, %s], self.model_extra)\n", c.AdditionalPropertiesType)
+		fmt.Fprint(buf, "\n")
+		fmt.Fprint(buf, "\t@additional_properties.setter\n")
+		fmt.Fprintf(buf, "\tdef additional_properties(self, value: dict[str, %s]) -> None:\n", c.AdditionalPropertiesType)
+		fmt.Fprint(buf, "\t\tobject.__setattr__(self, \"__pydantic_extra__\", dict(value))\n")
+	}
 	fmt.Fprint(buf, "\n")
 	return buf.String()
 }
@@ -68,21 +99,7 @@ func (p *Property) String() string {
 	name := p.Name
 	alias := p.SerializedName
 
-	// TODO: extract into helper
-	if strings.HasPrefix(name, "+") {
-		name = strings.Replace(name, "+", "Plus", 1)
-	}
-	if strings.HasPrefix(name, "-") {
-		name = strings.Replace(name, "-", "Minus", 1)
-	}
-	if strings.HasPrefix(name, "@") {
-		name = strings.Replace(name, "@", "At", 1)
-	}
-	if strings.HasPrefix(name, "$") {
-		name = strings.Replace(name, "$", "", 1)
-	}
-
-	fieldName := name
+	fieldName := pythonFieldName(name)
 
 	useAlias := alias != "" && alias != fieldName
 
@@ -121,4 +138,21 @@ func (e *EnumDeclaration[E]) String() string {
 
 func (e *EnumDeclaration[E]) TypeName() string {
 	return e.Name
+}
+
+func pythonFieldName(name string) string {
+	if strings.HasPrefix(name, "+") {
+		name = strings.Replace(name, "+", "Plus", 1)
+	}
+	if strings.HasPrefix(name, "-") {
+		name = strings.Replace(name, "-", "Minus", 1)
+	}
+	if strings.HasPrefix(name, "@") {
+		name = strings.Replace(name, "@", "At", 1)
+	}
+	if strings.HasPrefix(name, "$") {
+		name = strings.Replace(name, "$", "", 1)
+	}
+
+	return name
 }
