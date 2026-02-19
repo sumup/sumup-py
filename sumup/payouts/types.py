@@ -3,14 +3,17 @@ import datetime
 import typing
 import pydantic
 
-FinancialPayoutStatus = typing.Literal["FAILED", "SUCCESSFUL"]
+FinancialPayoutStatus = typing.Union[typing.Literal["FAILED", "SUCCESSFUL"], str]
 
-FinancialPayoutType = typing.Literal[
-    "BALANCE_DEDUCTION",
-    "CHARGE_BACK_DEDUCTION",
-    "DD_RETURN_DEDUCTION",
-    "PAYOUT",
-    "REFUND_DEDUCTION",
+FinancialPayoutType = typing.Union[
+    typing.Literal[
+        "BALANCE_DEDUCTION",
+        "CHARGE_BACK_DEDUCTION",
+        "DD_RETURN_DEDUCTION",
+        "PAYOUT",
+        "REFUND_DEDUCTION",
+    ],
+    str,
 ]
 
 

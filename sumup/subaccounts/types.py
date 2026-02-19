@@ -20,7 +20,7 @@ class Permissions(pydantic.BaseModel):
     refund_transactions: bool
 
 
-OperatorAccountType = typing.Literal["normal", "operator"]
+OperatorAccountType = typing.Union[typing.Literal["normal", "operator"], str]
 
 
 class Operator(pydantic.BaseModel):

@@ -26,7 +26,9 @@ class Invite(pydantic.BaseModel):
     expires_at: datetime.datetime
 
 
-MembershipStatus = typing.Literal["accepted", "disabled", "expired", "pending", "unknown"]
+MembershipStatus = typing.Union[
+    typing.Literal["accepted", "disabled", "expired", "pending", "unknown"], str
+]
 
 Metadata = dict[str, typing.Any]
 """
