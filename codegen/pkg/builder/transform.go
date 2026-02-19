@@ -237,7 +237,7 @@ func (b *Builder) generateSchemaComponents(name string, spec *base.Schema) []Wri
 		)
 		types = append(types, &ClassDeclaration{
 			Description: schemaDoc(name, spec),
-			Type:        "typing.Any",
+			Type:        "object",
 			Name:        name,
 		})
 	case spec.AllOf != nil:
@@ -302,7 +302,7 @@ func (b *Builder) genSchema(sp *base.SchemaProxy, name string) (string, []Writab
 		slog.Warn("AnyOf not supported, falling back to 'any'",
 			slog.Any("name", name),
 		)
-		return "typing.Any", nil
+		return "object", nil
 	case schema.AllOf != nil:
 		object, additionalTypes := b.createAllOf(schema, name)
 		types = append(types, additionalTypes...)
@@ -315,7 +315,7 @@ func (b *Builder) genSchema(sp *base.SchemaProxy, name string) (string, []Writab
 				slog.Any("type", schema.Type),
 			)
 		}
-		return "typing.Any", nil
+		return "object", nil
 	}
 }
 
@@ -328,7 +328,7 @@ func (b *Builder) createObject(schema *base.Schema, name string) (Writable, []Wr
 	additionalPropertyType := ""
 	additionalTypes := []Writable{}
 	if hasAdditionalProperties {
-		additionalPropertyType = "typing.Any"
+		additionalPropertyType = "object"
 		if schema.AdditionalProperties.IsA() {
 			var generatedType string
 			generatedType, additionalTypes = b.genSchema(schema.AdditionalProperties.A, name+"AdditionalProperty")

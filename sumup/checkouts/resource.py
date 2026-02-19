@@ -280,7 +280,7 @@ ProcessCheckoutResponse = typing.Union[CheckoutSuccess, CheckoutAccepted]
 
 
 class CheckoutsResource(Resource):
-    def __init__(self, client: httpx.Client):
+    def __init__(self, client: httpx.Client) -> None:
         super().__init__(client)
 
     def list_available_payment_methods(
@@ -432,7 +432,7 @@ class CheckoutsResource(Resource):
 
 
 class AsyncCheckoutsResource(AsyncResource):
-    def __init__(self, client: httpx.AsyncClient):
+    def __init__(self, client: httpx.AsyncClient) -> None:
         super().__init__(client)
 
     async def list_available_payment_methods(

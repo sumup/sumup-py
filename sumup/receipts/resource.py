@@ -20,7 +20,7 @@ class GetReceiptParams(pydantic.BaseModel):
 
 
 class ReceiptsResource(Resource):
-    def __init__(self, client: httpx.Client):
+    def __init__(self, client: httpx.Client) -> None:
         super().__init__(client)
 
     def get(
@@ -50,7 +50,7 @@ class ReceiptsResource(Resource):
 
 
 class AsyncReceiptsResource(AsyncResource):
-    def __init__(self, client: httpx.AsyncClient):
+    def __init__(self, client: httpx.AsyncClient) -> None:
         super().__init__(client)
 
     async def get(

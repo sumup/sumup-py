@@ -799,11 +799,11 @@ class CheckoutAcceptedNextStepPayload(pydantic.BaseModel):
     Contains parameters essential for form redirection. Number of object keys and their content can vary.
     """
 
-    MD: typing.Optional[typing.Any] = None
+    MD: typing.Optional[object] = None
 
-    PaReq: typing.Optional[typing.Any] = None
+    PaReq: typing.Optional[object] = None
 
-    TermUrl: typing.Optional[typing.Any] = None
+    TermUrl: typing.Optional[object] = None
 
 
 class CheckoutAcceptedNextStep(pydantic.BaseModel):

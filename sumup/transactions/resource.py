@@ -141,7 +141,7 @@ class ListTransactions200Response(pydantic.BaseModel):
 
 
 class TransactionsResource(Resource):
-    def __init__(self, client: httpx.Client):
+    def __init__(self, client: httpx.Client) -> None:
         super().__init__(client)
 
     def refund(
@@ -276,7 +276,7 @@ class TransactionsResource(Resource):
 
 
 class AsyncTransactionsResource(AsyncResource):
-    def __init__(self, client: httpx.AsyncClient):
+    def __init__(self, client: httpx.AsyncClient) -> None:
         super().__init__(client)
 
     async def refund(

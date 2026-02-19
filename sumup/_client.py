@@ -18,6 +18,16 @@ from .subaccounts import SubaccountsResource, AsyncSubaccountsResource
 from .transactions import TransactionsResource, AsyncTransactionsResource
 
 BASE_URL = "https://api.sumup.com"
+TimeoutType = typing.Union[
+    httpx.Timeout,
+    float,
+    tuple[
+        typing.Optional[float],
+        typing.Optional[float],
+        typing.Optional[float],
+        typing.Optional[float],
+    ],
+]
 
 
 class Sumup(Resource):
@@ -25,8 +35,8 @@ class Sumup(Resource):
         self,
         api_key: typing.Optional[str] = None,
         base_url: str = BASE_URL,
-        timeout: typing.Optional[httpx.Timeout] = None,
-    ):
+        timeout: typing.Optional[TimeoutType] = None,
+    ) -> None:
         self.api_key = api_key or os.getenv("SUMUP_API_KEY")
         super().__init__(
             httpx.Client(
@@ -118,8 +128,8 @@ class AsyncSumup(AsyncResource):
         self,
         api_key: typing.Optional[str] = None,
         base_url: str = BASE_URL,
-        timeout: typing.Optional[httpx.Timeout] = None,
-    ):
+        timeout: typing.Optional[TimeoutType] = None,
+    ) -> None:
         self.api_key = api_key or os.getenv("SUMUP_API_KEY")
         super().__init__(
             httpx.AsyncClient(

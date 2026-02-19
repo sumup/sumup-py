@@ -619,7 +619,7 @@ class TransactionFull(pydantic.BaseModel):
 	Max: 90
 	"""
 
-    links: typing.Optional[list[typing.Any]] = None
+    links: typing.Optional[list[object]] = None
     """
 	List of hyperlinks for accessing related resources.
 	Unique items only
@@ -733,7 +733,7 @@ class TransactionFull(pydantic.BaseModel):
 	Amount of the applicable VAT (out of the total transaction amount).
 	"""
 
-    vat_rates: typing.Optional[list[typing.Any]] = None
+    vat_rates: typing.Optional[list[object]] = None
     """
 	List of VAT rates applicable to the transaction.
 	"""

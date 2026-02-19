@@ -85,7 +85,7 @@ class ListMemberships200Response(pydantic.BaseModel):
 
 
 class MembershipsResource(Resource):
-    def __init__(self, client: httpx.Client):
+    def __init__(self, client: httpx.Client) -> None:
         super().__init__(client)
 
     def list(
@@ -110,7 +110,7 @@ class MembershipsResource(Resource):
 
 
 class AsyncMembershipsResource(AsyncResource):
-    def __init__(self, client: httpx.AsyncClient):
+    def __init__(self, client: httpx.AsyncClient) -> None:
         super().__init__(client)
 
     async def list(

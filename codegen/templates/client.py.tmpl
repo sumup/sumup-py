@@ -9,6 +9,16 @@ from .{{ .Package }} import {{ .Name }}Resource, Async{{ .Name }}Resource
 {{- end }}
 
 BASE_URL = "https://api.sumup.com"
+TimeoutType = typing.Union[
+    httpx.Timeout,
+    float,
+    tuple[
+        typing.Optional[float],
+        typing.Optional[float],
+        typing.Optional[float],
+        typing.Optional[float],
+    ],
+]
 
 
 class Sumup(Resource):
@@ -16,8 +26,8 @@ class Sumup(Resource):
         self,
         api_key: typing.Optional[str] = None,
         base_url: str = BASE_URL,
-        timeout: typing.Optional[httpx.Timeout] = None,
-    ):
+        timeout: typing.Optional[TimeoutType] = None,
+    ) -> None:
         self.api_key = api_key or os.getenv("SUMUP_API_KEY")
         super().__init__(httpx.Client(
             base_url=base_url,
@@ -43,8 +53,8 @@ class AsyncSumup(AsyncResource):
         self,
         api_key: typing.Optional[str] = None,
         base_url: str = BASE_URL,
-        timeout: typing.Optional[httpx.Timeout] = None,
-    ):
+        timeout: typing.Optional[TimeoutType] = None,
+    ) -> None:
         self.api_key = api_key or os.getenv("SUMUP_API_KEY")
         super().__init__(httpx.AsyncClient(
             base_url=base_url,
