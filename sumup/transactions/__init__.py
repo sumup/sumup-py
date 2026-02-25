@@ -14,6 +14,8 @@ from ..types import (
     CardResponse,
     CardType,
     Currency,
+    Device,
+    ElvCardAccount,
     EntryMode,
     EntryModeFilter,
     Error,
@@ -24,7 +26,6 @@ from ..types import (
     HorizontalAccuracy,
     Lat,
     Link,
-    LinkRefund,
     Lon,
     PaymentType,
     Product,
@@ -35,6 +36,7 @@ from ..types import (
     TransactionHistory,
     TransactionId,
     TransactionMixinHistory,
+    TransactionsHistoryLink,
 )
 
 
@@ -51,6 +53,8 @@ __all__ = [
     "CardResponse",
     "CardType",
     "Currency",
+    "Device",
+    "ElvCardAccount",
     "EntryMode",
     "EntryModeFilter",
     "Error",
@@ -61,7 +65,6 @@ __all__ = [
     "HorizontalAccuracy",
     "Lat",
     "Link",
-    "LinkRefund",
     "Lon",
     "PaymentType",
     "Product",
@@ -72,4 +75,5 @@ __all__ = [
     "TransactionHistory",
     "TransactionId",
     "TransactionMixinHistory",
+    "TransactionsHistoryLink",
 ]

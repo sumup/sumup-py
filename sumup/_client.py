@@ -8,7 +8,6 @@ from .checkouts import CheckoutsResource, AsyncCheckoutsResource
 from .customers import CustomersResource, AsyncCustomersResource
 from .members import MembersResource, AsyncMembersResource
 from .memberships import MembershipsResource, AsyncMembershipsResource
-from .merchant import MerchantResource, AsyncMerchantResource
 from .merchants import MerchantsResource, AsyncMerchantsResource
 from .payouts import PayoutsResource, AsyncPayoutsResource
 from .readers import ReadersResource, AsyncReadersResource
@@ -73,12 +72,6 @@ class Sumup(Resource):
         from .memberships.resource import MembershipsResource
 
         return MembershipsResource(self._client)
-
-    @property
-    def merchant(self) -> MerchantResource:
-        from .merchant.resource import MerchantResource
-
-        return MerchantResource(self._client)
 
     @property
     def merchants(self) -> MerchantsResource:
@@ -166,12 +159,6 @@ class AsyncSumup(AsyncResource):
         from .memberships.resource import AsyncMembershipsResource
 
         return AsyncMembershipsResource(self._client)
-
-    @property
-    def merchant(self) -> AsyncMerchantResource:
-        from .merchant.resource import AsyncMerchantResource
-
-        return AsyncMerchantResource(self._client)
 
     @property
     def merchants(self) -> AsyncMerchantsResource:
