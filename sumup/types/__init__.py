@@ -4,25 +4,6 @@ import datetime
 import typing
 import pydantic
 
-AccountLegacyType = typing.Union[typing.Literal["normal", "operator"], str]
-
-
-class AccountLegacy(pydantic.BaseModel):
-    """
-    Profile information.
-    """
-
-    type: typing.Optional[AccountLegacyType] = None
-    """
-	The role of the user.
-	"""
-
-    username: typing.Optional[str] = None
-    """
-	Username of the user profile.
-	"""
-
-
 CountryCode = str
 """
 An [ISO3166-1 alpha-2](https://en.wikipedia.org/wiki/ISO_3166-1_alpha-2)
@@ -38,7 +19,7 @@ class Address(pydantic.BaseModel):
     """
             An address somewhere in the world. The address fields used depend on the country conventions. For example, inGreat Britain, `city` is `post_town`. In the United States, the top-level administrative unit used in addressesis `state`, whereas in Chile it's `region`.
     Whether an address is valid or not depends on whether the locally required fields are present. Fields not supported ina country will be ignored.
-    Address documentation: https://sumup.roadie.so/docs/default/Component/merchants/merchant/#addresses
+    Address documentation: https://backstage.sumup.net/docs/default/Component/merchants/merchant/#addresses
     """
 
     country: CountryCode
@@ -372,92 +353,6 @@ class AddressWithDetails(pydantic.BaseModel):
 	"""
 
 
-class AppSettings(pydantic.BaseModel):
-    """
-    Mobile app settings
-    """
-
-    advanced_mode: typing.Optional[str] = None
-    """
-	Advanced mode.
-	"""
-
-    barcode_scanner: typing.Optional[str] = None
-    """
-	Barcode scanner.
-	"""
-
-    cash_payment: typing.Optional[str] = None
-    """
-	Cash payment.
-	"""
-
-    checkout_preference: typing.Optional[str] = None
-    """
-	Checkout preference
-	"""
-
-    expected_max_transaction_amount: typing.Optional[float] = None
-    """
-	Expected max transaction amount.
-	"""
-
-    include_vat: typing.Optional[bool] = None
-    """
-	Include vat.
-	"""
-
-    manual_entry: typing.Optional[str] = None
-    """
-	Manual entry.
-	"""
-
-    manual_entry_tutorial: typing.Optional[bool] = None
-    """
-	Manual entry tutorial.
-	"""
-
-    mobile_payment: typing.Optional[str] = None
-    """
-	Mobile payment.
-	"""
-
-    mobile_payment_tutorial: typing.Optional[bool] = None
-    """
-	Mobile payment tutorial.
-	"""
-
-    reader_payment: typing.Optional[str] = None
-    """
-	Reader payment.
-	"""
-
-    referral: typing.Optional[str] = None
-    """
-	Referral.
-	"""
-
-    tax_enabled: typing.Optional[bool] = None
-    """
-	Tax enabled.
-	"""
-
-    terminal_mode_tutorial: typing.Optional[bool] = None
-    """
-	Terminal mode tutorial.
-	"""
-
-    tip_rates: typing.Optional[list[float]] = None
-    """
-	Tip rates.
-	"""
-
-    tipping: typing.Optional[str] = None
-    """
-	Tipping.
-	"""
-
-
 Attributes = dict[str, object]
 """
 Object attributes that are modifiable only by SumUp applications.
@@ -720,7 +615,7 @@ class BasePerson(pydantic.BaseModel):
     """
 	An address somewhere in the world. The address fields used depend on the country conventions. For example, inGreat Britain, `city` is `post_town`. In the United States, the top-level administrative unit used in addressesis `state`, whereas in Chile it's `region`.
 	Whether an address is valid or not depends on whether the locally required fields are present. Fields not supported ina country will be ignored.
-	Address documentation: https://sumup.roadie.so/docs/default/Component/merchants/merchant/#addresses
+	Address documentation: https://backstage.sumup.net/docs/default/Component/merchants/merchant/#addresses
 	"""
 
     birthdate: typing.Optional[datetime.date] = None
@@ -908,7 +803,7 @@ class BusinessProfile(pydantic.BaseModel):
     """
 	An address somewhere in the world. The address fields used depend on the country conventions. For example, inGreat Britain, `city` is `post_town`. In the United States, the top-level administrative unit used in addressesis `state`, whereas in Chile it's `region`.
 	Whether an address is valid or not depends on whether the locally required fields are present. Fields not supported ina country will be ignored.
-	Address documentation: https://sumup.roadie.so/docs/default/Component/merchants/merchant/#addresses
+	Address documentation: https://backstage.sumup.net/docs/default/Component/merchants/merchant/#addresses
 	"""
 
     branding: typing.Optional[Branding] = None
@@ -1070,6 +965,7 @@ Currency = typing.Union[
         "BRL",
         "CHF",
         "CLP",
+        "COP",
         "CZK",
         "DKK",
         "EUR",
@@ -1890,7 +1786,7 @@ class Company(pydantic.BaseModel):
     """
 	An address somewhere in the world. The address fields used depend on the country conventions. For example, inGreat Britain, `city` is `post_town`. In the United States, the top-level administrative unit used in addressesis `state`, whereas in Chile it's `region`.
 	Whether an address is valid or not depends on whether the locally required fields are present. Fields not supported ina country will be ignored.
-	Address documentation: https://sumup.roadie.so/docs/default/Component/merchants/merchant/#addresses
+	Address documentation: https://backstage.sumup.net/docs/default/Component/merchants/merchant/#addresses
 	"""
 
     attributes: typing.Optional[Attributes] = None
@@ -1933,7 +1829,7 @@ class Company(pydantic.BaseModel):
     """
 	An address somewhere in the world. The address fields used depend on the country conventions. For example, inGreat Britain, `city` is `post_town`. In the United States, the top-level administrative unit used in addressesis `state`, whereas in Chile it's `region`.
 	Whether an address is valid or not depends on whether the locally required fields are present. Fields not supported ina country will be ignored.
-	Address documentation: https://sumup.roadie.so/docs/default/Component/merchants/merchant/#addresses
+	Address documentation: https://backstage.sumup.net/docs/default/Component/merchants/merchant/#addresses
 	"""
 
     website: typing.Optional[str] = None
@@ -1947,6 +1843,11 @@ class CreateReaderCheckoutErrorErrors(pydantic.BaseModel):
     """
     CreateReaderCheckoutErrorErrors is a schema definition.
     """
+
+    type: str
+    """
+	Error code
+	"""
 
     detail: typing.Optional[str] = None
     """
@@ -2143,6 +2044,11 @@ class CreateReaderTerminateErrorErrors(pydantic.BaseModel):
     CreateReaderTerminateErrorErrors is a schema definition.
     """
 
+    type: str
+    """
+	Error code
+	"""
+
     detail: typing.Optional[str] = None
     """
 	Error message
@@ -2263,77 +2169,34 @@ class DetailsError(pydantic.BaseModel):
 	"""
 
 
-class DoingBusinessAsLegacyAddress(pydantic.BaseModel):
+class Device(pydantic.BaseModel):
     """
-    DoingBusinessAsLegacyAddress is a schema definition.
+    Device is a schema definition.
     """
 
-    address_line1: typing.Optional[str] = None
+    model: typing.Optional[str] = None
     """
-	Address line 1
+	Device model.
 	"""
 
-    address_line2: typing.Optional[str] = None
+    name: typing.Optional[str] = None
     """
-	Address line 2
+	Device name.
 	"""
 
-    city: typing.Optional[str] = None
+    system_name: typing.Optional[str] = None
     """
-	City
+	Device OS.
 	"""
 
-    country: typing.Optional[str] = None
+    system_version: typing.Optional[str] = None
     """
-	Country ISO 3166-1 code
+	Device OS version.
 	"""
 
-    post_code: typing.Optional[str] = None
+    uuid: typing.Optional[str] = None
     """
-	Postal code
-	"""
-
-    region_id: typing.Optional[float] = None
-    """
-	Country region ID
-	"""
-
-    region_name: typing.Optional[str] = None
-    """
-	Country region name
-	"""
-
-
-class DoingBusinessAsLegacy(pydantic.BaseModel):
-    """
-    Doing Business As information
-    """
-
-    address: typing.Optional[DoingBusinessAsLegacyAddress] = None
-
-    business_name: typing.Optional[str] = None
-    """
-	Doing business as name
-	"""
-
-    company_registration_number: typing.Optional[str] = None
-    """
-	Doing business as company registration number
-	"""
-
-    email: typing.Optional[str] = None
-    """
-	Doing business as email
-	"""
-
-    vat_id: typing.Optional[str] = None
-    """
-	Doing business as VAT ID
-	"""
-
-    website: typing.Optional[str] = None
-    """
-	Doing business as website
+	Device UUID.
 	"""
 
 
@@ -2370,6 +2233,32 @@ class DoingBusinessAsPayloadLegacy(pydantic.BaseModel):
     website: typing.Optional[str] = None
     """
 	Doing business as website
+	"""
+
+
+class ElvCardAccount(pydantic.BaseModel):
+    """
+    ElvCardAccount is a schema definition.
+    """
+
+    iban: typing.Optional[str] = None
+    """
+	ELV IBAN.
+	"""
+
+    last_4_digits: typing.Optional[str] = None
+    """
+	ELV card account number last 4 digits.
+	"""
+
+    sequence_no: typing.Optional[int] = None
+    """
+	ELV card sequence number.
+	"""
+
+    sort_code: typing.Optional[str] = None
+    """
+	ELV card sort code.
 	"""
 
 
@@ -2652,32 +2541,6 @@ Max: 90
 """
 
 
-class LegalTypeLegacy(pydantic.BaseModel):
-    """
-    Id of the legal type of the merchant profile
-    """
-
-    description: typing.Optional[str] = None
-    """
-	Legal type short description
-	"""
-
-    full_description: typing.Optional[str] = None
-    """
-	Legal type description
-	"""
-
-    id: typing.Optional[float] = None
-    """
-	Unique id
-	"""
-
-    sole_trader: typing.Optional[bool] = None
-    """
-	Sole trader legal type if true
-	"""
-
-
 class Link(pydantic.BaseModel):
     """
     Details of a link to a related resource.
@@ -2687,38 +2550,6 @@ class Link(pydantic.BaseModel):
     """
 	URL for accessing the related resource.
 	Format: uri
-	"""
-
-    rel: typing.Optional[str] = None
-    """
-	Specifies the relation to the current resource.
-	"""
-
-    type: typing.Optional[str] = None
-    """
-	Specifies the media type of the related resource.
-	"""
-
-
-class LinkRefund(pydantic.BaseModel):
-    """
-    LinkRefund is a schema definition.
-    """
-
-    href: typing.Optional[str] = None
-    """
-	URL for accessing the related resource.
-	Format: uri
-	"""
-
-    max_amount: typing.Optional[float] = None
-    """
-	Maximum allowed amount for the refund.
-	"""
-
-    min_amount: typing.Optional[float] = None
-    """
-	Minimum allowed amount for the refund.
 	"""
 
     rel: typing.Optional[str] = None
@@ -2747,7 +2578,7 @@ class Person(pydantic.BaseModel):
     """
 	An address somewhere in the world. The address fields used depend on the country conventions. For example, inGreat Britain, `city` is `post_town`. In the United States, the top-level administrative unit used in addressesis `state`, whereas in Chile it's `region`.
 	Whether an address is valid or not depends on whether the locally required fields are present. Fields not supported ina country will be ignored.
-	Address documentation: https://sumup.roadie.so/docs/default/Component/merchants/merchant/#addresses
+	Address documentation: https://backstage.sumup.net/docs/default/Component/merchants/merchant/#addresses
 	"""
 
     birthdate: typing.Optional[datetime.date] = None
@@ -3275,301 +3106,6 @@ class Merchant(pydantic.BaseModel):
 	"""
 
 
-MerchantSettingsMotoPayment = typing.Union[
-    typing.Literal["ENFORCED", "OFF", "ON", "UNAVAILABLE"], str
-]
-
-
-class MerchantSettings(pydantic.BaseModel):
-    """
-    Merchant settings &#40;like \"payout_type\", \"payout_period\"&#41;
-    """
-
-    daily_payout_email: typing.Optional[bool] = None
-    """
-	Whether merchant will receive daily payout emails
-	"""
-
-    gross_settlement: typing.Optional[bool] = None
-    """
-	Whether merchant has gross settlement enabled
-	"""
-
-    monthly_payout_email: typing.Optional[bool] = None
-    """
-	Whether merchant will receive monthly payout emails
-	"""
-
-    moto_payment: typing.Optional[MerchantSettingsMotoPayment] = None
-    """
-	Whether merchant can make MOTO payments
-	"""
-
-    payout_instrument: typing.Optional[str] = None
-    """
-	Payout Instrument
-	"""
-
-    payout_on_demand: typing.Optional[bool] = None
-    """
-	Whether merchant will receive payouts on demand
-	"""
-
-    payout_on_demand_available: typing.Optional[bool] = None
-    """
-	Whether merchant can edit payouts on demand
-	"""
-
-    payout_period: typing.Optional[str] = None
-    """
-	Payout frequency
-	"""
-
-    payout_type: typing.Optional[str] = None
-    """
-	Payout type
-	"""
-
-    printers_enabled: typing.Optional[bool] = None
-    """
-	Whether to show printers in mobile app
-	"""
-
-    stone_merchant_code: typing.Optional[str] = None
-    """
-	Stone merchant code
-	"""
-
-    tax_enabled: typing.Optional[bool] = None
-    """
-	Whether to show tax in receipts &#40;saved per transaction&#41;
-	"""
-
-
-class VatRates(pydantic.BaseModel):
-    """
-    Merchant VAT rates
-    """
-
-    country: typing.Optional[str] = None
-    """
-	Country ISO code
-	"""
-
-    description: typing.Optional[str] = None
-    """
-	Description
-	"""
-
-    id: typing.Optional[float] = None
-    """
-	Internal ID
-	"""
-
-    ordering: typing.Optional[float] = None
-    """
-	Ordering
-	"""
-
-    rate: typing.Optional[float] = None
-    """
-	Rate
-	"""
-
-
-class MerchantProfileLegacy(pydantic.BaseModel):
-    """
-    Account's merchant profile
-    """
-
-    address: typing.Optional[AddressWithDetails] = None
-    """
-	Details of the registered address.
-	"""
-
-    bank_accounts: typing.Optional[list[BankAccount]] = None
-
-    business_owners: typing.Optional[BusinessOwners] = None
-    """
-	Business owners information.
-	"""
-
-    company_name: typing.Optional[str] = None
-    """
-	Company name
-	"""
-
-    company_registration_number: typing.Optional[str] = None
-    """
-	Company registration number
-	"""
-
-    country: typing.Optional[str] = None
-    """
-	Merchant country code formatted according to [ISO3166-1 alpha-2](https://en.wikipedia.org/wiki/ISO_3166-1_alpha-2) &#40;forinternal usage only&#41;
-	"""
-
-    doing_business_as: typing.Optional[DoingBusinessAsLegacy] = None
-    """
-	Doing Business As information
-	"""
-
-    extdev: typing.Optional[bool] = None
-    """
-	True if the merchant is extdev
-	"""
-
-    legal_type: typing.Optional[LegalTypeLegacy] = None
-    """
-	Id of the legal type of the merchant profile
-	"""
-
-    locale: typing.Optional[str] = None
-    """
-	Merchant locale &#40;for internal usage only&#41;
-	"""
-
-    merchant_category_code: typing.Optional[str] = None
-    """
-	Merchant category code
-	"""
-
-    merchant_code: typing.Optional[str] = None
-    """
-	Unique identifying code of the merchant profile
-	"""
-
-    mobile_phone: typing.Optional[str] = None
-    """
-	Mobile phone number
-	"""
-
-    nature_and_purpose: typing.Optional[str] = None
-    """
-	Nature and purpose of the business
-	"""
-
-    payout_zone_migrated: typing.Optional[bool] = None
-    """
-	True if the payout zone of this merchant is migrated
-	"""
-
-    permanent_certificate_access_code: typing.Optional[str] = None
-    """
-	Permanent certificate access code &#40;Portugal&#41;
-	"""
-
-    settings: typing.Optional[MerchantSettings] = None
-    """
-	Merchant settings &#40;like \"payout_type\", \"payout_period\"&#41;
-	"""
-
-    vat_id: typing.Optional[str] = None
-    """
-	Vat ID
-	"""
-
-    vat_rates: typing.Optional[VatRates] = None
-    """
-	Merchant VAT rates
-	"""
-
-    website: typing.Optional[str] = None
-    """
-	Website
-	"""
-
-
-class PermissionsLegacy(pydantic.BaseModel):
-    """
-    User permissions
-    """
-
-    create_moto_payments: typing.Optional[bool] = None
-    """
-	Create MOTO payments
-	"""
-
-    create_referral: typing.Optional[bool] = None
-    """
-	Create referral
-	"""
-
-    full_transaction_history_view: typing.Optional[bool] = None
-    """
-	Can view full merchant transaction history
-	"""
-
-    refund_transactions: typing.Optional[bool] = None
-    """
-	Refund transactions
-	"""
-
-
-class PersonalProfileLegacy(pydantic.BaseModel):
-    """
-    Account's personal profile.
-    """
-
-    address: typing.Optional[AddressWithDetails] = None
-    """
-	Details of the registered address.
-	"""
-
-    complete: typing.Optional[bool] = None
-
-    date_of_birth: typing.Optional[str] = None
-    """
-	Date of birth
-	"""
-
-    first_name: typing.Optional[str] = None
-    """
-	First name of the user
-	"""
-
-    last_name: typing.Optional[str] = None
-    """
-	Last name of the user
-	"""
-
-    mobile_phone: typing.Optional[str] = None
-    """
-	Mobile phone number
-	"""
-
-
-class MerchantAccount(pydantic.BaseModel):
-    """
-    Details of the merchant account.
-    """
-
-    account: typing.Optional[AccountLegacy] = None
-    """
-	Profile information.
-	"""
-
-    app_settings: typing.Optional[AppSettings] = None
-    """
-	Mobile app settings
-	"""
-
-    merchant_profile: typing.Optional[MerchantProfileLegacy] = None
-    """
-	Account's merchant profile
-	"""
-
-    permissions: typing.Optional[PermissionsLegacy] = None
-    """
-	User permissions
-	"""
-
-    personal_profile: typing.Optional[PersonalProfileLegacy] = None
-    """
-	Account's personal profile.
-	"""
-
-
 class MerchantProfilePayloadDoingBusinessAs(pydantic.BaseModel):
     """
     MerchantProfilePayloadDoingBusinessAs is a schema definition.
@@ -3887,6 +3423,39 @@ class PaymentInstrumentResponse(pydantic.BaseModel):
 	"""
 
 
+class PersonalProfileLegacy(pydantic.BaseModel):
+    """
+    Account's personal profile.
+    """
+
+    address: typing.Optional[AddressWithDetails] = None
+    """
+	Details of the registered address.
+	"""
+
+    complete: typing.Optional[bool] = None
+
+    date_of_birth: typing.Optional[str] = None
+    """
+	Date of birth
+	"""
+
+    first_name: typing.Optional[str] = None
+    """
+	First name of the user
+	"""
+
+    last_name: typing.Optional[str] = None
+    """
+	Last name of the user
+	"""
+
+    mobile_phone: typing.Optional[str] = None
+    """
+	Mobile phone number
+	"""
+
+
 class PersonalProfilePayloadLegacy(pydantic.BaseModel):
     """
     Account's personal profile.
@@ -4039,52 +3608,64 @@ class ProcessCheckout(pydantic.BaseModel):
 
 class Product(pydantic.BaseModel):
     """
-    Details of the product for which the payment is made.
+    Purchase product.
     """
 
     name: typing.Optional[str] = None
     """
-	Name of the product from the merchant's catalog.
+	Product name.
 	"""
 
     price: typing.Optional[float] = None
     """
-	Price of the product without VAT.
+	Product price.
+	Format: decimal
+	"""
+
+    price_label: typing.Optional[str] = None
+    """
+	Product description.
 	"""
 
     price_with_vat: typing.Optional[float] = None
     """
-	Price of a single product item with VAT.
+	Product price incl. VAT.
+	Format: decimal
 	"""
 
-    quantity: typing.Optional[float] = None
+    quantity: typing.Optional[int] = None
     """
-	Number of product items for the purchase.
+	Product quantity.
 	"""
 
     single_vat_amount: typing.Optional[float] = None
     """
-	Amount of the VAT for a single product item (calculated as the product of `price` and `vat_rate`, i.e. `single_vat_amount= price * vat_rate`).
+	VAT amount for a single product.
+	Format: decimal
 	"""
 
     total_price: typing.Optional[float] = None
     """
-	Total price of the product items without VAT (calculated as the product of `price` and `quantity`, i.e. `total_price= price * quantity`).
+	Quantity x product price.
+	Format: decimal
 	"""
 
     total_with_vat: typing.Optional[float] = None
     """
-	Total price of the product items including VAT (calculated as the product of `price_with_vat` and `quantity`, i.e.`total_with_vat = price_with_vat * quantity`).
+	Total price incl. VAT.
+	Format: decimal
 	"""
 
     vat_amount: typing.Optional[float] = None
     """
-	Total VAT amount for the purchase (calculated as the product of `single_vat_amount` and `quantity`, i.e. `vat_amount= single_vat_amount * quantity`).
+	VAT amount.
+	Format: decimal
 	"""
 
     vat_rate: typing.Optional[float] = None
     """
-	VAT rate applicable to the product.
+	VAT percentage.
+	Format: decimal
 	"""
 
 
@@ -4688,6 +4269,7 @@ class TransactionEvent(pydantic.BaseModel):
     amount: typing.Optional[float] = None
     """
 	Amount of the event.
+	Format: decimal
 	"""
 
     date: typing.Optional[datetime.date] = None
@@ -4770,27 +4352,65 @@ TransactionFullPayoutPlan = typing.Union[
 
 TransactionFullSimplePaymentType = typing.Union[
     typing.Literal[
-        "CASH", "CC_CUSTOMER_ENTERED", "CC_SIGNATURE", "ELV", "EMV", "MANUAL_ENTRY", "MOTO"
+        "APM",
+        "BALANCE",
+        "BITCOIN",
+        "BOLETO",
+        "CARD",
+        "CASH",
+        "CC_CUSTOMER_ENTERED",
+        "CC_SIGNATURE",
+        "ELV",
+        "ELV_WITHOUT_SIGNATURE",
+        "EMV",
+        "MANUAL_ENTRY",
+        "MOTO",
+        "RECURRING",
     ],
     str,
 ]
 
 TransactionFullVerificationMethod = typing.Union[
     typing.Literal[
-        "confirmation code verified",
-        "na",
-        "none",
-        "offline PIN",
-        "offline PIN + signature",
-        "online PIN",
-        "signature",
+        "na", "none", "offline PIN", "offline PIN + signature", "online PIN", "signature"
     ],
     str,
 ]
 
-TransactionFullPayoutType = typing.Union[
-    typing.Literal["BALANCE", "BANK_ACCOUNT", "PREPAID_CARD"], str
-]
+TransactionFullPayoutType = typing.Union[typing.Literal["BANK_ACCOUNT", "PREPAID_CARD"], str]
+
+TransactionFullProcessA = typing.Union[typing.Literal["CREDIT", "DEBIT"], str]
+
+
+class TransactionFullVatRate(pydantic.BaseModel):
+    """
+    TransactionFullVatRate is a schema definition.
+    """
+
+    gross: typing.Optional[float] = None
+    """
+	Gross amount of products having this VAT rate applied.
+	Format: decimal
+	"""
+
+    net: typing.Optional[float] = None
+    """
+	NET amount of products having this VAT rate applied.
+	Format: decimal
+	"""
+
+    rate: typing.Optional[float] = None
+    """
+	VAT rate.
+	Format: decimal
+	"""
+
+    vat: typing.Optional[float] = None
+    """
+	VAT amount of this rate applied.
+	Format: decimal
+	"""
+
 
 TransactionFullSimpleStatus = typing.Union[
     typing.Literal[
@@ -4800,6 +4420,7 @@ TransactionFullSimpleStatus = typing.Union[
         "FAILED",
         "NON_COLLECTION",
         "PAID_OUT",
+        "PENDING",
         "REFUNDED",
         "REFUND_FAILED",
         "SUCCESSFUL",
@@ -4853,10 +4474,19 @@ class TransactionFull(pydantic.BaseModel):
 	Details of the payment card.
 	"""
 
+    client_transaction_id: typing.Optional[str] = None
+    """
+	Client transaction id.
+	"""
+
     currency: typing.Optional[Currency] = None
     """
 	Three-letter [ISO4217](https://en.wikipedia.org/wiki/ISO_4217) code of the currency for the amount. Currently supportedcurrency values are enumerated above.
 	"""
+
+    device_info: typing.Optional[Device] = None
+
+    elv_account: typing.Optional[ElvCardAccount] = None
 
     entry_mode: typing.Optional[EntryMode] = None
     """
@@ -4866,7 +4496,17 @@ class TransactionFull(pydantic.BaseModel):
     events: typing.Optional[list[Event]] = None
     """
 	List of events related to the transaction.
-	Unique items only
+	"""
+
+    fee_amount: typing.Optional[float] = None
+    """
+	Transaction SumUp total fee amount.
+	Format: decimal
+	"""
+
+    foreign_transaction_id: typing.Optional[str] = None
+    """
+	External/foreign transaction id (passed by clients).
 	"""
 
     horizontal_accuracy: typing.Optional[HorizontalAccuracy] = None
@@ -4898,10 +4538,9 @@ class TransactionFull(pydantic.BaseModel):
 	Max: 90
 	"""
 
-    links: typing.Optional[list[object]] = None
+    links: typing.Optional[list[Link]] = None
     """
 	List of hyperlinks for accessing related resources.
-	Unique items only
 	"""
 
     local_time: typing.Optional[datetime.datetime] = None
@@ -4926,9 +4565,21 @@ class TransactionFull(pydantic.BaseModel):
 	Unique code of the registered merchant to whom the payment is made.
 	"""
 
+    merchant_id: typing.Optional[int] = None
+    """
+	SumUp merchant internal Id.
+	Format: int64
+	"""
+
     payment_type: typing.Optional[PaymentType] = None
     """
 	Payment type used for the transaction.
+	"""
+
+    payout_date: typing.Optional[datetime.date] = None
+    """
+	The date of the payout.
+	Format: date
 	"""
 
     payout_plan: typing.Optional[TransactionFullPayoutPlan] = None
@@ -4949,6 +4600,11 @@ class TransactionFull(pydantic.BaseModel):
     payouts_total: typing.Optional[int] = None
     """
 	Total number of payouts to the registered user specified in the `user` property.
+	"""
+
+    process_as: typing.Optional[TransactionFullProcessA] = None
+    """
+	Debit/Credit.
 	"""
 
     product_summary: typing.Optional[str] = None
@@ -5012,7 +4668,7 @@ class TransactionFull(pydantic.BaseModel):
 	Amount of the applicable VAT (out of the total transaction amount).
 	"""
 
-    vat_rates: typing.Optional[list[object]] = None
+    vat_rates: typing.Optional[list[TransactionFullVatRate]] = None
     """
 	List of VAT rates applicable to the transaction.
 	"""
@@ -5032,6 +4688,8 @@ TransactionHistoryPayoutPlan = typing.Union[
 ]
 
 TransactionHistoryType = typing.Union[typing.Literal["CHARGE_BACK", "PAYMENT", "REFUND"], str]
+
+TransactionHistoryPayoutType = typing.Union[typing.Literal["BANK_ACCOUNT", "PREPAID_CARD"], str]
 
 
 class TransactionHistory(pydantic.BaseModel):
@@ -5075,9 +4733,20 @@ class TransactionHistory(pydantic.BaseModel):
 	Payment type used for the transaction.
 	"""
 
+    payout_date: typing.Optional[datetime.date] = None
+    """
+	Payout date (if paid out at once).
+	Format: date
+	"""
+
     payout_plan: typing.Optional[TransactionHistoryPayoutPlan] = None
     """
 	Payout plan of the registered user at the time when the transaction was made.
+	"""
+
+    payout_type: typing.Optional[TransactionHistoryPayoutType] = None
+    """
+	Payout type.
 	"""
 
     payouts_received: typing.Optional[int] = None
@@ -5093,6 +4762,12 @@ class TransactionHistory(pydantic.BaseModel):
     product_summary: typing.Optional[str] = None
     """
 	Short description of the payment. The value is taken from the `description` property of the related checkout resource.
+	"""
+
+    refunded_amount: typing.Optional[float] = None
+    """
+	Total refunded amount.
+	Format: decimal
 	"""
 
     status: typing.Optional[TransactionHistoryStatus] = None
@@ -5124,6 +4799,22 @@ class TransactionHistory(pydantic.BaseModel):
     """
 	Email address of the registered user (merchant) to whom the payment is made.
 	Format: email
+	"""
+
+
+class TransactionsHistoryLink(pydantic.BaseModel):
+    """
+    TransactionsHistoryLink is a schema definition.
+    """
+
+    href: str
+    """
+	Location.
+	"""
+
+    rel: str
+    """
+	Relation.
 	"""
 
 

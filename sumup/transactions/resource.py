@@ -4,10 +4,10 @@ from .._service import Resource, AsyncResource, HeaderTypes
 from .._exceptions import APIError
 from ..types import (
     EntryModeFilter,
-    Link,
     PaymentType,
     TransactionFull,
     TransactionHistory,
+    TransactionsHistoryLink,
 )
 import datetime
 import httpx
@@ -128,7 +128,7 @@ class ListTransactionsV21200Response(pydantic.BaseModel):
 
     items: typing.Optional[list[TransactionHistory]] = None
 
-    links: typing.Optional[list[Link]] = None
+    links: typing.Optional[list[TransactionsHistoryLink]] = None
 
 
 class ListTransactions200Response(pydantic.BaseModel):
@@ -138,7 +138,7 @@ class ListTransactions200Response(pydantic.BaseModel):
 
     items: typing.Optional[list[TransactionHistory]] = None
 
-    links: typing.Optional[list[Link]] = None
+    links: typing.Optional[list[TransactionsHistoryLink]] = None
 
 
 class TransactionsResource(Resource):
