@@ -198,26 +198,6 @@ class SubaccountsResource(Resource):
         else:
             raise APIError("Unexpected response", status=resp.status_code, body=resp.text)
 
-    @typing_extensions.deprecated(
-        "Subaccounts API is deprecated, to remove a user that's a member of your merchant account please use [Delete member](https://developer.sumup.com/api/members/delete) instead."
-    )
-    def deactivate_sub_account(
-        self, operator_id: int, headers: typing.Optional[HeaderTypes] = None
-    ) -> Operator:
-        """
-        Disable an operator.
-
-        Disable the specified operator for the merchant account.
-        """
-        resp = self._client.delete(
-            f"/v0.1/me/accounts/{operator_id}",
-            headers=headers,
-        )
-        if resp.status_code == 200:
-            return pydantic.TypeAdapter(Operator).validate_python(resp.json())
-        else:
-            raise APIError("Unexpected response", status=resp.status_code, body=resp.text)
-
 
 class AsyncSubaccountsResource(AsyncResource):
     def __init__(self, client: httpx.AsyncClient) -> None:
@@ -318,25 +298,5 @@ class AsyncSubaccountsResource(AsyncResource):
                 status=resp.status_code,
                 body=resp.text,
             )
-        else:
-            raise APIError("Unexpected response", status=resp.status_code, body=resp.text)
-
-    @typing_extensions.deprecated(
-        "Subaccounts API is deprecated, to remove a user that's a member of your merchant account please use [Delete member](https://developer.sumup.com/api/members/delete) instead."
-    )
-    async def deactivate_sub_account(
-        self, operator_id: int, headers: typing.Optional[HeaderTypes] = None
-    ) -> Operator:
-        """
-        Disable an operator.
-
-        Disable the specified operator for the merchant account.
-        """
-        resp = await self._client.delete(
-            f"/v0.1/me/accounts/{operator_id}",
-            headers=headers,
-        )
-        if resp.status_code == 200:
-            return pydantic.TypeAdapter(Operator).validate_python(resp.json())
         else:
             raise APIError("Unexpected response", status=resp.status_code, body=resp.text)
