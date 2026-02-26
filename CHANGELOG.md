@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.1.1](https://github.com/sumup/sumup-py/compare/v0.1.0...v0.1.1) (2026-02-26)
+
+
+### Features
+
+* update to latest openapi specs ([e418e87](https://github.com/sumup/sumup-py/commit/e418e87efe219d619ab3e571fea9868812520504))
+
 ## [0.1.0](https://github.com/sumup/sumup-py/compare/v0.0.22...v0.1.0) (2026-02-19)
 
 
