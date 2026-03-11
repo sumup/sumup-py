@@ -11,7 +11,6 @@ from .resource import (
     ListReaders200Response,
 )
 from ..types import (
-    BadGateway,
     BadRequest,
     CreateReaderCheckoutError,
     CreateReaderCheckoutRequest,
@@ -19,8 +18,6 @@ from ..types import (
     CreateReaderCheckoutUnprocessableEntity,
     CreateReaderTerminateError,
     CreateReaderTerminateUnprocessableEntity,
-    GatewayTimeout,
-    InternalServerError,
     Metadata,
     NotFound,
     Problem,
@@ -45,7 +42,6 @@ __all__ = [
     "CreateReaderCheckoutBodyTotalAmount",
     "CreateReaderCheckoutBody",
     "ListReaders200Response",
-    "BadGateway",
     "BadRequest",
     "CreateReaderCheckoutError",
     "CreateReaderCheckoutRequest",
@@ -53,8 +49,6 @@ __all__ = [
     "CreateReaderCheckoutUnprocessableEntity",
     "CreateReaderTerminateError",
     "CreateReaderTerminateUnprocessableEntity",
-    "GatewayTimeout",
-    "InternalServerError",
     "Metadata",
     "NotFound",
     "Problem",

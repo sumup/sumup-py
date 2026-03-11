@@ -43,9 +43,21 @@ class ReceiptsResource(Resource):
         if resp.status_code == 200:
             return pydantic.TypeAdapter(Receipt).validate_python(resp.json())
         elif resp.status_code == 400:
-            raise APIError("Not Found", status=resp.status_code, body=resp.text)
+            raise APIError(
+                "The request is invalid for the submitted parameters.",
+                status=resp.status_code,
+                body=resp.text,
+            )
         elif resp.status_code == 401:
-            raise APIError("Unauthorized", status=resp.status_code, body=resp.text)
+            raise APIError(
+                "The request is not authorized.", status=resp.status_code, body=resp.text
+            )
+        elif resp.status_code == 404:
+            raise APIError(
+                "The requested transaction event does not exist for the provided transaction.",
+                status=resp.status_code,
+                body=resp.text,
+            )
         else:
             raise APIError("Unexpected response", status=resp.status_code, body=resp.text)
 
@@ -73,8 +85,20 @@ class AsyncReceiptsResource(AsyncResource):
         if resp.status_code == 200:
             return pydantic.TypeAdapter(Receipt).validate_python(resp.json())
         elif resp.status_code == 400:
-            raise APIError("Not Found", status=resp.status_code, body=resp.text)
+            raise APIError(
+                "The request is invalid for the submitted parameters.",
+                status=resp.status_code,
+                body=resp.text,
+            )
         elif resp.status_code == 401:
-            raise APIError("Unauthorized", status=resp.status_code, body=resp.text)
+            raise APIError(
+                "The request is not authorized.", status=resp.status_code, body=resp.text
+            )
+        elif resp.status_code == 404:
+            raise APIError(
+                "The requested transaction event does not exist for the provided transaction.",
+                status=resp.status_code,
+                body=resp.text,
+            )
         else:
             raise APIError("Unexpected response", status=resp.status_code, body=resp.text)

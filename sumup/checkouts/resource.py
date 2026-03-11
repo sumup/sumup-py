@@ -307,9 +307,11 @@ class CheckoutsResource(Resource):
         if resp.status_code == 200:
             return pydantic.TypeAdapter(GetPaymentMethods200Response).validate_python(resp.json())
         elif resp.status_code == 400:
-            raise APIError("Bad Request", status=resp.status_code, body=resp.text)
-        elif resp.status_code == 401:
-            raise APIError("Unauthorized", status=resp.status_code, body=resp.text)
+            raise APIError(
+                "The request is invalid for the submitted query parameters.",
+                status=resp.status_code,
+                body=resp.text,
+            )
         else:
             raise APIError("Unexpected response", status=resp.status_code, body=resp.text)
 
@@ -333,13 +335,23 @@ class CheckoutsResource(Resource):
         if resp.status_code == 201:
             return pydantic.TypeAdapter(Checkout).validate_python(resp.json())
         elif resp.status_code == 400:
-            raise APIError("Bad Request", status=resp.status_code, body=resp.text)
+            raise APIError("The request body is invalid.", status=resp.status_code, body=resp.text)
         elif resp.status_code == 401:
-            raise APIError("Unauthorized", status=resp.status_code, body=resp.text)
+            raise APIError(
+                "The request is not authorized.", status=resp.status_code, body=resp.text
+            )
         elif resp.status_code == 403:
-            raise APIError("Forbidden", status=resp.status_code, body=resp.text)
+            raise APIError(
+                "The request isn't sufficiently authorized to create a checkout.",
+                status=resp.status_code,
+                body=resp.text,
+            )
         elif resp.status_code == 409:
-            raise APIError("Conflict", status=resp.status_code, body=resp.text)
+            raise APIError(
+                "A checkout already exists for the provided unique parameters.",
+                status=resp.status_code,
+                body=resp.text,
+            )
         else:
             raise APIError("Unexpected response", status=resp.status_code, body=resp.text)
 
@@ -361,7 +373,9 @@ class CheckoutsResource(Resource):
         if resp.status_code == 200:
             return pydantic.TypeAdapter(ListCheckouts200Response).validate_python(resp.json())
         elif resp.status_code == 401:
-            raise APIError("Unauthorized", status=resp.status_code, body=resp.text)
+            raise APIError(
+                "The request is not authorized.", status=resp.status_code, body=resp.text
+            )
         else:
             raise APIError("Unexpected response", status=resp.status_code, body=resp.text)
 
@@ -378,9 +392,13 @@ class CheckoutsResource(Resource):
         if resp.status_code == 200:
             return pydantic.TypeAdapter(CheckoutSuccess).validate_python(resp.json())
         elif resp.status_code == 401:
-            raise APIError("Unauthorized", status=resp.status_code, body=resp.text)
+            raise APIError(
+                "The request is not authorized.", status=resp.status_code, body=resp.text
+            )
         elif resp.status_code == 404:
-            raise APIError("Not Found", status=resp.status_code, body=resp.text)
+            raise APIError(
+                "The requested resource does not exist.", status=resp.status_code, body=resp.text
+            )
         else:
             raise APIError("Unexpected response", status=resp.status_code, body=resp.text)
 
@@ -404,13 +422,25 @@ class CheckoutsResource(Resource):
         elif resp.status_code == 202:
             return pydantic.TypeAdapter(CheckoutAccepted).validate_python(resp.json())
         elif resp.status_code == 400:
-            raise APIError("Bad Request", status=resp.status_code, body=resp.text)
+            raise APIError(
+                "The request body is invalid for processing the checkout.",
+                status=resp.status_code,
+                body=resp.text,
+            )
         elif resp.status_code == 401:
-            raise APIError("Unauthorized", status=resp.status_code, body=resp.text)
+            raise APIError(
+                "The request is not authorized.", status=resp.status_code, body=resp.text
+            )
         elif resp.status_code == 404:
-            raise APIError("Not Found", status=resp.status_code, body=resp.text)
+            raise APIError(
+                "The requested resource does not exist.", status=resp.status_code, body=resp.text
+            )
         elif resp.status_code == 409:
-            raise APIError("Conflict", status=resp.status_code, body=resp.text)
+            raise APIError(
+                "The request conflicts with the current state of the resource.",
+                status=resp.status_code,
+                body=resp.text,
+            )
         else:
             raise APIError("Unexpected response", status=resp.status_code, body=resp.text)
 
@@ -427,11 +457,19 @@ class CheckoutsResource(Resource):
         if resp.status_code == 200:
             return pydantic.TypeAdapter(Checkout).validate_python(resp.json())
         elif resp.status_code == 401:
-            raise APIError("Unauthorized", status=resp.status_code, body=resp.text)
+            raise APIError(
+                "The request is not authorized.", status=resp.status_code, body=resp.text
+            )
         elif resp.status_code == 404:
-            raise APIError("Not Found", status=resp.status_code, body=resp.text)
+            raise APIError(
+                "The requested resource does not exist.", status=resp.status_code, body=resp.text
+            )
         elif resp.status_code == 409:
-            raise APIError("Conflict", status=resp.status_code, body=resp.text)
+            raise APIError(
+                "The request conflicts with the current state of the resource.",
+                status=resp.status_code,
+                body=resp.text,
+            )
         else:
             raise APIError("Unexpected response", status=resp.status_code, body=resp.text)
 
@@ -459,9 +497,11 @@ class AsyncCheckoutsResource(AsyncResource):
         if resp.status_code == 200:
             return pydantic.TypeAdapter(GetPaymentMethods200Response).validate_python(resp.json())
         elif resp.status_code == 400:
-            raise APIError("Bad Request", status=resp.status_code, body=resp.text)
-        elif resp.status_code == 401:
-            raise APIError("Unauthorized", status=resp.status_code, body=resp.text)
+            raise APIError(
+                "The request is invalid for the submitted query parameters.",
+                status=resp.status_code,
+                body=resp.text,
+            )
         else:
             raise APIError("Unexpected response", status=resp.status_code, body=resp.text)
 
@@ -485,13 +525,23 @@ class AsyncCheckoutsResource(AsyncResource):
         if resp.status_code == 201:
             return pydantic.TypeAdapter(Checkout).validate_python(resp.json())
         elif resp.status_code == 400:
-            raise APIError("Bad Request", status=resp.status_code, body=resp.text)
+            raise APIError("The request body is invalid.", status=resp.status_code, body=resp.text)
         elif resp.status_code == 401:
-            raise APIError("Unauthorized", status=resp.status_code, body=resp.text)
+            raise APIError(
+                "The request is not authorized.", status=resp.status_code, body=resp.text
+            )
         elif resp.status_code == 403:
-            raise APIError("Forbidden", status=resp.status_code, body=resp.text)
+            raise APIError(
+                "The request isn't sufficiently authorized to create a checkout.",
+                status=resp.status_code,
+                body=resp.text,
+            )
         elif resp.status_code == 409:
-            raise APIError("Conflict", status=resp.status_code, body=resp.text)
+            raise APIError(
+                "A checkout already exists for the provided unique parameters.",
+                status=resp.status_code,
+                body=resp.text,
+            )
         else:
             raise APIError("Unexpected response", status=resp.status_code, body=resp.text)
 
@@ -513,7 +563,9 @@ class AsyncCheckoutsResource(AsyncResource):
         if resp.status_code == 200:
             return pydantic.TypeAdapter(ListCheckouts200Response).validate_python(resp.json())
         elif resp.status_code == 401:
-            raise APIError("Unauthorized", status=resp.status_code, body=resp.text)
+            raise APIError(
+                "The request is not authorized.", status=resp.status_code, body=resp.text
+            )
         else:
             raise APIError("Unexpected response", status=resp.status_code, body=resp.text)
 
@@ -530,9 +582,13 @@ class AsyncCheckoutsResource(AsyncResource):
         if resp.status_code == 200:
             return pydantic.TypeAdapter(CheckoutSuccess).validate_python(resp.json())
         elif resp.status_code == 401:
-            raise APIError("Unauthorized", status=resp.status_code, body=resp.text)
+            raise APIError(
+                "The request is not authorized.", status=resp.status_code, body=resp.text
+            )
         elif resp.status_code == 404:
-            raise APIError("Not Found", status=resp.status_code, body=resp.text)
+            raise APIError(
+                "The requested resource does not exist.", status=resp.status_code, body=resp.text
+            )
         else:
             raise APIError("Unexpected response", status=resp.status_code, body=resp.text)
 
@@ -556,13 +612,25 @@ class AsyncCheckoutsResource(AsyncResource):
         elif resp.status_code == 202:
             return pydantic.TypeAdapter(CheckoutAccepted).validate_python(resp.json())
         elif resp.status_code == 400:
-            raise APIError("Bad Request", status=resp.status_code, body=resp.text)
+            raise APIError(
+                "The request body is invalid for processing the checkout.",
+                status=resp.status_code,
+                body=resp.text,
+            )
         elif resp.status_code == 401:
-            raise APIError("Unauthorized", status=resp.status_code, body=resp.text)
+            raise APIError(
+                "The request is not authorized.", status=resp.status_code, body=resp.text
+            )
         elif resp.status_code == 404:
-            raise APIError("Not Found", status=resp.status_code, body=resp.text)
+            raise APIError(
+                "The requested resource does not exist.", status=resp.status_code, body=resp.text
+            )
         elif resp.status_code == 409:
-            raise APIError("Conflict", status=resp.status_code, body=resp.text)
+            raise APIError(
+                "The request conflicts with the current state of the resource.",
+                status=resp.status_code,
+                body=resp.text,
+            )
         else:
             raise APIError("Unexpected response", status=resp.status_code, body=resp.text)
 
@@ -579,10 +647,18 @@ class AsyncCheckoutsResource(AsyncResource):
         if resp.status_code == 200:
             return pydantic.TypeAdapter(Checkout).validate_python(resp.json())
         elif resp.status_code == 401:
-            raise APIError("Unauthorized", status=resp.status_code, body=resp.text)
+            raise APIError(
+                "The request is not authorized.", status=resp.status_code, body=resp.text
+            )
         elif resp.status_code == 404:
-            raise APIError("Not Found", status=resp.status_code, body=resp.text)
+            raise APIError(
+                "The requested resource does not exist.", status=resp.status_code, body=resp.text
+            )
         elif resp.status_code == 409:
-            raise APIError("Conflict", status=resp.status_code, body=resp.text)
+            raise APIError(
+                "The request conflicts with the current state of the resource.",
+                status=resp.status_code,
+                body=resp.text,
+            )
         else:
             raise APIError("Unexpected response", status=resp.status_code, body=resp.text)

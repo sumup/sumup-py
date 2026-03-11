@@ -379,18 +379,16 @@ class ReadersResource(Resource):
             )
         elif resp.status_code == 401:
             raise APIError("Unauthorized", status=resp.status_code, body=resp.text)
+        elif resp.status_code == 404:
+            raise APIError(
+                "Response when given reader is not found", status=resp.status_code, body=resp.text
+            )
         elif resp.status_code == 422:
             raise APIError(
                 "Response when given params (or one of them) are invalid",
                 status=resp.status_code,
                 body=resp.text,
             )
-        elif resp.status_code == 500:
-            raise APIError("Internal Server Error", status=resp.status_code, body=resp.text)
-        elif resp.status_code == 502:
-            raise APIError("Bad Gateway", status=resp.status_code, body=resp.text)
-        elif resp.status_code == 504:
-            raise APIError("Gateway Timeout", status=resp.status_code, body=resp.text)
         else:
             raise APIError("Unexpected response", status=resp.status_code, body=resp.text)
 
@@ -442,24 +440,6 @@ class ReadersResource(Resource):
             raise APIError(
                 "Response when given reader is not found", status=resp.status_code, body=resp.text
             )
-        elif resp.status_code == 500:
-            raise APIError(
-                "Generic error response for backend failure",
-                status=resp.status_code,
-                body=resp.text,
-            )
-        elif resp.status_code == 502:
-            raise APIError(
-                "Generic error response for an upstream service failure",
-                status=resp.status_code,
-                body=resp.text,
-            )
-        elif resp.status_code == 504:
-            raise APIError(
-                "Generic error response for an upstream service timeout",
-                status=resp.status_code,
-                body=resp.text,
-            )
         else:
             raise APIError("Unexpected response", status=resp.status_code, body=resp.text)
 
@@ -498,18 +478,16 @@ class ReadersResource(Resource):
             )
         elif resp.status_code == 401:
             raise APIError("Unauthorized", status=resp.status_code, body=resp.text)
+        elif resp.status_code == 404:
+            raise APIError(
+                "Response when given reader is not found", status=resp.status_code, body=resp.text
+            )
         elif resp.status_code == 422:
             raise APIError(
                 "Response when given params (or one of them) are invalid",
                 status=resp.status_code,
                 body=resp.text,
             )
-        elif resp.status_code == 500:
-            raise APIError("Internal Server Error", status=resp.status_code, body=resp.text)
-        elif resp.status_code == 502:
-            raise APIError("Bad Gateway", status=resp.status_code, body=resp.text)
-        elif resp.status_code == 504:
-            raise APIError("Gateway Timeout", status=resp.status_code, body=resp.text)
         else:
             raise APIError("Unexpected response", status=resp.status_code, body=resp.text)
 
@@ -685,18 +663,16 @@ class AsyncReadersResource(AsyncResource):
             )
         elif resp.status_code == 401:
             raise APIError("Unauthorized", status=resp.status_code, body=resp.text)
+        elif resp.status_code == 404:
+            raise APIError(
+                "Response when given reader is not found", status=resp.status_code, body=resp.text
+            )
         elif resp.status_code == 422:
             raise APIError(
                 "Response when given params (or one of them) are invalid",
                 status=resp.status_code,
                 body=resp.text,
             )
-        elif resp.status_code == 500:
-            raise APIError("Internal Server Error", status=resp.status_code, body=resp.text)
-        elif resp.status_code == 502:
-            raise APIError("Bad Gateway", status=resp.status_code, body=resp.text)
-        elif resp.status_code == 504:
-            raise APIError("Gateway Timeout", status=resp.status_code, body=resp.text)
         else:
             raise APIError("Unexpected response", status=resp.status_code, body=resp.text)
 
@@ -748,24 +724,6 @@ class AsyncReadersResource(AsyncResource):
             raise APIError(
                 "Response when given reader is not found", status=resp.status_code, body=resp.text
             )
-        elif resp.status_code == 500:
-            raise APIError(
-                "Generic error response for backend failure",
-                status=resp.status_code,
-                body=resp.text,
-            )
-        elif resp.status_code == 502:
-            raise APIError(
-                "Generic error response for an upstream service failure",
-                status=resp.status_code,
-                body=resp.text,
-            )
-        elif resp.status_code == 504:
-            raise APIError(
-                "Generic error response for an upstream service timeout",
-                status=resp.status_code,
-                body=resp.text,
-            )
         else:
             raise APIError("Unexpected response", status=resp.status_code, body=resp.text)
 
@@ -804,17 +762,15 @@ class AsyncReadersResource(AsyncResource):
             )
         elif resp.status_code == 401:
             raise APIError("Unauthorized", status=resp.status_code, body=resp.text)
+        elif resp.status_code == 404:
+            raise APIError(
+                "Response when given reader is not found", status=resp.status_code, body=resp.text
+            )
         elif resp.status_code == 422:
             raise APIError(
                 "Response when given params (or one of them) are invalid",
                 status=resp.status_code,
                 body=resp.text,
             )
-        elif resp.status_code == 500:
-            raise APIError("Internal Server Error", status=resp.status_code, body=resp.text)
-        elif resp.status_code == 502:
-            raise APIError("Bad Gateway", status=resp.status_code, body=resp.text)
-        elif resp.status_code == 504:
-            raise APIError("Gateway Timeout", status=resp.status_code, body=resp.text)
         else:
             raise APIError("Unexpected response", status=resp.status_code, body=resp.text)

@@ -358,26 +358,6 @@ Attributes = dict[str, object]
 Object attributes that are modifiable only by SumUp applications.
 """
 
-
-class BadGatewayErrors(pydantic.BaseModel):
-    """
-    BadGatewayErrors is a schema definition.
-    """
-
-    detail: str
-    """
-	Fuller message giving context to error
-	"""
-
-
-class BadGateway(pydantic.BaseModel):
-    """
-    502 Bad Gateway
-    """
-
-    errors: BadGatewayErrors
-
-
 BadRequestErrorsType = typing.Union[
     typing.Literal[
         "DUPLICATE_HEADERS",
@@ -415,7 +395,7 @@ class BadRequest(pydantic.BaseModel):
 
 class BankAccount(pydantic.BaseModel):
     """
-    BankAccount is a schema definition.
+    Bank account details used for merchant payouts.
     """
 
     account_category: typing.Optional[str] = None
@@ -424,6 +404,9 @@ class BankAccount(pydantic.BaseModel):
 	"""
 
     account_holder_name: typing.Optional[str] = None
+    """
+	Name of the bank account holder.
+	"""
 
     account_number: typing.Optional[str] = None
     """
@@ -485,7 +468,7 @@ BankAccountPayloadAccountCategory = typing.Union[typing.Literal["BUSINESS", "PER
 
 class BankAccountPayload(pydantic.BaseModel):
     """
-    BankAccountPayload is a schema definition.
+    Bank account details used when creating or updating a payout account.
     """
 
     account_holder_name: str
@@ -1106,7 +1089,7 @@ class TransactionBase(pydantic.BaseModel):
 
 class TransactionCheckoutInfo(pydantic.BaseModel):
     """
-    TransactionCheckoutInfo is a schema definition.
+    Checkout-specific fields associated with a transaction.
     """
 
     auth_code: typing.Optional[str] = None
@@ -1629,7 +1612,7 @@ class CheckoutSuccessPaymentInstrument(pydantic.BaseModel):
 
 class CheckoutSuccess(pydantic.BaseModel):
     """
-    CheckoutSuccess is a schema definition.
+    Checkout response returned after a successful processing attempt.
     """
 
     amount: typing.Optional[float] = None
@@ -2122,7 +2105,7 @@ class PersonalDetails(pydantic.BaseModel):
 
 class Customer(pydantic.BaseModel):
     """
-    Customer is a schema definition.
+    Saved customer details.
     """
 
     customer_id: str
@@ -2157,6 +2140,9 @@ class DetailsError(pydantic.BaseModel):
 	"""
 
     failed_constraints: typing.Optional[list[DetailsErrorFailedConstraint]] = None
+    """
+	List of violated validation constraints.
+	"""
 
     status: typing.Optional[float] = None
     """
@@ -2171,7 +2157,7 @@ class DetailsError(pydantic.BaseModel):
 
 class Device(pydantic.BaseModel):
     """
-    Device is a schema definition.
+    Details of the device used to create the transaction.
     """
 
     model: typing.Optional[str] = None
@@ -2238,7 +2224,7 @@ class DoingBusinessAsPayloadLegacy(pydantic.BaseModel):
 
 class ElvCardAccount(pydantic.BaseModel):
     """
-    ElvCardAccount is a schema definition.
+    Details of the ELV card account associated with the transaction.
     """
 
     iban: typing.Optional[str] = None
@@ -2313,7 +2299,7 @@ class Error(pydantic.BaseModel):
 
 class ErrorExtended(pydantic.BaseModel):
     """
-    ErrorExtended is a schema definition.
+    Error payload with the invalid parameter reference.
     """
 
     error_code: typing.Optional[str] = None
@@ -2373,7 +2359,7 @@ Unique ID of the transaction.
 
 class Event(pydantic.BaseModel):
     """
-    Event is a schema definition.
+    Transaction event details.
     """
 
     amount: typing.Optional[float] = None
@@ -2471,52 +2457,13 @@ class FinancialPayout(pydantic.BaseModel):
 
 FinancialPayouts = list[FinancialPayout]
 """
-FinancialPayouts is a schema definition.
+List of payout summaries.
 """
-
-
-class GatewayTimeoutErrors(pydantic.BaseModel):
-    """
-    GatewayTimeoutErrors is a schema definition.
-    """
-
-    detail: str
-    """
-	Fuller message giving context to error
-	"""
-
-
-class GatewayTimeout(pydantic.BaseModel):
-    """
-    504 Gateway Timeout
-    """
-
-    errors: GatewayTimeoutErrors
-
 
 HorizontalAccuracy = float
 """
 Indication of the precision of the geographical position received from the payment terminal.
 """
-
-
-class InternalServerErrorErrors(pydantic.BaseModel):
-    """
-    InternalServerErrorErrors is a schema definition.
-    """
-
-    detail: str
-    """
-	Fuller message giving context to error
-	"""
-
-
-class InternalServerError(pydantic.BaseModel):
-    """
-    500 Internal Server Error
-    """
-
-    errors: InternalServerErrorErrors
 
 
 class Invite(pydantic.BaseModel):
@@ -3108,7 +3055,7 @@ class Merchant(pydantic.BaseModel):
 
 class MerchantProfilePayloadDoingBusinessAs(pydantic.BaseModel):
     """
-    MerchantProfilePayloadDoingBusinessAs is a schema definition.
+    Doing-business-as details associated with the merchant profile.
     """
 
     address: typing.Optional[AddressPayloadLegacy] = None
@@ -3178,6 +3125,9 @@ class MerchantProfilePayload(pydantic.BaseModel):
 	"""
 
     doing_business_as: typing.Optional[MerchantProfilePayloadDoingBusinessAs] = None
+    """
+	Doing-business-as details associated with the merchant profile.
+	"""
 
     is_test_account: typing.Optional[bool] = None
     """
@@ -3219,7 +3169,7 @@ MerchantSettingsPayloadPayoutType = typing.Union[typing.Literal["SINGLE_PAYMENT"
 
 class MerchantSettingsPayload(pydantic.BaseModel):
     """
-    MerchantSettingsPayload is a schema definition.
+    Merchant payout and settlement configuration.
     """
 
     expected_max_transaction_amount: typing.Optional[float] = None
@@ -3434,6 +3384,9 @@ class PersonalProfileLegacy(pydantic.BaseModel):
 	"""
 
     complete: typing.Optional[bool] = None
+    """
+	Indicates whether the profile data is complete.
+	"""
 
     date_of_birth: typing.Optional[str] = None
     """
@@ -3837,7 +3790,7 @@ Max length: 9
 
 class ReceiptCard(pydantic.BaseModel):
     """
-    ReceiptCard is a schema definition.
+    Payment card details displayed on the receipt.
     """
 
     last_4_digits: typing.Optional[str] = None
@@ -3853,7 +3806,7 @@ class ReceiptCard(pydantic.BaseModel):
 
 class ReceiptEvent(pydantic.BaseModel):
     """
-    ReceiptEvent is a schema definition.
+    Transaction event details as rendered on the receipt.
     """
 
     amount: typing.Optional[str] = None
@@ -3869,6 +3822,9 @@ class ReceiptEvent(pydantic.BaseModel):
 	"""
 
     receipt_no: typing.Optional[str] = None
+    """
+	Receipt number associated with the event.
+	"""
 
     status: typing.Optional[EventStatus] = None
     """
@@ -3913,7 +3869,7 @@ class ReceiptMerchantDataMerchantProfileAddress(pydantic.BaseModel):
 
 class ReceiptMerchantDataMerchantProfile(pydantic.BaseModel):
     """
-    ReceiptMerchantDataMerchantProfile is a schema definition.
+    Merchant profile details displayed on the receipt.
     """
 
     address: typing.Optional[ReceiptMerchantDataMerchantProfileAddress] = None
@@ -3931,8 +3887,14 @@ class ReceiptMerchantData(pydantic.BaseModel):
     """
 
     locale: typing.Optional[str] = None
+    """
+	Locale used for rendering localized receipt fields.
+	"""
 
     merchant_profile: typing.Optional[ReceiptMerchantDataMerchantProfile] = None
+    """
+	Merchant profile details displayed on the receipt.
+	"""
 
 
 class ReceiptTransactionProduct(pydantic.BaseModel):
@@ -4031,6 +3993,9 @@ class ReceiptTransaction(pydantic.BaseModel):
 	"""
 
     card: typing.Optional[ReceiptCard] = None
+    """
+	Payment card details displayed on the receipt.
+	"""
 
     currency: typing.Optional[str] = None
     """
@@ -4105,13 +4070,13 @@ class ReceiptTransaction(pydantic.BaseModel):
 
 class ReceiptEmvData(pydantic.BaseModel):
     """
-    ReceiptEmvData is a schema definition.
+    EMV-specific metadata returned for card-present payments.
     """
 
 
 class ReceiptAcquirerData(pydantic.BaseModel):
     """
-    ReceiptAcquirerData is a schema definition.
+    Acquirer-specific metadata related to the card authorization.
     """
 
     authorization_code: typing.Optional[str] = None
@@ -4125,12 +4090,18 @@ class ReceiptAcquirerData(pydantic.BaseModel):
 
 class Receipt(pydantic.BaseModel):
     """
-    Receipt is a schema definition.
+    Receipt details for a transaction.
     """
 
     acquirer_data: typing.Optional[ReceiptAcquirerData] = None
+    """
+	Acquirer-specific metadata related to the card authorization.
+	"""
 
     emv_data: typing.Optional[ReceiptEmvData] = None
+    """
+	EMV-specific metadata returned for card-present payments.
+	"""
 
     merchant_data: typing.Optional[ReceiptMerchantData] = None
     """
@@ -4318,7 +4289,7 @@ TransactionMixinHistoryPayoutPlan = typing.Union[
 
 class TransactionMixinHistory(pydantic.BaseModel):
     """
-    TransactionMixinHistory is a schema definition.
+    Additional transaction fields used by history and detailed views.
     """
 
     payout_plan: typing.Optional[TransactionMixinHistoryPayoutPlan] = None
@@ -4456,7 +4427,7 @@ class TransactionFullLocation(pydantic.BaseModel):
 
 class TransactionFull(pydantic.BaseModel):
     """
-    TransactionFull is a schema definition.
+    Full transaction resource with checkout, payout, and event details.
     """
 
     amount: typing.Optional[float] = None
@@ -4485,8 +4456,14 @@ class TransactionFull(pydantic.BaseModel):
 	"""
 
     device_info: typing.Optional[Device] = None
+    """
+	Details of the device used to create the transaction.
+	"""
 
     elv_account: typing.Optional[ElvCardAccount] = None
+    """
+	Details of the ELV card account associated with the transaction.
+	"""
 
     entry_mode: typing.Optional[EntryMode] = None
     """
@@ -4694,7 +4671,7 @@ TransactionHistoryPayoutType = typing.Union[typing.Literal["BANK_ACCOUNT", "PREP
 
 class TransactionHistory(pydantic.BaseModel):
     """
-    TransactionHistory is a schema definition.
+    Transaction entry returned in history listing responses.
     """
 
     amount: typing.Optional[float] = None
@@ -4804,7 +4781,7 @@ class TransactionHistory(pydantic.BaseModel):
 
 class TransactionsHistoryLink(pydantic.BaseModel):
     """
-    TransactionsHistoryLink is a schema definition.
+    Hypermedia link used for transaction history pagination.
     """
 
     href: str
@@ -4828,14 +4805,14 @@ class UnauthorizedErrors(pydantic.BaseModel):
     UnauthorizedErrors is a schema definition.
     """
 
-    type: UnauthorizedErrorsType
-    """
-	Key indicating type of error
-	"""
-
-    detail: typing.Optional[str] = None
+    detail: str
     """
 	Fuller message giving context to error
+	"""
+
+    type: typing.Optional[UnauthorizedErrorsType] = None
+    """
+	Key indicating type of error. Present only for typed 401 responses (e.g. invalid token, invalid password). Absentfor generic unauthorized responses.
 	"""
 
 

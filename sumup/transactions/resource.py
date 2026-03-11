@@ -82,7 +82,11 @@ class ListTransactionsV21Params(pydantic.BaseModel):
 
     payment_types: typing.Optional[list[PaymentType]] = None
 
-    statuses: typing.Optional[list[str]] = None
+    statuses: typing.Optional[list[str]] = pydantic.Field(
+        default=None,
+        serialization_alias="statuses[]",
+        validation_alias=pydantic.AliasChoices("statuses[]", "statuses"),
+    )
 
     transaction_code: typing.Optional[str] = None
 
@@ -112,7 +116,11 @@ class ListTransactionsParams(pydantic.BaseModel):
 
     payment_types: typing.Optional[list[PaymentType]] = None
 
-    statuses: typing.Optional[list[str]] = None
+    statuses: typing.Optional[list[str]] = pydantic.Field(
+        default=None,
+        serialization_alias="statuses[]",
+        validation_alias=pydantic.AliasChoices("statuses[]", "statuses"),
+    )
 
     transaction_code: typing.Optional[str] = None
 
@@ -161,9 +169,15 @@ class TransactionsResource(Resource):
         if resp.status_code == 204:
             return
         elif resp.status_code == 404:
-            raise APIError("Not Found", status=resp.status_code, body=resp.text)
+            raise APIError(
+                "The requested resource does not exist.", status=resp.status_code, body=resp.text
+            )
         elif resp.status_code == 409:
-            raise APIError("Conflict", status=resp.status_code, body=resp.text)
+            raise APIError(
+                "The transaction cannot be refunded due to business constraints.",
+                status=resp.status_code,
+                body=resp.text,
+            )
         else:
             raise APIError("Unexpected response", status=resp.status_code, body=resp.text)
 
@@ -192,9 +206,13 @@ class TransactionsResource(Resource):
         if resp.status_code == 200:
             return pydantic.TypeAdapter(TransactionFull).validate_python(resp.json())
         elif resp.status_code == 401:
-            raise APIError("Unauthorized", status=resp.status_code, body=resp.text)
+            raise APIError(
+                "The request is not authorized.", status=resp.status_code, body=resp.text
+            )
         elif resp.status_code == 404:
-            raise APIError("Not Found", status=resp.status_code, body=resp.text)
+            raise APIError(
+                "The requested resource does not exist.", status=resp.status_code, body=resp.text
+            )
         else:
             raise APIError("Unexpected response", status=resp.status_code, body=resp.text)
 
@@ -223,9 +241,13 @@ class TransactionsResource(Resource):
         if resp.status_code == 200:
             return pydantic.TypeAdapter(TransactionFull).validate_python(resp.json())
         elif resp.status_code == 401:
-            raise APIError("Unauthorized", status=resp.status_code, body=resp.text)
+            raise APIError(
+                "The request is not authorized.", status=resp.status_code, body=resp.text
+            )
         elif resp.status_code == 404:
-            raise APIError("Not Found", status=resp.status_code, body=resp.text)
+            raise APIError(
+                "The requested resource does not exist.", status=resp.status_code, body=resp.text
+            )
         else:
             raise APIError("Unexpected response", status=resp.status_code, body=resp.text)
 
@@ -247,8 +269,16 @@ class TransactionsResource(Resource):
         )
         if resp.status_code == 200:
             return pydantic.TypeAdapter(ListTransactionsV21200Response).validate_python(resp.json())
+        elif resp.status_code == 400:
+            raise APIError(
+                "The request is invalid for the submitted query parameters.",
+                status=resp.status_code,
+                body=resp.text,
+            )
         elif resp.status_code == 401:
-            raise APIError("Unauthorized", status=resp.status_code, body=resp.text)
+            raise APIError(
+                "The request is not authorized.", status=resp.status_code, body=resp.text
+            )
         else:
             raise APIError("Unexpected response", status=resp.status_code, body=resp.text)
 
@@ -270,8 +300,16 @@ class TransactionsResource(Resource):
         )
         if resp.status_code == 200:
             return pydantic.TypeAdapter(ListTransactions200Response).validate_python(resp.json())
+        elif resp.status_code == 400:
+            raise APIError(
+                "The request is invalid for the submitted query parameters.",
+                status=resp.status_code,
+                body=resp.text,
+            )
         elif resp.status_code == 401:
-            raise APIError("Unauthorized", status=resp.status_code, body=resp.text)
+            raise APIError(
+                "The request is not authorized.", status=resp.status_code, body=resp.text
+            )
         else:
             raise APIError("Unexpected response", status=resp.status_code, body=resp.text)
 
@@ -296,9 +334,15 @@ class AsyncTransactionsResource(AsyncResource):
         if resp.status_code == 204:
             return
         elif resp.status_code == 404:
-            raise APIError("Not Found", status=resp.status_code, body=resp.text)
+            raise APIError(
+                "The requested resource does not exist.", status=resp.status_code, body=resp.text
+            )
         elif resp.status_code == 409:
-            raise APIError("Conflict", status=resp.status_code, body=resp.text)
+            raise APIError(
+                "The transaction cannot be refunded due to business constraints.",
+                status=resp.status_code,
+                body=resp.text,
+            )
         else:
             raise APIError("Unexpected response", status=resp.status_code, body=resp.text)
 
@@ -327,9 +371,13 @@ class AsyncTransactionsResource(AsyncResource):
         if resp.status_code == 200:
             return pydantic.TypeAdapter(TransactionFull).validate_python(resp.json())
         elif resp.status_code == 401:
-            raise APIError("Unauthorized", status=resp.status_code, body=resp.text)
+            raise APIError(
+                "The request is not authorized.", status=resp.status_code, body=resp.text
+            )
         elif resp.status_code == 404:
-            raise APIError("Not Found", status=resp.status_code, body=resp.text)
+            raise APIError(
+                "The requested resource does not exist.", status=resp.status_code, body=resp.text
+            )
         else:
             raise APIError("Unexpected response", status=resp.status_code, body=resp.text)
 
@@ -358,9 +406,13 @@ class AsyncTransactionsResource(AsyncResource):
         if resp.status_code == 200:
             return pydantic.TypeAdapter(TransactionFull).validate_python(resp.json())
         elif resp.status_code == 401:
-            raise APIError("Unauthorized", status=resp.status_code, body=resp.text)
+            raise APIError(
+                "The request is not authorized.", status=resp.status_code, body=resp.text
+            )
         elif resp.status_code == 404:
-            raise APIError("Not Found", status=resp.status_code, body=resp.text)
+            raise APIError(
+                "The requested resource does not exist.", status=resp.status_code, body=resp.text
+            )
         else:
             raise APIError("Unexpected response", status=resp.status_code, body=resp.text)
 
@@ -382,8 +434,16 @@ class AsyncTransactionsResource(AsyncResource):
         )
         if resp.status_code == 200:
             return pydantic.TypeAdapter(ListTransactionsV21200Response).validate_python(resp.json())
+        elif resp.status_code == 400:
+            raise APIError(
+                "The request is invalid for the submitted query parameters.",
+                status=resp.status_code,
+                body=resp.text,
+            )
         elif resp.status_code == 401:
-            raise APIError("Unauthorized", status=resp.status_code, body=resp.text)
+            raise APIError(
+                "The request is not authorized.", status=resp.status_code, body=resp.text
+            )
         else:
             raise APIError("Unexpected response", status=resp.status_code, body=resp.text)
 
@@ -405,7 +465,15 @@ class AsyncTransactionsResource(AsyncResource):
         )
         if resp.status_code == 200:
             return pydantic.TypeAdapter(ListTransactions200Response).validate_python(resp.json())
+        elif resp.status_code == 400:
+            raise APIError(
+                "The request is invalid for the submitted query parameters.",
+                status=resp.status_code,
+                body=resp.text,
+            )
         elif resp.status_code == 401:
-            raise APIError("Unauthorized", status=resp.status_code, body=resp.text)
+            raise APIError(
+                "The request is not authorized.", status=resp.status_code, body=resp.text
+            )
         else:
             raise APIError("Unexpected response", status=resp.status_code, body=resp.text)
