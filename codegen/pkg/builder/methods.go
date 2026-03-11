@@ -227,7 +227,7 @@ func (b *Builder) getSuccessResponseType(o *v3.Operation) (*string, error) {
 			continue
 		}
 
-		if content, ok := response.Content.Get("application/json"); ok {
+		if content, ok := preferredResponseContent(response.Content); ok {
 			if content.Schema != nil {
 				successResponses = append(successResponses, responseInfo{
 					content: content,
@@ -267,7 +267,7 @@ func (b *Builder) responseToType(operationName string, resp *v3.Response, code s
 		return ""
 	}
 
-	content, ok := resp.Content.Get("application/json")
+	content, ok := preferredResponseContent(resp.Content)
 	if !ok {
 		return ""
 	}
