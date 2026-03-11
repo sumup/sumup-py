@@ -14,6 +14,19 @@ import (
 	"github.com/sumup/sumup-py/codegen/internal/stringx"
 )
 
+func preferredResponseContent(content *orderedmap.Map[string, *v3.MediaType]) (*v3.MediaType, bool) {
+	if content == nil {
+		return nil, false
+	}
+	if mt, ok := content.Get("application/problem+json"); ok && mt != nil {
+		return mt, true
+	}
+	if mt, ok := content.Get("application/json"); ok && mt != nil {
+		return mt, true
+	}
+	return nil, false
+}
+
 // TODO: is this different from respToTypes?
 func (b *Builder) pathsToBodyTypes(paths *v3.Paths) []Writable {
 	if paths == nil {
@@ -124,7 +137,7 @@ func (b *Builder) pathsToResponseTypes(paths *v3.Paths) []Writable {
 					continue
 				}
 
-				content, ok := response.Content.Get("application/json")
+				content, ok := preferredResponseContent(response.Content)
 				if !ok {
 					continue
 				}
