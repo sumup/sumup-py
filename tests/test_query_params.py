@@ -11,7 +11,7 @@ from sumup.transactions import ListTransactionsV21Params
         (None, []),
         (
             ListTransactionsV21Params(statuses=["SUCCESSFUL", "FAILED"]),
-            [("statuses", "SUCCESSFUL"), ("statuses", "FAILED")],
+            [("statuses[]", "SUCCESSFUL"), ("statuses[]", "FAILED")],
         ),
     ],
 )
