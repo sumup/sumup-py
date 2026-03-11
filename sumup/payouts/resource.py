@@ -64,8 +64,16 @@ class PayoutsResource(Resource):
         )
         if resp.status_code == 200:
             return pydantic.TypeAdapter(FinancialPayouts).validate_python(resp.json())
+        elif resp.status_code == 400:
+            raise APIError(
+                "The request is invalid for the submitted query parameters.",
+                status=resp.status_code,
+                body=resp.text,
+            )
         elif resp.status_code == 401:
-            raise APIError("Unauthorized", status=resp.status_code, body=resp.text)
+            raise APIError(
+                "The request is not authorized.", status=resp.status_code, body=resp.text
+            )
         else:
             raise APIError("Unexpected response", status=resp.status_code, body=resp.text)
 
@@ -87,8 +95,16 @@ class PayoutsResource(Resource):
         )
         if resp.status_code == 200:
             return pydantic.TypeAdapter(FinancialPayouts).validate_python(resp.json())
+        elif resp.status_code == 400:
+            raise APIError(
+                "The request is invalid for the submitted query parameters.",
+                status=resp.status_code,
+                body=resp.text,
+            )
         elif resp.status_code == 401:
-            raise APIError("Unauthorized", status=resp.status_code, body=resp.text)
+            raise APIError(
+                "The request is not authorized.", status=resp.status_code, body=resp.text
+            )
         else:
             raise APIError("Unexpected response", status=resp.status_code, body=resp.text)
 
@@ -115,8 +131,16 @@ class AsyncPayoutsResource(AsyncResource):
         )
         if resp.status_code == 200:
             return pydantic.TypeAdapter(FinancialPayouts).validate_python(resp.json())
+        elif resp.status_code == 400:
+            raise APIError(
+                "The request is invalid for the submitted query parameters.",
+                status=resp.status_code,
+                body=resp.text,
+            )
         elif resp.status_code == 401:
-            raise APIError("Unauthorized", status=resp.status_code, body=resp.text)
+            raise APIError(
+                "The request is not authorized.", status=resp.status_code, body=resp.text
+            )
         else:
             raise APIError("Unexpected response", status=resp.status_code, body=resp.text)
 
@@ -138,7 +162,15 @@ class AsyncPayoutsResource(AsyncResource):
         )
         if resp.status_code == 200:
             return pydantic.TypeAdapter(FinancialPayouts).validate_python(resp.json())
+        elif resp.status_code == 400:
+            raise APIError(
+                "The request is invalid for the submitted query parameters.",
+                status=resp.status_code,
+                body=resp.text,
+            )
         elif resp.status_code == 401:
-            raise APIError("Unauthorized", status=resp.status_code, body=resp.text)
+            raise APIError(
+                "The request is not authorized.", status=resp.status_code, body=resp.text
+            )
         else:
             raise APIError("Unexpected response", status=resp.status_code, body=resp.text)

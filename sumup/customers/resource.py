@@ -14,7 +14,7 @@ import pydantic
 
 class CreateCustomerBody(pydantic.BaseModel):
     """
-    CreateCustomerBody is a schema definition.
+    Saved customer details.
     """
 
     customer_id: str
@@ -64,12 +64,24 @@ class CustomersResource(Resource):
         )
         if resp.status_code == 201:
             return pydantic.TypeAdapter(Customer).validate_python(resp.json())
+        elif resp.status_code == 400:
+            raise APIError("The request body is invalid.", status=resp.status_code, body=resp.text)
         elif resp.status_code == 401:
-            raise APIError("Unauthorized", status=resp.status_code, body=resp.text)
+            raise APIError(
+                "The request is not authorized.", status=resp.status_code, body=resp.text
+            )
         elif resp.status_code == 403:
-            raise APIError("Forbidden", status=resp.status_code, body=resp.text)
+            raise APIError(
+                "The request is authenticated but not permitted for this operation.",
+                status=resp.status_code,
+                body=resp.text,
+            )
         elif resp.status_code == 409:
-            raise APIError("Conflict", status=resp.status_code, body=resp.text)
+            raise APIError(
+                "A customer with the provided identifier already exists.",
+                status=resp.status_code,
+                body=resp.text,
+            )
         else:
             raise APIError("Unexpected response", status=resp.status_code, body=resp.text)
 
@@ -86,11 +98,19 @@ class CustomersResource(Resource):
         if resp.status_code == 200:
             return pydantic.TypeAdapter(Customer).validate_python(resp.json())
         elif resp.status_code == 401:
-            raise APIError("Unauthorized", status=resp.status_code, body=resp.text)
+            raise APIError(
+                "The request is not authorized.", status=resp.status_code, body=resp.text
+            )
         elif resp.status_code == 403:
-            raise APIError("Forbidden", status=resp.status_code, body=resp.text)
+            raise APIError(
+                "The request is authenticated but not permitted for this operation.",
+                status=resp.status_code,
+                body=resp.text,
+            )
         elif resp.status_code == 404:
-            raise APIError("Not Found", status=resp.status_code, body=resp.text)
+            raise APIError(
+                "The requested resource does not exist.", status=resp.status_code, body=resp.text
+            )
         else:
             raise APIError("Unexpected response", status=resp.status_code, body=resp.text)
 
@@ -115,11 +135,19 @@ class CustomersResource(Resource):
         if resp.status_code == 200:
             return pydantic.TypeAdapter(Customer).validate_python(resp.json())
         elif resp.status_code == 401:
-            raise APIError("Unauthorized", status=resp.status_code, body=resp.text)
+            raise APIError(
+                "The request is not authorized.", status=resp.status_code, body=resp.text
+            )
         elif resp.status_code == 403:
-            raise APIError("Forbidden", status=resp.status_code, body=resp.text)
+            raise APIError(
+                "The request is authenticated but not permitted for this operation.",
+                status=resp.status_code,
+                body=resp.text,
+            )
         elif resp.status_code == 404:
-            raise APIError("Not Found", status=resp.status_code, body=resp.text)
+            raise APIError(
+                "The requested resource does not exist.", status=resp.status_code, body=resp.text
+            )
         else:
             raise APIError("Unexpected response", status=resp.status_code, body=resp.text)
 
@@ -140,11 +168,19 @@ class CustomersResource(Resource):
                 resp.json()
             )
         elif resp.status_code == 401:
-            raise APIError("Unauthorized", status=resp.status_code, body=resp.text)
+            raise APIError(
+                "The request is not authorized.", status=resp.status_code, body=resp.text
+            )
         elif resp.status_code == 403:
-            raise APIError("Forbidden", status=resp.status_code, body=resp.text)
+            raise APIError(
+                "The request is authenticated but not permitted for this operation.",
+                status=resp.status_code,
+                body=resp.text,
+            )
         elif resp.status_code == 404:
-            raise APIError("Not Found", status=resp.status_code, body=resp.text)
+            raise APIError(
+                "The requested resource does not exist.", status=resp.status_code, body=resp.text
+            )
         else:
             raise APIError("Unexpected response", status=resp.status_code, body=resp.text)
 
@@ -162,12 +198,22 @@ class CustomersResource(Resource):
         )
         if resp.status_code == 204:
             return
+        elif resp.status_code == 400:
+            raise APIError("The request is invalid.", status=resp.status_code, body=resp.text)
         elif resp.status_code == 401:
-            raise APIError("Unauthorized", status=resp.status_code, body=resp.text)
+            raise APIError(
+                "The request is not authorized.", status=resp.status_code, body=resp.text
+            )
         elif resp.status_code == 403:
-            raise APIError("Forbidden", status=resp.status_code, body=resp.text)
+            raise APIError(
+                "The request is authenticated but not permitted for this operation.",
+                status=resp.status_code,
+                body=resp.text,
+            )
         elif resp.status_code == 404:
-            raise APIError("Not Found", status=resp.status_code, body=resp.text)
+            raise APIError(
+                "The requested resource does not exist.", status=resp.status_code, body=resp.text
+            )
         else:
             raise APIError("Unexpected response", status=resp.status_code, body=resp.text)
 
@@ -191,12 +237,24 @@ class AsyncCustomersResource(AsyncResource):
         )
         if resp.status_code == 201:
             return pydantic.TypeAdapter(Customer).validate_python(resp.json())
+        elif resp.status_code == 400:
+            raise APIError("The request body is invalid.", status=resp.status_code, body=resp.text)
         elif resp.status_code == 401:
-            raise APIError("Unauthorized", status=resp.status_code, body=resp.text)
+            raise APIError(
+                "The request is not authorized.", status=resp.status_code, body=resp.text
+            )
         elif resp.status_code == 403:
-            raise APIError("Forbidden", status=resp.status_code, body=resp.text)
+            raise APIError(
+                "The request is authenticated but not permitted for this operation.",
+                status=resp.status_code,
+                body=resp.text,
+            )
         elif resp.status_code == 409:
-            raise APIError("Conflict", status=resp.status_code, body=resp.text)
+            raise APIError(
+                "A customer with the provided identifier already exists.",
+                status=resp.status_code,
+                body=resp.text,
+            )
         else:
             raise APIError("Unexpected response", status=resp.status_code, body=resp.text)
 
@@ -213,11 +271,19 @@ class AsyncCustomersResource(AsyncResource):
         if resp.status_code == 200:
             return pydantic.TypeAdapter(Customer).validate_python(resp.json())
         elif resp.status_code == 401:
-            raise APIError("Unauthorized", status=resp.status_code, body=resp.text)
+            raise APIError(
+                "The request is not authorized.", status=resp.status_code, body=resp.text
+            )
         elif resp.status_code == 403:
-            raise APIError("Forbidden", status=resp.status_code, body=resp.text)
+            raise APIError(
+                "The request is authenticated but not permitted for this operation.",
+                status=resp.status_code,
+                body=resp.text,
+            )
         elif resp.status_code == 404:
-            raise APIError("Not Found", status=resp.status_code, body=resp.text)
+            raise APIError(
+                "The requested resource does not exist.", status=resp.status_code, body=resp.text
+            )
         else:
             raise APIError("Unexpected response", status=resp.status_code, body=resp.text)
 
@@ -242,11 +308,19 @@ class AsyncCustomersResource(AsyncResource):
         if resp.status_code == 200:
             return pydantic.TypeAdapter(Customer).validate_python(resp.json())
         elif resp.status_code == 401:
-            raise APIError("Unauthorized", status=resp.status_code, body=resp.text)
+            raise APIError(
+                "The request is not authorized.", status=resp.status_code, body=resp.text
+            )
         elif resp.status_code == 403:
-            raise APIError("Forbidden", status=resp.status_code, body=resp.text)
+            raise APIError(
+                "The request is authenticated but not permitted for this operation.",
+                status=resp.status_code,
+                body=resp.text,
+            )
         elif resp.status_code == 404:
-            raise APIError("Not Found", status=resp.status_code, body=resp.text)
+            raise APIError(
+                "The requested resource does not exist.", status=resp.status_code, body=resp.text
+            )
         else:
             raise APIError("Unexpected response", status=resp.status_code, body=resp.text)
 
@@ -267,11 +341,19 @@ class AsyncCustomersResource(AsyncResource):
                 resp.json()
             )
         elif resp.status_code == 401:
-            raise APIError("Unauthorized", status=resp.status_code, body=resp.text)
+            raise APIError(
+                "The request is not authorized.", status=resp.status_code, body=resp.text
+            )
         elif resp.status_code == 403:
-            raise APIError("Forbidden", status=resp.status_code, body=resp.text)
+            raise APIError(
+                "The request is authenticated but not permitted for this operation.",
+                status=resp.status_code,
+                body=resp.text,
+            )
         elif resp.status_code == 404:
-            raise APIError("Not Found", status=resp.status_code, body=resp.text)
+            raise APIError(
+                "The requested resource does not exist.", status=resp.status_code, body=resp.text
+            )
         else:
             raise APIError("Unexpected response", status=resp.status_code, body=resp.text)
 
@@ -289,11 +371,21 @@ class AsyncCustomersResource(AsyncResource):
         )
         if resp.status_code == 204:
             return
+        elif resp.status_code == 400:
+            raise APIError("The request is invalid.", status=resp.status_code, body=resp.text)
         elif resp.status_code == 401:
-            raise APIError("Unauthorized", status=resp.status_code, body=resp.text)
+            raise APIError(
+                "The request is not authorized.", status=resp.status_code, body=resp.text
+            )
         elif resp.status_code == 403:
-            raise APIError("Forbidden", status=resp.status_code, body=resp.text)
+            raise APIError(
+                "The request is authenticated but not permitted for this operation.",
+                status=resp.status_code,
+                body=resp.text,
+            )
         elif resp.status_code == 404:
-            raise APIError("Not Found", status=resp.status_code, body=resp.text)
+            raise APIError(
+                "The requested resource does not exist.", status=resp.status_code, body=resp.text
+            )
         else:
             raise APIError("Unexpected response", status=resp.status_code, body=resp.text)

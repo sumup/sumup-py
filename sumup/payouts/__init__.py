@@ -7,7 +7,9 @@ from .resource import (
 )
 from ..types import (
     Error,
+    ErrorExtended,
     FinancialPayouts,
+    Problem,
 )
 
 
@@ -17,5 +19,7 @@ __all__ = [
     "ListPayoutsV1Params",
     "ListPayoutsParams",
     "Error",
+    "ErrorExtended",
     "FinancialPayouts",
+    "Problem",
 ]

@@ -10,10 +10,12 @@ from ..types import (
     CardType,
     Customer,
     Error,
+    ErrorExtended,
     ErrorForbidden,
     MandateResponse,
     PaymentInstrumentResponse,
     PersonalDetails,
+    Problem,
 )
 
 
@@ -26,8 +28,10 @@ __all__ = [
     "CardType",
     "Customer",
     "Error",
+    "ErrorExtended",
     "ErrorForbidden",
     "MandateResponse",
     "PaymentInstrumentResponse",
     "PersonalDetails",
+    "Problem",
 ]
