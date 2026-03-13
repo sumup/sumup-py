@@ -12,6 +12,7 @@ from ..types import (
     MembershipResource,
     MembershipStatus,
     Metadata,
+    Problem,
     ResourceType,
 )
 
@@ -27,5 +28,6 @@ __all__ = [
     "MembershipResource",
     "MembershipStatus",
     "Metadata",
+    "Problem",
     "ResourceType",
 ]
