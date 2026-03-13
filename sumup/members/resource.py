@@ -189,7 +189,7 @@ class MembersResource(Resource):
             raise APIError("Merchant not found.", status=resp.status_code, body=resp.text)
         elif resp.status_code == 429:
             raise APIError(
-                "Too many invitations sent to that user. The limit is 10 requests per 5 minutes and the Retry-After header is set to the number of minutes until the reset of the limit.",
+                "Too many invitations were sent to that user and the rate limit was exceeded. The Retry-After header indicates when the client can retry.",
                 status=resp.status_code,
                 body=resp.text,
             )
@@ -328,7 +328,7 @@ class AsyncMembersResource(AsyncResource):
             raise APIError("Merchant not found.", status=resp.status_code, body=resp.text)
         elif resp.status_code == 429:
             raise APIError(
-                "Too many invitations sent to that user. The limit is 10 requests per 5 minutes and the Retry-After header is set to the number of minutes until the reset of the limit.",
+                "Too many invitations were sent to that user and the rate limit was exceeded. The Retry-After header indicates when the client can retry.",
                 status=resp.status_code,
                 body=resp.text,
             )
