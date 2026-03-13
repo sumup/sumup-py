@@ -120,6 +120,12 @@ class SubaccountsResource(Resource):
         )
         if resp.status_code == 200:
             return pydantic.TypeAdapter(ListSubAccounts200Response).validate_python(resp.json())
+        elif resp.status_code == 401:
+            raise APIError(
+                "Authentication failed or missing required scope.",
+                status=resp.status_code,
+                body=resp.text,
+            )
         else:
             raise APIError("Unexpected response", status=resp.status_code, body=resp.text)
 
@@ -165,6 +171,12 @@ class SubaccountsResource(Resource):
         )
         if resp.status_code == 200:
             return pydantic.TypeAdapter(Operator).validate_python(resp.json())
+        elif resp.status_code == 401:
+            raise APIError(
+                "Authentication failed or missing required scope.",
+                status=resp.status_code,
+                body=resp.text,
+            )
         else:
             raise APIError("Unexpected response", status=resp.status_code, body=resp.text)
 
@@ -223,6 +235,12 @@ class AsyncSubaccountsResource(AsyncResource):
         )
         if resp.status_code == 200:
             return pydantic.TypeAdapter(ListSubAccounts200Response).validate_python(resp.json())
+        elif resp.status_code == 401:
+            raise APIError(
+                "Authentication failed or missing required scope.",
+                status=resp.status_code,
+                body=resp.text,
+            )
         else:
             raise APIError("Unexpected response", status=resp.status_code, body=resp.text)
 
@@ -268,6 +286,12 @@ class AsyncSubaccountsResource(AsyncResource):
         )
         if resp.status_code == 200:
             return pydantic.TypeAdapter(Operator).validate_python(resp.json())
+        elif resp.status_code == 401:
+            raise APIError(
+                "Authentication failed or missing required scope.",
+                status=resp.status_code,
+                body=resp.text,
+            )
         else:
             raise APIError("Unexpected response", status=resp.status_code, body=resp.text)
 
