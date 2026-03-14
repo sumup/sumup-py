@@ -1,5 +1,16 @@
 # Changelog
 
+## [0.1.2](https://github.com/sumup/sumup-py/compare/v0.1.1...v0.1.2) (2026-03-14)
+
+
+### Chores
+
+* align release automation config ([#230](https://github.com/sumup/sumup-py/issues/230)) ([6478524](https://github.com/sumup/sumup-py/commit/6478524bb10097660c4261d52434440b3544f742))
+* **deps-dev:** bump ruff from 0.15.5 to 0.15.6 ([#233](https://github.com/sumup/sumup-py/issues/233)) ([3832e99](https://github.com/sumup/sumup-py/commit/3832e9902b1c3afa95d60a8988159f876f2765ed))
+* **deps-dev:** bump ty from 0.0.21 to 0.0.23 ([#232](https://github.com/sumup/sumup-py/issues/232)) ([ebed296](https://github.com/sumup/sumup-py/commit/ebed296a244de2483520297258c58961179e2f42))
+* **deps:** bump astral-sh/setup-uv from 7.4.0 to 7.5.0 ([#231](https://github.com/sumup/sumup-py/issues/231)) ([5a87428](https://github.com/sumup/sumup-py/commit/5a87428b6f8cd34e0ae007ba4c04bf69d1fe094d))
+* synced file(s) with sumup/apis ([#229](https://github.com/sumup/sumup-py/issues/229)) ([f7cf00a](https://github.com/sumup/sumup-py/commit/f7cf00a681a4db6540fbe9e6dc809b98e9c42e9f))
+
 ## [0.1.1](https://github.com/sumup/sumup-py/compare/v0.1.0...v0.1.1) (2026-03-13)
 
 
