@@ -889,14 +889,6 @@ class Card(pydantic.BaseModel):
 	Max length: 4
 	"""
 
-    last_4_digits: str
-    """
-	Last 4 digits of the payment card number.
-	Read only
-	Min length: 4
-	Max length: 4
-	"""
-
     name: str
     """
 	Name of the cardholder as it appears on the payment card.
@@ -1345,90 +1337,6 @@ CheckoutCreateRequestPurpose = typing.Union[
     typing.Literal["CHECKOUT", "SETUP_RECURRING_PAYMENT"], str
 ]
 
-CheckoutCreateRequestStatus = typing.Union[typing.Literal["FAILED", "PAID", "PENDING"], str]
-
-CheckoutCreateRequestTransactionStatus = typing.Union[
-    typing.Literal["CANCELLED", "FAILED", "PENDING", "SUCCESSFUL"], str
-]
-
-
-class CheckoutCreateRequestTransaction(pydantic.BaseModel):
-    """
-    CheckoutCreateRequestTransaction is a schema definition.
-    """
-
-    amount: typing.Optional[float] = None
-    """
-	Total amount of the transaction.
-	"""
-
-    auth_code: typing.Optional[str] = None
-    """
-	Authorization code for the transaction sent by the payment card issuer or bank. Applicable only to card payments.
-	"""
-
-    currency: typing.Optional[Currency] = None
-    """
-	Three-letter [ISO4217](https://en.wikipedia.org/wiki/ISO_4217) code of the currency for the amount. Currently supportedcurrency values are enumerated above.
-	"""
-
-    entry_mode: typing.Optional[EntryMode] = None
-    """
-	Entry mode of the payment details.
-	"""
-
-    id: typing.Optional[str] = None
-    """
-	Unique ID of the transaction.
-	"""
-
-    installments_count: typing.Optional[int] = None
-    """
-	Current number of the installment for deferred payments.
-	Min: 1
-	"""
-
-    internal_id: typing.Optional[int] = None
-    """
-	Internal unique ID of the transaction on the SumUp platform.
-	Format: int64
-	"""
-
-    merchant_code: typing.Optional[str] = None
-    """
-	Unique code of the registered merchant to whom the payment is made.
-	"""
-
-    payment_type: typing.Optional[PaymentType] = None
-    """
-	Payment type used for the transaction.
-	"""
-
-    status: typing.Optional[CheckoutCreateRequestTransactionStatus] = None
-    """
-	Current status of the transaction.
-	"""
-
-    timestamp: typing.Optional[datetime.datetime] = None
-    """
-	Date and time of the creation of the transaction. Response format expressed according to [ISO8601](https://en.wikipedia.org/wiki/ISO_8601) code.
-	"""
-
-    tip_amount: typing.Optional[float] = None
-    """
-	Amount of the tip (out of the total transaction amount).
-	"""
-
-    transaction_code: typing.Optional[str] = None
-    """
-	Transaction code returned by the acquirer/processing entity after processing the transaction.
-	"""
-
-    vat_amount: typing.Optional[float] = None
-    """
-	Amount of the applicable VAT (out of the total transaction amount).
-	"""
-
 
 class CheckoutCreateRequest(pydantic.BaseModel):
     """
@@ -1461,21 +1369,9 @@ class CheckoutCreateRequest(pydantic.BaseModel):
 	Unique identification of a customer. If specified, the checkout session and payment instrument are associated withthe referenced customer.
 	"""
 
-    date: typing.Optional[datetime.datetime] = None
-    """
-	Date and time of the creation of the payment checkout. Response format expressed according to [ISO8601](https://en.wikipedia.org/wiki/ISO_8601) code.
-	Readonly
-	"""
-
     description: typing.Optional[str] = None
     """
 	Short description of the checkout visible in the SumUp dashboard. The description can contribute to reporting, allowingeasier identification of a checkout.
-	"""
-
-    id: typing.Optional[str] = None
-    """
-	Unique ID of the checkout resource.
-	Read only
 	"""
 
     purpose: typing.Optional[CheckoutCreateRequestPurpose] = None
@@ -1493,19 +1389,6 @@ class CheckoutCreateRequest(pydantic.BaseModel):
     """
 	URL to which the SumUp platform sends the processing status of the payment checkout.
 	Format: uri
-	"""
-
-    status: typing.Optional[CheckoutCreateRequestStatus] = None
-    """
-	Current status of the checkout.
-	Read only
-	"""
-
-    transactions: typing.Optional[list[CheckoutCreateRequestTransaction]] = None
-    """
-	List of transactions related to the payment.
-	Read only
-	Unique items only
 	"""
 
     valid_until: typing.Optional[datetime.datetime] = None
@@ -3288,22 +3171,9 @@ class PaymentInstrumentCard(pydantic.BaseModel):
     Details of the payment card that is saved as a payment instrument.
     """
 
-    active: bool
-    """
-	Indicates whether the payment instrument is active and can be used for payments. To deactivate it, send a`DELETE` request to the resource endpoint.
-	Read only
-	Default: true
-	"""
-
     card: Card
     """
 	__Required when payment type is `card`.__ Details of the payment card.
-	"""
-
-    token: str
-    """
-	Unique token identifying the saved payment card for a customer.
-	Read only
 	"""
 
     type: PaymentInstrumentCardType
