@@ -4303,11 +4303,7 @@ TransactionFullSimpleStatus = typing.Union[
     str,
 ]
 
-
-class TransactionFullLink(pydantic.BaseModel):
-    """
-    TransactionFullLink is a schema definition.
-    """
+TransactionFullLink = typing.Union[Link, LinkRefund]
 
 
 class TransactionFullLocation(pydantic.BaseModel):
