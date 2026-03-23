@@ -229,7 +229,8 @@ func (b *Builder) generateSchemaComponents(name string, spec *base.Schema) []Wri
 		types = append(types, additionalTypes...)
 		types = append(types, object)
 	case spec.OneOf != nil:
-		object := createOneOf(spec, name)
+		object, additionalTypes := b.createOneOf(spec, name)
+		types = append(types, additionalTypes...)
 		types = append(types, object)
 	case spec.AnyOf != nil:
 		slog.Warn("AnyOf not supported, falling back to 'inteface{}'",
@@ -295,7 +296,8 @@ func (b *Builder) genSchema(sp *base.SchemaProxy, name string) (string, []Writab
 		types = append(types, object)
 		return name, types
 	case schema.OneOf != nil:
-		object := createOneOf(schema, name)
+		object, additionalTypes := b.createOneOf(schema, name)
+		types = append(types, additionalTypes...)
 		types = append(types, object)
 		return name, types
 	case schema.AnyOf != nil:
@@ -506,16 +508,31 @@ func (b *Builder) createAllOf(schema *base.Schema, name string) (*ClassDeclarati
 	}, types
 }
 
-// createOneOf creates a type declaration for `oneOf` schema.
-func createOneOf(schema *base.Schema, name string) *ClassDeclaration {
-	// TODO: implement `func (v *{{name}}) AsXXX() (XXX, error) { ... }`
-	// that allows converting one of from `json.RawMessage` to possible variants.
+// createOneOf creates a union declaration for `oneOf` schema and emits any
+// additional inline branch types needed by the union.
+func (b *Builder) createOneOf(schema *base.Schema, name string) (*OneOfDeclaration, []Writable) {
+	types := make([]Writable, 0)
+	options := make([]string, 0, len(schema.OneOf))
 
-	return &ClassDeclaration{
-		Description: schemaDoc(name, schema),
-		Name:        name,
-		Type:        "json.RawMessage",
+	for i, option := range schema.OneOf {
+		optionName := oneOfOptionName(name, i, option.Schema())
+		typeName, additionalTypes := b.genSchema(option, optionName)
+		types = append(types, additionalTypes...)
+		options = append(options, typeName)
 	}
+
+	return &OneOfDeclaration{
+		Name:    name,
+		Options: uniqueFunc(options, func(option string) string { return option }),
+	}, types
+}
+
+func oneOfOptionName(name string, index int, schema *base.Schema) string {
+	if schema != nil && schema.Title != "" {
+		return name + strcase.ToCamel(schema.Title)
+	}
+
+	return fmt.Sprintf("%sOption%d", name, index+1)
 }
 
 func uniqueFields(fields []Property) []Property {

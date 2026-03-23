@@ -984,6 +984,7 @@ EntryMode = typing.Union[
         "qr code pix",
         "satispay",
         "sofort",
+        "twint",
     ],
     str,
 ]
@@ -2159,6 +2160,7 @@ EntryModeFilter = typing.Union[
         "QR_CODE_PIX",
         "SATISPAY",
         "SOFORT",
+        "TWINT",
     ],
     str,
 ]
@@ -2380,6 +2382,38 @@ class Link(pydantic.BaseModel):
     """
 	URL for accessing the related resource.
 	Format: uri
+	"""
+
+    rel: typing.Optional[str] = None
+    """
+	Specifies the relation to the current resource.
+	"""
+
+    type: typing.Optional[str] = None
+    """
+	Specifies the media type of the related resource.
+	"""
+
+
+class LinkRefund(pydantic.BaseModel):
+    """
+    Hypermedia link including allowed minimum and maximum refund amounts.
+    """
+
+    href: typing.Optional[str] = None
+    """
+	URL for accessing the related resource.
+	Format: uri
+	"""
+
+    max_amount: typing.Optional[float] = None
+    """
+	Maximum allowed amount for the refund.
+	"""
+
+    min_amount: typing.Optional[float] = None
+    """
+	Minimum allowed amount for the refund.
 	"""
 
     rel: typing.Optional[str] = None
@@ -4269,6 +4303,8 @@ TransactionFullSimpleStatus = typing.Union[
     str,
 ]
 
+TransactionFullLink = typing.Union[Link, LinkRefund]
+
 
 class TransactionFullLocation(pydantic.BaseModel):
     """
@@ -4385,7 +4421,7 @@ class TransactionFull(pydantic.BaseModel):
 	Max: 90
 	"""
 
-    links: typing.Optional[list[Link]] = None
+    links: typing.Optional[list[TransactionFullLink]] = None
     """
 	List of hyperlinks for accessing related resources.
 	"""
