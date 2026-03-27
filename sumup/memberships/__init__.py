@@ -2,6 +2,7 @@
 from .resource import (
     MembershipsResource,
     AsyncMembershipsResource,
+    ListMembershipsParamsResourceParentType,
     ListMembershipsParams,
     ListMemberships200Response,
 )
@@ -20,6 +21,7 @@ from ..types import (
 __all__ = [
     "MembershipsResource",
     "AsyncMembershipsResource",
+    "ListMembershipsParamsResourceParentType",
     "ListMembershipsParams",
     "ListMemberships200Response",
     "Attributes",

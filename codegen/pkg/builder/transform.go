@@ -67,37 +67,29 @@ func (b *Builder) pathsToParamTypes(paths *v3.Paths) []Writable {
 
 			if len(opSpec.Parameters) > 0 {
 				fields := make([]Property, 0)
+				fieldTypes := make([]Writable, 0)
+				paramsTypeName := operationName + "Params"
 				for _, p := range opSpec.Parameters {
 					// path parameters are passed as a parameters to the generated method
 					if p.In == "path" || p.In == "header" {
 						continue
 					}
 
-					name := p.Name
-					alias := name
-					if p.GoLow().IsReference() {
-						name = strcase.ToCamel(strings.TrimPrefix(p.Schema.GetReference(), "#/components/schemas/"))
-					}
-
-					// NOTE: we should leave it as-is, but that doesn't work with 'include[]'
-					name = strings.ReplaceAll(name, "[]", "")
-
-					// NOTE: this also needs to be handled properly
-					name = strings.ReplaceAll(name, ".", "_")
-
-					typ := b.convertToValidPyType("", p.Schema)
+					alias := p.Name
+					name := parameterFieldName(alias)
+					typeName, types := b.genSchema(p.Schema, paramsTypeName+strcase.ToCamel(name))
+					fieldTypes = append(fieldTypes, types...)
 
 					fields = append(fields, Property{
 						Name:           name,
 						SerializedName: alias,
-						Type:           typ,
+						Type:           typeName,
 						Optional:       p.Required == nil || !*p.Required,
 						Comment:        parameterPropertyDoc(p.Schema.Schema()),
 					})
 				}
 
 				if len(fields) != 0 {
-					paramsTypeName := operationName + "Params"
 					paramsTpl := ClassDeclaration{
 						Type:        "struct",
 						Name:        paramsTypeName,
@@ -105,6 +97,7 @@ func (b *Builder) pathsToParamTypes(paths *v3.Paths) []Writable {
 						Fields:      fields,
 					}
 
+					paramTypes = append(paramTypes, fieldTypes...)
 					paramTypes = append(paramTypes, &paramsTpl)
 				}
 			}
@@ -112,6 +105,12 @@ func (b *Builder) pathsToParamTypes(paths *v3.Paths) []Writable {
 	}
 
 	return paramTypes
+}
+
+func parameterFieldName(name string) string {
+	name = strings.ReplaceAll(name, "[]", "")
+	name = strings.ReplaceAll(name, ".", "_")
+	return name
 }
 
 // pathsToResponseTypes generates response types for operations. This is responsible only for inlined

@@ -2,14 +2,16 @@
 from __future__ import annotations
 from .._service import Resource, AsyncResource, HeaderTypes
 from .._exceptions import APIError
-from ..types import (
-    Membership,
-    MembershipStatus,
-    ResourceType,
-)
+from ..types import Membership, MembershipStatus, ResourceType
 import httpx
 import typing
 import pydantic
+
+
+class ListMembershipsParamsResourceParentType(pydantic.BaseModel):
+    """
+    ListMembershipsParamsResourceParentType is a schema definition.
+    """
 
 
 class ListMembershipsParams(pydantic.BaseModel):
@@ -49,7 +51,7 @@ class ListMembershipsParams(pydantic.BaseModel):
         validation_alias=pydantic.AliasChoices("resource.parent.id", "resource_parent_id"),
     )
 
-    resource_parent_type: typing.Optional[ResourceType] = pydantic.Field(
+    resource_parent_type: typing.Optional[ListMembershipsParamsResourceParentType] = pydantic.Field(
         default=None,
         serialization_alias="resource.parent.type",
         validation_alias=pydantic.AliasChoices("resource.parent.type", "resource_parent_type"),

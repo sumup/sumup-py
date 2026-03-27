@@ -1,5 +1,6 @@
 import httpx
 import pytest
+import typing
 
 from sumup.transactions import ListTransactionsV21Params
 
@@ -34,3 +35,14 @@ def test_transactions_list_query_params(params, expected_query_items, sdk_factor
     request = captured_request["request"]
     assert request.url.path == "/v2.1/merchants/merchant-123/transactions/history"
     assert list(request.url.params.multi_items()) == expected_query_items
+
+
+def test_transactions_list_query_param_enums_are_typed():
+    order_annotation = ListTransactionsV21Params.model_fields["order"].annotation
+
+    assert typing.get_origin(order_annotation) is typing.Union
+    assert typing.get_args(order_annotation) == (
+        typing.Literal["ascending", "descending"],
+        str,
+        type(None),
+    )
