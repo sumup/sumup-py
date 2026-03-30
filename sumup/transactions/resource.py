@@ -3,7 +3,7 @@ from __future__ import annotations
 from .._service import Resource, AsyncResource, HeaderTypes
 from .._exceptions import APIError
 from ..types import (
-    EntryModeFilter,
+    EntryMode,
     PaymentType,
     TransactionFull,
     TransactionHistory,
@@ -62,7 +62,7 @@ class ListTransactionsV21Params(pydantic.BaseModel):
 
     changes_since: typing.Optional[datetime.datetime] = None
 
-    entry_modes: typing.Optional[list[EntryModeFilter]] = pydantic.Field(
+    entry_modes: typing.Optional[list[EntryMode]] = pydantic.Field(
         default=None,
         serialization_alias="entry_modes[]",
         validation_alias=pydantic.AliasChoices("entry_modes[]", "entry_modes"),
