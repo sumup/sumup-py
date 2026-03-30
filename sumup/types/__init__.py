@@ -788,6 +788,7 @@ class BusinessProfile(pydantic.BaseModel):
     """
 	The descriptor is the text that your customer sees on their bank account statement.
 	The more recognisable your descriptor is, the less risk you have of receiving disputes (e.g. chargebacks).
+	Min length: 1
 	Max length: 30
 	Pattern: ^[a-zA-Z0-9 \-+\'_.]{0,30}$
 	"""
@@ -801,6 +802,7 @@ class BusinessProfile(pydantic.BaseModel):
     name: typing.Optional[str] = None
     """
 	The customer-facing business name.
+	Min length: 1
 	Max length: 512
 	"""
 
@@ -813,6 +815,7 @@ class BusinessProfile(pydantic.BaseModel):
     website: typing.Optional[str] = None
     """
 	The business's publicly available website.
+	Format: uri
 	Max length: 512
 	"""
 
@@ -1673,6 +1676,7 @@ class Company(pydantic.BaseModel):
     name: typing.Optional[str] = None
     """
 	The company's legal name.
+	Min length: 1
 	Max length: 512
 	"""
 
@@ -1692,6 +1696,7 @@ class Company(pydantic.BaseModel):
     website: typing.Optional[str] = None
     """
 	HTTP(S) URL of the company's website.
+	Format: uri
 	Max length: 255
 	"""
 
@@ -2848,7 +2853,7 @@ class Merchant(pydantic.BaseModel):
     avatar: typing.Optional[str] = None
     """
 	A user-facing small-format logo for use in dashboards and other user-facing applications. For customer-facing brandingsee `merchant.business_profile.branding`.
-	Format: url
+	Format: uri
 	"""
 
     business_profile: typing.Optional[BusinessProfile] = None
