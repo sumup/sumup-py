@@ -214,11 +214,6 @@ class AddressPayloadLegacy(pydantic.BaseModel):
 	Last name
 	"""
 
-    region_id: typing.Optional[float] = None
-    """
-	Country region id
-	"""
-
     region_name: typing.Optional[str] = None
     """
 	Country region name
@@ -330,11 +325,6 @@ class AddressWithDetails(pydantic.BaseModel):
     region_code: typing.Optional[str] = None
     """
 	Region code
-	"""
-
-    region_id: typing.Optional[float] = None
-    """
-	Country region id
 	"""
 
     region_name: typing.Optional[str] = None
@@ -958,33 +948,33 @@ Currency = typing.Union[
 
 EntryMode = typing.Union[
     typing.Literal[
-        "apple pay",
-        "bancontact",
-        "blik",
-        "boleto",
-        "chip",
-        "contactless",
-        "contactless magstripe",
-        "customer entry",
-        "direct debit",
-        "eps",
-        "giropay",
-        "google pay",
-        "ideal",
-        "magstripe",
-        "magstripe fallback",
-        "manual entry",
-        "moto",
-        "mybank",
-        "na",
-        "none",
-        "p24",
-        "paypal",
-        "pix",
-        "qr code pix",
-        "satispay",
-        "sofort",
-        "twint",
+        "APPLE_PAY",
+        "BANCONTACT",
+        "BLIK",
+        "BOLETO",
+        "CHIP",
+        "CONTACTLESS",
+        "CONTACTLESS_MAGSTRIPE",
+        "CUSTOMER_ENTRY",
+        "DIRECT_DEBIT",
+        "EPS",
+        "GIROPAY",
+        "GOOGLE_PAY",
+        "IDEAL",
+        "MAGSTRIPE",
+        "MAGSTRIPE_FALLBACK",
+        "MANUAL_ENTRY",
+        "MOTO",
+        "MYBANK",
+        "N/A",
+        "NONE",
+        "P24",
+        "PAYPAL",
+        "PIX",
+        "QR_CODE_PIX",
+        "SATISPAY",
+        "SOFORT",
+        "TWINT",
     ],
     str,
 ]
@@ -2130,40 +2120,6 @@ class ElvCardAccount(pydantic.BaseModel):
     """
 	ELV card sort code.
 	"""
-
-
-EntryModeFilter = typing.Union[
-    typing.Literal[
-        "APPLE_PAY",
-        "BANCONTACT",
-        "BLIK",
-        "BOLETO",
-        "CHIP",
-        "CONTACTLESS",
-        "CONTACTLESS_MAGSTRIPE",
-        "CUSTOMER_ENTRY",
-        "DIRECT_DEBIT",
-        "EPS",
-        "GIROPAY",
-        "GOOGLE_PAY",
-        "IDEAL",
-        "MAGSTRIPE",
-        "MAGSTRIPE_FALLBACK",
-        "MANUAL_ENTRY",
-        "MOTO",
-        "MYBANK",
-        "N/A",
-        "NONE",
-        "P24",
-        "PAYPAL",
-        "PIX",
-        "QR_CODE_PIX",
-        "SATISPAY",
-        "SOFORT",
-        "TWINT",
-    ],
-    str,
-]
 
 
 class Error(pydantic.BaseModel):
@@ -3736,6 +3692,8 @@ class ReceiptMerchantDataMerchantProfileAddress(pydantic.BaseModel):
 
     address_line1: typing.Optional[str] = None
 
+    address_line2: typing.Optional[str] = None
+
     city: typing.Optional[str] = None
 
     country: typing.Optional[str] = None
@@ -3748,6 +3706,8 @@ class ReceiptMerchantDataMerchantProfileAddress(pydantic.BaseModel):
 
     post_code: typing.Optional[str] = None
 
+    region_name: typing.Optional[str] = None
+
 
 class ReceiptMerchantDataMerchantProfile(pydantic.BaseModel):
     """
@@ -3758,9 +3718,17 @@ class ReceiptMerchantDataMerchantProfile(pydantic.BaseModel):
 
     business_name: typing.Optional[str] = None
 
+    company_registration_number: typing.Optional[str] = None
+
     email: typing.Optional[str] = None
 
+    language: typing.Optional[str] = None
+
     merchant_code: typing.Optional[str] = None
+
+    vat_id: typing.Optional[str] = None
+
+    website: typing.Optional[str] = None
 
 
 class ReceiptMerchantData(pydantic.BaseModel):
@@ -3779,10 +3747,34 @@ class ReceiptMerchantData(pydantic.BaseModel):
 	"""
 
 
+class ReceiptReader(pydantic.BaseModel):
+    """
+    Card reader details displayed on the receipt.
+    """
+
+    code: typing.Optional[str] = None
+    """
+	Reader serial number.
+	"""
+
+    type: typing.Optional[str] = None
+    """
+	Reader type.
+	"""
+
+
+ReceiptTransactionProcessA = typing.Union[typing.Literal["CREDIT", "DEBIT"], str]
+
+
 class ReceiptTransactionProduct(pydantic.BaseModel):
     """
     ReceiptTransactionProduct is a schema definition.
     """
+
+    description: typing.Optional[str] = None
+    """
+	Product description
+	"""
 
     name: typing.Optional[str] = None
     """
@@ -3879,6 +3871,11 @@ class ReceiptTransaction(pydantic.BaseModel):
 	Payment card details displayed on the receipt.
 	"""
 
+    card_reader: typing.Optional[ReceiptReader] = None
+    """
+	Card reader details displayed on the receipt.
+	"""
+
     currency: typing.Optional[str] = None
     """
 	Transaction currency.
@@ -3899,9 +3896,19 @@ class ReceiptTransaction(pydantic.BaseModel):
 	Number of installments.
 	"""
 
+    merchant_code: typing.Optional[str] = None
+    """
+	Merchant code.
+	"""
+
     payment_type: typing.Optional[str] = None
     """
 	Transaction type.
+	"""
+
+    process_as: typing.Optional[ReceiptTransactionProcessA] = None
+    """
+	Debit/Credit.
 	"""
 
     products: typing.Optional[list[ReceiptTransactionProduct]] = None
@@ -3932,6 +3939,11 @@ class ReceiptTransaction(pydantic.BaseModel):
     transaction_code: typing.Optional[str] = None
     """
 	Transaction code.
+	"""
+
+    transaction_id: typing.Optional[TransactionId] = None
+    """
+	Unique ID of the transaction.
 	"""
 
     vat_amount: typing.Optional[str] = None

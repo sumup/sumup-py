@@ -14,6 +14,7 @@ from ..types import (
     ReceiptCard,
     ReceiptEvent,
     ReceiptMerchantData,
+    ReceiptReader,
     ReceiptTransaction,
     TransactionId,
 )
@@ -32,6 +33,7 @@ __all__ = [
     "ReceiptCard",
     "ReceiptEvent",
     "ReceiptMerchantData",
+    "ReceiptReader",
     "ReceiptTransaction",
     "TransactionId",
 ]
