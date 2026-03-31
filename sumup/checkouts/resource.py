@@ -79,8 +79,18 @@ class CreateCheckoutBody(pydantic.BaseModel):
 
 
 ProcessCheckoutBodyPaymentType = typing.Union[
-    typing.Literal["bancontact", "blik", "boleto", "card", "ideal"], str
+    typing.Literal["apple_pay", "bancontact", "blik", "boleto", "card", "google_pay", "ideal"], str
 ]
+
+ProcessCheckoutBodyGooglePay = dict[str, object]
+"""
+Raw `PaymentData` object received from Google Pay. Send the Google Pay response payload as-is.
+"""
+
+ProcessCheckoutBodyApplePay = dict[str, object]
+"""
+Raw payment token object received from Apple Pay. Send the Apple Pay response payload as-is.
+"""
 
 
 class ProcessCheckoutBody(pydantic.BaseModel):
@@ -93,6 +103,11 @@ class ProcessCheckoutBody(pydantic.BaseModel):
 	Describes the payment method used to attempt processing
 	"""
 
+    apple_pay: typing.Optional[ProcessCheckoutBodyApplePay] = None
+    """
+	Raw payment token object received from Apple Pay. Send the Apple Pay response payload as-is.
+	"""
+
     card: typing.Optional[Card] = None
     """
 	__Required when payment type is `card`.__ Details of the payment card.
@@ -101,6 +116,11 @@ class ProcessCheckoutBody(pydantic.BaseModel):
     customer_id: typing.Optional[str] = None
     """
 	__Required when `token` is provided.__ Unique ID of the customer.
+	"""
+
+    google_pay: typing.Optional[ProcessCheckoutBodyGooglePay] = None
+    """
+	Raw `PaymentData` object received from Google Pay. Send the Google Pay response payload as-is.
 	"""
 
     installments: typing.Optional[int] = None

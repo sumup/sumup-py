@@ -338,6 +338,14 @@ func (b *Builder) createObject(schema *base.Schema, name string) (Writable, []Wr
 		}
 	}
 
+	// Treat an object without declared properties or additionalProperties as an
+	// open-ended payload. Some APIs use this to signal "send the provider payload
+	// as-is", and generating an empty BaseModel would otherwise reject all keys.
+	if !hasProperties && !hasAdditionalProperties {
+		hasAdditionalProperties = true
+		additionalPropertyType = "object"
+	}
+
 	if !hasProperties && hasAdditionalProperties {
 		return &TypeAlias{
 			Comment: schemaDoc(name, schema),

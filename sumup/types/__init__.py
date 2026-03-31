@@ -562,7 +562,7 @@ PhoneNumber = str
 """
 A publicly available phone number in [E.164](https://en.wikipedia.org/wiki/E.164) format.
 
-Max length: 64
+Max length: 16
 """
 
 Version = str
@@ -655,7 +655,7 @@ class BasePerson(pydantic.BaseModel):
     phone_number: typing.Optional[PhoneNumber] = None
     """
 	A publicly available phone number in [E.164](https://en.wikipedia.org/wiki/E.164) format.
-	Max length: 64
+	Max length: 16
 	"""
 
     relationships: typing.Optional[list[str]] = None
@@ -796,27 +796,27 @@ class BusinessProfile(pydantic.BaseModel):
     email: typing.Optional[str] = None
     """
 	A publicly available email address.
-	Max length: 256
+	Max length: 255
 	"""
 
     name: typing.Optional[str] = None
     """
 	The customer-facing business name.
 	Min length: 1
-	Max length: 512
+	Max length: 150
 	"""
 
     phone_number: typing.Optional[PhoneNumber] = None
     """
 	A publicly available phone number in [E.164](https://en.wikipedia.org/wiki/E.164) format.
-	Max length: 64
+	Max length: 16
 	"""
 
     website: typing.Optional[str] = None
     """
 	The business's publicly available website.
 	Format: uri
-	Max length: 512
+	Max length: 255
 	"""
 
 
@@ -1677,13 +1677,13 @@ class Company(pydantic.BaseModel):
     """
 	The company's legal name.
 	Min length: 1
-	Max length: 512
+	Max length: 150
 	"""
 
     phone_number: typing.Optional[PhoneNumber] = None
     """
 	A publicly available phone number in [E.164](https://en.wikipedia.org/wiki/E.164) format.
-	Max length: 64
+	Max length: 16
 	"""
 
     trading_address: typing.Optional[Address] = None
@@ -2448,7 +2448,7 @@ class Person(pydantic.BaseModel):
     phone_number: typing.Optional[PhoneNumber] = None
     """
 	A publicly available phone number in [E.164](https://en.wikipedia.org/wiki/E.164) format.
-	Max length: 64
+	Max length: 16
 	"""
 
     relationships: typing.Optional[list[str]] = None
@@ -3355,8 +3355,18 @@ class Problem(pydantic.BaseModel):
 
 
 ProcessCheckoutPaymentType = typing.Union[
-    typing.Literal["bancontact", "blik", "boleto", "card", "ideal"], str
+    typing.Literal["apple_pay", "bancontact", "blik", "boleto", "card", "google_pay", "ideal"], str
 ]
+
+ProcessCheckoutGooglePay = dict[str, object]
+"""
+Raw `PaymentData` object received from Google Pay. Send the Google Pay response payload as-is.
+"""
+
+ProcessCheckoutApplePay = dict[str, object]
+"""
+Raw payment token object received from Apple Pay. Send the Apple Pay response payload as-is.
+"""
 
 
 class ProcessCheckout(pydantic.BaseModel):
@@ -3369,6 +3379,11 @@ class ProcessCheckout(pydantic.BaseModel):
 	Describes the payment method used to attempt processing
 	"""
 
+    apple_pay: typing.Optional[ProcessCheckoutApplePay] = None
+    """
+	Raw payment token object received from Apple Pay. Send the Apple Pay response payload as-is.
+	"""
+
     card: typing.Optional[Card] = None
     """
 	__Required when payment type is `card`.__ Details of the payment card.
@@ -3377,6 +3392,11 @@ class ProcessCheckout(pydantic.BaseModel):
     customer_id: typing.Optional[str] = None
     """
 	__Required when `token` is provided.__ Unique ID of the customer.
+	"""
+
+    google_pay: typing.Optional[ProcessCheckoutGooglePay] = None
+    """
+	Raw `PaymentData` object received from Google Pay. Send the Google Pay response payload as-is.
 	"""
 
     installments: typing.Optional[int] = None
@@ -3967,10 +3987,10 @@ class ReceiptTransaction(pydantic.BaseModel):
 	"""
 
 
-class ReceiptEmvData(pydantic.BaseModel):
-    """
-    EMV-specific metadata returned for card-present payments.
-    """
+ReceiptEmvData = dict[str, object]
+"""
+EMV-specific metadata returned for card-present payments.
+"""
 
 
 class ReceiptAcquirerData(pydantic.BaseModel):
