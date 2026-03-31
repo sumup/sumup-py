@@ -82,7 +82,6 @@ ProcessCheckoutBodyPaymentType = typing.Union[
     typing.Literal["apple_pay", "bancontact", "blik", "boleto", "card", "google_pay", "ideal"], str
 ]
 
-
 ProcessCheckoutBodyGooglePay = dict[str, object]
 """
 Raw `PaymentData` object received from Google Pay. Send the Google Pay response payload as-is.

@@ -3358,7 +3358,6 @@ ProcessCheckoutPaymentType = typing.Union[
     typing.Literal["apple_pay", "bancontact", "blik", "boleto", "card", "google_pay", "ideal"], str
 ]
 
-
 ProcessCheckoutGooglePay = dict[str, object]
 """
 Raw `PaymentData` object received from Google Pay. Send the Google Pay response payload as-is.
@@ -3988,10 +3987,10 @@ class ReceiptTransaction(pydantic.BaseModel):
 	"""
 
 
-class ReceiptEmvData(pydantic.BaseModel):
-    """
-    EMV-specific metadata returned for card-present payments.
-    """
+ReceiptEmvData = dict[str, object]
+"""
+EMV-specific metadata returned for card-present payments.
+"""
 
 
 class ReceiptAcquirerData(pydantic.BaseModel):
