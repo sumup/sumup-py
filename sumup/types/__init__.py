@@ -3359,16 +3359,15 @@ ProcessCheckoutPaymentType = typing.Union[
 ]
 
 
-class ProcessCheckoutGooglePay(pydantic.BaseModel):
-    """
-    Raw `PaymentData` object received from Google Pay. Send the Google Pay response payload as-is.
-    """
+ProcessCheckoutGooglePay = dict[str, object]
+"""
+Raw `PaymentData` object received from Google Pay. Send the Google Pay response payload as-is.
+"""
 
-
-class ProcessCheckoutApplePay(pydantic.BaseModel):
-    """
-    Raw payment token object received from Apple Pay. Send the Apple Pay response payload as-is.
-    """
+ProcessCheckoutApplePay = dict[str, object]
+"""
+Raw payment token object received from Apple Pay. Send the Apple Pay response payload as-is.
+"""
 
 
 class ProcessCheckout(pydantic.BaseModel):
