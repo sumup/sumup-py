@@ -9,6 +9,10 @@ import typing
 import pydantic
 import typing_extensions
 
+ListPayoutsV1ParamsFormat = typing.Union[typing.Literal["csv", "json"], str]
+
+ListPayoutsV1ParamsOrder = typing.Union[typing.Literal["asc", "desc"], str]
+
 
 class ListPayoutsV1Params(pydantic.BaseModel):
     """
@@ -19,11 +23,16 @@ class ListPayoutsV1Params(pydantic.BaseModel):
 
     start_date: datetime.date
 
-    format: typing.Optional[str] = None
+    format: typing.Optional[ListPayoutsV1ParamsFormat] = None
 
     limit: typing.Optional[int] = None
 
-    order: typing.Optional[str] = None
+    order: typing.Optional[ListPayoutsV1ParamsOrder] = None
+
+
+ListPayoutsParamsFormat = typing.Union[typing.Literal["csv", "json"], str]
+
+ListPayoutsParamsOrder = typing.Union[typing.Literal["asc", "desc"], str]
 
 
 class ListPayoutsParams(pydantic.BaseModel):
@@ -35,11 +44,11 @@ class ListPayoutsParams(pydantic.BaseModel):
 
     start_date: datetime.date
 
-    format: typing.Optional[str] = None
+    format: typing.Optional[ListPayoutsParamsFormat] = None
 
     limit: typing.Optional[int] = None
 
-    order: typing.Optional[str] = None
+    order: typing.Optional[ListPayoutsParamsOrder] = None
 
 
 class PayoutsResource(Resource):

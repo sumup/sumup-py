@@ -2,11 +2,7 @@
 from __future__ import annotations
 from .._service import Resource, AsyncResource, HeaderTypes
 from .._exceptions import APIError
-from ..types import (
-    Customer,
-    PaymentInstrumentResponse,
-    PersonalDetails,
-)
+from ..types import Customer, PaymentInstrumentResponse, PersonalDetails
 import httpx
 import typing
 import pydantic

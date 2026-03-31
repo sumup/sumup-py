@@ -55,6 +55,17 @@ class GetTransactionParams(pydantic.BaseModel):
     transaction_code: typing.Optional[str] = None
 
 
+ListTransactionsV21ParamsOrder = typing.Union[typing.Literal["ascending", "descending"], str]
+
+ListTransactionsV21ParamsStatuse = typing.Union[
+    typing.Literal["CANCELLED", "CHARGE_BACK", "FAILED", "REFUNDED", "SUCCESSFUL"], str
+]
+
+ListTransactionsV21ParamsType = typing.Union[
+    typing.Literal["CHARGE_BACK", "PAYMENT", "REFUND"], str
+]
+
+
 class ListTransactionsV21Params(pydantic.BaseModel):
     """
     ListTransactionsV21Params: query parameters for ListTransactionsV2.1
@@ -78,11 +89,11 @@ class ListTransactionsV21Params(pydantic.BaseModel):
 
     oldest_time: typing.Optional[datetime.datetime] = None
 
-    order: typing.Optional[str] = None
+    order: typing.Optional[ListTransactionsV21ParamsOrder] = None
 
     payment_types: typing.Optional[list[PaymentType]] = None
 
-    statuses: typing.Optional[list[str]] = pydantic.Field(
+    statuses: typing.Optional[list[ListTransactionsV21ParamsStatuse]] = pydantic.Field(
         default=None,
         serialization_alias="statuses[]",
         validation_alias=pydantic.AliasChoices("statuses[]", "statuses"),
@@ -90,9 +101,18 @@ class ListTransactionsV21Params(pydantic.BaseModel):
 
     transaction_code: typing.Optional[str] = None
 
-    types: typing.Optional[list[str]] = None
+    types: typing.Optional[list[ListTransactionsV21ParamsType]] = None
 
     users: typing.Optional[list[str]] = None
+
+
+ListTransactionsParamsOrder = typing.Union[typing.Literal["ascending", "descending"], str]
+
+ListTransactionsParamsStatuse = typing.Union[
+    typing.Literal["CANCELLED", "CHARGE_BACK", "FAILED", "REFUNDED", "SUCCESSFUL"], str
+]
+
+ListTransactionsParamsType = typing.Union[typing.Literal["CHARGE_BACK", "PAYMENT", "REFUND"], str]
 
 
 class ListTransactionsParams(pydantic.BaseModel):
@@ -112,11 +132,11 @@ class ListTransactionsParams(pydantic.BaseModel):
 
     oldest_time: typing.Optional[datetime.datetime] = None
 
-    order: typing.Optional[str] = None
+    order: typing.Optional[ListTransactionsParamsOrder] = None
 
     payment_types: typing.Optional[list[PaymentType]] = None
 
-    statuses: typing.Optional[list[str]] = pydantic.Field(
+    statuses: typing.Optional[list[ListTransactionsParamsStatuse]] = pydantic.Field(
         default=None,
         serialization_alias="statuses[]",
         validation_alias=pydantic.AliasChoices("statuses[]", "statuses"),
@@ -124,7 +144,7 @@ class ListTransactionsParams(pydantic.BaseModel):
 
     transaction_code: typing.Optional[str] = None
 
-    types: typing.Optional[list[str]] = None
+    types: typing.Optional[list[ListTransactionsParamsType]] = None
 
     users: typing.Optional[list[str]] = None
 
