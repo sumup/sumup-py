@@ -1,5 +1,29 @@
 # Changelog
 
+## [0.1.2](https://github.com/sumup/sumup-py/compare/v0.1.1...v0.1.2) (2026-03-31)
+
+
+### Chores
+
+* align release automation config ([#230](https://github.com/sumup/sumup-py/issues/230)) ([6478524](https://github.com/sumup/sumup-py/commit/6478524bb10097660c4261d52434440b3544f742))
+* **deps-dev:** bump ruff from 0.15.5 to 0.15.6 ([#233](https://github.com/sumup/sumup-py/issues/233)) ([3832e99](https://github.com/sumup/sumup-py/commit/3832e9902b1c3afa95d60a8988159f876f2765ed))
+* **deps-dev:** bump ruff from 0.15.6 to 0.15.7 ([#242](https://github.com/sumup/sumup-py/issues/242)) ([be483e6](https://github.com/sumup/sumup-py/commit/be483e697d0b2dabc5db5c0982e09913ba514ae1))
+* **deps-dev:** bump ty from 0.0.21 to 0.0.23 ([#232](https://github.com/sumup/sumup-py/issues/232)) ([ebed296](https://github.com/sumup/sumup-py/commit/ebed296a244de2483520297258c58961179e2f42))
+* **deps-dev:** bump ty from 0.0.23 to 0.0.25 ([#243](https://github.com/sumup/sumup-py/issues/243)) ([2ef633f](https://github.com/sumup/sumup-py/commit/2ef633f17925c0f49a64d8f562d6df867759d30a))
+* **deps:** bump actions/create-github-app-token from 2.2.1 to 3.0.0 ([#234](https://github.com/sumup/sumup-py/issues/234)) ([c3f8650](https://github.com/sumup/sumup-py/commit/c3f8650869f7c40ce031c81c01d998f2a119ca74))
+* **deps:** bump astral-sh/setup-uv from 7.4.0 to 7.5.0 ([#231](https://github.com/sumup/sumup-py/issues/231)) ([5a87428](https://github.com/sumup/sumup-py/commit/5a87428b6f8cd34e0ae007ba4c04bf69d1fe094d))
+* **deps:** bump astral-sh/setup-uv from 7.5.0 to 7.6.0 ([#235](https://github.com/sumup/sumup-py/issues/235)) ([3907c42](https://github.com/sumup/sumup-py/commit/3907c424f5dc1dca86bd6c28c4484f998b0103b5))
+* **deps:** bump github.com/buger/jsonparser from 1.1.1 to 1.1.2 in /codegen in the go_modules group across 1 directory ([#237](https://github.com/sumup/sumup-py/issues/237)) ([278598c](https://github.com/sumup/sumup-py/commit/278598c3e6b8b5b4dc906bfd92e388a41ccb3f18))
+* **deps:** bump github.com/pb33f/libopenapi from 0.34.2 to 0.34.3 in /codegen ([#236](https://github.com/sumup/sumup-py/issues/236)) ([afccf4b](https://github.com/sumup/sumup-py/commit/afccf4b4f622c56f3396d52558963e569a05ce68))
+* synced file(s) with sumup/apis ([#229](https://github.com/sumup/sumup-py/issues/229)) ([f7cf00a](https://github.com/sumup/sumup-py/commit/f7cf00a681a4db6540fbe9e6dc809b98e9c42e9f))
+* synced file(s) with sumup/apis ([#238](https://github.com/sumup/sumup-py/issues/238)) ([2fcd0cf](https://github.com/sumup/sumup-py/commit/2fcd0cf89e6fbd5017c2575852130e4049a3e79a))
+* synced file(s) with sumup/apis ([#239](https://github.com/sumup/sumup-py/issues/239)) ([22ad46a](https://github.com/sumup/sumup-py/commit/22ad46ae5243cf76636273c87ed6150fa7ebdb0a))
+* synced file(s) with sumup/apis ([#240](https://github.com/sumup/sumup-py/issues/240)) ([a686fbe](https://github.com/sumup/sumup-py/commit/a686fbe1fe3ca5b2b8168f643289e1557970ab2e))
+* synced file(s) with sumup/apis ([#241](https://github.com/sumup/sumup-py/issues/241)) ([5f49728](https://github.com/sumup/sumup-py/commit/5f49728f2be3ce1e4cfb82e5cc588492d9d85d7c))
+* synced file(s) with sumup/apis ([#245](https://github.com/sumup/sumup-py/issues/245)) ([fd9551e](https://github.com/sumup/sumup-py/commit/fd9551eddc1442c21d3fe33b26089cf358ca6e01))
+* synced file(s) with sumup/apis ([#246](https://github.com/sumup/sumup-py/issues/246)) ([45933f1](https://github.com/sumup/sumup-py/commit/45933f1acee1e2fbcd650e777b3d86d0f4dc3c45))
+* synced file(s) with sumup/apis ([#247](https://github.com/sumup/sumup-py/issues/247)) ([c98a544](https://github.com/sumup/sumup-py/commit/c98a54449e8e33e68566c98f16c1827c2d480f6e))
+
 ## [0.1.1](https://github.com/sumup/sumup-py/compare/v0.1.0...v0.1.1) (2026-03-13)
 
 
