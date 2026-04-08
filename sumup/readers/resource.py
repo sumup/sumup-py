@@ -59,6 +59,28 @@ class UpdateReaderBody(pydantic.BaseModel):
 	"""
 
 
+class CreateReaderCheckoutBodyAade(pydantic.BaseModel):
+    """
+            Optional object containing data for transactions from ERP integrators in Greece that comply with the AADE1155 protocol.
+    When such regulatory/business requirements apply, this object must be provided and contains the data needed tovalidate the transaction with the AADE signature provider.
+    """
+
+    provider_id: str
+    """
+	The identifier of the AADE signature provider.
+	"""
+
+    signature: str
+    """
+	The base64 encoded signature of the transaction data.
+	"""
+
+    signature_data: str
+    """
+	The string containing the signed transaction data.
+	"""
+
+
 CreateReaderCheckoutBodyAffiliateTags = dict[str, object]
 """
 Additional metadata for the transaction.
@@ -141,6 +163,12 @@ class CreateReaderCheckoutBody(pydantic.BaseModel):
 	The amount is represented as an integer value altogether with the currency and the minor unit.
 	
 	For example, EUR 1.00 is represented as value 100 with minor unit of 2.
+	"""
+
+    aade: typing.Optional[CreateReaderCheckoutBodyAade] = None
+    """
+	Optional object containing data for transactions from ERP integrators in Greece that comply with the AADE1155 protocol.
+	When such regulatory/business requirements apply, this object must be provided and contains the data needed tovalidate the transaction with the AADE signature provider.
 	"""
 
     affiliate: typing.Optional[CreateReaderCheckoutBodyAffiliate] = None
