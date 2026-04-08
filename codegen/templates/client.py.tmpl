@@ -43,6 +43,7 @@ class Sumup(Resource):
 {{- range .Resources }}
     @property
     def {{ .Package }}(self) -> {{ .Name }}Resource:
+        """{{ .ShortDocstring }}"""
         from .{{ .Package }}.resource import {{ .Name }}Resource
 
         return {{ .Name }}Resource(self._client)
@@ -71,6 +72,7 @@ class AsyncSumup(AsyncResource):
 {{- range .Resources }}
     @property
     def {{ .Package }}(self) -> Async{{ .Name }}Resource:
+        """{{ .ShortDocstring }}"""
         from .{{ .Package }}.resource import Async{{ .Name }}Resource
 
         return Async{{ .Name }}Resource(self._client)

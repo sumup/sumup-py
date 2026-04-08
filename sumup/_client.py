@@ -52,66 +52,77 @@ class Sumup(Resource):
 
     @property
     def checkouts(self) -> CheckoutsResource:
+        """Access the Checkouts API endpoints."""
         from .checkouts.resource import CheckoutsResource
 
         return CheckoutsResource(self._client)
 
     @property
     def customers(self) -> CustomersResource:
+        """Access the Customers API endpoints."""
         from .customers.resource import CustomersResource
 
         return CustomersResource(self._client)
 
     @property
     def members(self) -> MembersResource:
+        """Access the Members API endpoints."""
         from .members.resource import MembersResource
 
         return MembersResource(self._client)
 
     @property
     def memberships(self) -> MembershipsResource:
+        """Access the Memberships API endpoints."""
         from .memberships.resource import MembershipsResource
 
         return MembershipsResource(self._client)
 
     @property
     def merchants(self) -> MerchantsResource:
+        """Access the Merchants API endpoints."""
         from .merchants.resource import MerchantsResource
 
         return MerchantsResource(self._client)
 
     @property
     def payouts(self) -> PayoutsResource:
+        """Access the Payouts API endpoints."""
         from .payouts.resource import PayoutsResource
 
         return PayoutsResource(self._client)
 
     @property
     def readers(self) -> ReadersResource:
+        """Access the Readers API endpoints."""
         from .readers.resource import ReadersResource
 
         return ReadersResource(self._client)
 
     @property
     def receipts(self) -> ReceiptsResource:
+        """Access the Receipts API endpoints."""
         from .receipts.resource import ReceiptsResource
 
         return ReceiptsResource(self._client)
 
     @property
     def roles(self) -> RolesResource:
+        """Access the Roles API endpoints."""
         from .roles.resource import RolesResource
 
         return RolesResource(self._client)
 
     @property
     def subaccounts(self) -> SubaccountsResource:
+        """Access the Subaccounts API endpoints."""
         from .subaccounts.resource import SubaccountsResource
 
         return SubaccountsResource(self._client)
 
     @property
     def transactions(self) -> TransactionsResource:
+        """Access the Transactions API endpoints."""
         from .transactions.resource import TransactionsResource
 
         return TransactionsResource(self._client)
@@ -140,66 +151,77 @@ class AsyncSumup(AsyncResource):
 
     @property
     def checkouts(self) -> AsyncCheckoutsResource:
+        """Access the Checkouts API endpoints."""
         from .checkouts.resource import AsyncCheckoutsResource
 
         return AsyncCheckoutsResource(self._client)
 
     @property
     def customers(self) -> AsyncCustomersResource:
+        """Access the Customers API endpoints."""
         from .customers.resource import AsyncCustomersResource
 
         return AsyncCustomersResource(self._client)
 
     @property
     def members(self) -> AsyncMembersResource:
+        """Access the Members API endpoints."""
         from .members.resource import AsyncMembersResource
 
         return AsyncMembersResource(self._client)
 
     @property
     def memberships(self) -> AsyncMembershipsResource:
+        """Access the Memberships API endpoints."""
         from .memberships.resource import AsyncMembershipsResource
 
         return AsyncMembershipsResource(self._client)
 
     @property
     def merchants(self) -> AsyncMerchantsResource:
+        """Access the Merchants API endpoints."""
         from .merchants.resource import AsyncMerchantsResource
 
         return AsyncMerchantsResource(self._client)
 
     @property
     def payouts(self) -> AsyncPayoutsResource:
+        """Access the Payouts API endpoints."""
         from .payouts.resource import AsyncPayoutsResource
 
         return AsyncPayoutsResource(self._client)
 
     @property
     def readers(self) -> AsyncReadersResource:
+        """Access the Readers API endpoints."""
         from .readers.resource import AsyncReadersResource
 
         return AsyncReadersResource(self._client)
 
     @property
     def receipts(self) -> AsyncReceiptsResource:
+        """Access the Receipts API endpoints."""
         from .receipts.resource import AsyncReceiptsResource
 
         return AsyncReceiptsResource(self._client)
 
     @property
     def roles(self) -> AsyncRolesResource:
+        """Access the Roles API endpoints."""
         from .roles.resource import AsyncRolesResource
 
         return AsyncRolesResource(self._client)
 
     @property
     def subaccounts(self) -> AsyncSubaccountsResource:
+        """Access the Subaccounts API endpoints."""
         from .subaccounts.resource import AsyncSubaccountsResource
 
         return AsyncSubaccountsResource(self._client)
 
     @property
     def transactions(self) -> AsyncTransactionsResource:
+        """Access the Transactions API endpoints."""
         from .transactions.resource import AsyncTransactionsResource
 
         return AsyncTransactionsResource(self._client)
