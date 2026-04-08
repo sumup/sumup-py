@@ -100,12 +100,13 @@ func (b *Builder) generateResourceIndex(tagName string, resourceTypes []string) 
 }
 
 type resourceTemplateData struct {
-	PackageName string
-	TypeNames   []string
-	Params      []Writable
-	Service     string
-	Methods     []*Method
-	UsesSecret  bool
+	PackageName    string
+	TypeNames      []string
+	Params         []Writable
+	Service        string
+	Methods        []*Method
+	UsesSecret     bool
+	TagDescription string
 }
 
 func (b *Builder) generateResourceFile(tagName string, paths *v3.Paths) ([]string, error) {
@@ -139,12 +140,13 @@ func (b *Builder) generateResourceFile(tagName string, paths *v3.Paths) ([]strin
 
 	serviceBuf := bytes.NewBuffer(nil)
 	if err := b.templates.ExecuteTemplate(serviceBuf, "resource.py.tmpl", resourceTemplateData{
-		PackageName: strcase.ToSnake(tag.Name),
-		TypeNames:   typeNames,
-		Params:      innerTypes,
-		Service:     strcase.ToCamel(tag.Name),
-		Methods:     methods,
-		UsesSecret:  usesSecret,
+		PackageName:    strcase.ToSnake(tag.Name),
+		TypeNames:      typeNames,
+		Params:         innerTypes,
+		Service:        strcase.ToCamel(tag.Name),
+		Methods:        methods,
+		UsesSecret:     usesSecret,
+		TagDescription: strings.TrimSpace(tag.Description),
 	}); err != nil {
 		return nil, err
 	}
@@ -232,8 +234,9 @@ func (b *Builder) writeClientFile(fname string, tags []string) error {
 	}()
 
 	type resource struct {
-		Name    string
-		Package string
+		Name           string
+		Package        string
+		ShortDocstring string
 	}
 
 	resources := make([]resource, 0, len(tags))
@@ -242,8 +245,9 @@ func (b *Builder) writeClientFile(fname string, tags []string) error {
 			continue
 		}
 		resources = append(resources, resource{
-			Name:    strcase.ToCamel(tags[i]),
-			Package: strcase.ToSnake(tags[i]),
+			Name:           strcase.ToCamel(tags[i]),
+			Package:        strcase.ToSnake(tags[i]),
+			ShortDocstring: fmt.Sprintf("Access the %s API endpoints.", strcase.ToCamel(tags[i])),
 		})
 	}
 
