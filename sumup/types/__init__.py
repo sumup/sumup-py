@@ -982,25 +982,27 @@ EntryMode = typing.Union[
     str,
 ]
 
+MandateResponseStatus = typing.Union[typing.Literal["active", "inactive"], str]
+
 
 class MandateResponse(pydantic.BaseModel):
     """
-    Created mandate
+    Details of the mandate linked to the saved payment instrument.
     """
 
     merchant_code: typing.Optional[str] = None
     """
-	Merchant code which has the mandate
+	Merchant account for which the mandate is valid.
 	"""
 
-    status: typing.Optional[str] = None
+    status: typing.Optional[MandateResponseStatus] = None
     """
-	Mandate status
+	Current lifecycle status of the mandate.
 	"""
 
     type: typing.Optional[str] = None
     """
-	Indicates the mandate type
+	Type of mandate stored for the checkout or payment instrument.
 	"""
 
 
@@ -1197,17 +1199,17 @@ class CheckoutTransaction(pydantic.BaseModel):
 
 class Checkout(pydantic.BaseModel):
     """
-    Details of the payment checkout.
+    Core checkout resource returned by the Checkouts API. A checkout is created before payment processing andthen updated as payment attempts, redirects, and resulting transactions are attached to it.
     """
 
     amount: typing.Optional[float] = None
     """
-	Amount of the payment.
+	Amount to be charged to the payer, expressed in major units.
 	"""
 
     checkout_reference: typing.Optional[str] = None
     """
-	Unique ID of the payment checkout specified by the client application when creating the checkout resource.
+	Merchant-defined reference for the checkout. Use it to correlate the SumUp checkout with your own order, cart,subscription, or payment attempt in your systems.
 	Max length: 90
 	"""
 
@@ -1218,7 +1220,7 @@ class Checkout(pydantic.BaseModel):
 
     customer_id: typing.Optional[str] = None
     """
-	Unique identification of a customer. If specified, the checkout session and payment instrument are associated withthe referenced customer.
+	Merchant-scoped identifier of the customer associated with the checkout. Use it when storing payment instrumentsor reusing saved customer context for recurring and returning-payer flows.
 	"""
 
     date: typing.Optional[datetime.datetime] = None
@@ -1228,45 +1230,45 @@ class Checkout(pydantic.BaseModel):
 
     description: typing.Optional[str] = None
     """
-	Short description of the checkout visible in the SumUp dashboard. The description can contribute to reporting, allowingeasier identification of a checkout.
+	Short merchant-defined description shown in SumUp tools and reporting. Use it to make the checkout easier torecognize in dashboards, support workflows, and reconciliation.
 	"""
 
     id: typing.Optional[str] = None
     """
-	Unique ID of the checkout resource.
+	Unique SumUp identifier of the checkout resource.
 	Read only
 	"""
 
     mandate: typing.Optional[MandateResponse] = None
     """
-	Created mandate
+	Details of the mandate linked to the saved payment instrument.
 	"""
 
     merchant_code: typing.Optional[str] = None
     """
-	Unique identifying code of the merchant profile.
+	Merchant account that receives the payment.
 	"""
 
     return_url: typing.Optional[str] = None
     """
-	URL to which the SumUp platform sends the processing status of the payment checkout.
-	Format: uri
+	Optional backend callback URL used by SumUp to notify your platform about processing updates for the checkout.
+	Format:uri
 	"""
 
     status: typing.Optional[CheckoutStatus] = None
     """
-	Current status of the checkout.
+	Current high-level state of the checkout. `PENDING` means the checkout exists but is not yet completed, `PAID`means a payment succeeded, `FAILED` means the latest processing attempt failed, and `EXPIRED` means the checkoutcan no longer be processed.
 	"""
 
     transactions: typing.Optional[list[CheckoutTransaction]] = None
     """
-	List of transactions related to the payment.
+	Payment attempts and resulting transaction records linked to this checkout. Use the Transactions endpoints whenyou need the authoritative payment result and event history.
 	Unique items only
 	"""
 
     valid_until: typing.Optional[datetime.datetime] = None
     """
-	Date and time of the checkout expiration before which the client application needs to send a processing request.If no value is present, the checkout does not have an expiration time.
+	Optional expiration timestamp. The checkout must be processed before this moment, otherwise it becomes unusable.If omitted, the checkout does not have an explicit expiry time.
 	"""
 
 
@@ -1275,7 +1277,7 @@ CheckoutAcceptedNextStepMechanism = typing.Union[typing.Literal["browser", "ifra
 
 class CheckoutAcceptedNextStepPayload(pydantic.BaseModel):
     """
-    Contains parameters essential for form redirection. Number of object keys and their content can vary.
+    Parameters required to complete the next step. The exact keys depend on the payment provider and flow type.
     """
 
     MD: typing.Optional[object] = None
@@ -1287,43 +1289,43 @@ class CheckoutAcceptedNextStepPayload(pydantic.BaseModel):
 
 class CheckoutAcceptedNextStep(pydantic.BaseModel):
     """
-    Required action processing 3D Secure payments.
+    Instructions for the next action the payer or client must take.
     """
 
     mechanism: typing.Optional[list[CheckoutAcceptedNextStepMechanism]] = None
     """
-	Indicates allowed mechanisms for redirecting an end user. If both values are provided to ensure a redirect takesplace in either.
+	Allowed presentation mechanisms for the next step. `iframe` means the flow can be embedded, while `browser` meansit can be completed through a full-page redirect.
 	"""
 
     method: typing.Optional[str] = None
     """
-	Method used to complete the redirect.
+	HTTP method to use when following the next step.
 	"""
 
     payload: typing.Optional[CheckoutAcceptedNextStepPayload] = None
     """
-	Contains parameters essential for form redirection. Number of object keys and their content can vary.
+	Parameters required to complete the next step. The exact keys depend on the payment provider and flow type.
 	"""
 
     redirect_url: typing.Optional[str] = None
     """
-	Refers to a url where the end user is redirected once the payment processing completes.
+	Merchant URL where the payer returns after the external flow finishes.
 	"""
 
     url: typing.Optional[str] = None
     """
-	Where the end user is redirected.
+	URL to open or submit in order to continue processing.
 	"""
 
 
 class CheckoutAccepted(pydantic.BaseModel):
     """
-    3DS Response
+    Response returned when checkout processing requires an additional payer action, such as a 3DS challenge ora redirect to an external payment method page.
     """
 
     next_step: typing.Optional[CheckoutAcceptedNextStep] = None
     """
-	Required action processing 3D Secure payments.
+	Instructions for the next action the payer or client must take.
 	"""
 
 
@@ -1334,17 +1336,17 @@ CheckoutCreateRequestPurpose = typing.Union[
 
 class CheckoutCreateRequest(pydantic.BaseModel):
     """
-    Details of the payment checkout.
+    Request body for creating a checkout before processing payment. Define the payment amount, currency, merchant,and optional customer or redirect behavior here.
     """
 
     amount: float
     """
-	Amount of the payment.
+	Amount to be charged to the payer, expressed in major units.
 	"""
 
     checkout_reference: str
     """
-	Unique ID of the payment checkout specified by the client application when creating the checkout resource.
+	Merchant-defined reference for the new checkout. It should be unique enough for you to identify the payment attemptin your own systems.
 	Max length: 90
 	"""
 
@@ -1355,39 +1357,39 @@ class CheckoutCreateRequest(pydantic.BaseModel):
 
     merchant_code: str
     """
-	Unique identifying code of the merchant profile.
+	Merchant account that should receive the payment.
 	"""
 
     customer_id: typing.Optional[str] = None
     """
-	Unique identification of a customer. If specified, the checkout session and payment instrument are associated withthe referenced customer.
+	Merchant-scoped customer identifier. Required when setting up recurring payments and useful when the checkoutshould be linked to a returning payer.
 	"""
 
     description: typing.Optional[str] = None
     """
-	Short description of the checkout visible in the SumUp dashboard. The description can contribute to reporting, allowingeasier identification of a checkout.
+	Short merchant-defined description shown in SumUp tools and reporting for easier identification of the checkout.
 	"""
 
     purpose: typing.Optional[CheckoutCreateRequestPurpose] = None
     """
-	Purpose of the checkout.
+	Business purpose of the checkout. Use `CHECKOUT` for a standard payment and `SETUP_RECURRING_PAYMENT` whencollecting consent and payment details for future recurring charges.
 	Default: "CHECKOUT"
 	"""
 
     redirect_url: typing.Optional[str] = None
     """
-	__Required__ for [APMs](https://developer.sumup.com/online-payments/apm/introduction) and __recommended__ forcard payments. Refers to a url where the end user is redirected once the payment processing completes. Ifnot specified, the [Payment Widget](https://developer.sumup.com/online-payments/tools/card-widget) renders [3DSchallenge](https://developer.sumup.com/online-payments/features/3ds) within an iframe instead of performing afull-page redirect.
+	URL where the payer should be sent after a redirect-based payment or SCA flow completes. This is required for[APMs](https://developer.sumup.com/online-payments/apm/introduction) and recommended for card checkouts thatmay require [3DS](https://developer.sumup.com/online-payments/features/3ds). If it is omitted, the [Payment Widget](https://developer.sumup.com/online-payments/checkouts)can render the challenge in an iframe instead of using a full-page redirect.
 	"""
 
     return_url: typing.Optional[str] = None
     """
-	URL to which the SumUp platform sends the processing status of the payment checkout.
-	Format: uri
+	Optional backend callback URL used by SumUp to notify your platform about processing updates for the checkout.
+	Format:uri
 	"""
 
     valid_until: typing.Optional[datetime.datetime] = None
     """
-	Date and time of the checkout expiration before which the client application needs to send a processing request.If no value is present, the checkout does not have an expiration time.
+	Optional expiration timestamp. The checkout must be processed before this moment, otherwise it becomes unusable.If omitted, the checkout does not have an explicit expiry time.
 	"""
 
 
@@ -1478,7 +1480,7 @@ class CheckoutSuccessTransaction(pydantic.BaseModel):
 
 class CheckoutSuccessPaymentInstrument(pydantic.BaseModel):
     """
-    Object containing token information for the specified payment instrument
+    Details of the saved payment instrument created or reused during checkout processing.
     """
 
     token: typing.Optional[str] = None
@@ -1489,17 +1491,17 @@ class CheckoutSuccessPaymentInstrument(pydantic.BaseModel):
 
 class CheckoutSuccess(pydantic.BaseModel):
     """
-    Checkout response returned after a successful processing attempt.
+    Checkout resource returned after a synchronous processing attempt. In addition to the base checkout fields, itcan include the resulting transaction identifiers and any newly created payment instrument token.
     """
 
     amount: typing.Optional[float] = None
     """
-	Amount of the payment.
+	Amount to be charged to the payer, expressed in major units.
 	"""
 
     checkout_reference: typing.Optional[str] = None
     """
-	Unique ID of the payment checkout specified by the client application when creating the checkout resource.
+	Merchant-defined reference for the checkout. Use it to correlate the SumUp checkout with your own order, cart,subscription, or payment attempt in your systems.
 	Max length: 90
 	"""
 
@@ -1510,7 +1512,7 @@ class CheckoutSuccess(pydantic.BaseModel):
 
     customer_id: typing.Optional[str] = None
     """
-	Unique identification of a customer. If specified, the checkout session and payment instrument are associated withthe referenced customer.
+	Merchant-scoped identifier of the customer associated with the checkout. Use it when storing payment instrumentsor reusing saved customer context for recurring and returning-payer flows.
 	"""
 
     date: typing.Optional[datetime.datetime] = None
@@ -1520,23 +1522,23 @@ class CheckoutSuccess(pydantic.BaseModel):
 
     description: typing.Optional[str] = None
     """
-	Short description of the checkout visible in the SumUp dashboard. The description can contribute to reporting, allowingeasier identification of a checkout.
+	Short merchant-defined description shown in SumUp tools and reporting. Use it to make the checkout easier torecognize in dashboards, support workflows, and reconciliation.
 	"""
 
     id: typing.Optional[str] = None
     """
-	Unique ID of the checkout resource.
+	Unique SumUp identifier of the checkout resource.
 	Read only
 	"""
 
     mandate: typing.Optional[MandateResponse] = None
     """
-	Created mandate
+	Details of the mandate linked to the saved payment instrument.
 	"""
 
     merchant_code: typing.Optional[str] = None
     """
-	Unique identifying code of the merchant profile.
+	Merchant account that receives the payment.
 	"""
 
     merchant_name: typing.Optional[str] = None
@@ -1546,23 +1548,23 @@ class CheckoutSuccess(pydantic.BaseModel):
 
     payment_instrument: typing.Optional[CheckoutSuccessPaymentInstrument] = None
     """
-	Object containing token information for the specified payment instrument
+	Details of the saved payment instrument created or reused during checkout processing.
 	"""
 
     redirect_url: typing.Optional[str] = None
     """
-	Refers to a url where the end user is redirected once the payment processing completes.
+	URL where the payer is redirected after a redirect-based payment or SCA flow completes.
 	"""
 
     return_url: typing.Optional[str] = None
     """
-	URL to which the SumUp platform sends the processing status of the payment checkout.
-	Format: uri
+	Optional backend callback URL used by SumUp to notify your platform about processing updates for the checkout.
+	Format:uri
 	"""
 
     status: typing.Optional[CheckoutSuccessStatus] = None
     """
-	Current status of the checkout.
+	Current high-level state of the checkout. `PENDING` means the checkout exists but is not yet completed, `PAID`means a payment succeeded, `FAILED` means the latest processing attempt failed, and `EXPIRED` means the checkoutcan no longer be processed.
 	"""
 
     transaction_code: typing.Optional[str] = None
@@ -1579,13 +1581,13 @@ class CheckoutSuccess(pydantic.BaseModel):
 
     transactions: typing.Optional[list[CheckoutSuccessTransaction]] = None
     """
-	List of transactions related to the payment.
+	Payment attempts and resulting transaction records linked to this checkout. Use the Transactions endpoints whenyou need the authoritative payment result and event history.
 	Unique items only
 	"""
 
     valid_until: typing.Optional[datetime.datetime] = None
     """
-	Date and time of the checkout expiration before which the client application needs to send a processing request.If no value is present, the checkout does not have an expiration time.
+	Optional expiration timestamp. The checkout must be processed before this moment, otherwise it becomes unusable.If omitted, the checkout does not have an explicit expiry time.
 	"""
 
 
@@ -2236,7 +2238,7 @@ Unique ID of the transaction.
 
 class Event(pydantic.BaseModel):
     """
-    Transaction event details.
+    High-level transaction event details.
     """
 
     amount: typing.Optional[float] = None
@@ -2273,6 +2275,16 @@ class Event(pydantic.BaseModel):
     status: typing.Optional[EventStatus] = None
     """
 	Status of the transaction event.
+	
+	Not every value is used for every event type.
+	
+	- `PENDING`: The event has been created but is not final yet. Used for events that are still being processed andwhose final outcome is not known yet.
+	- `SCHEDULED`: The event is planned for a future payout cycle but has not been executed yet. This applies topayout events before money is actually sent out.
+	- `RECONCILED`: The underlying payment has been matched with settlement data and is ready to continue through payoutprocessing, but the funds have not been paid out yet. This applies to payout events.
+	- `PAID_OUT`: The payout event has been completed and the funds were included in a merchant payout.
+	- `REFUNDED`: A refund event has been accepted and recorded in the refund flow. This is the status returned forrefund events once the transaction amount is being or has been returned to the payer.
+	- `SUCCESSFUL`: The event completed successfully. Use this as the generic terminal success status for event typesthat do not expose a more specific business outcome such as `PAID_OUT` or `REFUNDED`.
+	- `FAILED`: The event could not be completed. Typical examples are a payout that could not be executed oran event that was rejected during processing.
 	"""
 
     timestamp: typing.Optional[datetime.datetime] = None
@@ -2520,22 +2532,22 @@ MandatePayloadType = typing.Union[typing.Literal["recurrent"], str]
 
 class MandatePayload(pydantic.BaseModel):
     """
-    Mandate is passed when a card is to be tokenized
+    Mandate details used when a checkout should create a reusable card token for future recurring or merchant-initiated payments.
     """
 
     type: MandatePayloadType
     """
-	Indicates the mandate type
+	Type of mandate to create for the saved payment instrument.
 	"""
 
     user_agent: str
     """
-	Operating system and web client used by the end-user
+	Browser or client user agent observed when consent was collected.
 	"""
 
     user_ip: typing.Optional[str] = None
     """
-	IP address of the end user. Supports IPv4 and IPv6
+	IP address of the payer when the mandate was accepted.
 	"""
 
 
@@ -3232,7 +3244,7 @@ class PaymentInstrumentResponse(pydantic.BaseModel):
 
     mandate: typing.Optional[MandateResponse] = None
     """
-	Created mandate
+	Details of the mandate linked to the saved payment instrument.
 	"""
 
     token: typing.Optional[str] = None
@@ -3402,12 +3414,12 @@ Raw payment token object received from Apple Pay. Send the Apple Pay response pa
 
 class ProcessCheckout(pydantic.BaseModel):
     """
-    Details of the payment instrument for processing the checkout.
+    Request body for attempting payment on an existing checkout. The required companion fields depend on theselected `payment_type`, for example card details, saved-card data, or payer information required by aspecific payment method.
     """
 
     payment_type: ProcessCheckoutPaymentType
     """
-	Describes the payment method used to attempt processing
+	Payment method used for this processing attempt. It determines which additional request fields are required.
 	"""
 
     apple_pay: typing.Optional[ProcessCheckoutApplePay] = None
@@ -3422,7 +3434,7 @@ class ProcessCheckout(pydantic.BaseModel):
 
     customer_id: typing.Optional[str] = None
     """
-	__Required when `token` is provided.__ Unique ID of the customer.
+	Customer identifier associated with the saved payment instrument. Required when `token` is provided.
 	"""
 
     google_pay: typing.Optional[ProcessCheckoutGooglePay] = None
@@ -3439,7 +3451,7 @@ class ProcessCheckout(pydantic.BaseModel):
 
     mandate: typing.Optional[MandatePayload] = None
     """
-	Mandate is passed when a card is to be tokenized
+	Mandate details used when a checkout should create a reusable card token for future recurring or merchant-initiated payments.
 	"""
 
     personal_details: typing.Optional[PersonalDetails] = None
@@ -3449,7 +3461,7 @@ class ProcessCheckout(pydantic.BaseModel):
 
     token: typing.Optional[str] = None
     """
-	__Required when using a tokenized card to process a checkout.__ Unique token identifying the saved payment cardfor a customer.
+	Saved-card token to use instead of raw card details when processing with a previously stored payment instrument.
 	"""
 
 
@@ -3723,6 +3735,16 @@ class ReceiptEvent(pydantic.BaseModel):
     status: typing.Optional[EventStatus] = None
     """
 	Status of the transaction event.
+	
+	Not every value is used for every event type.
+	
+	- `PENDING`: The event has been created but is not final yet. Used for events that are still being processed andwhose final outcome is not known yet.
+	- `SCHEDULED`: The event is planned for a future payout cycle but has not been executed yet. This applies topayout events before money is actually sent out.
+	- `RECONCILED`: The underlying payment has been matched with settlement data and is ready to continue through payoutprocessing, but the funds have not been paid out yet. This applies to payout events.
+	- `PAID_OUT`: The payout event has been completed and the funds were included in a merchant payout.
+	- `REFUNDED`: A refund event has been accepted and recorded in the refund flow. This is the status returned forrefund events once the transaction amount is being or has been returned to the payer.
+	- `SUCCESSFUL`: The event completed successfully. Use this as the generic terminal success status for event typesthat do not expose a more specific business outcome such as `PAID_OUT` or `REFUNDED`.
+	- `FAILED`: The event could not be completed. Typical examples are a payout that could not be executed oran event that was rejected during processing.
 	"""
 
     timestamp: typing.Optional[datetime.datetime] = None
@@ -4184,7 +4206,7 @@ class StatusResponse(pydantic.BaseModel):
 
 class TransactionEvent(pydantic.BaseModel):
     """
-    Details of a transaction event.
+    Detailed information about a transaction event.
     """
 
     amount: typing.Optional[float] = None
@@ -4224,6 +4246,16 @@ class TransactionEvent(pydantic.BaseModel):
     status: typing.Optional[EventStatus] = None
     """
 	Status of the transaction event.
+	
+	Not every value is used for every event type.
+	
+	- `PENDING`: The event has been created but is not final yet. Used for events that are still being processed andwhose final outcome is not known yet.
+	- `SCHEDULED`: The event is planned for a future payout cycle but has not been executed yet. This applies topayout events before money is actually sent out.
+	- `RECONCILED`: The underlying payment has been matched with settlement data and is ready to continue through payoutprocessing, but the funds have not been paid out yet. This applies to payout events.
+	- `PAID_OUT`: The payout event has been completed and the funds were included in a merchant payout.
+	- `REFUNDED`: A refund event has been accepted and recorded in the refund flow. This is the status returned forrefund events once the transaction amount is being or has been returned to the payer.
+	- `SUCCESSFUL`: The event completed successfully. Use this as the generic terminal success status for event typesthat do not expose a more specific business outcome such as `PAID_OUT` or `REFUNDED`.
+	- `FAILED`: The event could not be completed. Typical examples are a payout that could not be executed oran event that was rejected during processing.
 	"""
 
     timestamp: typing.Optional[datetime.datetime] = None
@@ -4422,7 +4454,7 @@ class TransactionFull(pydantic.BaseModel):
 
     events: typing.Optional[list[Event]] = None
     """
-	List of events related to the transaction.
+	Compact list of events related to the transaction.
 	"""
 
     fee_amount: typing.Optional[float] = None
@@ -4551,7 +4583,18 @@ class TransactionFull(pydantic.BaseModel):
 
     simple_status: typing.Optional[TransactionFullSimpleStatus] = None
     """
-	Status generated from the processing status and the latest transaction state.
+	High-level status of the transaction from the merchant's perspective.
+	
+	- `PENDING`: The payment has been initiated and is still being processed. A final outcome is not available yet.
+	-`SUCCESSFUL`: The payment was completed successfully.
+	- `PAID_OUT`: The payment was completed successfully and the funds have already been included in a payout tothe merchant.
+	- `FAILED`: The payment did not complete successfully.
+	- `CANCELLED`: The payment was cancelled or reversed and is no longer payable or payable to the merchant.
+	- `CANCEL_FAILED`: An attempt to cancel or reverse the payment was not completed successfully.
+	- `REFUNDED`: The payment was refunded in full or in part.
+	- `REFUND_FAILED`: An attempt to refund the payment was not completed successfully.
+	- `CHARGEBACK`: The payment was subject to a chargeback.
+	- `NON_COLLECTION`: The amount could not be collected from the merchant after a chargeback or related adjustment.
 	"""
 
     status: typing.Optional[TransactionFullStatus] = None
@@ -4581,7 +4624,7 @@ class TransactionFull(pydantic.BaseModel):
 
     transaction_events: typing.Optional[list[TransactionEvent]] = None
     """
-	List of transaction events related to the transaction.
+	Detailed list of events related to the transaction.
 	"""
 
     username: typing.Optional[str] = None
