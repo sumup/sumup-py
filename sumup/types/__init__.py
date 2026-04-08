@@ -1725,6 +1725,28 @@ class CreateReaderCheckoutError(pydantic.BaseModel):
     errors: CreateReaderCheckoutErrorErrors
 
 
+class CreateReaderCheckoutRequestAade(pydantic.BaseModel):
+    """
+            Optional object containing data for transactions from ERP integrators in Greece that comply with the AADE1155 protocol.
+    When such regulatory/business requirements apply, this object must be provided and contains the data needed tovalidate the transaction with the AADE signature provider.
+    """
+
+    provider_id: str
+    """
+	The identifier of the AADE signature provider.
+	"""
+
+    signature: str
+    """
+	The base64 encoded signature of the transaction data.
+	"""
+
+    signature_data: str
+    """
+	The string containing the signed transaction data.
+	"""
+
+
 CreateReaderCheckoutRequestAffiliateTags = dict[str, object]
 """
 Additional metadata for the transaction.
@@ -1807,6 +1829,12 @@ class CreateReaderCheckoutRequest(pydantic.BaseModel):
 	The amount is represented as an integer value altogether with the currency and the minor unit.
 	
 	For example, EUR 1.00 is represented as value 100 with minor unit of 2.
+	"""
+
+    aade: typing.Optional[CreateReaderCheckoutRequestAade] = None
+    """
+	Optional object containing data for transactions from ERP integrators in Greece that comply with the AADE1155 protocol.
+	When such regulatory/business requirements apply, this object must be provided and contains the data needed tovalidate the transaction with the AADE signature provider.
 	"""
 
     affiliate: typing.Optional[CreateReaderCheckoutRequestAffiliate] = None
@@ -2192,7 +2220,10 @@ Format: int64
 """
 
 EventStatus = typing.Union[
-    typing.Literal["FAILED", "PAID_OUT", "PENDING", "REFUNDED", "SCHEDULED", "SUCCESSFUL"], str
+    typing.Literal[
+        "FAILED", "PAID_OUT", "PENDING", "RECONCILED", "REFUNDED", "SCHEDULED", "SUCCESSFUL"
+    ],
+    str,
 ]
 
 EventType = typing.Union[typing.Literal["CHARGE_BACK", "PAYOUT", "PAYOUT_DEDUCTION", "REFUND"], str]

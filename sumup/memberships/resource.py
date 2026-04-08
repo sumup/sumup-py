@@ -2,7 +2,11 @@
 from __future__ import annotations
 from .._service import Resource, AsyncResource, HeaderTypes
 from .._exceptions import APIError
-from ..types import Membership, MembershipStatus, ResourceType
+from ..types import (
+    Membership,
+    MembershipStatus,
+    ResourceType,
+)
 import httpx
 import typing
 import pydantic
