@@ -575,7 +575,7 @@ class BasePerson(pydantic.BaseModel):
     """
             Base schema for a person associated with a merchant. This can be a legal representative, business owner (ultimatebeneficial owner), or an officer. A legal representative is the person who registered the merchant with SumUp.They should always have a `user_id`.
 
-    Person documentation: https://developer.sumup.com/tools/models/merchant#persons
+    Person documentation: https://developer.sumup.com/tools/glossary/merchant#persons
     """
 
     id: str
@@ -1607,7 +1607,7 @@ class ClassicMerchantIdentifiers(pydantic.BaseModel):
 class CompanyIdentifier(pydantic.BaseModel):
     """
             CompanyIdentifier is a schema definition.
-    Company identifier documentation: https://developer.sumup.com/tools/models/merchant#company-identifiers
+    Company identifier documentation: https://developer.sumup.com/tools/glossary/merchant#company-identifiers
     """
 
     ref: str
@@ -1633,7 +1633,7 @@ The unique legal type reference as defined in the country SDK. We do not rely on
 
 Min length: 4
 Max length: 64
-The country SDK documentation for legal types.: https://developer.sumup.com/tools/models/merchant#legal-types
+The country SDK documentation for legal types.: https://developer.sumup.com/tools/glossary/merchant#legal-types
 """
 
 
@@ -1641,7 +1641,7 @@ class Company(pydantic.BaseModel):
     """
             Information about the company or business. This is legal information that is used for verification.
 
-    Company documentation: https://developer.sumup.com/tools/models/merchant#company
+    Company documentation: https://developer.sumup.com/tools/glossary/merchant#company
     """
 
     address: typing.Optional[Address] = None
@@ -1666,7 +1666,7 @@ class Company(pydantic.BaseModel):
 	The unique legal type reference as defined in the country SDK. We do not rely on IDs as used by other services.Consumers of this API are expected to use the country SDK to map to any other IDs, translation keys, ordescriptions.
 	Min length: 4
 	Max length: 64
-	The country SDK documentation for legal types.: https://developer.sumup.com/tools/models/merchant#legal-types
+	The country SDK documentation for legal types.: https://developer.sumup.com/tools/glossary/merchant#legal-types
 	"""
 
     merchant_category_code: typing.Optional[str] = None
@@ -2841,7 +2841,7 @@ class Timestamps(pydantic.BaseModel):
 class Merchant(pydantic.BaseModel):
     """
             Merchant is a schema definition.
-    Merchant documentation: https://developer.sumup.com/tools/models/merchant
+    Merchant documentation: https://developer.sumup.com/tools/glossary/merchant
     """
 
     country: CountryCode
@@ -2926,7 +2926,7 @@ class Merchant(pydantic.BaseModel):
     company: typing.Optional[Company] = None
     """
 	Information about the company or business. This is legal information that is used for verification.
-	Company documentation: https://developer.sumup.com/tools/models/merchant#company
+	Company documentation: https://developer.sumup.com/tools/glossary/merchant#company
 	"""
 
     meta: typing.Optional[Meta] = None
