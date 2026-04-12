@@ -110,6 +110,29 @@ reader_checkout = client.readers.create_checkout(
 print(f"Reader checkout created: {reader_checkout}")
 ```
 
+### Verifying Webhooks
+
+```python
+from sumup import Sumup, WebhookHandler
+from sumup.webhooks import WebhookSignatureError
+
+client = Sumup(api_key="sup_sk_MvxmLOl0...")
+webhooks = WebhookHandler(secret="whsec_...", client=client)
+
+def handle_webhook(headers: dict[str, str], body: bytes) -> None:
+    try:
+        event = webhooks.parse_and_verify(headers, body)
+    except WebhookSignatureError:
+        # Reject the request with 400/401 in your web framework.
+        raise
+
+    if event.type == "checkout.created":
+        checkout = event.fetch_object()
+        print(f"Checkout {checkout.id} is now {checkout.status}")
+```
+
+For a minimal end-to-end example using Python's built-in HTTP server, see [examples/webhooks.py](./examples/webhooks.py).
+
 ## Version support policy
 
 `sumup-py` maintains compatibility with Python versions that are no pass their End of life support, see [Status of Python versions](https://devguide.python.org/versions/).
