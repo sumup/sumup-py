@@ -97,10 +97,6 @@ class MerchantsResource(Resource):
             raise APIError(
                 "The requested Merchant does not exist.", status=resp.status_code, body=resp.text
             )
-        elif resp.status_code == 500:
-            raise APIError(
-                "An internal server error occurred.", status=resp.status_code, body=resp.text
-            )
         else:
             raise APIError("Unexpected response", status=resp.status_code, body=resp.text)
 
@@ -128,10 +124,6 @@ class MerchantsResource(Resource):
         elif resp.status_code == 404:
             raise APIError(
                 "The requested Person does not exist.", status=resp.status_code, body=resp.text
-            )
-        elif resp.status_code == 500:
-            raise APIError(
-                "An internal server error occurred.", status=resp.status_code, body=resp.text
             )
         else:
             raise APIError("Unexpected response", status=resp.status_code, body=resp.text)
@@ -194,10 +186,6 @@ class AsyncMerchantsResource(AsyncResource):
             raise APIError(
                 "The requested Merchant does not exist.", status=resp.status_code, body=resp.text
             )
-        elif resp.status_code == 500:
-            raise APIError(
-                "An internal server error occurred.", status=resp.status_code, body=resp.text
-            )
         else:
             raise APIError("Unexpected response", status=resp.status_code, body=resp.text)
 
@@ -225,10 +213,6 @@ class AsyncMerchantsResource(AsyncResource):
         elif resp.status_code == 404:
             raise APIError(
                 "The requested Person does not exist.", status=resp.status_code, body=resp.text
-            )
-        elif resp.status_code == 500:
-            raise APIError(
-                "An internal server error occurred.", status=resp.status_code, body=resp.text
             )
         else:
             raise APIError("Unexpected response", status=resp.status_code, body=resp.text)

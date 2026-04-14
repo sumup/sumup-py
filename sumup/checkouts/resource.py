@@ -163,6 +163,24 @@ class ProcessCheckoutBody(pydantic.BaseModel):
 	"""
 
 
+class CreateApplePaySessionBody(pydantic.BaseModel):
+    """
+    CreateApplePaySessionBody is a schema definition.
+    """
+
+    context: str
+    """
+	the context to create this apple pay session.
+	Format: hostname
+	"""
+
+    target: str
+    """
+	The target url to create this apple pay session.
+	Format: uri
+	"""
+
+
 class GetPaymentMethodsParams(pydantic.BaseModel):
     """
     GetPaymentMethodsParams: query parameters for GetPaymentMethods
@@ -208,6 +226,10 @@ ListCheckouts200Response is a schema definition.
 """
 
 ProcessCheckoutResponse = typing.Union[CheckoutSuccess, CheckoutAccepted]
+CreateApplePaySession200Response = dict[str, object]
+"""
+CreateApplePaySession200Response is a schema definition.
+"""
 
 
 class CheckoutsResource(Resource):
@@ -401,6 +423,37 @@ class CheckoutsResource(Resource):
         else:
             raise APIError("Unexpected response", status=resp.status_code, body=resp.text)
 
+    def create_apple_pay_session(
+        self, id: str, body: CreateApplePaySessionBody, headers: typing.Optional[HeaderTypes] = None
+    ) -> CreateApplePaySession200Response:
+        """
+        Create an Apple Pay session
+
+        Creates an Apple Pay merchant session for the specified checkout.
+
+        Use this endpoint after the customer selects Apple Pay and before calling
+        `ApplePaySession.completeMerchantValidation(...)` in the browser.
+        SumUp validates the merchant session request and returns the Apple Pay
+        session object that your frontend should pass to Apple's JavaScript API.
+        """
+        resp = self._client.put(
+            f"/v0.2/checkouts/{id}/apple-pay-session",
+            json=body.model_dump(exclude_unset=True),
+            headers=headers,
+        )
+        if resp.status_code == 200:
+            return pydantic.TypeAdapter(CreateApplePaySession200Response).validate_python(
+                resp.json()
+            )
+        elif resp.status_code == 400:
+            raise APIError("Bad Request", status=resp.status_code, body=resp.text)
+        elif resp.status_code == 404:
+            raise APIError(
+                "The requested resource does not exist.", status=resp.status_code, body=resp.text
+            )
+        else:
+            raise APIError("Unexpected response", status=resp.status_code, body=resp.text)
+
 
 class AsyncCheckoutsResource(AsyncResource):
     """Async API resource for the Checkouts endpoints."""
@@ -589,6 +642,37 @@ class AsyncCheckoutsResource(AsyncResource):
                 "The request conflicts with the current state of the resource.",
                 status=resp.status_code,
                 body=resp.text,
+            )
+        else:
+            raise APIError("Unexpected response", status=resp.status_code, body=resp.text)
+
+    async def create_apple_pay_session(
+        self, id: str, body: CreateApplePaySessionBody, headers: typing.Optional[HeaderTypes] = None
+    ) -> CreateApplePaySession200Response:
+        """
+        Create an Apple Pay session
+
+        Creates an Apple Pay merchant session for the specified checkout.
+
+        Use this endpoint after the customer selects Apple Pay and before calling
+        `ApplePaySession.completeMerchantValidation(...)` in the browser.
+        SumUp validates the merchant session request and returns the Apple Pay
+        session object that your frontend should pass to Apple's JavaScript API.
+        """
+        resp = await self._client.put(
+            f"/v0.2/checkouts/{id}/apple-pay-session",
+            json=body.model_dump(exclude_unset=True),
+            headers=headers,
+        )
+        if resp.status_code == 200:
+            return pydantic.TypeAdapter(CreateApplePaySession200Response).validate_python(
+                resp.json()
+            )
+        elif resp.status_code == 400:
+            raise APIError("Bad Request", status=resp.status_code, body=resp.text)
+        elif resp.status_code == 404:
+            raise APIError(
+                "The requested resource does not exist.", status=resp.status_code, body=resp.text
             )
         else:
             raise APIError("Unexpected response", status=resp.status_code, body=resp.text)
