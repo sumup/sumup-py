@@ -59,8 +59,6 @@ class GetTransactionV21Params(pydantic.BaseModel):
 
     id: typing.Optional[str] = None
 
-    internal_id: typing.Optional[str] = None
-
     transaction_code: typing.Optional[str] = None
 
 
@@ -70,8 +68,6 @@ class GetTransactionParams(pydantic.BaseModel):
     """
 
     id: typing.Optional[str] = None
-
-    internal_id: typing.Optional[str] = None
 
     transaction_code: typing.Optional[str] = None
 
@@ -235,7 +231,6 @@ class TransactionsResource(Resource):
 
         Retrieves the full details of an identified transaction. The transaction resource is identified by a query parameter and*one* of following parameters is required:
         - `id`
-        - `internal_id`
         - `transaction_code`
         - `foreign_transaction_id`
         - `client_transaction_id`
@@ -269,7 +264,6 @@ class TransactionsResource(Resource):
 
         Retrieves the full details of an identified transaction. The transaction resource is identified by a query parameter and*one* of following parameters is required:
         - `id`
-        - `internal_id`
         - `transaction_code`
         - `foreign_transaction_id`
         - `client_transaction_id`
@@ -400,7 +394,6 @@ class AsyncTransactionsResource(AsyncResource):
 
         Retrieves the full details of an identified transaction. The transaction resource is identified by a query parameter and*one* of following parameters is required:
         - `id`
-        - `internal_id`
         - `transaction_code`
         - `foreign_transaction_id`
         - `client_transaction_id`
@@ -434,7 +427,6 @@ class AsyncTransactionsResource(AsyncResource):
 
         Retrieves the full details of an identified transaction. The transaction resource is identified by a query parameter and*one* of following parameters is required:
         - `id`
-        - `internal_id`
         - `transaction_code`
         - `foreign_transaction_id`
         - `client_transaction_id`
