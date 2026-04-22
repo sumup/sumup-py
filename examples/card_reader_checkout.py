@@ -2,7 +2,7 @@ import os
 import asyncio
 
 from sumup import AsyncSumup
-from sumup.readers.resource import CreateReaderCheckoutBody, CreateReaderCheckoutBodyTotalAmount
+from sumup.readers import CreateReaderCheckoutBody, CreateReaderCheckoutBodyTotalAmount
 
 
 async def main():
@@ -13,9 +13,9 @@ async def main():
     reader = readers.items[0]
 
     checkout = await client.readers.create_checkout(
-        merchant_code,
-        reader.id,
-        CreateReaderCheckoutBody(
+        merchant_code=merchant_code,
+        reader_id=reader.id,
+        body=CreateReaderCheckoutBody(
             total_amount=CreateReaderCheckoutBodyTotalAmount(
                 currency="EUR",
                 minor_unit=2,

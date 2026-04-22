@@ -29,27 +29,31 @@ uv add sumup
 ### Synchronous Client
 
 ```python
+import os
+
 from sumup import Sumup
 
 client = Sumup(api_key="sup_sk_MvxmLOl0...")
 
 # Get merchant profile
-merchant = client.merchant.get()
-print(f"Merchant: {merchant.merchant_profile.merchant_code}")
+merchant = client.merchants.get(merchant_code=os.environ["SUMUP_MERCHANT_CODE"])
+print(f"Merchant: {merchant.merchant_code}")
 ```
 
 ### Async Client
 
 ```python
 import asyncio
+import os
+
 from sumup import AsyncSumup
 
 async def main():
     client = AsyncSumup(api_key="sup_sk_MvxmLOl0...")
-    
+
     # Get merchant profile
-    merchant = await client.merchant.get()
-    print(f"Merchant: {merchant.merchant_profile.merchant_code}")
+    merchant = await client.merchants.get(merchant_code=os.environ["SUMUP_MERCHANT_CODE"])
+    print(f"Merchant: {merchant.merchant_code}")
 
 asyncio.run(main())
 ```
@@ -57,15 +61,14 @@ asyncio.run(main())
 ### Creating a Checkout
 
 ```python
-from sumup import Sumup
-from sumup.checkouts import CreateCheckoutBody
+import os
 import uuid
 
-client = Sumup(api_key="sup_sk_MvxmLOl0...")
+from sumup import Sumup
+from sumup.checkouts import CreateCheckoutBody
 
-# Get merchant code
-merchant = client.merchant.get()
-merchant_code = merchant.merchant_profile.merchant_code
+client = Sumup(api_key="sup_sk_MvxmLOl0...")
+merchant_code = os.environ["SUMUP_MERCHANT_CODE"]
 
 # Create a checkout
 checkout = client.checkouts.create(
@@ -76,7 +79,7 @@ checkout = client.checkouts.create(
         merchant_code=merchant_code,
         description="Test payment",
         redirect_url="https://example.com/success",
-        return_url="https://example.com/webhook"
+        return_url="https://example.com/webhook",
     )
 )
 
@@ -88,7 +91,7 @@ print(f"Checkout Reference: {checkout.checkout_reference}")
 
 ```python
 from sumup import Sumup
-from sumup.readers import CreateReaderCheckoutBody, CreateReaderCheckoutAmount
+from sumup.readers import CreateReaderCheckoutBody, CreateReaderCheckoutBodyTotalAmount
 
 client = Sumup(api_key="sup_sk_MvxmLOl0...")
 
@@ -97,14 +100,14 @@ reader_checkout = client.readers.create_checkout(
     reader_id="your-reader-id",
     merchant_code="your-merchant-code",
     body=CreateReaderCheckoutBody(
-        total_amount=CreateReaderCheckoutAmount(
+        total_amount=CreateReaderCheckoutBodyTotalAmount(
             value=1000,  # 10.00 EUR (amount in cents)
             currency="EUR",
-            minor_unit=2
+            minor_unit=2,
         ),
         description="Coffee purchase",
-        return_url="https://example.com/webhook"
-    )
+        return_url="https://example.com/webhook",
+    ),
 )
 
 print(f"Reader checkout created: {reader_checkout}")
