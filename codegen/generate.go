@@ -5,8 +5,6 @@ import (
 	"os"
 
 	"github.com/urfave/cli/v2"
-
-	"github.com/sumup/sumup-py/codegen/pkg/builder"
 )
 
 func Generate() *cli.Command {
@@ -23,23 +21,13 @@ func Generate() *cli.Command {
 				return fmt.Errorf("empty argument, path to openapi specs expected")
 			}
 
-			specs := c.Args().First()
-
 			if err := os.MkdirAll(out, os.ModePerm); err != nil {
 				return fmt.Errorf("create output directory %q: %w", out, err)
 			}
 
-			spec, err := loadOpenAPIDocument(specs)
+			builder, err := loadBuilder(c.Args().First(), out)
 			if err != nil {
 				return err
-			}
-
-			builder := builder.New(builder.Config{
-				Out: out,
-			})
-
-			if err := builder.Load(spec); err != nil {
-				return fmt.Errorf("load spec: %w", err)
 			}
 
 			if err := builder.Build(); err != nil {

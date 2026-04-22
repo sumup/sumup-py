@@ -9,8 +9,6 @@ import (
 	"regexp"
 
 	"github.com/urfave/cli/v2"
-
-	"github.com/sumup/sumup-py/codegen/pkg/builder"
 )
 
 var versionPattern = regexp.MustCompile(`(?m)^__version__\s*=\s*["']([^"']+)["']`)
@@ -38,14 +36,9 @@ func Samples() *cli.Command {
 				return fmt.Errorf("missing SDK version: set --sdk-version or --sdk-version-file")
 			}
 
-			spec, err := loadOpenAPIDocument(c.Args().First())
+			generator, err := loadBuilder(c.Args().First(), "")
 			if err != nil {
 				return err
-			}
-
-			generator := builder.New(builder.Config{})
-			if err := generator.Load(spec); err != nil {
-				return fmt.Errorf("load spec: %w", err)
 			}
 			catalog, err := generator.Samples(sdkVersion)
 			if err != nil {
