@@ -36,7 +36,9 @@ type Method struct {
 	ResponseType      *string
 	Path              string
 	PathParams        []Parameter
-	QueryParams       *Parameter
+	QueryFields       []Property
+	BodyType          string
+	BodyFields        []Property
 	HasBody           bool
 	Responses         []Response
 }
@@ -48,11 +50,70 @@ func (mt Method) ParamsString() string {
 		res.WriteString(", ")
 		res.WriteString(fmt.Sprintf("%s: %s", strcase.ToSnake(p.Name), p.Type))
 	}
-	if mt.QueryParams != nil {
+	needsKeywordOnly := mt.HasFlattenedBody() || len(mt.QueryFields) > 0
+	if mt.HasFlattenedBody() {
+		if needsKeywordOnly {
+			res.WriteString(", *")
+		}
+		for _, p := range mt.BodyFields {
+			res.WriteString(", ")
+			res.WriteString(p.MethodParameterString())
+		}
+	} else if mt.HasBody {
 		res.WriteString(", ")
-		res.WriteString(fmt.Sprintf("%s: typing.Optional[%s] = None", strcase.ToSnake(mt.QueryParams.Name), mt.QueryParams.Type))
+		res.WriteString(fmt.Sprintf("body: %sInput", mt.BodyType))
+	}
+	if len(mt.QueryFields) > 0 {
+		if !mt.HasFlattenedBody() {
+			res.WriteString(", *")
+		}
+		for _, p := range mt.QueryFields {
+			res.WriteString(", ")
+			res.WriteString(p.MethodParameterString())
+		}
 	}
 	return res.String()
+}
+
+func (mt Method) HasFlattenedBody() bool {
+	return len(mt.BodyFields) > 0
+}
+
+func (mt Method) BodyInitString() string {
+	if !mt.HasFlattenedBody() {
+		return ""
+	}
+
+	var buf strings.Builder
+	buf.WriteString("body_data: dict[str, typing.Any] = {}\n")
+	for _, field := range mt.BodyFields {
+		if field.Optional {
+			fmt.Fprintf(&buf, "if not isinstance(%s, NotGivenType):\n", field.FieldName())
+			fmt.Fprintf(&buf, "\tbody_data[%q] = %s\n", field.WireName(), field.BodyArgumentExpr())
+		} else {
+			fmt.Fprintf(&buf, "body_data[%q] = %s\n", field.WireName(), field.BodyArgumentExpr())
+		}
+	}
+
+	return buf.String()
+}
+
+func (mt Method) QueryInitString() string {
+	if len(mt.QueryFields) == 0 {
+		return ""
+	}
+
+	var buf strings.Builder
+	buf.WriteString("query_data: dict[str, typing.Any] = {}\n")
+	for _, field := range mt.QueryFields {
+		if field.Optional {
+			fmt.Fprintf(&buf, "if not isinstance(%s, NotGivenType) and %s is not None:\n", field.FieldName(), field.FieldName())
+			fmt.Fprintf(&buf, "\tquery_data[%q] = %s\n", field.WireName(), field.BodyArgumentExpr())
+		} else {
+			fmt.Fprintf(&buf, "query_data[%q] = %s\n", field.WireName(), field.BodyArgumentExpr())
+		}
+	}
+	return buf.String()
 }
 
 // pathsToMethods converts openapi3 path to golang methods.
@@ -128,25 +189,18 @@ func (b *Builder) operationToMethod(method, path string, o *v3.Operation) (*Meth
 	}
 
 	hasBody := false
+	bodyType := ""
 	if o.RequestBody != nil {
 		mt, ok := o.RequestBody.Content.Get("application/json")
 		if ok && mt.Schema != nil {
-			params = append(params, Parameter{
-				Name: "body",
-				Type: strcase.ToCamel(o.OperationId) + "Body",
-			})
+			bodyType = strcase.ToCamel(o.OperationId) + "Body"
 			hasBody = true
 		}
 	}
 
-	var queryParams *Parameter
-	if slices.ContainsFunc(o.Parameters, func(p *v3.Parameter) bool {
-		return p.In != "path" && p.In != "header"
-	}) {
-		queryParams = &Parameter{
-			Name: "params",
-			Type: strcase.ToCamel(o.OperationId) + "Params",
-		}
+	queryFields, err := b.buildQueryFields(o)
+	if err != nil {
+		return nil, fmt.Errorf("build query parameters: %w", err)
 	}
 
 	responses := make([]Response, 0, o.Responses.Codes.Len())
@@ -194,10 +248,39 @@ func (b *Builder) operationToMethod(method, path string, o *v3.Operation) (*Meth
 		ResponseType:      respType,
 		Path:              pathBuilder(path),
 		PathParams:        params,
-		QueryParams:       queryParams,
+		QueryFields:       queryFields,
+		BodyType:          bodyType,
 		HasBody:           hasBody,
 		Responses:         responses,
 	}, nil
+}
+
+func (b *Builder) buildQueryFields(o *v3.Operation) ([]Property, error) {
+	if len(o.Parameters) == 0 {
+		return nil, nil
+	}
+
+	fields := make([]Property, 0)
+	paramsTypeName := strcase.ToCamel(o.OperationId) + "Params"
+	for _, p := range o.Parameters {
+		if p.In == "path" || p.In == "header" {
+			continue
+		}
+		if p.Schema == nil {
+			return nil, fmt.Errorf("parameter %q has no schema", p.Name)
+		}
+		alias := p.Name
+		name := parameterFieldName(alias)
+		typeName, _ := b.genSchema(p.Schema, paramsTypeName+strcase.ToCamel(name))
+		fields = append(fields, Property{
+			Name:           name,
+			SerializedName: alias,
+			Type:           typeName,
+			Optional:       p.Required == nil || !*p.Required,
+			Comment:        parameterPropertyDoc(p.Schema.Schema()),
+		})
+	}
+	return fields, nil
 }
 
 func (b *Builder) getSuccessResponseType(o *v3.Operation) (*string, error) {

@@ -2,7 +2,6 @@ import os
 import asyncio
 
 from sumup import AsyncSumup
-from sumup.readers import CreateReaderCheckoutBody, CreateReaderCheckoutBodyTotalAmount
 
 
 async def main():
@@ -15,14 +14,8 @@ async def main():
     checkout = await client.readers.create_checkout(
         merchant_code=merchant_code,
         reader_id=reader.id,
-        body=CreateReaderCheckoutBody(
-            total_amount=CreateReaderCheckoutBodyTotalAmount(
-                currency="EUR",
-                minor_unit=2,
-                value=1000,
-            ),
-            description="sumup-py card reader checkout example",
-        ),
+        total_amount={"currency": "EUR", "minor_unit": 2, "value": 1000},
+        description="sumup-py card reader checkout example",
     )
 
     print(checkout)

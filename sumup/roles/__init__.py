@@ -2,8 +2,6 @@
 from .resource import (
     RolesResource,
     AsyncRolesResource,
-    CreateMerchantRoleBody,
-    UpdateMerchantRoleBody,
     ListMerchantRoles200Response,
 )
 from ..types import (
@@ -16,8 +14,6 @@ from ..types import (
 __all__ = [
     "RolesResource",
     "AsyncRolesResource",
-    "CreateMerchantRoleBody",
-    "UpdateMerchantRoleBody",
     "ListMerchantRoles200Response",
     "Metadata",
     "Problem",

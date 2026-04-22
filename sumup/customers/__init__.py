@@ -2,8 +2,6 @@
 from .resource import (
     CustomersResource,
     AsyncCustomersResource,
-    CreateCustomerBody,
-    UpdateCustomerBody,
 )
 from ..types import (
     AddressLegacy,
@@ -22,8 +20,6 @@ from ..types import (
 __all__ = [
     "CustomersResource",
     "AsyncCustomersResource",
-    "CreateCustomerBody",
-    "UpdateCustomerBody",
     "AddressLegacy",
     "CardType",
     "Customer",

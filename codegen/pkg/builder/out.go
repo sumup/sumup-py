@@ -102,6 +102,7 @@ func (b *Builder) generateResourceIndex(tagName string, resourceTypes []string) 
 type resourceTemplateData struct {
 	PackageName    string
 	TypeNames      []string
+	InputTypeNames []string
 	Params         []Writable
 	Service        string
 	Methods        []*Method
@@ -127,6 +128,7 @@ func (b *Builder) generateResourceFile(tagName string, paths *v3.Paths) ([]strin
 	if err != nil {
 		return nil, fmt.Errorf("convert paths to methods: %w", err)
 	}
+	flattenMethodBodies(methods, bodyTypes)
 
 	slog.Info("generating file",
 		slog.String("tag", tag.Name),
@@ -142,6 +144,7 @@ func (b *Builder) generateResourceFile(tagName string, paths *v3.Paths) ([]strin
 	if err := b.templates.ExecuteTemplate(serviceBuf, "resource.py.tmpl", resourceTemplateData{
 		PackageName:    strcase.ToSnake(tag.Name),
 		TypeNames:      typeNames,
+		InputTypeNames: inputTypeNames(typeNames),
 		Params:         innerTypes,
 		Service:        strcase.ToCamel(tag.Name),
 		Methods:        methods,
@@ -168,11 +171,39 @@ func (b *Builder) generateResourceFile(tagName string, paths *v3.Paths) ([]strin
 	resourceTypes := make([]string, 0, len(innerTypes))
 	for _, t := range innerTypes {
 		if typ, ok := t.(Type); ok {
+			if writableRequestOnly(t) {
+				continue
+			}
 			resourceTypes = append(resourceTypes, typ.TypeName())
 		}
 	}
 
 	return resourceTypes, nil
+}
+
+func flattenMethodBodies(methods []*Method, bodyTypes []Writable) {
+	bodyClasses := make(map[string]*ClassDeclaration)
+	for _, writable := range bodyTypes {
+		class, ok := writable.(*ClassDeclaration)
+		if !ok {
+			continue
+		}
+		if len(class.Fields) == 0 || class.AdditionalPropertiesType != "" {
+			continue
+		}
+		bodyClasses[class.Name] = class
+	}
+
+	for _, method := range methods {
+		if !method.HasBody {
+			continue
+		}
+		class, ok := bodyClasses[method.BodyType]
+		if !ok {
+			continue
+		}
+		method.BodyFields = append([]Property(nil), class.Fields...)
+	}
 }
 
 func (b *Builder) generateResource(tagName string, paths *v3.Paths) error {
@@ -321,4 +352,25 @@ func (b *Builder) schemaTypeNamesByTag(tagName string) []string {
 	}
 	slices.Sort(typeNames)
 	return typeNames
+}
+
+func inputTypeNames(typeNames []string) []string {
+	res := make([]string, 0, len(typeNames))
+	for _, name := range typeNames {
+		res = append(res, name+"Input")
+	}
+	return res
+}
+
+func writableRequestOnly(w Writable) bool {
+	switch typed := w.(type) {
+	case *ClassDeclaration:
+		return typed.RequestOnly
+	case *TypeAlias:
+		return typed.RequestOnly
+	case *OneOfDeclaration:
+		return typed.RequestOnly
+	default:
+		return false
+	}
 }

@@ -1,19 +1,48 @@
+import datetime
 import httpx
 import platform
 import sys
 import typing
 from functools import lru_cache
+from collections.abc import Mapping, Sequence
 
 from ._api_version import __api_version__
 from ._version import __version__
+from ._secret import Secret
 
 HeaderTypes = typing.Mapping[str, str]
+PrimitiveQueryValue = typing.Optional[typing.Union[str, int, float]]
+QueryValue = typing.Union[PrimitiveQueryValue, typing.Sequence[PrimitiveQueryValue]]
+QueryParamTypes = typing.Mapping[str, QueryValue]
+
+
+class NotGivenType:
+    __slots__ = ()
+
+
+NOT_GIVEN = NotGivenType()
 
 
 class BaseResource:
     @staticmethod
     def version() -> str:
         return f"v{__version__}"
+
+
+def serialize_request_data(value: object) -> object:
+    if isinstance(value, Secret):
+        return value.value()
+    if isinstance(value, (datetime.datetime, datetime.date, datetime.time)):
+        return value.isoformat()
+    if isinstance(value, Mapping):
+        return {str(key): serialize_request_data(item) for key, item in value.items()}
+    if isinstance(value, Sequence) and not isinstance(value, (str, bytes, bytearray)):
+        return [serialize_request_data(item) for item in value]
+    return value
+
+
+def serialize_query_params(value: QueryParamTypes) -> QueryParamTypes:
+    return typing.cast(QueryParamTypes, serialize_request_data(value))
 
 
 def runtime_headers() -> dict[str, str]:

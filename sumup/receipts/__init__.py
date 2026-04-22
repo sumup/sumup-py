@@ -2,7 +2,6 @@
 from .resource import (
     ReceiptsResource,
     AsyncReceiptsResource,
-    GetReceiptParams,
 )
 from ..types import (
     Error,
@@ -23,7 +22,6 @@ from ..types import (
 __all__ = [
     "ReceiptsResource",
     "AsyncReceiptsResource",
-    "GetReceiptParams",
     "Error",
     "EventId",
     "EventStatus",

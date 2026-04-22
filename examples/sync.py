@@ -1,7 +1,6 @@
 import os
 
 from sumup import Sumup, APIError
-from sumup.checkouts import CreateCheckoutBody, ListCheckoutsParams
 
 client = Sumup()
 
@@ -13,19 +12,17 @@ readers = client.readers.list(merchant.merchant_code)
 print(readers)
 
 transactions = client.checkouts.list(
-    params=ListCheckoutsParams(checkout_reference="1231"),
+    checkout_reference="1231",
     headers={"Foo": "Bar"},
 )
 print(transactions)
 
 try:
     checkout = client.checkouts.create(
-        body=CreateCheckoutBody(
-            merchant_code=merchant.merchant_code,
-            amount=100.50,
-            checkout_reference="unique-checkout-ref-123",
-            currency="EUR",
-        )
+        merchant_code=merchant.merchant_code,
+        amount=100.50,
+        checkout_reference="unique-checkout-ref-123",
+        currency="EUR",
     )
     print(checkout)
 except APIError as e:

@@ -19,11 +19,14 @@ type ClassDeclaration struct {
 	Description string
 	// AdditionalPropertiesType holds the value type for additional properties if enabled.
 	AdditionalPropertiesType string
+	// RequestOnly marks request-only helper types that should not emit response models.
+	RequestOnly bool
 }
 
 type OneOfDeclaration struct {
-	Name    string
-	Options []string
+	Name        string
+	Options     []string
+	RequestOnly bool
 }
 
 // Property holds the information for Property of a type.
@@ -68,11 +71,21 @@ type TypeAlias struct {
 	Type string
 	// Comment holds the description of the type
 	Comment string
+	// RequestOnly marks request-only helper types that should only emit input aliases.
+	RequestOnly bool
 }
 
 func (ta *TypeAlias) String() string {
 	buf := new(strings.Builder)
+	if ta.RequestOnly {
+		fmt.Fprintf(buf, "%sInput = %s\n", ta.Name, inputTypeName(ta.Type))
+		if ta.Comment != "" {
+			fmt.Fprintf(buf, "'''\n%s\n'''\n", ta.Comment)
+		}
+		return buf.String()
+	}
 	fmt.Fprintf(buf, "%s = %s\n", ta.Name, ta.Type)
+	fmt.Fprintf(buf, "%sInput = %s\n", ta.Name, inputTypeName(ta.Type))
 	if ta.Comment != "" {
 		fmt.Fprintf(buf, "'''\n%s\n'''\n", ta.Comment)
 	}

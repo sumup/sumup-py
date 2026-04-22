@@ -65,22 +65,19 @@ import os
 import uuid
 
 from sumup import Sumup
-from sumup.checkouts import CreateCheckoutBody
 
 client = Sumup(api_key="sup_sk_MvxmLOl0...")
 merchant_code = os.environ["SUMUP_MERCHANT_CODE"]
 
 # Create a checkout
 checkout = client.checkouts.create(
-    body=CreateCheckoutBody(
-        amount=10.00,
-        currency="EUR",
-        checkout_reference=str(uuid.uuid4()),
-        merchant_code=merchant_code,
-        description="Test payment",
-        redirect_url="https://example.com/success",
-        return_url="https://example.com/webhook",
-    )
+    amount=10.00,
+    currency="EUR",
+    checkout_reference=str(uuid.uuid4()),
+    merchant_code=merchant_code,
+    description="Test payment",
+    redirect_url="https://example.com/success",
+    return_url="https://example.com/webhook",
 )
 
 print(f"Checkout ID: {checkout.id}")
@@ -91,7 +88,6 @@ print(f"Checkout Reference: {checkout.checkout_reference}")
 
 ```python
 from sumup import Sumup
-from sumup.readers import CreateReaderCheckoutBody, CreateReaderCheckoutBodyTotalAmount
 
 client = Sumup(api_key="sup_sk_MvxmLOl0...")
 
@@ -99,15 +95,13 @@ client = Sumup(api_key="sup_sk_MvxmLOl0...")
 reader_checkout = client.readers.create_checkout(
     reader_id="your-reader-id",
     merchant_code="your-merchant-code",
-    body=CreateReaderCheckoutBody(
-        total_amount=CreateReaderCheckoutBodyTotalAmount(
-            value=1000,  # 10.00 EUR (amount in cents)
-            currency="EUR",
-            minor_unit=2,
-        ),
-        description="Coffee purchase",
-        return_url="https://example.com/webhook",
-    ),
+    total_amount={
+        "value": 1000,  # 10.00 EUR (amount in cents)
+        "currency": "EUR",
+        "minor_unit": 2,
+    },
+    description="Coffee purchase",
+    return_url="https://example.com/webhook",
 )
 
 print(f"Reader checkout created: {reader_checkout}")
