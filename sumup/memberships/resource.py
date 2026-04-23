@@ -25,16 +25,7 @@ from ..types import (
     Problem,
     ResourceType,
 )
-from ..types import (
-    AttributesInput,
-    InviteInput,
-    MembershipInput,
-    MembershipResourceInput,
-    MembershipStatusInput,
-    MetadataInput,
-    ProblemInput,
-    ResourceTypeInput,
-)
+from ..types import MembershipStatusInput, ResourceTypeInput
 import datetime
 import httpx
 import typing
@@ -58,14 +49,6 @@ class ListMemberships200Response(pydantic.BaseModel):
     items: list[Membership]
 
     total_count: int
-
-
-class ListMemberships200ResponseDict(typing_extensions.TypedDict, total=False):
-    items: typing_extensions.Required[typing.Sequence[MembershipInput]]
-    total_count: typing_extensions.Required[int]
-
-
-ListMemberships200ResponseInput = ListMemberships200ResponseDict
 
 
 class MembershipsResource(Resource):

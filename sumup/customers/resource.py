@@ -31,18 +31,7 @@ from ..types import (
     PersonalDetails,
     Problem,
 )
-from ..types import (
-    AddressLegacyInput,
-    CardTypeInput,
-    CustomerInput,
-    ErrorInput,
-    ErrorExtendedInput,
-    ErrorForbiddenInput,
-    MandateResponseInput,
-    PaymentInstrumentResponseInput,
-    PersonalDetailsInput,
-    ProblemInput,
-)
+from ..types import AddressLegacyInput, CustomerInput, PersonalDetailsInput
 import datetime
 import httpx
 import typing
@@ -78,7 +67,6 @@ class UpdateCustomerBodyInput(typing_extensions.TypedDict, total=False):
 
 
 ListPaymentInstruments200Response = list[PaymentInstrumentResponse]
-ListPaymentInstruments200ResponseInput = typing.Sequence[PaymentInstrumentResponseInput]
 """
 ListPaymentInstruments200Response is a schema definition.
 """
@@ -94,7 +82,7 @@ class CustomersResource(Resource):
         self,
         *,
         customer_id: str,
-        personal_details: typing.Union[PersonalDetailsInput, NotGivenType] = NOT_GIVEN,
+        personal_details: typing.Union[PersonalDetailsInput, None, NotGivenType] = NOT_GIVEN,
         headers: typing.Optional[HeaderTypes] = None,
     ) -> Customer:
         """
@@ -168,7 +156,7 @@ class CustomersResource(Resource):
         self,
         customer_id: str,
         *,
-        personal_details: typing.Union[PersonalDetailsInput, NotGivenType] = NOT_GIVEN,
+        personal_details: typing.Union[PersonalDetailsInput, None, NotGivenType] = NOT_GIVEN,
         headers: typing.Optional[HeaderTypes] = None,
     ) -> Customer:
         """
@@ -283,7 +271,7 @@ class AsyncCustomersResource(AsyncResource):
         self,
         *,
         customer_id: str,
-        personal_details: typing.Union[PersonalDetailsInput, NotGivenType] = NOT_GIVEN,
+        personal_details: typing.Union[PersonalDetailsInput, None, NotGivenType] = NOT_GIVEN,
         headers: typing.Optional[HeaderTypes] = None,
     ) -> Customer:
         """
@@ -357,7 +345,7 @@ class AsyncCustomersResource(AsyncResource):
         self,
         customer_id: str,
         *,
-        personal_details: typing.Union[PersonalDetailsInput, NotGivenType] = NOT_GIVEN,
+        personal_details: typing.Union[PersonalDetailsInput, None, NotGivenType] = NOT_GIVEN,
         headers: typing.Optional[HeaderTypes] = None,
     ) -> Customer:
         """

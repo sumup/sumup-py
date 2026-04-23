@@ -26,16 +26,7 @@ from ..types import (
     Metadata,
     Problem,
 )
-from ..types import (
-    AttributesInput,
-    InviteInput,
-    MemberInput,
-    MembershipStatusInput,
-    MembershipUserInput,
-    MembershipUserClassicInput,
-    MetadataInput,
-    ProblemInput,
-)
+from ..types import AttributesInput, MembershipStatusInput, MetadataInput
 import datetime
 import httpx
 import typing
@@ -161,14 +152,6 @@ class ListMerchantMembers200Response(pydantic.BaseModel):
     total_count: typing.Optional[int] = None
 
 
-class ListMerchantMembers200ResponseDict(typing_extensions.TypedDict, total=False):
-    items: typing_extensions.Required[typing.Sequence[MemberInput]]
-    total_count: typing_extensions.NotRequired[int]
-
-
-ListMerchantMembers200ResponseInput = ListMerchantMembers200ResponseDict
-
-
 class MembersResource(Resource):
     """API resource for the Members endpoints."""
 
@@ -225,13 +208,13 @@ class MembersResource(Resource):
         self,
         merchant_code: str,
         *,
-        is_managed_user: typing.Union[bool, NotGivenType] = NOT_GIVEN,
+        is_managed_user: typing.Union[bool, None, NotGivenType] = NOT_GIVEN,
         email: str,
-        password: typing.Union[Secret, NotGivenType] = NOT_GIVEN,
-        nickname: typing.Union[str, NotGivenType] = NOT_GIVEN,
+        password: typing.Union[Secret, None, NotGivenType] = NOT_GIVEN,
+        nickname: typing.Union[str, None, NotGivenType] = NOT_GIVEN,
         roles: typing.Sequence[str],
-        metadata: typing.Union[MetadataInput, NotGivenType] = NOT_GIVEN,
-        attributes: typing.Union[AttributesInput, NotGivenType] = NOT_GIVEN,
+        metadata: typing.Union[MetadataInput, None, NotGivenType] = NOT_GIVEN,
+        attributes: typing.Union[AttributesInput, None, NotGivenType] = NOT_GIVEN,
         headers: typing.Optional[HeaderTypes] = None,
     ) -> Member:
         """
@@ -297,10 +280,10 @@ class MembersResource(Resource):
         merchant_code: str,
         member_id: str,
         *,
-        roles: typing.Union[typing.Sequence[str], NotGivenType] = NOT_GIVEN,
-        metadata: typing.Union[MetadataInput, NotGivenType] = NOT_GIVEN,
-        attributes: typing.Union[AttributesInput, NotGivenType] = NOT_GIVEN,
-        user: typing.Union[UpdateMerchantMemberBodyUserInput, NotGivenType] = NOT_GIVEN,
+        roles: typing.Union[typing.Sequence[str], None, NotGivenType] = NOT_GIVEN,
+        metadata: typing.Union[MetadataInput, None, NotGivenType] = NOT_GIVEN,
+        attributes: typing.Union[AttributesInput, None, NotGivenType] = NOT_GIVEN,
+        user: typing.Union[UpdateMerchantMemberBodyUserInput, None, NotGivenType] = NOT_GIVEN,
         headers: typing.Optional[HeaderTypes] = None,
     ) -> Member:
         """
@@ -310,7 +293,7 @@ class MembersResource(Resource):
         """
         body_data: dict[str, typing.Any] = {}
         if not isinstance(roles, NotGivenType):
-            body_data["roles"] = list(roles)
+            body_data["roles"] = list(roles) if roles is not None else None
         if not isinstance(metadata, NotGivenType):
             body_data["metadata"] = metadata
         if not isinstance(attributes, NotGivenType):
@@ -424,13 +407,13 @@ class AsyncMembersResource(AsyncResource):
         self,
         merchant_code: str,
         *,
-        is_managed_user: typing.Union[bool, NotGivenType] = NOT_GIVEN,
+        is_managed_user: typing.Union[bool, None, NotGivenType] = NOT_GIVEN,
         email: str,
-        password: typing.Union[Secret, NotGivenType] = NOT_GIVEN,
-        nickname: typing.Union[str, NotGivenType] = NOT_GIVEN,
+        password: typing.Union[Secret, None, NotGivenType] = NOT_GIVEN,
+        nickname: typing.Union[str, None, NotGivenType] = NOT_GIVEN,
         roles: typing.Sequence[str],
-        metadata: typing.Union[MetadataInput, NotGivenType] = NOT_GIVEN,
-        attributes: typing.Union[AttributesInput, NotGivenType] = NOT_GIVEN,
+        metadata: typing.Union[MetadataInput, None, NotGivenType] = NOT_GIVEN,
+        attributes: typing.Union[AttributesInput, None, NotGivenType] = NOT_GIVEN,
         headers: typing.Optional[HeaderTypes] = None,
     ) -> Member:
         """
@@ -496,10 +479,10 @@ class AsyncMembersResource(AsyncResource):
         merchant_code: str,
         member_id: str,
         *,
-        roles: typing.Union[typing.Sequence[str], NotGivenType] = NOT_GIVEN,
-        metadata: typing.Union[MetadataInput, NotGivenType] = NOT_GIVEN,
-        attributes: typing.Union[AttributesInput, NotGivenType] = NOT_GIVEN,
-        user: typing.Union[UpdateMerchantMemberBodyUserInput, NotGivenType] = NOT_GIVEN,
+        roles: typing.Union[typing.Sequence[str], None, NotGivenType] = NOT_GIVEN,
+        metadata: typing.Union[MetadataInput, None, NotGivenType] = NOT_GIVEN,
+        attributes: typing.Union[AttributesInput, None, NotGivenType] = NOT_GIVEN,
+        user: typing.Union[UpdateMerchantMemberBodyUserInput, None, NotGivenType] = NOT_GIVEN,
         headers: typing.Optional[HeaderTypes] = None,
     ) -> Member:
         """
@@ -509,7 +492,7 @@ class AsyncMembersResource(AsyncResource):
         """
         body_data: dict[str, typing.Any] = {}
         if not isinstance(roles, NotGivenType):
-            body_data["roles"] = list(roles)
+            body_data["roles"] = list(roles) if roles is not None else None
         if not isinstance(metadata, NotGivenType):
             body_data["metadata"] = metadata
         if not isinstance(attributes, NotGivenType):

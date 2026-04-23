@@ -29,20 +29,6 @@ from ..types import (
     ReceiptTransaction,
     TransactionId,
 )
-from ..types import (
-    ErrorInput,
-    EventIdInput,
-    EventStatusInput,
-    EventTypeInput,
-    ProblemInput,
-    ReceiptInput,
-    ReceiptCardInput,
-    ReceiptEventInput,
-    ReceiptMerchantDataInput,
-    ReceiptReaderInput,
-    ReceiptTransactionInput,
-    TransactionIdInput,
-)
 import datetime
 import httpx
 import typing

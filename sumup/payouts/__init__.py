@@ -2,10 +2,6 @@
 from .resource import (
     PayoutsResource,
     AsyncPayoutsResource,
-    ListPayoutsV1ParamsFormat,
-    ListPayoutsV1ParamsOrder,
-    ListPayoutsParamsFormat,
-    ListPayoutsParamsOrder,
 )
 from ..types import (
     Error,
@@ -18,10 +14,6 @@ from ..types import (
 __all__ = [
     "PayoutsResource",
     "AsyncPayoutsResource",
-    "ListPayoutsV1ParamsFormat",
-    "ListPayoutsV1ParamsOrder",
-    "ListPayoutsParamsFormat",
-    "ListPayoutsParamsOrder",
     "Error",
     "ErrorExtended",
     "FinancialPayouts",

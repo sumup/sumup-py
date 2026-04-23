@@ -1,5 +1,6 @@
 import datetime
 import json
+import warnings
 
 import httpx
 
@@ -81,7 +82,9 @@ def test_update_subaccount_accepts_explicit_null_fields(sdk_factory):
         )
 
     sdk = sdk_factory(handler)
-    response = sdk.subaccounts.update_sub_account(1, nickname=None)
+    with warnings.catch_warnings():
+        warnings.simplefilter("ignore", DeprecationWarning)
+        response = sdk.subaccounts.update_sub_account(1, nickname=None)
 
     assert response.nickname is None
     assert "request" in captured_request

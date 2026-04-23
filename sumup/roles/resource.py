@@ -16,7 +16,7 @@ from .._service import (
 )
 from .._exceptions import APIError
 from ..types import Metadata, Problem, Role
-from ..types import MetadataInput, ProblemInput, RoleInput
+from ..types import MetadataInput
 import datetime
 import httpx
 import typing
@@ -80,13 +80,6 @@ class ListMerchantRoles200Response(pydantic.BaseModel):
     items: list[Role]
 
 
-class ListMerchantRoles200ResponseDict(typing_extensions.TypedDict, total=False):
-    items: typing_extensions.Required[typing.Sequence[RoleInput]]
-
-
-ListMerchantRoles200ResponseInput = ListMerchantRoles200ResponseDict
-
-
 class RolesResource(Resource):
     """API resource for the Roles endpoints."""
 
@@ -118,8 +111,8 @@ class RolesResource(Resource):
         *,
         name: str,
         permissions: typing.Sequence[str],
-        metadata: typing.Union[MetadataInput, NotGivenType] = NOT_GIVEN,
-        description: typing.Union[str, NotGivenType] = NOT_GIVEN,
+        metadata: typing.Union[MetadataInput, None, NotGivenType] = NOT_GIVEN,
+        description: typing.Union[str, None, NotGivenType] = NOT_GIVEN,
         headers: typing.Optional[HeaderTypes] = None,
     ) -> Role:
         """
@@ -194,9 +187,9 @@ class RolesResource(Resource):
         merchant_code: str,
         role_id: str,
         *,
-        name: typing.Union[str, NotGivenType] = NOT_GIVEN,
-        permissions: typing.Union[typing.Sequence[str], NotGivenType] = NOT_GIVEN,
-        description: typing.Union[str, NotGivenType] = NOT_GIVEN,
+        name: typing.Union[str, None, NotGivenType] = NOT_GIVEN,
+        permissions: typing.Union[typing.Sequence[str], None, NotGivenType] = NOT_GIVEN,
+        description: typing.Union[str, None, NotGivenType] = NOT_GIVEN,
         headers: typing.Optional[HeaderTypes] = None,
     ) -> Role:
         """
@@ -208,7 +201,7 @@ class RolesResource(Resource):
         if not isinstance(name, NotGivenType):
             body_data["name"] = name
         if not isinstance(permissions, NotGivenType):
-            body_data["permissions"] = list(permissions)
+            body_data["permissions"] = list(permissions) if permissions is not None else None
         if not isinstance(description, NotGivenType):
             body_data["description"] = description
 
@@ -258,8 +251,8 @@ class AsyncRolesResource(AsyncResource):
         *,
         name: str,
         permissions: typing.Sequence[str],
-        metadata: typing.Union[MetadataInput, NotGivenType] = NOT_GIVEN,
-        description: typing.Union[str, NotGivenType] = NOT_GIVEN,
+        metadata: typing.Union[MetadataInput, None, NotGivenType] = NOT_GIVEN,
+        description: typing.Union[str, None, NotGivenType] = NOT_GIVEN,
         headers: typing.Optional[HeaderTypes] = None,
     ) -> Role:
         """
@@ -334,9 +327,9 @@ class AsyncRolesResource(AsyncResource):
         merchant_code: str,
         role_id: str,
         *,
-        name: typing.Union[str, NotGivenType] = NOT_GIVEN,
-        permissions: typing.Union[typing.Sequence[str], NotGivenType] = NOT_GIVEN,
-        description: typing.Union[str, NotGivenType] = NOT_GIVEN,
+        name: typing.Union[str, None, NotGivenType] = NOT_GIVEN,
+        permissions: typing.Union[typing.Sequence[str], None, NotGivenType] = NOT_GIVEN,
+        description: typing.Union[str, None, NotGivenType] = NOT_GIVEN,
         headers: typing.Optional[HeaderTypes] = None,
     ) -> Role:
         """
@@ -348,7 +341,7 @@ class AsyncRolesResource(AsyncResource):
         if not isinstance(name, NotGivenType):
             body_data["name"] = name
         if not isinstance(permissions, NotGivenType):
-            body_data["permissions"] = list(permissions)
+            body_data["permissions"] = list(permissions) if permissions is not None else None
         if not isinstance(description, NotGivenType):
             body_data["description"] = description
 

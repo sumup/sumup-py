@@ -57,7 +57,7 @@ func (mt Method) ParamsString() string {
 		}
 		for _, p := range mt.BodyFields {
 			res.WriteString(", ")
-			res.WriteString(p.MethodParameterString())
+			res.WriteString(p.MethodParameterString(true))
 		}
 	} else if mt.HasBody {
 		res.WriteString(", ")
@@ -69,7 +69,7 @@ func (mt Method) ParamsString() string {
 		}
 		for _, p := range mt.QueryFields {
 			res.WriteString(", ")
-			res.WriteString(p.MethodParameterString())
+			res.WriteString(p.MethodParameterString(false))
 		}
 	}
 	return res.String()
@@ -89,9 +89,9 @@ func (mt Method) BodyInitString() string {
 	for _, field := range mt.BodyFields {
 		if field.Optional {
 			fmt.Fprintf(&buf, "if not isinstance(%s, NotGivenType):\n", field.FieldName())
-			fmt.Fprintf(&buf, "\tbody_data[%q] = %s\n", field.WireName(), field.BodyArgumentExpr())
+			fmt.Fprintf(&buf, "\tbody_data[%q] = %s\n", field.WireName(), field.BodyArgumentExpr(true))
 		} else {
-			fmt.Fprintf(&buf, "body_data[%q] = %s\n", field.WireName(), field.BodyArgumentExpr())
+			fmt.Fprintf(&buf, "body_data[%q] = %s\n", field.WireName(), field.BodyArgumentExpr(true))
 		}
 	}
 
@@ -108,9 +108,9 @@ func (mt Method) QueryInitString() string {
 	for _, field := range mt.QueryFields {
 		if field.Optional {
 			fmt.Fprintf(&buf, "if not isinstance(%s, NotGivenType) and %s is not None:\n", field.FieldName(), field.FieldName())
-			fmt.Fprintf(&buf, "\tquery_data[%q] = %s\n", field.WireName(), field.BodyArgumentExpr())
+			fmt.Fprintf(&buf, "\tquery_data[%q] = %s\n", field.WireName(), field.BodyArgumentExpr(false))
 		} else {
-			fmt.Fprintf(&buf, "query_data[%q] = %s\n", field.WireName(), field.BodyArgumentExpr())
+			fmt.Fprintf(&buf, "query_data[%q] = %s\n", field.WireName(), field.BodyArgumentExpr(false))
 		}
 	}
 	return buf.String()

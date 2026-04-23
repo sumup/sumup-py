@@ -60,34 +60,7 @@ from ..types import (
     TransactionMixinHistory,
     TransactionsHistoryLink,
 )
-from ..types import (
-    CardResponseInput,
-    CardTypeInput,
-    CurrencyInput,
-    DeviceInput,
-    ElvCardAccountInput,
-    EntryModeInput,
-    ErrorInput,
-    EventInput,
-    EventIdInput,
-    EventStatusInput,
-    EventTypeInput,
-    HorizontalAccuracyInput,
-    LatInput,
-    LinkInput,
-    LonInput,
-    PaymentTypeInput,
-    ProblemInput,
-    ProductInput,
-    TransactionBaseInput,
-    TransactionCheckoutInfoInput,
-    TransactionEventInput,
-    TransactionFullInput,
-    TransactionHistoryInput,
-    TransactionIdInput,
-    TransactionMixinHistoryInput,
-    TransactionsHistoryLinkInput,
-)
+from ..types import EntryModeInput, PaymentTypeInput
 import datetime
 import httpx
 import typing
@@ -110,29 +83,25 @@ class RefundTransactionBodyInput(typing_extensions.TypedDict, total=False):
     ]
 
 
-ListTransactionsV21ParamsOrder = typing.Union[typing.Literal["ascending", "descending"], str]
-ListTransactionsV21ParamsOrderInput = ListTransactionsV21ParamsOrder
+ListTransactionsV21ParamsOrderInput = typing.Union[typing.Literal["ascending", "descending"], str]
 
-ListTransactionsV21ParamsStatuse = typing.Union[
+ListTransactionsV21ParamsStatuseInput = typing.Union[
     typing.Literal["CANCELLED", "CHARGE_BACK", "FAILED", "REFUNDED", "SUCCESSFUL"], str
 ]
-ListTransactionsV21ParamsStatuseInput = ListTransactionsV21ParamsStatuse
 
-ListTransactionsV21ParamsType = typing.Union[
+ListTransactionsV21ParamsTypeInput = typing.Union[
     typing.Literal["CHARGE_BACK", "PAYMENT", "REFUND"], str
 ]
-ListTransactionsV21ParamsTypeInput = ListTransactionsV21ParamsType
 
-ListTransactionsParamsOrder = typing.Union[typing.Literal["ascending", "descending"], str]
-ListTransactionsParamsOrderInput = ListTransactionsParamsOrder
+ListTransactionsParamsOrderInput = typing.Union[typing.Literal["ascending", "descending"], str]
 
-ListTransactionsParamsStatuse = typing.Union[
+ListTransactionsParamsStatuseInput = typing.Union[
     typing.Literal["CANCELLED", "CHARGE_BACK", "FAILED", "REFUNDED", "SUCCESSFUL"], str
 ]
-ListTransactionsParamsStatuseInput = ListTransactionsParamsStatuse
 
-ListTransactionsParamsType = typing.Union[typing.Literal["CHARGE_BACK", "PAYMENT", "REFUND"], str]
-ListTransactionsParamsTypeInput = ListTransactionsParamsType
+ListTransactionsParamsTypeInput = typing.Union[
+    typing.Literal["CHARGE_BACK", "PAYMENT", "REFUND"], str
+]
 
 
 class ListTransactionsV21200Response(pydantic.BaseModel):
@@ -145,14 +114,6 @@ class ListTransactionsV21200Response(pydantic.BaseModel):
     links: typing.Optional[list[TransactionsHistoryLink]] = None
 
 
-class ListTransactionsV21200ResponseDict(typing_extensions.TypedDict, total=False):
-    items: typing_extensions.NotRequired[typing.Sequence[TransactionHistoryInput]]
-    links: typing_extensions.NotRequired[typing.Sequence[TransactionsHistoryLinkInput]]
-
-
-ListTransactionsV21200ResponseInput = ListTransactionsV21200ResponseDict
-
-
 class ListTransactions200Response(pydantic.BaseModel):
     """
     ListTransactions200Response is a schema definition.
@@ -161,14 +122,6 @@ class ListTransactions200Response(pydantic.BaseModel):
     items: typing.Optional[list[TransactionHistory]] = None
 
     links: typing.Optional[list[TransactionsHistoryLink]] = None
-
-
-class ListTransactions200ResponseDict(typing_extensions.TypedDict, total=False):
-    items: typing_extensions.NotRequired[typing.Sequence[TransactionHistoryInput]]
-    links: typing_extensions.NotRequired[typing.Sequence[TransactionsHistoryLinkInput]]
-
-
-ListTransactions200ResponseInput = ListTransactions200ResponseDict
 
 
 class TransactionsResource(Resource):
@@ -181,7 +134,7 @@ class TransactionsResource(Resource):
         self,
         txn_id: str,
         *,
-        amount: typing.Union[float, NotGivenType] = NOT_GIVEN,
+        amount: typing.Union[float, None, NotGivenType] = NOT_GIVEN,
         headers: typing.Optional[HeaderTypes] = None,
     ):
         """
@@ -467,7 +420,7 @@ class AsyncTransactionsResource(AsyncResource):
         self,
         txn_id: str,
         *,
-        amount: typing.Union[float, NotGivenType] = NOT_GIVEN,
+        amount: typing.Union[float, None, NotGivenType] = NOT_GIVEN,
         headers: typing.Optional[HeaderTypes] = None,
     ):
         """

@@ -6,7 +6,6 @@ import pydantic
 import typing_extensions
 
 CountryCode = str
-CountryCodeInput = str
 """
 An [ISO3166-1 alpha-2](https://en.wikipedia.org/wiki/ISO_3166-1_alpha-2)
 country code. This definition users `oneOf` with a two-character string
@@ -130,137 +129,6 @@ class Address(pydantic.BaseModel):
 	"""
 
 
-class AddressDict(typing_extensions.TypedDict, total=False):
-    country: typing_extensions.Required[
-        typing_extensions.Annotated[
-            CountryCodeInput,
-            typing_extensions.Doc(
-                "An [ISO3166-1 alpha-2](https://en.wikipedia.org/wiki/ISO_3166-1_alpha-2)\ncountry code. This definition users `oneOf` with a two-character string\ntype to allow for support of future countries in client code.\nMin length: 2\nMax length: 2\nPattern: ^[A-Z]{2}$"
-            ),
-        ]
-    ]
-    autonomous_community: typing_extensions.NotRequired[
-        typing_extensions.Annotated[
-            str,
-            typing_extensions.Doc(
-                "In Spain, an autonomous community is the first sub-national level of political and administrative division.\nMax length: 512"
-            ),
-        ]
-    ]
-    city: typing_extensions.NotRequired[
-        typing_extensions.Annotated[
-            str, typing_extensions.Doc("The city of the address.\nMax length: 512")
-        ]
-    ]
-    commune: typing_extensions.NotRequired[
-        typing_extensions.Annotated[
-            str,
-            typing_extensions.Doc(
-                'In many countries, terms cognate with "commune" are used, referring to the community living in the area andthe common interest. Used in countries such as Chile.\nMax length: 512'
-            ),
-        ]
-    ]
-    county: typing_extensions.NotRequired[
-        typing_extensions.Annotated[
-            str,
-            typing_extensions.Doc(
-                "A county is a geographic region of a country used for administrative or other purposes in some nations. Usedin countries such as Ireland, Romania, etc.\nMax length: 512"
-            ),
-        ]
-    ]
-    department: typing_extensions.NotRequired[
-        typing_extensions.Annotated[
-            str,
-            typing_extensions.Doc(
-                "A department (French: département, Spanish: departamento) is an administrative or political division inseveral countries. Used in countries such as Colombia.\nMax length: 512"
-            ),
-        ]
-    ]
-    district: typing_extensions.NotRequired[
-        typing_extensions.Annotated[
-            str,
-            typing_extensions.Doc(
-                "A district is a type of administrative division that in some countries is managed by the local government. Usedin countries such as Portugal.\nMax length: 512"
-            ),
-        ]
-    ]
-    eircode: typing_extensions.NotRequired[
-        typing_extensions.Annotated[
-            str, typing_extensions.Doc("A postal address in Ireland.\nMax length: 512")
-        ]
-    ]
-    municipality: typing_extensions.NotRequired[
-        typing_extensions.Annotated[
-            str,
-            typing_extensions.Doc(
-                "A municipality is usually a single administrative division having corporate status and powers of self-government orjurisdiction as granted by national and regional laws to which it is subordinate. Used in countries such asColombia.\nMax length: 512"
-            ),
-        ]
-    ]
-    neighborhood: typing_extensions.NotRequired[
-        typing_extensions.Annotated[
-            str,
-            typing_extensions.Doc(
-                "Locality level of the address. Used in countries such as Brazil or Chile.\nMax length: 512"
-            ),
-        ]
-    ]
-    post_code: typing_extensions.NotRequired[
-        typing_extensions.Annotated[
-            str,
-            typing_extensions.Doc(
-                "The postal code (aka. zip code) of the address.\nMax length: 32"
-            ),
-        ]
-    ]
-    post_town: typing_extensions.NotRequired[
-        typing_extensions.Annotated[
-            str,
-            typing_extensions.Doc(
-                "A post town is a required part of all postal addresses in the United Kingdom and Ireland, and a basic unitof the postal delivery system.\nMax length: 512"
-            ),
-        ]
-    ]
-    province: typing_extensions.NotRequired[
-        typing_extensions.Annotated[
-            str,
-            typing_extensions.Doc(
-                "The province where the address is located. This may not be relevant in some countries.\nMax length: 512"
-            ),
-        ]
-    ]
-    region: typing_extensions.NotRequired[
-        typing_extensions.Annotated[
-            str,
-            typing_extensions.Doc(
-                "The region where the address is located. This may not be relevant in some countries.\nMax length: 512"
-            ),
-        ]
-    ]
-    state: typing_extensions.NotRequired[
-        typing_extensions.Annotated[
-            str,
-            typing_extensions.Doc(
-                'Most often, a country has a single state, with various administrative divisions. The term "state" is sometimesused to refer to the federated polities that make up the federation. Used in countries such as the United Statesand Brazil.\nMax length: 512'
-            ),
-        ]
-    ]
-    street_address: typing_extensions.NotRequired[
-        typing_extensions.Annotated[typing.Sequence[str], typing_extensions.Doc("Max items: 2")]
-    ]
-    zip_code: typing_extensions.NotRequired[
-        typing_extensions.Annotated[
-            str,
-            typing_extensions.Doc(
-                "A US system of postal codes used by the United States Postal Service (USPS).\nMax length: 512"
-            ),
-        ]
-    ]
-
-
-AddressInput = AddressDict
-
-
 class AddressLegacy(pydantic.BaseModel):
     """
     Profile's personal address information.
@@ -353,7 +221,6 @@ BadRequestErrorsType = typing.Union[
     ],
     str,
 ]
-BadRequestErrorsTypeInput = BadRequestErrorsType
 
 
 class BadRequestErrors(pydantic.BaseModel):
@@ -372,22 +239,6 @@ class BadRequestErrors(pydantic.BaseModel):
 	"""
 
 
-class BadRequestErrorsDict(typing_extensions.TypedDict, total=False):
-    type: typing_extensions.Required[
-        typing_extensions.Annotated[
-            BadRequestErrorsTypeInput, typing_extensions.Doc("Key indicating type of error")
-        ]
-    ]
-    detail: typing_extensions.NotRequired[
-        typing_extensions.Annotated[
-            str, typing_extensions.Doc("Fuller message giving context to error")
-        ]
-    ]
-
-
-BadRequestErrorsInput = BadRequestErrorsDict
-
-
 class BadRequest(pydantic.BaseModel):
     """
     400 Bad Request
@@ -396,15 +247,7 @@ class BadRequest(pydantic.BaseModel):
     errors: BadRequestErrors
 
 
-class BadRequestDict(typing_extensions.TypedDict, total=False):
-    errors: typing_extensions.Required[BadRequestErrorsInput]
-
-
-BadRequestInput = BadRequestDict
-
-
 ChangeStatus = str
-ChangeStatusInput = str
 """
 Reflects the status of changes submitted through the `PATCH` endpoints for the merchant or persons. If somechanges have not been applied yet, the status will be `pending`. If all changes have been applied, the status`done`.
 The status is only returned after write operations or on read endpoints when the `version` query parameter isprovided.
@@ -427,20 +270,6 @@ class Ownership(pydantic.BaseModel):
 	"""
 
 
-class OwnershipDict(typing_extensions.TypedDict, total=False):
-    share: typing_extensions.Required[
-        typing_extensions.Annotated[
-            int,
-            typing_extensions.Doc(
-                "The percent of ownership shares held by the person expressed in percent mille (1/100000). Only persons withthe relationship `owner` can have ownership.\nFormat: int32\nMin: 25000\nMax: 100000"
-            ),
-        ]
-    ]
-
-
-OwnershipInput = OwnershipDict
-
-
 class PersonalIdentifier(pydantic.BaseModel):
     """
     PersonalIdentifier is a schema definition.
@@ -459,27 +288,7 @@ class PersonalIdentifier(pydantic.BaseModel):
 	"""
 
 
-class PersonalIdentifierDict(typing_extensions.TypedDict, total=False):
-    ref: typing_extensions.Required[
-        typing_extensions.Annotated[
-            str,
-            typing_extensions.Doc(
-                "The unique reference for the personal identifier type.\nMax length: 32"
-            ),
-        ]
-    ]
-    value: typing_extensions.Required[
-        typing_extensions.Annotated[
-            str, typing_extensions.Doc("The company identifier value.\nMax length: 128")
-        ]
-    ]
-
-
-PersonalIdentifierInput = PersonalIdentifierDict
-
-
 PhoneNumber = str
-PhoneNumberInput = str
 """
 A publicly available phone number in [E.164](https://en.wikipedia.org/wiki/E.164) format.
 
@@ -487,7 +296,6 @@ Max length: 16
 """
 
 Version = str
-VersionInput = str
 """
 The version of the resource. The version reflects a specific change submitted to the API via one of the `PATCH`endpoints.
 """
@@ -598,125 +406,6 @@ class BasePerson(pydantic.BaseModel):
 	"""
 
 
-class BasePersonDict(typing_extensions.TypedDict, total=False):
-    id: typing_extensions.Required[
-        typing_extensions.Annotated[
-            str,
-            typing_extensions.Doc(
-                "The unique identifier for the person. This is a [typeid](https://github.com/sumup/typeid).\nRead only"
-            ),
-        ]
-    ]
-    address: typing_extensions.NotRequired[
-        typing_extensions.Annotated[
-            AddressInput,
-            typing_extensions.Doc(
-                "An address somewhere in the world. The address fields used depend on the country conventions. For example, inGreat Britain, `city` is `post_town`. In the United States, the top-level administrative unit used in addressesis `state`, whereas in Chile it's `region`.\nWhether an address is valid or not depends on whether the locally required fields are present. Fields not supported ina country will be ignored.\nAddress documentation: https://backstage.sumup.net/docs/default/Component/merchants/merchant/#addresses"
-            ),
-        ]
-    ]
-    birthdate: typing_extensions.NotRequired[
-        typing_extensions.Annotated[
-            datetime.date,
-            typing_extensions.Doc(
-                "The date of birth of the individual, represented as an ISO 8601:2004 [ISO8601‑2004] YYYY-MM-DD format.\nFormat: date"
-            ),
-        ]
-    ]
-    change_status: typing_extensions.NotRequired[
-        typing_extensions.Annotated[
-            ChangeStatusInput,
-            typing_extensions.Doc(
-                "Reflects the status of changes submitted through the `PATCH` endpoints for the merchant or persons. If somechanges have not been applied yet, the status will be `pending`. If all changes have been applied, the status`done`.\nThe status is only returned after write operations or on read endpoints when the `version` query parameter isprovided.\nRead only"
-            ),
-        ]
-    ]
-    citizenship: typing_extensions.NotRequired[
-        typing_extensions.Annotated[
-            CountryCodeInput,
-            typing_extensions.Doc(
-                "An [ISO3166-1 alpha-2](https://en.wikipedia.org/wiki/ISO_3166-1_alpha-2)\ncountry code. This definition users `oneOf` with a two-character string\ntype to allow for support of future countries in client code.\nMin length: 2\nMax length: 2\nPattern: ^[A-Z]{2}$"
-            ),
-        ]
-    ]
-    country_of_residence: typing_extensions.NotRequired[
-        typing_extensions.Annotated[
-            str,
-            typing_extensions.Doc(
-                "An [ISO3166-1 alpha-2](https://en.wikipedia.org/wiki/ISO_3166-1_alpha-2) country code representing the countrywhere the person resides.\nMin length: 2\nMax length: 2"
-            ),
-        ]
-    ]
-    family_name: typing_extensions.NotRequired[
-        typing_extensions.Annotated[
-            str, typing_extensions.Doc("The last name(s) of the individual.\nMax length: 60")
-        ]
-    ]
-    given_name: typing_extensions.NotRequired[
-        typing_extensions.Annotated[
-            str, typing_extensions.Doc("The first name(s) of the individual.\nMax length: 60")
-        ]
-    ]
-    identifiers: typing_extensions.NotRequired[
-        typing_extensions.Annotated[
-            typing.Sequence[PersonalIdentifierInput],
-            typing_extensions.Doc("A list of country-specific personal identifiers.\nMax items: 5"),
-        ]
-    ]
-    middle_name: typing_extensions.NotRequired[
-        typing_extensions.Annotated[
-            str,
-            typing_extensions.Doc(
-                "Middle name(s) of the End-User. Note that in some cultures, people can have multiple middle names; all canbe present, with the names being separated by space characters. Also note that in some cultures, middle namesare not used.\nMax length: 60"
-            ),
-        ]
-    ]
-    nationality: typing_extensions.NotRequired[
-        typing_extensions.Annotated[
-            str,
-            typing_extensions.Doc(
-                "The persons nationality. May be an [ISO3166-1 alpha-2](https://en.wikipedia.org/wiki/ISO_3166-1_alpha-2) countrycode, but legacy data may not conform to this standard."
-            ),
-        ]
-    ]
-    ownership: typing_extensions.NotRequired[OwnershipInput]
-    phone_number: typing_extensions.NotRequired[
-        typing_extensions.Annotated[
-            PhoneNumberInput,
-            typing_extensions.Doc(
-                "A publicly available phone number in [E.164](https://en.wikipedia.org/wiki/E.164) format.\nMax length: 16"
-            ),
-        ]
-    ]
-    relationships: typing_extensions.NotRequired[
-        typing_extensions.Annotated[
-            typing.Sequence[str],
-            typing_extensions.Doc(
-                "A list of roles the person has in the merchant or towards SumUp. A merchant must have at least one person withthe relationship `representative`.\nMin items: 1\nMax items: 1"
-            ),
-        ]
-    ]
-    user_id: typing_extensions.NotRequired[
-        typing_extensions.Annotated[
-            str,
-            typing_extensions.Doc(
-                "A corresponding identity user ID for the person, if they have a user account."
-            ),
-        ]
-    ]
-    version: typing_extensions.NotRequired[
-        typing_extensions.Annotated[
-            VersionInput,
-            typing_extensions.Doc(
-                "The version of the resource. The version reflects a specific change submitted to the API via one of the `PATCH`endpoints."
-            ),
-        ]
-    ]
-
-
-BasePersonInput = BasePersonDict
-
-
 class Branding(pydantic.BaseModel):
     """
     Settings used to apply the Merchant's branding to email receipts, invoices, checkouts, and other products.
@@ -766,73 +455,6 @@ class Branding(pydantic.BaseModel):
 	"""
 
 
-class BrandingDict(typing_extensions.TypedDict, total=False):
-    background_color: typing_extensions.NotRequired[
-        typing_extensions.Annotated[
-            str,
-            typing_extensions.Doc(
-                "A hex color value representing the preferred background color of this merchant."
-            ),
-        ]
-    ]
-    hero: typing_extensions.NotRequired[
-        typing_extensions.Annotated[
-            str,
-            typing_extensions.Doc(
-                "Data-URL encoded hero image for the merchant business.\nFormat: uri"
-            ),
-        ]
-    ]
-    icon: typing_extensions.NotRequired[
-        typing_extensions.Annotated[
-            str, typing_extensions.Doc("An icon for the merchant. Must be square.\nFormat: uri")
-        ]
-    ]
-    logo: typing_extensions.NotRequired[
-        typing_extensions.Annotated[
-            str,
-            typing_extensions.Doc(
-                "A logo for the merchant that will be used in place of the icon and without the merchant's name next to itif there's sufficient space.\nFormat: uri"
-            ),
-        ]
-    ]
-    primary_color: typing_extensions.NotRequired[
-        typing_extensions.Annotated[
-            str,
-            typing_extensions.Doc(
-                "A hex color value representing the primary branding color of this merchant (your brand color)."
-            ),
-        ]
-    ]
-    primary_color_fg: typing_extensions.NotRequired[
-        typing_extensions.Annotated[
-            str,
-            typing_extensions.Doc(
-                "A hex color value representing the color of the text displayed on branding color of this merchant."
-            ),
-        ]
-    ]
-    secondary_color: typing_extensions.NotRequired[
-        typing_extensions.Annotated[
-            str,
-            typing_extensions.Doc(
-                "A hex color value representing the secondary branding color of this merchant (accent color used for buttons)."
-            ),
-        ]
-    ]
-    secondary_color_fg: typing_extensions.NotRequired[
-        typing_extensions.Annotated[
-            str,
-            typing_extensions.Doc(
-                "A hex color value representing the color of the text displayed on secondary branding color of this merchant."
-            ),
-        ]
-    ]
-
-
-BrandingInput = BrandingDict
-
-
 class BusinessProfile(pydantic.BaseModel):
     """
     Business information about the merchant. This information will be visible to the merchant's customers.
@@ -856,7 +478,7 @@ class BusinessProfile(pydantic.BaseModel):
 	The more recognisable your descriptor is, the less risk you have of receiving disputes (e.g. chargebacks).
 	Min length: 1
 	Max length: 30
-	Pattern: ^[a-zA-Z0-9 \-+\'_.]{0,30}$
+	Pattern: ^[a-zA-Z0-9 \\-+\\'_.]{0,30}$
 	"""
 
     email: typing.Optional[str] = None
@@ -884,65 +506,6 @@ class BusinessProfile(pydantic.BaseModel):
 	Format: uri
 	Max length: 255
 	"""
-
-
-class BusinessProfileDict(typing_extensions.TypedDict, total=False):
-    address: typing_extensions.NotRequired[
-        typing_extensions.Annotated[
-            AddressInput,
-            typing_extensions.Doc(
-                "An address somewhere in the world. The address fields used depend on the country conventions. For example, inGreat Britain, `city` is `post_town`. In the United States, the top-level administrative unit used in addressesis `state`, whereas in Chile it's `region`.\nWhether an address is valid or not depends on whether the locally required fields are present. Fields not supported ina country will be ignored.\nAddress documentation: https://backstage.sumup.net/docs/default/Component/merchants/merchant/#addresses"
-            ),
-        ]
-    ]
-    branding: typing_extensions.NotRequired[
-        typing_extensions.Annotated[
-            BrandingInput,
-            typing_extensions.Doc(
-                "Settings used to apply the Merchant's branding to email receipts, invoices, checkouts, and other products."
-            ),
-        ]
-    ]
-    dynamic_descriptor: typing_extensions.NotRequired[
-        typing_extensions.Annotated[
-            str,
-            typing_extensions.Doc(
-                "The descriptor is the text that your customer sees on their bank account statement.\nThe more recognisable your descriptor is, the less risk you have of receiving disputes (e.g. chargebacks).\nMin length: 1\nMax length: 30\nPattern: ^[a-zA-Z0-9 \\-+\\'_.]{0,30}$"
-            ),
-        ]
-    ]
-    email: typing_extensions.NotRequired[
-        typing_extensions.Annotated[
-            str, typing_extensions.Doc("A publicly available email address.\nMax length: 255")
-        ]
-    ]
-    name: typing_extensions.NotRequired[
-        typing_extensions.Annotated[
-            str,
-            typing_extensions.Doc(
-                "The customer-facing business name.\nMin length: 1\nMax length: 150"
-            ),
-        ]
-    ]
-    phone_number: typing_extensions.NotRequired[
-        typing_extensions.Annotated[
-            PhoneNumberInput,
-            typing_extensions.Doc(
-                "A publicly available phone number in [E.164](https://en.wikipedia.org/wiki/E.164) format.\nMax length: 16"
-            ),
-        ]
-    ]
-    website: typing_extensions.NotRequired[
-        typing_extensions.Annotated[
-            str,
-            typing_extensions.Doc(
-                "The business's publicly available website.\nFormat: uri\nMax length: 255"
-            ),
-        ]
-    ]
-
-
-BusinessProfileInput = BusinessProfileDict
 
 
 CardType = typing.Union[
@@ -1113,28 +676,6 @@ class CardResponse(pydantic.BaseModel):
 	"""
 
 
-class CardResponseDict(typing_extensions.TypedDict, total=False):
-    last_4_digits: typing_extensions.NotRequired[
-        typing_extensions.Annotated[
-            str,
-            typing_extensions.Doc(
-                "Last 4 digits of the payment card number.\nRead only\nMin length: 4\nMax length: 4"
-            ),
-        ]
-    ]
-    type: typing_extensions.NotRequired[
-        typing_extensions.Annotated[
-            CardTypeInput,
-            typing_extensions.Doc(
-                "Issuing card network of the payment card used for the transaction."
-            ),
-        ]
-    ]
-
-
-CardResponseInput = CardResponseDict
-
-
 Currency = typing.Union[
     typing.Literal[
         "BGN",
@@ -1193,7 +734,6 @@ EntryMode = typing.Union[
 EntryModeInput = EntryMode
 
 MandateResponseStatus = typing.Union[typing.Literal["active", "inactive"], str]
-MandateResponseStatusInput = MandateResponseStatus
 
 
 class MandateResponse(pydantic.BaseModel):
@@ -1217,29 +757,6 @@ class MandateResponse(pydantic.BaseModel):
 	"""
 
 
-class MandateResponseDict(typing_extensions.TypedDict, total=False):
-    merchant_code: typing_extensions.NotRequired[
-        typing_extensions.Annotated[
-            str, typing_extensions.Doc("Merchant account for which the mandate is valid.")
-        ]
-    ]
-    status: typing_extensions.NotRequired[
-        typing_extensions.Annotated[
-            MandateResponseStatusInput,
-            typing_extensions.Doc("Current lifecycle status of the mandate."),
-        ]
-    ]
-    type: typing_extensions.NotRequired[
-        typing_extensions.Annotated[
-            str,
-            typing_extensions.Doc("Type of mandate stored for the checkout or payment instrument."),
-        ]
-    ]
-
-
-MandateResponseInput = MandateResponseDict
-
-
 PaymentType = typing.Union[
     typing.Literal[
         "APM",
@@ -1261,7 +778,6 @@ PaymentTypeInput = PaymentType
 TransactionBaseStatus = typing.Union[
     typing.Literal["CANCELLED", "FAILED", "PENDING", "SUCCESSFUL"], str
 ]
-TransactionBaseStatusInput = TransactionBaseStatus
 
 
 class TransactionBase(pydantic.BaseModel):
@@ -1311,62 +827,6 @@ class TransactionBase(pydantic.BaseModel):
 	"""
 
 
-class TransactionBaseDict(typing_extensions.TypedDict, total=False):
-    amount: typing_extensions.NotRequired[
-        typing_extensions.Annotated[
-            float, typing_extensions.Doc("Total amount of the transaction.")
-        ]
-    ]
-    currency: typing_extensions.NotRequired[
-        typing_extensions.Annotated[
-            CurrencyInput,
-            typing_extensions.Doc(
-                "Three-letter [ISO4217](https://en.wikipedia.org/wiki/ISO_4217) code of the currency for the amount. Currently supportedcurrency values are enumerated above."
-            ),
-        ]
-    ]
-    id: typing_extensions.NotRequired[
-        typing_extensions.Annotated[str, typing_extensions.Doc("Unique ID of the transaction.")]
-    ]
-    installments_count: typing_extensions.NotRequired[
-        typing_extensions.Annotated[
-            int,
-            typing_extensions.Doc(
-                "Current number of the installment for deferred payments.\nMin: 1"
-            ),
-        ]
-    ]
-    payment_type: typing_extensions.NotRequired[
-        typing_extensions.Annotated[
-            PaymentTypeInput, typing_extensions.Doc("Payment type used for the transaction.")
-        ]
-    ]
-    status: typing_extensions.NotRequired[
-        typing_extensions.Annotated[
-            TransactionBaseStatusInput, typing_extensions.Doc("Current status of the transaction.")
-        ]
-    ]
-    timestamp: typing_extensions.NotRequired[
-        typing_extensions.Annotated[
-            datetime.datetime,
-            typing_extensions.Doc(
-                "Date and time of the creation of the transaction. Response format expressed according to [ISO8601](https://en.wikipedia.org/wiki/ISO_8601) code."
-            ),
-        ]
-    ]
-    transaction_code: typing_extensions.NotRequired[
-        typing_extensions.Annotated[
-            str,
-            typing_extensions.Doc(
-                "Transaction code returned by the acquirer/processing entity after processing the transaction."
-            ),
-        ]
-    ]
-
-
-TransactionBaseInput = TransactionBaseDict
-
-
 class TransactionCheckoutInfo(pydantic.BaseModel):
     """
     Checkout-specific fields associated with a transaction.
@@ -1398,53 +858,11 @@ class TransactionCheckoutInfo(pydantic.BaseModel):
 	"""
 
 
-class TransactionCheckoutInfoDict(typing_extensions.TypedDict, total=False):
-    auth_code: typing_extensions.NotRequired[
-        typing_extensions.Annotated[
-            str,
-            typing_extensions.Doc(
-                "Authorization code for the transaction sent by the payment card issuer or bank. Applicable only to card payments."
-            ),
-        ]
-    ]
-    entry_mode: typing_extensions.NotRequired[
-        typing_extensions.Annotated[
-            EntryModeInput, typing_extensions.Doc("Entry mode of the payment details.")
-        ]
-    ]
-    merchant_code: typing_extensions.NotRequired[
-        typing_extensions.Annotated[
-            str,
-            typing_extensions.Doc(
-                "Unique code of the registered merchant to whom the payment is made."
-            ),
-        ]
-    ]
-    tip_amount: typing_extensions.NotRequired[
-        typing_extensions.Annotated[
-            float, typing_extensions.Doc("Amount of the tip (out of the total transaction amount).")
-        ]
-    ]
-    vat_amount: typing_extensions.NotRequired[
-        typing_extensions.Annotated[
-            float,
-            typing_extensions.Doc(
-                "Amount of the applicable VAT (out of the total transaction amount)."
-            ),
-        ]
-    ]
-
-
-TransactionCheckoutInfoInput = TransactionCheckoutInfoDict
-
-
 CheckoutStatus = typing.Union[typing.Literal["EXPIRED", "FAILED", "PAID", "PENDING"], str]
-CheckoutStatusInput = CheckoutStatus
 
 CheckoutTransactionStatus = typing.Union[
     typing.Literal["CANCELLED", "FAILED", "PENDING", "SUCCESSFUL"], str
 ]
-CheckoutTransactionStatusInput = CheckoutTransactionStatus
 
 
 class CheckoutTransaction(pydantic.BaseModel):
@@ -1517,97 +935,6 @@ class CheckoutTransaction(pydantic.BaseModel):
     """
 	Amount of the applicable VAT (out of the total transaction amount).
 	"""
-
-
-class CheckoutTransactionDict(typing_extensions.TypedDict, total=False):
-    amount: typing_extensions.NotRequired[
-        typing_extensions.Annotated[
-            float, typing_extensions.Doc("Total amount of the transaction.")
-        ]
-    ]
-    auth_code: typing_extensions.NotRequired[
-        typing_extensions.Annotated[
-            str,
-            typing_extensions.Doc(
-                "Authorization code for the transaction sent by the payment card issuer or bank. Applicable only to card payments."
-            ),
-        ]
-    ]
-    currency: typing_extensions.NotRequired[
-        typing_extensions.Annotated[
-            CurrencyInput,
-            typing_extensions.Doc(
-                "Three-letter [ISO4217](https://en.wikipedia.org/wiki/ISO_4217) code of the currency for the amount. Currently supportedcurrency values are enumerated above."
-            ),
-        ]
-    ]
-    entry_mode: typing_extensions.NotRequired[
-        typing_extensions.Annotated[
-            EntryModeInput, typing_extensions.Doc("Entry mode of the payment details.")
-        ]
-    ]
-    id: typing_extensions.NotRequired[
-        typing_extensions.Annotated[str, typing_extensions.Doc("Unique ID of the transaction.")]
-    ]
-    installments_count: typing_extensions.NotRequired[
-        typing_extensions.Annotated[
-            int,
-            typing_extensions.Doc(
-                "Current number of the installment for deferred payments.\nMin: 1"
-            ),
-        ]
-    ]
-    merchant_code: typing_extensions.NotRequired[
-        typing_extensions.Annotated[
-            str,
-            typing_extensions.Doc(
-                "Unique code of the registered merchant to whom the payment is made."
-            ),
-        ]
-    ]
-    payment_type: typing_extensions.NotRequired[
-        typing_extensions.Annotated[
-            PaymentTypeInput, typing_extensions.Doc("Payment type used for the transaction.")
-        ]
-    ]
-    status: typing_extensions.NotRequired[
-        typing_extensions.Annotated[
-            CheckoutTransactionStatusInput,
-            typing_extensions.Doc("Current status of the transaction."),
-        ]
-    ]
-    timestamp: typing_extensions.NotRequired[
-        typing_extensions.Annotated[
-            datetime.datetime,
-            typing_extensions.Doc(
-                "Date and time of the creation of the transaction. Response format expressed according to [ISO8601](https://en.wikipedia.org/wiki/ISO_8601) code."
-            ),
-        ]
-    ]
-    tip_amount: typing_extensions.NotRequired[
-        typing_extensions.Annotated[
-            float, typing_extensions.Doc("Amount of the tip (out of the total transaction amount).")
-        ]
-    ]
-    transaction_code: typing_extensions.NotRequired[
-        typing_extensions.Annotated[
-            str,
-            typing_extensions.Doc(
-                "Transaction code returned by the acquirer/processing entity after processing the transaction."
-            ),
-        ]
-    ]
-    vat_amount: typing_extensions.NotRequired[
-        typing_extensions.Annotated[
-            float,
-            typing_extensions.Doc(
-                "Amount of the applicable VAT (out of the total transaction amount)."
-            ),
-        ]
-    ]
-
-
-CheckoutTransactionInput = CheckoutTransactionDict
 
 
 class Checkout(pydantic.BaseModel):
@@ -1685,112 +1012,9 @@ class Checkout(pydantic.BaseModel):
 	"""
 
 
-class CheckoutDict(typing_extensions.TypedDict, total=False):
-    amount: typing_extensions.NotRequired[
-        typing_extensions.Annotated[
-            float,
-            typing_extensions.Doc("Amount to be charged to the payer, expressed in major units."),
-        ]
-    ]
-    checkout_reference: typing_extensions.NotRequired[
-        typing_extensions.Annotated[
-            str,
-            typing_extensions.Doc(
-                "Merchant-defined reference for the checkout. Use it to correlate the SumUp checkout with your own order, cart,subscription, or payment attempt in your systems.\nMax length: 90"
-            ),
-        ]
-    ]
-    currency: typing_extensions.NotRequired[
-        typing_extensions.Annotated[
-            CurrencyInput,
-            typing_extensions.Doc(
-                "Three-letter [ISO4217](https://en.wikipedia.org/wiki/ISO_4217) code of the currency for the amount. Currently supportedcurrency values are enumerated above."
-            ),
-        ]
-    ]
-    customer_id: typing_extensions.NotRequired[
-        typing_extensions.Annotated[
-            str,
-            typing_extensions.Doc(
-                "Merchant-scoped identifier of the customer associated with the checkout. Use it when storing payment instrumentsor reusing saved customer context for recurring and returning-payer flows."
-            ),
-        ]
-    ]
-    date: typing_extensions.NotRequired[
-        typing_extensions.Annotated[
-            datetime.datetime,
-            typing_extensions.Doc(
-                "Date and time of the creation of the payment checkout. Response format expressed according to [ISO8601](https://en.wikipedia.org/wiki/ISO_8601) code."
-            ),
-        ]
-    ]
-    description: typing_extensions.NotRequired[
-        typing_extensions.Annotated[
-            str,
-            typing_extensions.Doc(
-                "Short merchant-defined description shown in SumUp tools and reporting. Use it to make the checkout easier torecognize in dashboards, support workflows, and reconciliation."
-            ),
-        ]
-    ]
-    id: typing_extensions.NotRequired[
-        typing_extensions.Annotated[
-            str,
-            typing_extensions.Doc("Unique SumUp identifier of the checkout resource.\nRead only"),
-        ]
-    ]
-    mandate: typing_extensions.NotRequired[
-        typing_extensions.Annotated[
-            MandateResponseInput,
-            typing_extensions.Doc("Details of the mandate linked to the saved payment instrument."),
-        ]
-    ]
-    merchant_code: typing_extensions.NotRequired[
-        typing_extensions.Annotated[
-            str, typing_extensions.Doc("Merchant account that receives the payment.")
-        ]
-    ]
-    return_url: typing_extensions.NotRequired[
-        typing_extensions.Annotated[
-            str,
-            typing_extensions.Doc(
-                "Optional backend callback URL used by SumUp to notify your platform about processing updates for the checkout.\nFormat:uri"
-            ),
-        ]
-    ]
-    status: typing_extensions.NotRequired[
-        typing_extensions.Annotated[
-            CheckoutStatusInput,
-            typing_extensions.Doc(
-                "Current high-level state of the checkout. `PENDING` means the checkout exists but is not yet completed, `PAID`means a payment succeeded, `FAILED` means the latest processing attempt failed, and `EXPIRED` means the checkoutcan no longer be processed."
-            ),
-        ]
-    ]
-    transactions: typing_extensions.NotRequired[
-        typing_extensions.Annotated[
-            typing.Sequence[CheckoutTransactionInput],
-            typing_extensions.Doc(
-                "Payment attempts and resulting transaction records linked to this checkout. Use the Transactions endpoints whenyou need the authoritative payment result and event history.\nUnique items only"
-            ),
-        ]
-    ]
-    valid_until: typing_extensions.NotRequired[
-        typing_extensions.Annotated[
-            datetime.datetime,
-            typing_extensions.Doc(
-                "Optional expiration timestamp. The checkout must be processed before this moment, otherwise it becomes unusable.If omitted, the checkout does not have an explicit expiry time."
-            ),
-        ]
-    ]
-
-
-CheckoutInput = CheckoutDict
-
-
 CheckoutAcceptedNextStepMechanism = typing.Union[typing.Literal["browser", "iframe"], str]
-CheckoutAcceptedNextStepMechanismInput = CheckoutAcceptedNextStepMechanism
 
 CheckoutAcceptedNextStepPayload = dict[str, str]
-CheckoutAcceptedNextStepPayloadInput = typing.Mapping[str, str]
 """
 Parameters required to complete the next step. The exact keys depend on the payment provider and flow type.
 """
@@ -1827,46 +1051,6 @@ class CheckoutAcceptedNextStep(pydantic.BaseModel):
 	"""
 
 
-class CheckoutAcceptedNextStepDict(typing_extensions.TypedDict, total=False):
-    mechanism: typing_extensions.NotRequired[
-        typing_extensions.Annotated[
-            typing.Sequence[CheckoutAcceptedNextStepMechanismInput],
-            typing_extensions.Doc(
-                "Allowed presentation mechanisms for the next step. `iframe` means the flow can be embedded, while `browser` meansit can be completed through a full-page redirect."
-            ),
-        ]
-    ]
-    method: typing_extensions.NotRequired[
-        typing_extensions.Annotated[
-            str, typing_extensions.Doc("HTTP method to use when following the next step.")
-        ]
-    ]
-    payload: typing_extensions.NotRequired[
-        typing_extensions.Annotated[
-            CheckoutAcceptedNextStepPayloadInput,
-            typing_extensions.Doc(
-                "Parameters required to complete the next step. The exact keys depend on the payment provider and flow type."
-            ),
-        ]
-    ]
-    redirect_url: typing_extensions.NotRequired[
-        typing_extensions.Annotated[
-            str,
-            typing_extensions.Doc(
-                "Merchant URL where the payer returns after the external flow finishes."
-            ),
-        ]
-    ]
-    url: typing_extensions.NotRequired[
-        typing_extensions.Annotated[
-            str, typing_extensions.Doc("URL to open or submit in order to continue processing.")
-        ]
-    ]
-
-
-CheckoutAcceptedNextStepInput = CheckoutAcceptedNextStepDict
-
-
 class CheckoutAccepted(pydantic.BaseModel):
     """
     Response returned when checkout processing requires an additional payer action, such as a 3DS challenge ora redirect to an external payment method page.
@@ -1876,20 +1060,6 @@ class CheckoutAccepted(pydantic.BaseModel):
     """
 	Instructions for the next action the payer or client must take.
 	"""
-
-
-class CheckoutAcceptedDict(typing_extensions.TypedDict, total=False):
-    next_step: typing_extensions.NotRequired[
-        typing_extensions.Annotated[
-            CheckoutAcceptedNextStepInput,
-            typing_extensions.Doc(
-                "Instructions for the next action the payer or client must take."
-            ),
-        ]
-    ]
-
-
-CheckoutAcceptedInput = CheckoutAcceptedDict
 
 
 CheckoutCreateRequestPurpose = typing.Union[
@@ -2039,12 +1209,10 @@ CheckoutCreateRequestInput = CheckoutCreateRequestDict
 
 
 CheckoutSuccessStatus = typing.Union[typing.Literal["EXPIRED", "FAILED", "PAID", "PENDING"], str]
-CheckoutSuccessStatusInput = CheckoutSuccessStatus
 
 CheckoutSuccessTransactionStatus = typing.Union[
     typing.Literal["CANCELLED", "FAILED", "PENDING", "SUCCESSFUL"], str
 ]
-CheckoutSuccessTransactionStatusInput = CheckoutSuccessTransactionStatus
 
 
 class CheckoutSuccessTransaction(pydantic.BaseModel):
@@ -2119,97 +1287,6 @@ class CheckoutSuccessTransaction(pydantic.BaseModel):
 	"""
 
 
-class CheckoutSuccessTransactionDict(typing_extensions.TypedDict, total=False):
-    amount: typing_extensions.NotRequired[
-        typing_extensions.Annotated[
-            float, typing_extensions.Doc("Total amount of the transaction.")
-        ]
-    ]
-    auth_code: typing_extensions.NotRequired[
-        typing_extensions.Annotated[
-            str,
-            typing_extensions.Doc(
-                "Authorization code for the transaction sent by the payment card issuer or bank. Applicable only to card payments."
-            ),
-        ]
-    ]
-    currency: typing_extensions.NotRequired[
-        typing_extensions.Annotated[
-            CurrencyInput,
-            typing_extensions.Doc(
-                "Three-letter [ISO4217](https://en.wikipedia.org/wiki/ISO_4217) code of the currency for the amount. Currently supportedcurrency values are enumerated above."
-            ),
-        ]
-    ]
-    entry_mode: typing_extensions.NotRequired[
-        typing_extensions.Annotated[
-            EntryModeInput, typing_extensions.Doc("Entry mode of the payment details.")
-        ]
-    ]
-    id: typing_extensions.NotRequired[
-        typing_extensions.Annotated[str, typing_extensions.Doc("Unique ID of the transaction.")]
-    ]
-    installments_count: typing_extensions.NotRequired[
-        typing_extensions.Annotated[
-            int,
-            typing_extensions.Doc(
-                "Current number of the installment for deferred payments.\nMin: 1"
-            ),
-        ]
-    ]
-    merchant_code: typing_extensions.NotRequired[
-        typing_extensions.Annotated[
-            str,
-            typing_extensions.Doc(
-                "Unique code of the registered merchant to whom the payment is made."
-            ),
-        ]
-    ]
-    payment_type: typing_extensions.NotRequired[
-        typing_extensions.Annotated[
-            PaymentTypeInput, typing_extensions.Doc("Payment type used for the transaction.")
-        ]
-    ]
-    status: typing_extensions.NotRequired[
-        typing_extensions.Annotated[
-            CheckoutSuccessTransactionStatusInput,
-            typing_extensions.Doc("Current status of the transaction."),
-        ]
-    ]
-    timestamp: typing_extensions.NotRequired[
-        typing_extensions.Annotated[
-            datetime.datetime,
-            typing_extensions.Doc(
-                "Date and time of the creation of the transaction. Response format expressed according to [ISO8601](https://en.wikipedia.org/wiki/ISO_8601) code."
-            ),
-        ]
-    ]
-    tip_amount: typing_extensions.NotRequired[
-        typing_extensions.Annotated[
-            float, typing_extensions.Doc("Amount of the tip (out of the total transaction amount).")
-        ]
-    ]
-    transaction_code: typing_extensions.NotRequired[
-        typing_extensions.Annotated[
-            str,
-            typing_extensions.Doc(
-                "Transaction code returned by the acquirer/processing entity after processing the transaction."
-            ),
-        ]
-    ]
-    vat_amount: typing_extensions.NotRequired[
-        typing_extensions.Annotated[
-            float,
-            typing_extensions.Doc(
-                "Amount of the applicable VAT (out of the total transaction amount)."
-            ),
-        ]
-    ]
-
-
-CheckoutSuccessTransactionInput = CheckoutSuccessTransactionDict
-
-
 class CheckoutSuccessPaymentInstrument(pydantic.BaseModel):
     """
     Details of the saved payment instrument created or reused during checkout processing.
@@ -2219,15 +1296,6 @@ class CheckoutSuccessPaymentInstrument(pydantic.BaseModel):
     """
 	Token value
 	"""
-
-
-class CheckoutSuccessPaymentInstrumentDict(typing_extensions.TypedDict, total=False):
-    token: typing_extensions.NotRequired[
-        typing_extensions.Annotated[str, typing_extensions.Doc("Token value")]
-    ]
-
-
-CheckoutSuccessPaymentInstrumentInput = CheckoutSuccessPaymentInstrumentDict
 
 
 class CheckoutSuccess(pydantic.BaseModel):
@@ -2332,142 +1400,6 @@ class CheckoutSuccess(pydantic.BaseModel):
 	"""
 
 
-class CheckoutSuccessDict(typing_extensions.TypedDict, total=False):
-    amount: typing_extensions.NotRequired[
-        typing_extensions.Annotated[
-            float,
-            typing_extensions.Doc("Amount to be charged to the payer, expressed in major units."),
-        ]
-    ]
-    checkout_reference: typing_extensions.NotRequired[
-        typing_extensions.Annotated[
-            str,
-            typing_extensions.Doc(
-                "Merchant-defined reference for the checkout. Use it to correlate the SumUp checkout with your own order, cart,subscription, or payment attempt in your systems.\nMax length: 90"
-            ),
-        ]
-    ]
-    currency: typing_extensions.NotRequired[
-        typing_extensions.Annotated[
-            CurrencyInput,
-            typing_extensions.Doc(
-                "Three-letter [ISO4217](https://en.wikipedia.org/wiki/ISO_4217) code of the currency for the amount. Currently supportedcurrency values are enumerated above."
-            ),
-        ]
-    ]
-    customer_id: typing_extensions.NotRequired[
-        typing_extensions.Annotated[
-            str,
-            typing_extensions.Doc(
-                "Merchant-scoped identifier of the customer associated with the checkout. Use it when storing payment instrumentsor reusing saved customer context for recurring and returning-payer flows."
-            ),
-        ]
-    ]
-    date: typing_extensions.NotRequired[
-        typing_extensions.Annotated[
-            datetime.datetime,
-            typing_extensions.Doc(
-                "Date and time of the creation of the payment checkout. Response format expressed according to [ISO8601](https://en.wikipedia.org/wiki/ISO_8601) code."
-            ),
-        ]
-    ]
-    description: typing_extensions.NotRequired[
-        typing_extensions.Annotated[
-            str,
-            typing_extensions.Doc(
-                "Short merchant-defined description shown in SumUp tools and reporting. Use it to make the checkout easier torecognize in dashboards, support workflows, and reconciliation."
-            ),
-        ]
-    ]
-    id: typing_extensions.NotRequired[
-        typing_extensions.Annotated[
-            str,
-            typing_extensions.Doc("Unique SumUp identifier of the checkout resource.\nRead only"),
-        ]
-    ]
-    mandate: typing_extensions.NotRequired[
-        typing_extensions.Annotated[
-            MandateResponseInput,
-            typing_extensions.Doc("Details of the mandate linked to the saved payment instrument."),
-        ]
-    ]
-    merchant_code: typing_extensions.NotRequired[
-        typing_extensions.Annotated[
-            str, typing_extensions.Doc("Merchant account that receives the payment.")
-        ]
-    ]
-    merchant_name: typing_extensions.NotRequired[
-        typing_extensions.Annotated[str, typing_extensions.Doc("Name of the merchant")]
-    ]
-    payment_instrument: typing_extensions.NotRequired[
-        typing_extensions.Annotated[
-            CheckoutSuccessPaymentInstrumentInput,
-            typing_extensions.Doc(
-                "Details of the saved payment instrument created or reused during checkout processing."
-            ),
-        ]
-    ]
-    redirect_url: typing_extensions.NotRequired[
-        typing_extensions.Annotated[
-            str,
-            typing_extensions.Doc(
-                "URL where the payer is redirected after a redirect-based payment or SCA flow completes."
-            ),
-        ]
-    ]
-    return_url: typing_extensions.NotRequired[
-        typing_extensions.Annotated[
-            str,
-            typing_extensions.Doc(
-                "Optional backend callback URL used by SumUp to notify your platform about processing updates for the checkout.\nFormat:uri"
-            ),
-        ]
-    ]
-    status: typing_extensions.NotRequired[
-        typing_extensions.Annotated[
-            CheckoutSuccessStatusInput,
-            typing_extensions.Doc(
-                "Current high-level state of the checkout. `PENDING` means the checkout exists but is not yet completed, `PAID`means a payment succeeded, `FAILED` means the latest processing attempt failed, and `EXPIRED` means the checkoutcan no longer be processed."
-            ),
-        ]
-    ]
-    transaction_code: typing_extensions.NotRequired[
-        typing_extensions.Annotated[
-            str,
-            typing_extensions.Doc(
-                "Transaction code of the successful transaction with which the payment for the checkout is completed.\nRead only"
-            ),
-        ]
-    ]
-    transaction_id: typing_extensions.NotRequired[
-        typing_extensions.Annotated[
-            str,
-            typing_extensions.Doc(
-                "Transaction ID of the successful transaction with which the payment for the checkout is completed.\nRead only"
-            ),
-        ]
-    ]
-    transactions: typing_extensions.NotRequired[
-        typing_extensions.Annotated[
-            typing.Sequence[CheckoutSuccessTransactionInput],
-            typing_extensions.Doc(
-                "Payment attempts and resulting transaction records linked to this checkout. Use the Transactions endpoints whenyou need the authoritative payment result and event history.\nUnique items only"
-            ),
-        ]
-    ]
-    valid_until: typing_extensions.NotRequired[
-        typing_extensions.Annotated[
-            datetime.datetime,
-            typing_extensions.Doc(
-                "Optional expiration timestamp. The checkout must be processed before this moment, otherwise it becomes unusable.If omitted, the checkout does not have an explicit expiry time."
-            ),
-        ]
-    ]
-
-
-CheckoutSuccessInput = CheckoutSuccessDict
-
-
 class ClassicMerchantIdentifiers(pydantic.BaseModel):
     """
     ClassicMerchantIdentifiers is a schema definition.
@@ -2479,20 +1411,6 @@ class ClassicMerchantIdentifiers(pydantic.BaseModel):
 	Format: int64
 	Deprecated: this operation is deprecated
 	"""
-
-
-class ClassicMerchantIdentifiersDict(typing_extensions.TypedDict, total=False):
-    id: typing_extensions.Required[
-        typing_extensions.Annotated[
-            int,
-            typing_extensions.Doc(
-                "Classic (serial) merchant ID.\nFormat: int64\nDeprecated: this operation is deprecated"
-            ),
-        ]
-    ]
-
-
-ClassicMerchantIdentifiersInput = ClassicMerchantIdentifiersDict
 
 
 class CompanyIdentifier(pydantic.BaseModel):
@@ -2513,33 +1431,12 @@ class CompanyIdentifier(pydantic.BaseModel):
 	"""
 
 
-class CompanyIdentifierDict(typing_extensions.TypedDict, total=False):
-    ref: typing_extensions.Required[
-        typing_extensions.Annotated[
-            str,
-            typing_extensions.Doc(
-                "The unique reference for the company identifier type as defined in the country SDK."
-            ),
-        ]
-    ]
-    value: typing_extensions.Required[
-        typing_extensions.Annotated[
-            str, typing_extensions.Doc("The company identifier value.\nMax length: 100")
-        ]
-    ]
-
-
-CompanyIdentifierInput = CompanyIdentifierDict
-
-
 CompanyIdentifiers = list[CompanyIdentifier]
-CompanyIdentifiersInput = typing.Sequence[CompanyIdentifierInput]
 """
 A list of country-specific company identifiers.
 """
 
 LegalType = str
-LegalTypeInput = str
 """
 The unique legal type reference as defined in the country SDK. We do not rely on IDs as used by other services.Consumers of this API are expected to use the country SDK to map to any other IDs, translation keys, ordescriptions.
 
@@ -2615,79 +1512,6 @@ class Company(pydantic.BaseModel):
 	"""
 
 
-class CompanyDict(typing_extensions.TypedDict, total=False):
-    address: typing_extensions.NotRequired[
-        typing_extensions.Annotated[
-            AddressInput,
-            typing_extensions.Doc(
-                "An address somewhere in the world. The address fields used depend on the country conventions. For example, inGreat Britain, `city` is `post_town`. In the United States, the top-level administrative unit used in addressesis `state`, whereas in Chile it's `region`.\nWhether an address is valid or not depends on whether the locally required fields are present. Fields not supported ina country will be ignored.\nAddress documentation: https://backstage.sumup.net/docs/default/Component/merchants/merchant/#addresses"
-            ),
-        ]
-    ]
-    attributes: typing_extensions.NotRequired[
-        typing_extensions.Annotated[
-            AttributesInput,
-            typing_extensions.Doc(
-                "Object attributes that are modifiable only by SumUp applications."
-            ),
-        ]
-    ]
-    identifiers: typing_extensions.NotRequired[
-        typing_extensions.Annotated[
-            CompanyIdentifiersInput,
-            typing_extensions.Doc("A list of country-specific company identifiers."),
-        ]
-    ]
-    legal_type: typing_extensions.NotRequired[
-        typing_extensions.Annotated[
-            LegalTypeInput,
-            typing_extensions.Doc(
-                "The unique legal type reference as defined in the country SDK. We do not rely on IDs as used by other services.Consumers of this API are expected to use the country SDK to map to any other IDs, translation keys, ordescriptions.\nMin length: 4\nMax length: 64\nThe country SDK documentation for legal types.: https://developer.sumup.com/tools/glossary/merchant#legal-types"
-            ),
-        ]
-    ]
-    merchant_category_code: typing_extensions.NotRequired[
-        typing_extensions.Annotated[
-            str,
-            typing_extensions.Doc(
-                "The merchant category code for the account as specified by [ISO18245](https://www.iso.org/standard/33365.html). MCCsare used to classify businesses based on the goods or services they provide.\nPattern: ^[0-9]{4}$"
-            ),
-        ]
-    ]
-    name: typing_extensions.NotRequired[
-        typing_extensions.Annotated[
-            str, typing_extensions.Doc("The company's legal name.\nMin length: 1\nMax length: 150")
-        ]
-    ]
-    phone_number: typing_extensions.NotRequired[
-        typing_extensions.Annotated[
-            PhoneNumberInput,
-            typing_extensions.Doc(
-                "A publicly available phone number in [E.164](https://en.wikipedia.org/wiki/E.164) format.\nMax length: 16"
-            ),
-        ]
-    ]
-    trading_address: typing_extensions.NotRequired[
-        typing_extensions.Annotated[
-            AddressInput,
-            typing_extensions.Doc(
-                "An address somewhere in the world. The address fields used depend on the country conventions. For example, inGreat Britain, `city` is `post_town`. In the United States, the top-level administrative unit used in addressesis `state`, whereas in Chile it's `region`.\nWhether an address is valid or not depends on whether the locally required fields are present. Fields not supported ina country will be ignored.\nAddress documentation: https://backstage.sumup.net/docs/default/Component/merchants/merchant/#addresses"
-            ),
-        ]
-    ]
-    website: typing_extensions.NotRequired[
-        typing_extensions.Annotated[
-            str,
-            typing_extensions.Doc(
-                "HTTP(S) URL of the company's website.\nFormat: uri\nMax length: 255"
-            ),
-        ]
-    ]
-
-
-CompanyInput = CompanyDict
-
-
 class CreateReaderCheckoutErrorErrors(pydantic.BaseModel):
     """
     CreateReaderCheckoutErrorErrors is a schema definition.
@@ -2704,31 +1528,12 @@ class CreateReaderCheckoutErrorErrors(pydantic.BaseModel):
 	"""
 
 
-class CreateReaderCheckoutErrorErrorsDict(typing_extensions.TypedDict, total=False):
-    type: typing_extensions.Required[
-        typing_extensions.Annotated[str, typing_extensions.Doc("Error code")]
-    ]
-    detail: typing_extensions.NotRequired[
-        typing_extensions.Annotated[str, typing_extensions.Doc("Error message")]
-    ]
-
-
-CreateReaderCheckoutErrorErrorsInput = CreateReaderCheckoutErrorErrorsDict
-
-
 class CreateReaderCheckoutError(pydantic.BaseModel):
     """
     Error description
     """
 
     errors: CreateReaderCheckoutErrorErrors
-
-
-class CreateReaderCheckoutErrorDict(typing_extensions.TypedDict, total=False):
-    errors: typing_extensions.Required[CreateReaderCheckoutErrorErrorsInput]
-
-
-CreateReaderCheckoutErrorInput = CreateReaderCheckoutErrorDict
 
 
 class CreateReaderCheckoutRequestAade(pydantic.BaseModel):
@@ -3072,20 +1877,6 @@ class CreateReaderCheckoutResponseData(pydantic.BaseModel):
 	"""
 
 
-class CreateReaderCheckoutResponseDataDict(typing_extensions.TypedDict, total=False):
-    client_transaction_id: typing_extensions.Required[
-        typing_extensions.Annotated[
-            str,
-            typing_extensions.Doc(
-                "The client transaction ID is a unique identifier for the transaction that is generated for the client.\n\nIt can be used later to fetch the transaction details via the [Transactions API](https://developer.sumup.com/api/transactions/get)."
-            ),
-        ]
-    ]
-
-
-CreateReaderCheckoutResponseDataInput = CreateReaderCheckoutResponseDataDict
-
-
 class CreateReaderCheckoutResponse(pydantic.BaseModel):
     """
     CreateReaderCheckoutResponse is a schema definition.
@@ -3094,15 +1885,7 @@ class CreateReaderCheckoutResponse(pydantic.BaseModel):
     data: CreateReaderCheckoutResponseData
 
 
-class CreateReaderCheckoutResponseDict(typing_extensions.TypedDict, total=False):
-    data: typing_extensions.Required[CreateReaderCheckoutResponseDataInput]
-
-
-CreateReaderCheckoutResponseInput = CreateReaderCheckoutResponseDict
-
-
 CreateReaderCheckoutUnprocessableEntityErrors = dict[str, object]
-CreateReaderCheckoutUnprocessableEntityErrorsInput = typing.Mapping[str, object]
 """
 CreateReaderCheckoutUnprocessableEntityErrors is a schema definition.
 """
@@ -3114,13 +1897,6 @@ class CreateReaderCheckoutUnprocessableEntity(pydantic.BaseModel):
     """
 
     errors: CreateReaderCheckoutUnprocessableEntityErrors
-
-
-class CreateReaderCheckoutUnprocessableEntityDict(typing_extensions.TypedDict, total=False):
-    errors: typing_extensions.Required[CreateReaderCheckoutUnprocessableEntityErrorsInput]
-
-
-CreateReaderCheckoutUnprocessableEntityInput = CreateReaderCheckoutUnprocessableEntityDict
 
 
 class CreateReaderTerminateErrorErrors(pydantic.BaseModel):
@@ -3139,18 +1915,6 @@ class CreateReaderTerminateErrorErrors(pydantic.BaseModel):
 	"""
 
 
-class CreateReaderTerminateErrorErrorsDict(typing_extensions.TypedDict, total=False):
-    type: typing_extensions.Required[
-        typing_extensions.Annotated[str, typing_extensions.Doc("Error code")]
-    ]
-    detail: typing_extensions.NotRequired[
-        typing_extensions.Annotated[str, typing_extensions.Doc("Error message")]
-    ]
-
-
-CreateReaderTerminateErrorErrorsInput = CreateReaderTerminateErrorErrorsDict
-
-
 class CreateReaderTerminateError(pydantic.BaseModel):
     """
     Error description
@@ -3159,15 +1923,7 @@ class CreateReaderTerminateError(pydantic.BaseModel):
     errors: CreateReaderTerminateErrorErrors
 
 
-class CreateReaderTerminateErrorDict(typing_extensions.TypedDict, total=False):
-    errors: typing_extensions.Required[CreateReaderTerminateErrorErrorsInput]
-
-
-CreateReaderTerminateErrorInput = CreateReaderTerminateErrorDict
-
-
 CreateReaderTerminateUnprocessableEntityErrors = dict[str, object]
-CreateReaderTerminateUnprocessableEntityErrorsInput = typing.Mapping[str, object]
 """
 CreateReaderTerminateUnprocessableEntityErrors is a schema definition.
 """
@@ -3179,13 +1935,6 @@ class CreateReaderTerminateUnprocessableEntity(pydantic.BaseModel):
     """
 
     errors: CreateReaderTerminateUnprocessableEntityErrors
-
-
-class CreateReaderTerminateUnprocessableEntityDict(typing_extensions.TypedDict, total=False):
-    errors: typing_extensions.Required[CreateReaderTerminateUnprocessableEntityErrorsInput]
-
-
-CreateReaderTerminateUnprocessableEntityInput = CreateReaderTerminateUnprocessableEntityDict
 
 
 class PersonalDetails(pydantic.BaseModel):
@@ -3307,14 +2056,6 @@ class DetailsErrorFailedConstraint(pydantic.BaseModel):
     reference: typing.Optional[str] = None
 
 
-class DetailsErrorFailedConstraintDict(typing_extensions.TypedDict, total=False):
-    message: typing_extensions.NotRequired[str]
-    reference: typing_extensions.NotRequired[str]
-
-
-DetailsErrorFailedConstraintInput = DetailsErrorFailedConstraintDict
-
-
 class DetailsError(pydantic.BaseModel):
     """
     Error message structure.
@@ -3339,27 +2080,6 @@ class DetailsError(pydantic.BaseModel):
     """
 	Short title of the error.
 	"""
-
-
-class DetailsErrorDict(typing_extensions.TypedDict, total=False):
-    details: typing_extensions.NotRequired[
-        typing_extensions.Annotated[str, typing_extensions.Doc("Details of the error.")]
-    ]
-    failed_constraints: typing_extensions.NotRequired[
-        typing_extensions.Annotated[
-            typing.Sequence[DetailsErrorFailedConstraintInput],
-            typing_extensions.Doc("List of violated validation constraints."),
-        ]
-    ]
-    status: typing_extensions.NotRequired[
-        typing_extensions.Annotated[float, typing_extensions.Doc("The status code.")]
-    ]
-    title: typing_extensions.NotRequired[
-        typing_extensions.Annotated[str, typing_extensions.Doc("Short title of the error.")]
-    ]
-
-
-DetailsErrorInput = DetailsErrorDict
 
 
 class Device(pydantic.BaseModel):
@@ -3393,27 +2113,6 @@ class Device(pydantic.BaseModel):
 	"""
 
 
-class DeviceDict(typing_extensions.TypedDict, total=False):
-    model: typing_extensions.NotRequired[
-        typing_extensions.Annotated[str, typing_extensions.Doc("Device model.")]
-    ]
-    name: typing_extensions.NotRequired[
-        typing_extensions.Annotated[str, typing_extensions.Doc("Device name.")]
-    ]
-    system_name: typing_extensions.NotRequired[
-        typing_extensions.Annotated[str, typing_extensions.Doc("Device OS.")]
-    ]
-    system_version: typing_extensions.NotRequired[
-        typing_extensions.Annotated[str, typing_extensions.Doc("Device OS version.")]
-    ]
-    uuid: typing_extensions.NotRequired[
-        typing_extensions.Annotated[str, typing_extensions.Doc("Device UUID.")]
-    ]
-
-
-DeviceInput = DeviceDict
-
-
 class ElvCardAccount(pydantic.BaseModel):
     """
     Details of the ELV card account associated with the transaction.
@@ -3440,26 +2139,6 @@ class ElvCardAccount(pydantic.BaseModel):
 	"""
 
 
-class ElvCardAccountDict(typing_extensions.TypedDict, total=False):
-    iban: typing_extensions.NotRequired[
-        typing_extensions.Annotated[str, typing_extensions.Doc("ELV IBAN.")]
-    ]
-    last_4_digits: typing_extensions.NotRequired[
-        typing_extensions.Annotated[
-            str, typing_extensions.Doc("ELV card account number last 4 digits.")
-        ]
-    ]
-    sequence_no: typing_extensions.NotRequired[
-        typing_extensions.Annotated[int, typing_extensions.Doc("ELV card sequence number.")]
-    ]
-    sort_code: typing_extensions.NotRequired[
-        typing_extensions.Annotated[str, typing_extensions.Doc("ELV card sort code.")]
-    ]
-
-
-ElvCardAccountInput = ElvCardAccountDict
-
-
 class Error(pydantic.BaseModel):
     """
     Error message structure.
@@ -3474,18 +2153,6 @@ class Error(pydantic.BaseModel):
     """
 	Short description of the error.
 	"""
-
-
-class ErrorDict(typing_extensions.TypedDict, total=False):
-    error_code: typing_extensions.NotRequired[
-        typing_extensions.Annotated[str, typing_extensions.Doc("Platform code for the error.")]
-    ]
-    message: typing_extensions.NotRequired[
-        typing_extensions.Annotated[str, typing_extensions.Doc("Short description of the error.")]
-    ]
-
-
-ErrorInput = ErrorDict
 
 
 class ErrorExtended(pydantic.BaseModel):
@@ -3509,26 +2176,6 @@ class ErrorExtended(pydantic.BaseModel):
 	"""
 
 
-class ErrorExtendedDict(typing_extensions.TypedDict, total=False):
-    error_code: typing_extensions.NotRequired[
-        typing_extensions.Annotated[str, typing_extensions.Doc("Platform code for the error.")]
-    ]
-    message: typing_extensions.NotRequired[
-        typing_extensions.Annotated[str, typing_extensions.Doc("Short description of the error.")]
-    ]
-    param: typing_extensions.NotRequired[
-        typing_extensions.Annotated[
-            str,
-            typing_extensions.Doc(
-                "Parameter name (with relative location) to which the error applies. Parameters from embedded resources aredisplayed using dot notation. For example, `card.name` refers to the `name` parameter embedded in the `card`object."
-            ),
-        ]
-    ]
-
-
-ErrorExtendedInput = ErrorExtendedDict
-
-
 class ErrorForbidden(pydantic.BaseModel):
     """
     Error message for forbidden requests.
@@ -3550,23 +2197,7 @@ class ErrorForbidden(pydantic.BaseModel):
 	"""
 
 
-class ErrorForbiddenDict(typing_extensions.TypedDict, total=False):
-    error_code: typing_extensions.NotRequired[
-        typing_extensions.Annotated[str, typing_extensions.Doc("Platform code for the error.")]
-    ]
-    error_message: typing_extensions.NotRequired[
-        typing_extensions.Annotated[str, typing_extensions.Doc("Short description of the error.")]
-    ]
-    status_code: typing_extensions.NotRequired[
-        typing_extensions.Annotated[str, typing_extensions.Doc("HTTP status code for the error.")]
-    ]
-
-
-ErrorForbiddenInput = ErrorForbiddenDict
-
-
 EventId = int
-EventIdInput = int
 """
 Unique ID of the transaction event.
 Format: int64
@@ -3578,13 +2209,10 @@ EventStatus = typing.Union[
     ],
     str,
 ]
-EventStatusInput = EventStatus
 
 EventType = typing.Union[typing.Literal["CHARGE_BACK", "PAYOUT", "PAYOUT_DEDUCTION", "REFUND"], str]
-EventTypeInput = EventType
 
 TransactionId = str
-TransactionIdInput = str
 """
 Unique ID of the transaction.
 """
@@ -3657,64 +2285,7 @@ class Event(pydantic.BaseModel):
 	"""
 
 
-class EventDict(typing_extensions.TypedDict, total=False):
-    amount: typing_extensions.NotRequired[
-        typing_extensions.Annotated[float, typing_extensions.Doc("Amount of the event.")]
-    ]
-    deducted_amount: typing_extensions.NotRequired[
-        typing_extensions.Annotated[float, typing_extensions.Doc("Amount deducted for the event.")]
-    ]
-    deducted_fee_amount: typing_extensions.NotRequired[
-        typing_extensions.Annotated[
-            float, typing_extensions.Doc("Amount of the fee deducted for the event.")
-        ]
-    ]
-    fee_amount: typing_extensions.NotRequired[
-        typing_extensions.Annotated[
-            float, typing_extensions.Doc("Amount of the fee related to the event.")
-        ]
-    ]
-    id: typing_extensions.NotRequired[
-        typing_extensions.Annotated[
-            EventIdInput,
-            typing_extensions.Doc("Unique ID of the transaction event.\nFormat: int64"),
-        ]
-    ]
-    installment_number: typing_extensions.NotRequired[
-        typing_extensions.Annotated[
-            int, typing_extensions.Doc("Consecutive number of the installment.")
-        ]
-    ]
-    status: typing_extensions.NotRequired[
-        typing_extensions.Annotated[
-            EventStatusInput,
-            typing_extensions.Doc(
-                "Status of the transaction event.\n\nNot every value is used for every event type.\n\n- `PENDING`: The event has been created but is not final yet. Used for events that are still being processed andwhose final outcome is not known yet.\n- `SCHEDULED`: The event is planned for a future payout cycle but has not been executed yet. This applies topayout events before money is actually sent out.\n- `RECONCILED`: The underlying payment has been matched with settlement data and is ready to continue through payoutprocessing, but the funds have not been paid out yet. This applies to payout events.\n- `PAID_OUT`: The payout event has been completed and the funds were included in a merchant payout.\n- `REFUNDED`: A refund event has been accepted and recorded in the refund flow. This is the status returned forrefund events once the transaction amount is being or has been returned to the payer.\n- `SUCCESSFUL`: The event completed successfully. Use this as the generic terminal success status for event typesthat do not expose a more specific business outcome such as `PAID_OUT` or `REFUNDED`.\n- `FAILED`: The event could not be completed. Typical examples are a payout that could not be executed oran event that was rejected during processing."
-            ),
-        ]
-    ]
-    timestamp: typing_extensions.NotRequired[
-        typing_extensions.Annotated[
-            datetime.datetime, typing_extensions.Doc("Date and time of the transaction event.")
-        ]
-    ]
-    transaction_id: typing_extensions.NotRequired[
-        typing_extensions.Annotated[
-            TransactionIdInput, typing_extensions.Doc("Unique ID of the transaction.")
-        ]
-    ]
-    type: typing_extensions.NotRequired[
-        typing_extensions.Annotated[
-            EventTypeInput, typing_extensions.Doc("Type of the transaction event.")
-        ]
-    ]
-
-
-EventInput = EventDict
-
-
 FinancialPayoutStatus = typing.Union[typing.Literal["FAILED", "SUCCESSFUL"], str]
-FinancialPayoutStatusInput = FinancialPayoutStatus
 
 FinancialPayoutType = typing.Union[
     typing.Literal[
@@ -3726,7 +2297,6 @@ FinancialPayoutType = typing.Union[
     ],
     str,
 ]
-FinancialPayoutTypeInput = FinancialPayoutType
 
 
 class FinancialPayout(pydantic.BaseModel):
@@ -3756,31 +2326,12 @@ class FinancialPayout(pydantic.BaseModel):
     type: typing.Optional[FinancialPayoutType] = None
 
 
-class FinancialPayoutDict(typing_extensions.TypedDict, total=False):
-    amount: typing_extensions.NotRequired[float]
-    currency: typing_extensions.NotRequired[str]
-    date: typing_extensions.NotRequired[
-        typing_extensions.Annotated[datetime.date, typing_extensions.Doc("Format: date")]
-    ]
-    fee: typing_extensions.NotRequired[float]
-    id: typing_extensions.NotRequired[int]
-    reference: typing_extensions.NotRequired[str]
-    status: typing_extensions.NotRequired[FinancialPayoutStatusInput]
-    transaction_code: typing_extensions.NotRequired[str]
-    type: typing_extensions.NotRequired[FinancialPayoutTypeInput]
-
-
-FinancialPayoutInput = FinancialPayoutDict
-
-
 FinancialPayouts = list[FinancialPayout]
-FinancialPayoutsInput = typing.Sequence[FinancialPayoutInput]
 """
 List of payout summaries.
 """
 
 HorizontalAccuracy = float
-HorizontalAccuracyInput = float
 """
 Indication of the precision of the geographical position received from the payment terminal.
 """
@@ -3800,20 +2351,7 @@ class Invite(pydantic.BaseModel):
     expires_at: datetime.datetime
 
 
-class InviteDict(typing_extensions.TypedDict, total=False):
-    email: typing_extensions.Required[
-        typing_extensions.Annotated[
-            str, typing_extensions.Doc("Email address of the invited user.\nFormat: email")
-        ]
-    ]
-    expires_at: typing_extensions.Required[datetime.datetime]
-
-
-InviteInput = InviteDict
-
-
 Lat = float
-LatInput = float
 """
 Latitude value from the coordinates of the payment location (as received from the payment terminal reader).
 Min: 0
@@ -3851,37 +2389,6 @@ class Link(pydantic.BaseModel):
     """
 	Specifies the media type of the related resource.
 	"""
-
-
-class LinkDict(typing_extensions.TypedDict, total=False):
-    href: typing_extensions.NotRequired[
-        typing_extensions.Annotated[
-            str, typing_extensions.Doc("URL for accessing the related resource.\nFormat: uri")
-        ]
-    ]
-    max_amount: typing_extensions.NotRequired[
-        typing_extensions.Annotated[
-            float, typing_extensions.Doc("Maximum allowed amount for the refund.")
-        ]
-    ]
-    min_amount: typing_extensions.NotRequired[
-        typing_extensions.Annotated[
-            float, typing_extensions.Doc("Minimum allowed amount for the refund.")
-        ]
-    ]
-    rel: typing_extensions.NotRequired[
-        typing_extensions.Annotated[
-            str, typing_extensions.Doc("Specifies the relation to the current resource.")
-        ]
-    ]
-    type: typing_extensions.NotRequired[
-        typing_extensions.Annotated[
-            str, typing_extensions.Doc("Specifies the media type of the related resource.")
-        ]
-    ]
-
-
-LinkInput = LinkDict
 
 
 class Person(pydantic.BaseModel):
@@ -3987,125 +2494,6 @@ class Person(pydantic.BaseModel):
 	"""
 
 
-class PersonDict(typing_extensions.TypedDict, total=False):
-    id: typing_extensions.Required[
-        typing_extensions.Annotated[
-            str,
-            typing_extensions.Doc(
-                "The unique identifier for the person. This is a [typeid](https://github.com/sumup/typeid).\nRead only"
-            ),
-        ]
-    ]
-    address: typing_extensions.NotRequired[
-        typing_extensions.Annotated[
-            AddressInput,
-            typing_extensions.Doc(
-                "An address somewhere in the world. The address fields used depend on the country conventions. For example, inGreat Britain, `city` is `post_town`. In the United States, the top-level administrative unit used in addressesis `state`, whereas in Chile it's `region`.\nWhether an address is valid or not depends on whether the locally required fields are present. Fields not supported ina country will be ignored.\nAddress documentation: https://backstage.sumup.net/docs/default/Component/merchants/merchant/#addresses"
-            ),
-        ]
-    ]
-    birthdate: typing_extensions.NotRequired[
-        typing_extensions.Annotated[
-            datetime.date,
-            typing_extensions.Doc(
-                "The date of birth of the individual, represented as an ISO 8601:2004 [ISO8601‑2004] YYYY-MM-DD format.\nFormat: date"
-            ),
-        ]
-    ]
-    change_status: typing_extensions.NotRequired[
-        typing_extensions.Annotated[
-            ChangeStatusInput,
-            typing_extensions.Doc(
-                "Reflects the status of changes submitted through the `PATCH` endpoints for the merchant or persons. If somechanges have not been applied yet, the status will be `pending`. If all changes have been applied, the status`done`.\nThe status is only returned after write operations or on read endpoints when the `version` query parameter isprovided.\nRead only"
-            ),
-        ]
-    ]
-    citizenship: typing_extensions.NotRequired[
-        typing_extensions.Annotated[
-            CountryCodeInput,
-            typing_extensions.Doc(
-                "An [ISO3166-1 alpha-2](https://en.wikipedia.org/wiki/ISO_3166-1_alpha-2)\ncountry code. This definition users `oneOf` with a two-character string\ntype to allow for support of future countries in client code.\nMin length: 2\nMax length: 2\nPattern: ^[A-Z]{2}$"
-            ),
-        ]
-    ]
-    country_of_residence: typing_extensions.NotRequired[
-        typing_extensions.Annotated[
-            str,
-            typing_extensions.Doc(
-                "An [ISO3166-1 alpha-2](https://en.wikipedia.org/wiki/ISO_3166-1_alpha-2) country code representing the countrywhere the person resides.\nMin length: 2\nMax length: 2"
-            ),
-        ]
-    ]
-    family_name: typing_extensions.NotRequired[
-        typing_extensions.Annotated[
-            str, typing_extensions.Doc("The last name(s) of the individual.\nMax length: 60")
-        ]
-    ]
-    given_name: typing_extensions.NotRequired[
-        typing_extensions.Annotated[
-            str, typing_extensions.Doc("The first name(s) of the individual.\nMax length: 60")
-        ]
-    ]
-    identifiers: typing_extensions.NotRequired[
-        typing_extensions.Annotated[
-            typing.Sequence[PersonalIdentifierInput],
-            typing_extensions.Doc("A list of country-specific personal identifiers.\nMax items: 5"),
-        ]
-    ]
-    middle_name: typing_extensions.NotRequired[
-        typing_extensions.Annotated[
-            str,
-            typing_extensions.Doc(
-                "Middle name(s) of the End-User. Note that in some cultures, people can have multiple middle names; all canbe present, with the names being separated by space characters. Also note that in some cultures, middle namesare not used.\nMax length: 60"
-            ),
-        ]
-    ]
-    nationality: typing_extensions.NotRequired[
-        typing_extensions.Annotated[
-            str,
-            typing_extensions.Doc(
-                "The persons nationality. May be an [ISO3166-1 alpha-2](https://en.wikipedia.org/wiki/ISO_3166-1_alpha-2) countrycode, but legacy data may not conform to this standard."
-            ),
-        ]
-    ]
-    ownership: typing_extensions.NotRequired[OwnershipInput]
-    phone_number: typing_extensions.NotRequired[
-        typing_extensions.Annotated[
-            PhoneNumberInput,
-            typing_extensions.Doc(
-                "A publicly available phone number in [E.164](https://en.wikipedia.org/wiki/E.164) format.\nMax length: 16"
-            ),
-        ]
-    ]
-    relationships: typing_extensions.NotRequired[
-        typing_extensions.Annotated[
-            typing.Sequence[str],
-            typing_extensions.Doc(
-                "A list of roles the person has in the merchant or towards SumUp. A merchant must have at least one person withthe relationship `representative`.\nMin items: 1\nMax items: 1"
-            ),
-        ]
-    ]
-    user_id: typing_extensions.NotRequired[
-        typing_extensions.Annotated[
-            str,
-            typing_extensions.Doc(
-                "A corresponding identity user ID for the person, if they have a user account."
-            ),
-        ]
-    ]
-    version: typing_extensions.NotRequired[
-        typing_extensions.Annotated[
-            VersionInput,
-            typing_extensions.Doc(
-                "The version of the resource. The version reflects a specific change submitted to the API via one of the `PATCH`endpoints."
-            ),
-        ]
-    ]
-
-
-PersonInput = PersonDict
-
-
 class ListPersonsResponseBody(pydantic.BaseModel):
     """
     ListPersonsResponseBody is a schema definition.
@@ -4114,15 +2502,7 @@ class ListPersonsResponseBody(pydantic.BaseModel):
     items: list[Person]
 
 
-class ListPersonsResponseBodyDict(typing_extensions.TypedDict, total=False):
-    items: typing_extensions.Required[typing.Sequence[PersonInput]]
-
-
-ListPersonsResponseBodyInput = ListPersonsResponseBodyDict
-
-
 Lon = float
-LonInput = float
 """
 Longitude value from the coordinates of the payment location (as received from the payment terminal reader).
 Min: 0
@@ -4197,15 +2577,6 @@ class MembershipUserClassic(pydantic.BaseModel):
 	"""
 
 
-class MembershipUserClassicDict(typing_extensions.TypedDict, total=False):
-    user_id: typing_extensions.Required[
-        typing_extensions.Annotated[int, typing_extensions.Doc("Format: int32")]
-    ]
-
-
-MembershipUserClassicInput = MembershipUserClassicDict
-
-
 class MembershipUser(pydantic.BaseModel):
     """
     Information about the user associated with the membership.
@@ -4257,69 +2628,6 @@ class MembershipUser(pydantic.BaseModel):
 	URL of the End-User's profile picture. This URL refers to an image file (for example, a PNG, JPEG, or GIFimage file), rather than to a Web page containing an image.
 	Format: uri
 	"""
-
-
-class MembershipUserDict(typing_extensions.TypedDict, total=False):
-    email: typing_extensions.Required[
-        typing_extensions.Annotated[
-            str,
-            typing_extensions.Doc(
-                "End-User's preferred e-mail address. Its value MUST conform to the RFC 5322 [RFC5322] addr-spec syntax. TheRP MUST NOT rely upon this value being unique, for unique identification use ID instead."
-            ),
-        ]
-    ]
-    id: typing_extensions.Required[
-        typing_extensions.Annotated[
-            str, typing_extensions.Doc("Identifier for the End-User (also called Subject).")
-        ]
-    ]
-    mfa_on_login_enabled: typing_extensions.Required[
-        typing_extensions.Annotated[
-            bool, typing_extensions.Doc("True if the user has enabled MFA on login.")
-        ]
-    ]
-    service_account_user: typing_extensions.Required[
-        typing_extensions.Annotated[
-            bool, typing_extensions.Doc("True if the user is a service account.")
-        ]
-    ]
-    virtual_user: typing_extensions.Required[
-        typing_extensions.Annotated[
-            bool, typing_extensions.Doc("True if the user is a virtual user (operator).")
-        ]
-    ]
-    classic: typing_extensions.NotRequired[
-        typing_extensions.Annotated[
-            MembershipUserClassicInput,
-            typing_extensions.Doc(
-                "Classic identifiers of the user.\nDeprecated: this operation is deprecated"
-            ),
-        ]
-    ]
-    disabled_at: typing_extensions.NotRequired[
-        typing_extensions.Annotated[
-            datetime.datetime,
-            typing_extensions.Doc(
-                "Time when the user has been disabled. Applies only to virtual users (`virtual_user: true`)."
-            ),
-        ]
-    ]
-    nickname: typing_extensions.NotRequired[
-        typing_extensions.Annotated[
-            str, typing_extensions.Doc("User's preferred name. Used for display purposes only.")
-        ]
-    ]
-    picture: typing_extensions.NotRequired[
-        typing_extensions.Annotated[
-            str,
-            typing_extensions.Doc(
-                "URL of the End-User's profile picture. This URL refers to an image file (for example, a PNG, JPEG, or GIFimage file), rather than to a Web page containing an image.\nFormat: uri"
-            ),
-        ]
-    ]
-
-
-MembershipUserInput = MembershipUserDict
 
 
 Metadata = dict[str, object]
@@ -4388,70 +2696,6 @@ class Member(pydantic.BaseModel):
 	"""
 
 
-class MemberDict(typing_extensions.TypedDict, total=False):
-    created_at: typing_extensions.Required[
-        typing_extensions.Annotated[
-            datetime.datetime,
-            typing_extensions.Doc("The timestamp of when the member was created."),
-        ]
-    ]
-    id: typing_extensions.Required[
-        typing_extensions.Annotated[str, typing_extensions.Doc("ID of the member.")]
-    ]
-    permissions: typing_extensions.Required[
-        typing_extensions.Annotated[
-            typing.Sequence[str],
-            typing_extensions.Doc(
-                "User's permissions.\nDeprecated: Permissions include only legacy permissions, please use roles instead. Member access is based on roles withina given resource and the permissions these roles grant."
-            ),
-        ]
-    ]
-    roles: typing_extensions.Required[
-        typing_extensions.Annotated[typing.Sequence[str], typing_extensions.Doc("User's roles.")]
-    ]
-    status: typing_extensions.Required[
-        typing_extensions.Annotated[
-            MembershipStatusInput, typing_extensions.Doc("The status of the membership.")
-        ]
-    ]
-    updated_at: typing_extensions.Required[
-        typing_extensions.Annotated[
-            datetime.datetime,
-            typing_extensions.Doc("The timestamp of when the member was last updated."),
-        ]
-    ]
-    attributes: typing_extensions.NotRequired[
-        typing_extensions.Annotated[
-            AttributesInput,
-            typing_extensions.Doc(
-                "Object attributes that are modifiable only by SumUp applications."
-            ),
-        ]
-    ]
-    invite: typing_extensions.NotRequired[
-        typing_extensions.Annotated[
-            InviteInput, typing_extensions.Doc("Pending invitation for membership.")
-        ]
-    ]
-    metadata: typing_extensions.NotRequired[
-        typing_extensions.Annotated[
-            MetadataInput,
-            typing_extensions.Doc(
-                "Set of user-defined key-value pairs attached to the object. Partial updates are not supported. When updating, alwayssubmit whole metadata. Maximum of 64 parameters are allowed in the object.\nMax properties: 64"
-            ),
-        ]
-    ]
-    user: typing_extensions.NotRequired[
-        typing_extensions.Annotated[
-            MembershipUserInput,
-            typing_extensions.Doc("Information about the user associated with the membership."),
-        ]
-    ]
-
-
-MemberInput = MemberDict
-
-
 ResourceType = str
 ResourceTypeInput = str
 """
@@ -4506,55 +2750,6 @@ class MembershipResource(pydantic.BaseModel):
 	Format: uri
 	Max length: 256
 	"""
-
-
-class MembershipResourceDict(typing_extensions.TypedDict, total=False):
-    created_at: typing_extensions.Required[
-        typing_extensions.Annotated[
-            datetime.datetime,
-            typing_extensions.Doc("The timestamp of when the membership resource was created."),
-        ]
-    ]
-    id: typing_extensions.Required[
-        typing_extensions.Annotated[
-            str, typing_extensions.Doc("ID of the resource the membership is in.")
-        ]
-    ]
-    name: typing_extensions.Required[
-        typing_extensions.Annotated[str, typing_extensions.Doc("Display name of the resource.")]
-    ]
-    type: typing_extensions.Required[
-        typing_extensions.Annotated[
-            ResourceTypeInput,
-            typing_extensions.Doc(
-                "The type of the membership resource.\nPossible values are:\n* `merchant` - merchant account(s)\n* `organization` - organization(s)"
-            ),
-        ]
-    ]
-    updated_at: typing_extensions.Required[
-        typing_extensions.Annotated[
-            datetime.datetime,
-            typing_extensions.Doc(
-                "The timestamp of when the membership resource was last updated."
-            ),
-        ]
-    ]
-    attributes: typing_extensions.NotRequired[
-        typing_extensions.Annotated[
-            AttributesInput,
-            typing_extensions.Doc(
-                "Object attributes that are modifiable only by SumUp applications."
-            ),
-        ]
-    ]
-    logo: typing_extensions.NotRequired[
-        typing_extensions.Annotated[
-            str, typing_extensions.Doc("Logo fo the resource.\nFormat: uri\nMax length: 256")
-        ]
-    ]
-
-
-MembershipResourceInput = MembershipResourceDict
 
 
 class Membership(pydantic.BaseModel):
@@ -4628,85 +2823,7 @@ class Membership(pydantic.BaseModel):
 	"""
 
 
-class MembershipDict(typing_extensions.TypedDict, total=False):
-    created_at: typing_extensions.Required[
-        typing_extensions.Annotated[
-            datetime.datetime,
-            typing_extensions.Doc("The timestamp of when the membership was created."),
-        ]
-    ]
-    id: typing_extensions.Required[
-        typing_extensions.Annotated[str, typing_extensions.Doc("ID of the membership.")]
-    ]
-    permissions: typing_extensions.Required[
-        typing_extensions.Annotated[
-            typing.Sequence[str],
-            typing_extensions.Doc(
-                "User's permissions.\nDeprecated: Permissions include only legacy permissions, please use roles instead. Member access is based on their roleswithin a given resource and the permissions these roles grant."
-            ),
-        ]
-    ]
-    resource: typing_extensions.Required[
-        typing_extensions.Annotated[
-            MembershipResourceInput,
-            typing_extensions.Doc("Information about the resource the membership is in."),
-        ]
-    ]
-    resource_id: typing_extensions.Required[
-        typing_extensions.Annotated[
-            str, typing_extensions.Doc("ID of the resource the membership is in.")
-        ]
-    ]
-    roles: typing_extensions.Required[
-        typing_extensions.Annotated[typing.Sequence[str], typing_extensions.Doc("User's roles.")]
-    ]
-    status: typing_extensions.Required[
-        typing_extensions.Annotated[
-            MembershipStatusInput, typing_extensions.Doc("The status of the membership.")
-        ]
-    ]
-    type: typing_extensions.Required[
-        typing_extensions.Annotated[
-            ResourceTypeInput,
-            typing_extensions.Doc(
-                "The type of the membership resource.\nPossible values are:\n* `merchant` - merchant account(s)\n* `organization` - organization(s)"
-            ),
-        ]
-    ]
-    updated_at: typing_extensions.Required[
-        typing_extensions.Annotated[
-            datetime.datetime,
-            typing_extensions.Doc("The timestamp of when the membership was last updated."),
-        ]
-    ]
-    attributes: typing_extensions.NotRequired[
-        typing_extensions.Annotated[
-            AttributesInput,
-            typing_extensions.Doc(
-                "Object attributes that are modifiable only by SumUp applications."
-            ),
-        ]
-    ]
-    invite: typing_extensions.NotRequired[
-        typing_extensions.Annotated[
-            InviteInput, typing_extensions.Doc("Pending invitation for membership.")
-        ]
-    ]
-    metadata: typing_extensions.NotRequired[
-        typing_extensions.Annotated[
-            MetadataInput,
-            typing_extensions.Doc(
-                "Set of user-defined key-value pairs attached to the object. Partial updates are not supported. When updating, alwayssubmit whole metadata. Maximum of 64 parameters are allowed in the object.\nMax properties: 64"
-            ),
-        ]
-    ]
-
-
-MembershipInput = MembershipDict
-
-
 Meta = dict[str, str]
-MetaInput = typing.Mapping[str, str]
 """
 A set of key-value pairs that you can attach to an object. This can be useful for storing additional informationabout the object in a structured format.
 
@@ -4730,28 +2847,6 @@ class Timestamps(pydantic.BaseModel):
 	The date and time when the resource was last updated. This is a string as defined in [RFC 3339, section 5.6](https://datatracker.ietf.org/doc/html/rfc3339#section-5.6).
 	Readonly
 	"""
-
-
-class TimestampsDict(typing_extensions.TypedDict, total=False):
-    created_at: typing_extensions.Required[
-        typing_extensions.Annotated[
-            datetime.datetime,
-            typing_extensions.Doc(
-                "The date and time when the resource was created. This is a string as defined in [RFC 3339, section 5.6](https://datatracker.ietf.org/doc/html/rfc3339#section-5.6).\nRead only"
-            ),
-        ]
-    ]
-    updated_at: typing_extensions.Required[
-        typing_extensions.Annotated[
-            datetime.datetime,
-            typing_extensions.Doc(
-                "The date and time when the resource was last updated. This is a string as defined in [RFC 3339, section 5.6](https://datatracker.ietf.org/doc/html/rfc3339#section-5.6).\nReadonly"
-            ),
-        ]
-    ]
-
-
-TimestampsInput = TimestampsDict
 
 
 class Merchant(pydantic.BaseModel):
@@ -4868,132 +2963,6 @@ class Merchant(pydantic.BaseModel):
 	"""
 
 
-class MerchantDict(typing_extensions.TypedDict, total=False):
-    country: typing_extensions.Required[
-        typing_extensions.Annotated[
-            CountryCodeInput,
-            typing_extensions.Doc(
-                "An [ISO3166-1 alpha-2](https://en.wikipedia.org/wiki/ISO_3166-1_alpha-2)\ncountry code. This definition users `oneOf` with a two-character string\ntype to allow for support of future countries in client code.\nMin length: 2\nMax length: 2\nPattern: ^[A-Z]{2}$"
-            ),
-        ]
-    ]
-    created_at: typing_extensions.Required[
-        typing_extensions.Annotated[
-            datetime.datetime,
-            typing_extensions.Doc(
-                "The date and time when the resource was created. This is a string as defined in [RFC 3339, section 5.6](https://datatracker.ietf.org/doc/html/rfc3339#section-5.6).\nRead only"
-            ),
-        ]
-    ]
-    default_currency: typing_extensions.Required[
-        typing_extensions.Annotated[
-            str,
-            typing_extensions.Doc(
-                "Three-letter [ISO currency code](https://en.wikipedia.org/wiki/ISO_4217) representing the default currency forthe account.\nRead only\nMin length: 3\nMax length: 3"
-            ),
-        ]
-    ]
-    default_locale: typing_extensions.Required[
-        typing_extensions.Annotated[
-            str,
-            typing_extensions.Doc(
-                "Merchant's default locale, represented as a BCP47 [RFC5646](https://datatracker.ietf.org/doc/html/rfc5646) languagetag. This is typically an ISO 639-1 Alpha-2 [ISO639‑1](https://www.iso.org/iso-639-language-code) language codein lowercase and an ISO 3166-1 Alpha-2 [ISO3166‑1](https://www.iso.org/iso-3166-country-codes.html) countrycode in uppercase, separated by a dash. For example, en-US or fr-CA.\nIn multilingual countries this is the merchant's preferred locale out of those, that are officially spoken inthe country. In a countries with a single official language this will match the official language.\nMin length: 2\nMax length: 5"
-            ),
-        ]
-    ]
-    merchant_code: typing_extensions.Required[
-        typing_extensions.Annotated[
-            str, typing_extensions.Doc("Short unique identifier for the merchant.\nRead only")
-        ]
-    ]
-    updated_at: typing_extensions.Required[
-        typing_extensions.Annotated[
-            datetime.datetime,
-            typing_extensions.Doc(
-                "The date and time when the resource was last updated. This is a string as defined in [RFC 3339, section 5.6](https://datatracker.ietf.org/doc/html/rfc3339#section-5.6).\nReadonly"
-            ),
-        ]
-    ]
-    alias: typing_extensions.NotRequired[
-        typing_extensions.Annotated[
-            str,
-            typing_extensions.Doc(
-                "A user-facing name of the merchant account for use in dashboards and other user-facing applications. Forcustomer-facing business name see `merchant.business_profile`."
-            ),
-        ]
-    ]
-    avatar: typing_extensions.NotRequired[
-        typing_extensions.Annotated[
-            str,
-            typing_extensions.Doc(
-                "A user-facing small-format logo for use in dashboards and other user-facing applications. For customer-facing brandingsee `merchant.business_profile.branding`.\nFormat: uri"
-            ),
-        ]
-    ]
-    business_profile: typing_extensions.NotRequired[
-        typing_extensions.Annotated[
-            BusinessProfileInput,
-            typing_extensions.Doc(
-                "Business information about the merchant. This information will be visible to the merchant's customers."
-            ),
-        ]
-    ]
-    business_type: typing_extensions.NotRequired[
-        typing_extensions.Annotated[
-            str,
-            typing_extensions.Doc(
-                "The business type.\n* `sole_trader`: The business is run by an self-employed individual.\n* `company`: The business is run as a company with one or more shareholders\n* `partnership`: The business is run as a company with two or more shareholders that can be also other legalentities\n* `non_profit`: The business is run as a nonprofit organization that operates for public or social benefit\n* `government_entity`: The business is state owned and operated"
-            ),
-        ]
-    ]
-    change_status: typing_extensions.NotRequired[
-        typing_extensions.Annotated[
-            ChangeStatusInput,
-            typing_extensions.Doc(
-                "Reflects the status of changes submitted through the `PATCH` endpoints for the merchant or persons. If somechanges have not been applied yet, the status will be `pending`. If all changes have been applied, the status`done`.\nThe status is only returned after write operations or on read endpoints when the `version` query parameter isprovided.\nRead only"
-            ),
-        ]
-    ]
-    classic: typing_extensions.NotRequired[ClassicMerchantIdentifiersInput]
-    company: typing_extensions.NotRequired[
-        typing_extensions.Annotated[
-            CompanyInput,
-            typing_extensions.Doc(
-                "Information about the company or business. This is legal information that is used for verification.\nCompany documentation: https://developer.sumup.com/tools/glossary/merchant#company"
-            ),
-        ]
-    ]
-    meta: typing_extensions.NotRequired[
-        typing_extensions.Annotated[
-            MetaInput,
-            typing_extensions.Doc(
-                "A set of key-value pairs that you can attach to an object. This can be useful for storing additional informationabout the object in a structured format.\n\n**Warning**: Updating Meta will overwrite the existing data. Make sure to always include the complete JSON object."
-            ),
-        ]
-    ]
-    organization_id: typing_extensions.NotRequired[
-        typing_extensions.Annotated[
-            str, typing_extensions.Doc("ID of the organization the merchant belongs to (if any).")
-        ]
-    ]
-    sandbox: typing_extensions.NotRequired[
-        typing_extensions.Annotated[
-            bool, typing_extensions.Doc("True if the merchant is a sandbox for testing.")
-        ]
-    ]
-    version: typing_extensions.NotRequired[
-        typing_extensions.Annotated[
-            VersionInput,
-            typing_extensions.Doc(
-                "The version of the resource. The version reflects a specific change submitted to the API via one of the `PATCH`endpoints."
-            ),
-        ]
-    ]
-
-
-MerchantInput = MerchantDict
-
-
 class NotFoundErrors(pydantic.BaseModel):
     """
     NotFoundErrors is a schema definition.
@@ -5005,30 +2974,12 @@ class NotFoundErrors(pydantic.BaseModel):
 	"""
 
 
-class NotFoundErrorsDict(typing_extensions.TypedDict, total=False):
-    detail: typing_extensions.Required[
-        typing_extensions.Annotated[
-            str, typing_extensions.Doc("Fuller message giving context to error")
-        ]
-    ]
-
-
-NotFoundErrorsInput = NotFoundErrorsDict
-
-
 class NotFound(pydantic.BaseModel):
     """
     404 Not Found
     """
 
     errors: NotFoundErrors
-
-
-class NotFoundDict(typing_extensions.TypedDict, total=False):
-    errors: typing_extensions.Required[NotFoundErrorsInput]
-
-
-NotFoundInput = NotFoundDict
 
 
 class Permissions(pydantic.BaseModel):
@@ -5047,19 +2998,7 @@ class Permissions(pydantic.BaseModel):
     refund_transactions: bool
 
 
-class PermissionsDict(typing_extensions.TypedDict, total=False):
-    admin: typing_extensions.Required[bool]
-    create_moto_payments: typing_extensions.Required[bool]
-    create_referral: typing_extensions.Required[bool]
-    full_transaction_history_view: typing_extensions.Required[bool]
-    refund_transactions: typing_extensions.Required[bool]
-
-
-PermissionsInput = PermissionsDict
-
-
 OperatorAccountType = typing.Union[typing.Literal["normal", "operator"], str]
-OperatorAccountTypeInput = OperatorAccountType
 
 
 class Operator(pydantic.BaseModel):
@@ -5096,38 +3035,7 @@ class Operator(pydantic.BaseModel):
     nickname: typing.Optional[str] = None
 
 
-class OperatorDict(typing_extensions.TypedDict, total=False):
-    account_type: typing_extensions.Required[OperatorAccountTypeInput]
-    created_at: typing_extensions.Required[
-        typing_extensions.Annotated[
-            datetime.datetime,
-            typing_extensions.Doc("The timestamp of when the operator was created."),
-        ]
-    ]
-    disabled: typing_extensions.Required[bool]
-    id: typing_extensions.Required[
-        typing_extensions.Annotated[int, typing_extensions.Doc("Format: int32")]
-    ]
-    permissions: typing_extensions.Required[
-        typing_extensions.Annotated[
-            PermissionsInput, typing_extensions.Doc("Permissions assigned to an operator or user.")
-        ]
-    ]
-    updated_at: typing_extensions.Required[
-        typing_extensions.Annotated[
-            datetime.datetime,
-            typing_extensions.Doc("The timestamp of when the operator was last updated."),
-        ]
-    ]
-    username: typing_extensions.Required[str]
-    nickname: typing_extensions.NotRequired[str]
-
-
-OperatorInput = OperatorDict
-
-
 PaymentInstrumentResponseType = typing.Union[typing.Literal["card"], str]
-PaymentInstrumentResponseTypeInput = PaymentInstrumentResponseType
 
 
 class PaymentInstrumentResponseCard(pydantic.BaseModel):
@@ -5147,28 +3055,6 @@ class PaymentInstrumentResponseCard(pydantic.BaseModel):
     """
 	Issuing card network of the payment card used for the transaction.
 	"""
-
-
-class PaymentInstrumentResponseCardDict(typing_extensions.TypedDict, total=False):
-    last_4_digits: typing_extensions.NotRequired[
-        typing_extensions.Annotated[
-            str,
-            typing_extensions.Doc(
-                "Last 4 digits of the payment card number.\nRead only\nMin length: 4\nMax length: 4"
-            ),
-        ]
-    ]
-    type: typing_extensions.NotRequired[
-        typing_extensions.Annotated[
-            CardTypeInput,
-            typing_extensions.Doc(
-                "Issuing card network of the payment card used for the transaction."
-            ),
-        ]
-    ]
-
-
-PaymentInstrumentResponseCardInput = PaymentInstrumentResponseCardDict
 
 
 class PaymentInstrumentResponse(pydantic.BaseModel):
@@ -5208,54 +3094,6 @@ class PaymentInstrumentResponse(pydantic.BaseModel):
     """
 	Type of the payment instrument.
 	"""
-
-
-class PaymentInstrumentResponseDict(typing_extensions.TypedDict, total=False):
-    active: typing_extensions.NotRequired[
-        typing_extensions.Annotated[
-            bool,
-            typing_extensions.Doc(
-                "Indicates whether the payment instrument is active and can be used for payments. To deactivate it, send a`DELETE` request to the resource endpoint.\nRead only\nDefault: true"
-            ),
-        ]
-    ]
-    card: typing_extensions.NotRequired[
-        typing_extensions.Annotated[
-            PaymentInstrumentResponseCardInput,
-            typing_extensions.Doc("Details of the payment card."),
-        ]
-    ]
-    created_at: typing_extensions.NotRequired[
-        typing_extensions.Annotated[
-            datetime.datetime,
-            typing_extensions.Doc(
-                "Creation date of payment instrument. Response format expressed according to [ISO8601](https://en.wikipedia.org/wiki/ISO_8601) code."
-            ),
-        ]
-    ]
-    mandate: typing_extensions.NotRequired[
-        typing_extensions.Annotated[
-            MandateResponseInput,
-            typing_extensions.Doc("Details of the mandate linked to the saved payment instrument."),
-        ]
-    ]
-    token: typing_extensions.NotRequired[
-        typing_extensions.Annotated[
-            str,
-            typing_extensions.Doc(
-                "Unique token identifying the saved payment card for a customer.\nRead only"
-            ),
-        ]
-    ]
-    type: typing_extensions.NotRequired[
-        typing_extensions.Annotated[
-            PaymentInstrumentResponseTypeInput,
-            typing_extensions.Doc("Type of the payment instrument."),
-        ]
-    ]
-
-
-PaymentInstrumentResponseInput = PaymentInstrumentResponseDict
 
 
 class Problem(pydantic.BaseModel):
@@ -5321,47 +3159,6 @@ class Problem(pydantic.BaseModel):
     @additional_properties.setter
     def additional_properties(self, value: dict[str, object]) -> None:
         object.__setattr__(self, "__pydantic_extra__", dict(value))
-
-
-class ProblemDict(typing_extensions.TypedDict, total=False):
-    type: typing_extensions.Required[
-        typing_extensions.Annotated[
-            str,
-            typing_extensions.Doc("A URI reference that identifies the problem type.\nFormat: uri"),
-        ]
-    ]
-    detail: typing_extensions.NotRequired[
-        typing_extensions.Annotated[
-            str,
-            typing_extensions.Doc(
-                "A human-readable explanation specific to this occurrence of the problem."
-            ),
-        ]
-    ]
-    instance: typing_extensions.NotRequired[
-        typing_extensions.Annotated[
-            str,
-            typing_extensions.Doc(
-                "A URI reference that identifies the specific occurrence of the problem.\nFormat: uri"
-            ),
-        ]
-    ]
-    status: typing_extensions.NotRequired[
-        typing_extensions.Annotated[
-            int,
-            typing_extensions.Doc(
-                "The HTTP status code generated by the origin server for this occurrence of the problem."
-            ),
-        ]
-    ]
-    title: typing_extensions.NotRequired[
-        typing_extensions.Annotated[
-            str, typing_extensions.Doc("A short, human-readable summary of the problem type.")
-        ]
-    ]
-
-
-ProblemInput = ProblemDict
 
 
 ProcessCheckoutPaymentType = typing.Union[
@@ -5573,54 +3370,7 @@ class Product(pydantic.BaseModel):
 	"""
 
 
-class ProductDict(typing_extensions.TypedDict, total=False):
-    name: typing_extensions.NotRequired[
-        typing_extensions.Annotated[str, typing_extensions.Doc("Product name.")]
-    ]
-    price: typing_extensions.NotRequired[
-        typing_extensions.Annotated[float, typing_extensions.Doc("Product price.\nFormat: decimal")]
-    ]
-    price_label: typing_extensions.NotRequired[
-        typing_extensions.Annotated[str, typing_extensions.Doc("Product description.")]
-    ]
-    price_with_vat: typing_extensions.NotRequired[
-        typing_extensions.Annotated[
-            float, typing_extensions.Doc("Product price incl. VAT.\nFormat: decimal")
-        ]
-    ]
-    quantity: typing_extensions.NotRequired[
-        typing_extensions.Annotated[int, typing_extensions.Doc("Product quantity.")]
-    ]
-    single_vat_amount: typing_extensions.NotRequired[
-        typing_extensions.Annotated[
-            float, typing_extensions.Doc("VAT amount for a single product.\nFormat: decimal")
-        ]
-    ]
-    total_price: typing_extensions.NotRequired[
-        typing_extensions.Annotated[
-            float, typing_extensions.Doc("Quantity x product price.\nFormat: decimal")
-        ]
-    ]
-    total_with_vat: typing_extensions.NotRequired[
-        typing_extensions.Annotated[
-            float, typing_extensions.Doc("Total price incl. VAT.\nFormat: decimal")
-        ]
-    ]
-    vat_amount: typing_extensions.NotRequired[
-        typing_extensions.Annotated[float, typing_extensions.Doc("VAT amount.\nFormat: decimal")]
-    ]
-    vat_rate: typing_extensions.NotRequired[
-        typing_extensions.Annotated[
-            float, typing_extensions.Doc("VAT percentage.\nFormat: decimal")
-        ]
-    ]
-
-
-ProductInput = ProductDict
-
-
 ReaderDeviceModel = typing.Union[typing.Literal["solo", "virtual-solo"], str]
-ReaderDeviceModelInput = ReaderDeviceModel
 
 
 class ReaderDevice(pydantic.BaseModel):
@@ -5637,25 +3387,6 @@ class ReaderDevice(pydantic.BaseModel):
     """
 	Identifier of the model of the device.
 	"""
-
-
-class ReaderDeviceDict(typing_extensions.TypedDict, total=False):
-    identifier: typing_extensions.Required[
-        typing_extensions.Annotated[
-            str,
-            typing_extensions.Doc(
-                "A unique identifier of the physical device (e.g. serial number)."
-            ),
-        ]
-    ]
-    model: typing_extensions.Required[
-        typing_extensions.Annotated[
-            ReaderDeviceModelInput, typing_extensions.Doc("Identifier of the model of the device.")
-        ]
-    ]
-
-
-ReaderDeviceInput = ReaderDeviceDict
 
 
 ReaderId = str
@@ -5676,7 +3407,6 @@ Max length: 500
 """
 
 ReaderStatus = typing.Union[typing.Literal["expired", "paired", "processing", "unknown"], str]
-ReaderStatusInput = ReaderStatus
 
 
 class Reader(pydantic.BaseModel):
@@ -5741,72 +3471,7 @@ class Reader(pydantic.BaseModel):
 	"""
 
 
-class ReaderDict(typing_extensions.TypedDict, total=False):
-    created_at: typing_extensions.Required[
-        typing_extensions.Annotated[
-            datetime.datetime,
-            typing_extensions.Doc("The timestamp of when the reader was created."),
-        ]
-    ]
-    device: typing_extensions.Required[
-        typing_extensions.Annotated[
-            ReaderDeviceInput,
-            typing_extensions.Doc("Information about the underlying physical device."),
-        ]
-    ]
-    id: typing_extensions.Required[
-        typing_extensions.Annotated[
-            ReaderIdInput,
-            typing_extensions.Doc(
-                "Unique identifier of the object.\n\nNote that this identifies the instance of the physical devices pairing with your SumUp account. If you [delete](https://developer.sumup.com/api/readers/delete-reader) areader, and pair the device again, the ID will be different. Do not use this ID to refer to a physical device.\nMinlength: 30\nMax length: 30"
-            ),
-        ]
-    ]
-    name: typing_extensions.Required[
-        typing_extensions.Annotated[
-            ReaderNameInput,
-            typing_extensions.Doc(
-                "Custom human-readable, user-defined name for easier identification of the reader.\nMax length: 500"
-            ),
-        ]
-    ]
-    status: typing_extensions.Required[
-        typing_extensions.Annotated[
-            ReaderStatusInput,
-            typing_extensions.Doc(
-                "The status of the reader object gives information about the current state of the reader.\n\nPossible values:\n\n- `unknown` - The reader status is unknown.\n- `processing` - The reader is created and waits for the physical device to confirm the pairing.\n- `paired` - The reader is paired with a merchant account and can be used with SumUp APIs.\n- `expired` - The pairing is expired and no longer usable with the account. The resource needs to get recreated."
-            ),
-        ]
-    ]
-    updated_at: typing_extensions.Required[
-        typing_extensions.Annotated[
-            datetime.datetime,
-            typing_extensions.Doc("The timestamp of when the reader was last updated."),
-        ]
-    ]
-    metadata: typing_extensions.NotRequired[
-        typing_extensions.Annotated[
-            MetadataInput,
-            typing_extensions.Doc(
-                "Set of user-defined key-value pairs attached to the object. Partial updates are not supported. When updating, alwayssubmit whole metadata. Maximum of 64 parameters are allowed in the object.\nMax properties: 64"
-            ),
-        ]
-    ]
-    service_account_id: typing_extensions.NotRequired[
-        typing_extensions.Annotated[
-            str,
-            typing_extensions.Doc(
-                "Identifier of the system-managed service account associated with this reader.\nPresent only for readers that are already paired.\nThis field is currently in beta and may change.\nFormat: uuid"
-            ),
-        ]
-    ]
-
-
-ReaderInput = ReaderDict
-
-
 ReaderCheckoutStatusChangePayloadStatus = typing.Union[typing.Literal["failed", "successful"], str]
-ReaderCheckoutStatusChangePayloadStatusInput = ReaderCheckoutStatusChangePayloadStatus
 
 
 class ReaderCheckoutStatusChangePayload(pydantic.BaseModel):
@@ -5838,39 +3503,6 @@ class ReaderCheckoutStatusChangePayload(pydantic.BaseModel):
 	"""
 
 
-class ReaderCheckoutStatusChangePayloadDict(typing_extensions.TypedDict, total=False):
-    client_transaction_id: typing_extensions.Required[
-        typing_extensions.Annotated[
-            str,
-            typing_extensions.Doc(
-                "The unique client transaction id. It is the same returned by the Checkout.\nFormat: uuid"
-            ),
-        ]
-    ]
-    merchant_code: typing_extensions.Required[
-        typing_extensions.Annotated[
-            str, typing_extensions.Doc("The merchant code associated with the transaction.")
-        ]
-    ]
-    status: typing_extensions.Required[
-        typing_extensions.Annotated[
-            ReaderCheckoutStatusChangePayloadStatusInput,
-            typing_extensions.Doc("The current status of the transaction."),
-        ]
-    ]
-    transaction_id: typing_extensions.NotRequired[
-        typing_extensions.Annotated[
-            str,
-            typing_extensions.Doc(
-                "The transaction id. Deprecated: use `client_transaction_id` instead.\nFormat: uuid\nDeprecated: this operation is deprecated"
-            ),
-        ]
-    ]
-
-
-ReaderCheckoutStatusChangePayloadInput = ReaderCheckoutStatusChangePayloadDict
-
-
 class ReaderCheckoutStatusChange(pydantic.BaseModel):
     """
     The callback payload containing the status change of the Reader Checkout.
@@ -5898,30 +3530,6 @@ class ReaderCheckoutStatusChange(pydantic.BaseModel):
 	"""
 
 
-class ReaderCheckoutStatusChangeDict(typing_extensions.TypedDict, total=False):
-    event_type: typing_extensions.Required[
-        typing_extensions.Annotated[str, typing_extensions.Doc("Type of event.")]
-    ]
-    id: typing_extensions.Required[
-        typing_extensions.Annotated[
-            str, typing_extensions.Doc("Unique identifier for the event.\nFormat: uuid")
-        ]
-    ]
-    payload: typing_extensions.Required[
-        typing_extensions.Annotated[
-            ReaderCheckoutStatusChangePayloadInput, typing_extensions.Doc("The event payload.")
-        ]
-    ]
-    timestamp: typing_extensions.Required[
-        typing_extensions.Annotated[
-            datetime.datetime, typing_extensions.Doc("Timestamp of the event.")
-        ]
-    ]
-
-
-ReaderCheckoutStatusChangeInput = ReaderCheckoutStatusChangeDict
-
-
 ReaderPairingCode = str
 ReaderPairingCodeInput = str
 """
@@ -5945,18 +3553,6 @@ class ReceiptCard(pydantic.BaseModel):
     """
 	Card Scheme.
 	"""
-
-
-class ReceiptCardDict(typing_extensions.TypedDict, total=False):
-    last_4_digits: typing_extensions.NotRequired[
-        typing_extensions.Annotated[str, typing_extensions.Doc("Card last 4 digits.")]
-    ]
-    type: typing_extensions.NotRequired[
-        typing_extensions.Annotated[str, typing_extensions.Doc("Card Scheme.")]
-    ]
-
-
-ReceiptCardInput = ReceiptCardDict
 
 
 class ReceiptEvent(pydantic.BaseModel):
@@ -6012,51 +3608,6 @@ class ReceiptEvent(pydantic.BaseModel):
 	"""
 
 
-class ReceiptEventDict(typing_extensions.TypedDict, total=False):
-    amount: typing_extensions.NotRequired[
-        typing_extensions.Annotated[
-            str, typing_extensions.Doc("Amount of the event.\nFormat: double")
-        ]
-    ]
-    id: typing_extensions.NotRequired[
-        typing_extensions.Annotated[
-            EventIdInput,
-            typing_extensions.Doc("Unique ID of the transaction event.\nFormat: int64"),
-        ]
-    ]
-    receipt_no: typing_extensions.NotRequired[
-        typing_extensions.Annotated[
-            str, typing_extensions.Doc("Receipt number associated with the event.")
-        ]
-    ]
-    status: typing_extensions.NotRequired[
-        typing_extensions.Annotated[
-            EventStatusInput,
-            typing_extensions.Doc(
-                "Status of the transaction event.\n\nNot every value is used for every event type.\n\n- `PENDING`: The event has been created but is not final yet. Used for events that are still being processed andwhose final outcome is not known yet.\n- `SCHEDULED`: The event is planned for a future payout cycle but has not been executed yet. This applies topayout events before money is actually sent out.\n- `RECONCILED`: The underlying payment has been matched with settlement data and is ready to continue through payoutprocessing, but the funds have not been paid out yet. This applies to payout events.\n- `PAID_OUT`: The payout event has been completed and the funds were included in a merchant payout.\n- `REFUNDED`: A refund event has been accepted and recorded in the refund flow. This is the status returned forrefund events once the transaction amount is being or has been returned to the payer.\n- `SUCCESSFUL`: The event completed successfully. Use this as the generic terminal success status for event typesthat do not expose a more specific business outcome such as `PAID_OUT` or `REFUNDED`.\n- `FAILED`: The event could not be completed. Typical examples are a payout that could not be executed oran event that was rejected during processing."
-            ),
-        ]
-    ]
-    timestamp: typing_extensions.NotRequired[
-        typing_extensions.Annotated[
-            datetime.datetime, typing_extensions.Doc("Date and time of the transaction event.")
-        ]
-    ]
-    transaction_id: typing_extensions.NotRequired[
-        typing_extensions.Annotated[
-            TransactionIdInput, typing_extensions.Doc("Unique ID of the transaction.")
-        ]
-    ]
-    type: typing_extensions.NotRequired[
-        typing_extensions.Annotated[
-            EventTypeInput, typing_extensions.Doc("Type of the transaction event.")
-        ]
-    ]
-
-
-ReceiptEventInput = ReceiptEventDict
-
-
 class ReceiptMerchantDataMerchantProfileAddress(pydantic.BaseModel):
     """
     ReceiptMerchantDataMerchantProfileAddress is a schema definition.
@@ -6081,21 +3632,6 @@ class ReceiptMerchantDataMerchantProfileAddress(pydantic.BaseModel):
     region_name: typing.Optional[str] = None
 
 
-class ReceiptMerchantDataMerchantProfileAddressDict(typing_extensions.TypedDict, total=False):
-    address_line1: typing_extensions.NotRequired[str]
-    address_line2: typing_extensions.NotRequired[str]
-    city: typing_extensions.NotRequired[str]
-    country: typing_extensions.NotRequired[str]
-    country_en_name: typing_extensions.NotRequired[str]
-    country_native_name: typing_extensions.NotRequired[str]
-    landline: typing_extensions.NotRequired[str]
-    post_code: typing_extensions.NotRequired[str]
-    region_name: typing_extensions.NotRequired[str]
-
-
-ReceiptMerchantDataMerchantProfileAddressInput = ReceiptMerchantDataMerchantProfileAddressDict
-
-
 class ReceiptMerchantDataMerchantProfile(pydantic.BaseModel):
     """
     Merchant profile details displayed on the receipt.
@@ -6118,20 +3654,6 @@ class ReceiptMerchantDataMerchantProfile(pydantic.BaseModel):
     website: typing.Optional[str] = None
 
 
-class ReceiptMerchantDataMerchantProfileDict(typing_extensions.TypedDict, total=False):
-    address: typing_extensions.NotRequired[ReceiptMerchantDataMerchantProfileAddressInput]
-    business_name: typing_extensions.NotRequired[str]
-    company_registration_number: typing_extensions.NotRequired[str]
-    email: typing_extensions.NotRequired[str]
-    language: typing_extensions.NotRequired[str]
-    merchant_code: typing_extensions.NotRequired[str]
-    vat_id: typing_extensions.NotRequired[str]
-    website: typing_extensions.NotRequired[str]
-
-
-ReceiptMerchantDataMerchantProfileInput = ReceiptMerchantDataMerchantProfileDict
-
-
 class ReceiptMerchantData(pydantic.BaseModel):
     """
     Receipt merchant data
@@ -6146,23 +3668,6 @@ class ReceiptMerchantData(pydantic.BaseModel):
     """
 	Merchant profile details displayed on the receipt.
 	"""
-
-
-class ReceiptMerchantDataDict(typing_extensions.TypedDict, total=False):
-    locale: typing_extensions.NotRequired[
-        typing_extensions.Annotated[
-            str, typing_extensions.Doc("Locale used for rendering localized receipt fields.")
-        ]
-    ]
-    merchant_profile: typing_extensions.NotRequired[
-        typing_extensions.Annotated[
-            ReceiptMerchantDataMerchantProfileInput,
-            typing_extensions.Doc("Merchant profile details displayed on the receipt."),
-        ]
-    ]
-
-
-ReceiptMerchantDataInput = ReceiptMerchantDataDict
 
 
 class ReceiptReader(pydantic.BaseModel):
@@ -6181,20 +3686,7 @@ class ReceiptReader(pydantic.BaseModel):
 	"""
 
 
-class ReceiptReaderDict(typing_extensions.TypedDict, total=False):
-    code: typing_extensions.NotRequired[
-        typing_extensions.Annotated[str, typing_extensions.Doc("Reader serial number.")]
-    ]
-    type: typing_extensions.NotRequired[
-        typing_extensions.Annotated[str, typing_extensions.Doc("Reader type.")]
-    ]
-
-
-ReceiptReaderInput = ReceiptReaderDict
-
-
 ReceiptTransactionProcessA = typing.Union[typing.Literal["CREDIT", "DEBIT"], str]
-ReceiptTransactionProcessAInput = ReceiptTransactionProcessA
 
 
 class ReceiptTransactionProduct(pydantic.BaseModel):
@@ -6261,50 +3753,6 @@ class ReceiptTransactionProduct(pydantic.BaseModel):
 	"""
 
 
-class ReceiptTransactionProductDict(typing_extensions.TypedDict, total=False):
-    description: typing_extensions.NotRequired[
-        typing_extensions.Annotated[str, typing_extensions.Doc("Product description")]
-    ]
-    name: typing_extensions.NotRequired[
-        typing_extensions.Annotated[str, typing_extensions.Doc("Product name")]
-    ]
-    price: typing_extensions.NotRequired[
-        typing_extensions.Annotated[str, typing_extensions.Doc("Product price\nFormat: double")]
-    ]
-    price_with_vat: typing_extensions.NotRequired[
-        typing_extensions.Annotated[
-            str, typing_extensions.Doc("Product price including VAT\nFormat: double")
-        ]
-    ]
-    quantity: typing_extensions.NotRequired[
-        typing_extensions.Annotated[int, typing_extensions.Doc("Product quantity\nFormat: int64")]
-    ]
-    single_vat_amount: typing_extensions.NotRequired[
-        typing_extensions.Annotated[
-            str, typing_extensions.Doc("VAT amount for a single product\nFormat: double")
-        ]
-    ]
-    total_price: typing_extensions.NotRequired[
-        typing_extensions.Annotated[
-            str, typing_extensions.Doc("Quantity x product price\nFormat: double")
-        ]
-    ]
-    total_with_vat: typing_extensions.NotRequired[
-        typing_extensions.Annotated[
-            str, typing_extensions.Doc("Total price including VAT\nFormat: double")
-        ]
-    ]
-    vat_amount: typing_extensions.NotRequired[
-        typing_extensions.Annotated[str, typing_extensions.Doc("VAT amount\nFormat: double")]
-    ]
-    vat_rate: typing_extensions.NotRequired[
-        typing_extensions.Annotated[str, typing_extensions.Doc("VAT rate\nFormat: double")]
-    ]
-
-
-ReceiptTransactionProductInput = ReceiptTransactionProductDict
-
-
 class ReceiptTransactionVatRate(pydantic.BaseModel):
     """
     ReceiptTransactionVatRate is a schema definition.
@@ -6329,24 +3777,6 @@ class ReceiptTransactionVatRate(pydantic.BaseModel):
     """
 	Vat
 	"""
-
-
-class ReceiptTransactionVatRateDict(typing_extensions.TypedDict, total=False):
-    gross: typing_extensions.NotRequired[
-        typing_extensions.Annotated[float, typing_extensions.Doc("Gross")]
-    ]
-    net: typing_extensions.NotRequired[
-        typing_extensions.Annotated[float, typing_extensions.Doc("Net")]
-    ]
-    rate: typing_extensions.NotRequired[
-        typing_extensions.Annotated[float, typing_extensions.Doc("Rate")]
-    ]
-    vat: typing_extensions.NotRequired[
-        typing_extensions.Annotated[float, typing_extensions.Doc("Vat")]
-    ]
-
-
-ReceiptTransactionVatRateInput = ReceiptTransactionVatRateDict
 
 
 class ReceiptTransaction(pydantic.BaseModel):
@@ -6455,92 +3885,7 @@ class ReceiptTransaction(pydantic.BaseModel):
 	"""
 
 
-class ReceiptTransactionDict(typing_extensions.TypedDict, total=False):
-    amount: typing_extensions.NotRequired[
-        typing_extensions.Annotated[str, typing_extensions.Doc("Transaction amount.")]
-    ]
-    card: typing_extensions.NotRequired[
-        typing_extensions.Annotated[
-            ReceiptCardInput,
-            typing_extensions.Doc("Payment card details displayed on the receipt."),
-        ]
-    ]
-    card_reader: typing_extensions.NotRequired[
-        typing_extensions.Annotated[
-            ReceiptReaderInput,
-            typing_extensions.Doc("Card reader details displayed on the receipt."),
-        ]
-    ]
-    currency: typing_extensions.NotRequired[
-        typing_extensions.Annotated[str, typing_extensions.Doc("Transaction currency.")]
-    ]
-    entry_mode: typing_extensions.NotRequired[
-        typing_extensions.Annotated[str, typing_extensions.Doc("Transaction entry mode.")]
-    ]
-    events: typing_extensions.NotRequired[
-        typing_extensions.Annotated[
-            typing.Sequence[ReceiptEventInput], typing_extensions.Doc("Events")
-        ]
-    ]
-    installments_count: typing_extensions.NotRequired[
-        typing_extensions.Annotated[int, typing_extensions.Doc("Number of installments.")]
-    ]
-    merchant_code: typing_extensions.NotRequired[
-        typing_extensions.Annotated[str, typing_extensions.Doc("Merchant code.")]
-    ]
-    payment_type: typing_extensions.NotRequired[
-        typing_extensions.Annotated[str, typing_extensions.Doc("Transaction type.")]
-    ]
-    process_as: typing_extensions.NotRequired[
-        typing_extensions.Annotated[
-            ReceiptTransactionProcessAInput, typing_extensions.Doc("Debit/Credit.")
-        ]
-    ]
-    products: typing_extensions.NotRequired[
-        typing_extensions.Annotated[
-            typing.Sequence[ReceiptTransactionProductInput], typing_extensions.Doc("Products")
-        ]
-    ]
-    receipt_no: typing_extensions.NotRequired[
-        typing_extensions.Annotated[str, typing_extensions.Doc("Receipt number")]
-    ]
-    status: typing_extensions.NotRequired[
-        typing_extensions.Annotated[str, typing_extensions.Doc("Transaction processing status.")]
-    ]
-    timestamp: typing_extensions.NotRequired[
-        typing_extensions.Annotated[datetime.datetime, typing_extensions.Doc("Time created at.")]
-    ]
-    tip_amount: typing_extensions.NotRequired[
-        typing_extensions.Annotated[
-            str, typing_extensions.Doc("Tip amount (included in transaction amount).")
-        ]
-    ]
-    transaction_code: typing_extensions.NotRequired[
-        typing_extensions.Annotated[str, typing_extensions.Doc("Transaction code.")]
-    ]
-    transaction_id: typing_extensions.NotRequired[
-        typing_extensions.Annotated[
-            TransactionIdInput, typing_extensions.Doc("Unique ID of the transaction.")
-        ]
-    ]
-    vat_amount: typing_extensions.NotRequired[
-        typing_extensions.Annotated[str, typing_extensions.Doc("Transaction VAT amount.")]
-    ]
-    vat_rates: typing_extensions.NotRequired[
-        typing_extensions.Annotated[
-            typing.Sequence[ReceiptTransactionVatRateInput], typing_extensions.Doc("Vat rates.")
-        ]
-    ]
-    verification_method: typing_extensions.NotRequired[
-        typing_extensions.Annotated[str, typing_extensions.Doc("Cardholder verification method.")]
-    ]
-
-
-ReceiptTransactionInput = ReceiptTransactionDict
-
-
 ReceiptEmvData = dict[str, object]
-ReceiptEmvDataInput = typing.Mapping[str, object]
 """
 EMV-specific metadata returned for card-present payments.
 """
@@ -6558,16 +3903,6 @@ class ReceiptAcquirerData(pydantic.BaseModel):
     return_code: typing.Optional[str] = None
 
     tid: typing.Optional[str] = None
-
-
-class ReceiptAcquirerDataDict(typing_extensions.TypedDict, total=False):
-    authorization_code: typing_extensions.NotRequired[str]
-    local_time: typing_extensions.NotRequired[str]
-    return_code: typing_extensions.NotRequired[str]
-    tid: typing_extensions.NotRequired[str]
-
-
-ReceiptAcquirerDataInput = ReceiptAcquirerDataDict
 
 
 class Receipt(pydantic.BaseModel):
@@ -6594,34 +3929,6 @@ class Receipt(pydantic.BaseModel):
     """
 	Transaction information.
 	"""
-
-
-class ReceiptDict(typing_extensions.TypedDict, total=False):
-    acquirer_data: typing_extensions.NotRequired[
-        typing_extensions.Annotated[
-            ReceiptAcquirerDataInput,
-            typing_extensions.Doc("Acquirer-specific metadata related to the card authorization."),
-        ]
-    ]
-    emv_data: typing_extensions.NotRequired[
-        typing_extensions.Annotated[
-            ReceiptEmvDataInput,
-            typing_extensions.Doc("EMV-specific metadata returned for card-present payments."),
-        ]
-    ]
-    merchant_data: typing_extensions.NotRequired[
-        typing_extensions.Annotated[
-            ReceiptMerchantDataInput, typing_extensions.Doc("Receipt merchant data")
-        ]
-    ]
-    transaction_data: typing_extensions.NotRequired[
-        typing_extensions.Annotated[
-            ReceiptTransactionInput, typing_extensions.Doc("Transaction information.")
-        ]
-    ]
-
-
-ReceiptInput = ReceiptDict
 
 
 class Role(pydantic.BaseModel):
@@ -6672,57 +3979,9 @@ class Role(pydantic.BaseModel):
 	"""
 
 
-class RoleDict(typing_extensions.TypedDict, total=False):
-    created_at: typing_extensions.Required[
-        typing_extensions.Annotated[
-            datetime.datetime, typing_extensions.Doc("The timestamp of when the role was created.")
-        ]
-    ]
-    id: typing_extensions.Required[
-        typing_extensions.Annotated[str, typing_extensions.Doc("Unique identifier of the role.")]
-    ]
-    is_predefined: typing_extensions.Required[
-        typing_extensions.Annotated[
-            bool, typing_extensions.Doc("True if the role is provided by SumUp.")
-        ]
-    ]
-    name: typing_extensions.Required[
-        typing_extensions.Annotated[str, typing_extensions.Doc("User-defined name of the role.")]
-    ]
-    permissions: typing_extensions.Required[
-        typing_extensions.Annotated[
-            typing.Sequence[str],
-            typing_extensions.Doc("List of permission granted by this role.\nMax items: 100"),
-        ]
-    ]
-    updated_at: typing_extensions.Required[
-        typing_extensions.Annotated[
-            datetime.datetime,
-            typing_extensions.Doc("The timestamp of when the role was last updated."),
-        ]
-    ]
-    description: typing_extensions.NotRequired[
-        typing_extensions.Annotated[
-            str, typing_extensions.Doc("User-defined description of the role.")
-        ]
-    ]
-    metadata: typing_extensions.NotRequired[
-        typing_extensions.Annotated[
-            MetadataInput,
-            typing_extensions.Doc(
-                "Set of user-defined key-value pairs attached to the object. Partial updates are not supported. When updating, alwayssubmit whole metadata. Maximum of 64 parameters are allowed in the object.\nMax properties: 64"
-            ),
-        ]
-    ]
-
-
-RoleInput = RoleDict
-
-
 StatusResponseDataConnectionType = typing.Union[
     typing.Literal["Wi-Fi", "btle", "edge", "gprs", "lte", "umts", "usb"], str
 ]
-StatusResponseDataConnectionTypeInput = StatusResponseDataConnectionType
 
 StatusResponseDataState = typing.Union[
     typing.Literal[
@@ -6735,10 +3994,8 @@ StatusResponseDataState = typing.Union[
     ],
     str,
 ]
-StatusResponseDataStateInput = StatusResponseDataState
 
 StatusResponseDataStatus = typing.Union[typing.Literal["OFFLINE", "ONLINE"], str]
-StatusResponseDataStatusInput = StatusResponseDataStatus
 
 
 class StatusResponseData(pydantic.BaseModel):
@@ -6784,58 +4041,12 @@ class StatusResponseData(pydantic.BaseModel):
 	"""
 
 
-class StatusResponseDataDict(typing_extensions.TypedDict, total=False):
-    status: typing_extensions.Required[
-        typing_extensions.Annotated[
-            StatusResponseDataStatusInput, typing_extensions.Doc("Status of a device")
-        ]
-    ]
-    battery_level: typing_extensions.NotRequired[
-        typing_extensions.Annotated[
-            float, typing_extensions.Doc("Battery level percentage\nMin: 0\nMax: 100")
-        ]
-    ]
-    battery_temperature: typing_extensions.NotRequired[
-        typing_extensions.Annotated[int, typing_extensions.Doc("Battery temperature in Celsius")]
-    ]
-    connection_type: typing_extensions.NotRequired[
-        typing_extensions.Annotated[
-            StatusResponseDataConnectionTypeInput,
-            typing_extensions.Doc("Type of connection used by the device"),
-        ]
-    ]
-    firmware_version: typing_extensions.NotRequired[
-        typing_extensions.Annotated[str, typing_extensions.Doc("Firmware version of the device")]
-    ]
-    last_activity: typing_extensions.NotRequired[
-        typing_extensions.Annotated[
-            datetime.datetime,
-            typing_extensions.Doc("Timestamp of the last activity from the device"),
-        ]
-    ]
-    state: typing_extensions.NotRequired[
-        typing_extensions.Annotated[
-            StatusResponseDataStateInput, typing_extensions.Doc("Latest state of the device")
-        ]
-    ]
-
-
-StatusResponseDataInput = StatusResponseDataDict
-
-
 class StatusResponse(pydantic.BaseModel):
     """
     Status of a device
     """
 
     data: StatusResponseData
-
-
-class StatusResponseDict(typing_extensions.TypedDict, total=False):
-    data: typing_extensions.Required[StatusResponseDataInput]
-
-
-StatusResponseInput = StatusResponseDict
 
 
 class TransactionEvent(pydantic.BaseModel):
@@ -6898,65 +4109,9 @@ class TransactionEvent(pydantic.BaseModel):
 	"""
 
 
-class TransactionEventDict(typing_extensions.TypedDict, total=False):
-    amount: typing_extensions.NotRequired[
-        typing_extensions.Annotated[
-            float, typing_extensions.Doc("Amount of the event.\nFormat: decimal")
-        ]
-    ]
-    date: typing_extensions.NotRequired[
-        typing_extensions.Annotated[
-            datetime.date,
-            typing_extensions.Doc("Date when the transaction event occurred.\nFormat: date"),
-        ]
-    ]
-    due_date: typing_extensions.NotRequired[
-        typing_extensions.Annotated[
-            datetime.date,
-            typing_extensions.Doc("Date when the transaction event is due to occur.\nFormat: date"),
-        ]
-    ]
-    event_type: typing_extensions.NotRequired[
-        typing_extensions.Annotated[
-            EventTypeInput, typing_extensions.Doc("Type of the transaction event.")
-        ]
-    ]
-    id: typing_extensions.NotRequired[
-        typing_extensions.Annotated[
-            EventIdInput,
-            typing_extensions.Doc("Unique ID of the transaction event.\nFormat: int64"),
-        ]
-    ]
-    installment_number: typing_extensions.NotRequired[
-        typing_extensions.Annotated[
-            int,
-            typing_extensions.Doc(
-                "Consecutive number of the installment that is paid. Applicable only payout events, i.e. `event_type = PAYOUT`."
-            ),
-        ]
-    ]
-    status: typing_extensions.NotRequired[
-        typing_extensions.Annotated[
-            EventStatusInput,
-            typing_extensions.Doc(
-                "Status of the transaction event.\n\nNot every value is used for every event type.\n\n- `PENDING`: The event has been created but is not final yet. Used for events that are still being processed andwhose final outcome is not known yet.\n- `SCHEDULED`: The event is planned for a future payout cycle but has not been executed yet. This applies topayout events before money is actually sent out.\n- `RECONCILED`: The underlying payment has been matched with settlement data and is ready to continue through payoutprocessing, but the funds have not been paid out yet. This applies to payout events.\n- `PAID_OUT`: The payout event has been completed and the funds were included in a merchant payout.\n- `REFUNDED`: A refund event has been accepted and recorded in the refund flow. This is the status returned forrefund events once the transaction amount is being or has been returned to the payer.\n- `SUCCESSFUL`: The event completed successfully. Use this as the generic terminal success status for event typesthat do not expose a more specific business outcome such as `PAID_OUT` or `REFUNDED`.\n- `FAILED`: The event could not be completed. Typical examples are a payout that could not be executed oran event that was rejected during processing."
-            ),
-        ]
-    ]
-    timestamp: typing_extensions.NotRequired[
-        typing_extensions.Annotated[
-            datetime.datetime, typing_extensions.Doc("Date and time of the transaction event.")
-        ]
-    ]
-
-
-TransactionEventInput = TransactionEventDict
-
-
 TransactionMixinHistoryPayoutPlan = typing.Union[
     typing.Literal["ACCELERATED_INSTALLMENT", "SINGLE_PAYMENT", "TRUE_INSTALLMENT"], str
 ]
-TransactionMixinHistoryPayoutPlanInput = TransactionMixinHistoryPayoutPlan
 
 
 class TransactionMixinHistory(pydantic.BaseModel):
@@ -6985,53 +4140,13 @@ class TransactionMixinHistory(pydantic.BaseModel):
 	"""
 
 
-class TransactionMixinHistoryDict(typing_extensions.TypedDict, total=False):
-    payout_plan: typing_extensions.NotRequired[
-        typing_extensions.Annotated[
-            TransactionMixinHistoryPayoutPlanInput,
-            typing_extensions.Doc(
-                "Payout plan of the registered user at the time when the transaction was made."
-            ),
-        ]
-    ]
-    payouts_received: typing_extensions.NotRequired[
-        typing_extensions.Annotated[
-            int,
-            typing_extensions.Doc(
-                "Number of payouts that are made to the registered user specified in the `user` property."
-            ),
-        ]
-    ]
-    payouts_total: typing_extensions.NotRequired[
-        typing_extensions.Annotated[
-            int,
-            typing_extensions.Doc(
-                "Total number of payouts to the registered user specified in the `user` property."
-            ),
-        ]
-    ]
-    product_summary: typing_extensions.NotRequired[
-        typing_extensions.Annotated[
-            str,
-            typing_extensions.Doc(
-                "Short description of the payment. The value is taken from the `description` property of the related checkout resource."
-            ),
-        ]
-    ]
-
-
-TransactionMixinHistoryInput = TransactionMixinHistoryDict
-
-
 TransactionFullStatus = typing.Union[
     typing.Literal["CANCELLED", "FAILED", "PENDING", "SUCCESSFUL"], str
 ]
-TransactionFullStatusInput = TransactionFullStatus
 
 TransactionFullPayoutPlan = typing.Union[
     typing.Literal["ACCELERATED_INSTALLMENT", "SINGLE_PAYMENT", "TRUE_INSTALLMENT"], str
 ]
-TransactionFullPayoutPlanInput = TransactionFullPayoutPlan
 
 TransactionFullSimplePaymentType = typing.Union[
     typing.Literal[
@@ -7052,7 +4167,6 @@ TransactionFullSimplePaymentType = typing.Union[
     ],
     str,
 ]
-TransactionFullSimplePaymentTypeInput = TransactionFullSimplePaymentType
 
 TransactionFullVerificationMethod = typing.Union[
     typing.Literal[
@@ -7060,13 +4174,10 @@ TransactionFullVerificationMethod = typing.Union[
     ],
     str,
 ]
-TransactionFullVerificationMethodInput = TransactionFullVerificationMethod
 
 TransactionFullPayoutType = typing.Union[typing.Literal["BANK_ACCOUNT", "PREPAID_CARD"], str]
-TransactionFullPayoutTypeInput = TransactionFullPayoutType
 
 TransactionFullProcessA = typing.Union[typing.Literal["CREDIT", "DEBIT"], str]
-TransactionFullProcessAInput = TransactionFullProcessA
 
 
 class TransactionFullVatRate(pydantic.BaseModel):
@@ -7099,36 +4210,6 @@ class TransactionFullVatRate(pydantic.BaseModel):
 	"""
 
 
-class TransactionFullVatRateDict(typing_extensions.TypedDict, total=False):
-    gross: typing_extensions.NotRequired[
-        typing_extensions.Annotated[
-            float,
-            typing_extensions.Doc(
-                "Gross amount of products having this VAT rate applied.\nFormat: decimal"
-            ),
-        ]
-    ]
-    net: typing_extensions.NotRequired[
-        typing_extensions.Annotated[
-            float,
-            typing_extensions.Doc(
-                "NET amount of products having this VAT rate applied.\nFormat: decimal"
-            ),
-        ]
-    ]
-    rate: typing_extensions.NotRequired[
-        typing_extensions.Annotated[float, typing_extensions.Doc("VAT rate.\nFormat: decimal")]
-    ]
-    vat: typing_extensions.NotRequired[
-        typing_extensions.Annotated[
-            float, typing_extensions.Doc("VAT amount of this rate applied.\nFormat: decimal")
-        ]
-    ]
-
-
-TransactionFullVatRateInput = TransactionFullVatRateDict
-
-
 TransactionFullSimpleStatus = typing.Union[
     typing.Literal[
         "CANCELLED",
@@ -7144,7 +4225,6 @@ TransactionFullSimpleStatus = typing.Union[
     ],
     str,
 ]
-TransactionFullSimpleStatusInput = TransactionFullSimpleStatus
 
 
 class TransactionFullLocation(pydantic.BaseModel):
@@ -7170,36 +4250,6 @@ class TransactionFullLocation(pydantic.BaseModel):
 	Min: 0
 	Max: 180
 	"""
-
-
-class TransactionFullLocationDict(typing_extensions.TypedDict, total=False):
-    horizontal_accuracy: typing_extensions.NotRequired[
-        typing_extensions.Annotated[
-            HorizontalAccuracyInput,
-            typing_extensions.Doc(
-                "Indication of the precision of the geographical position received from the payment terminal."
-            ),
-        ]
-    ]
-    lat: typing_extensions.NotRequired[
-        typing_extensions.Annotated[
-            LatInput,
-            typing_extensions.Doc(
-                "Latitude value from the coordinates of the payment location (as received from the payment terminal reader).\nMin: 0\nMax: 90"
-            ),
-        ]
-    ]
-    lon: typing_extensions.NotRequired[
-        typing_extensions.Annotated[
-            LonInput,
-            typing_extensions.Doc(
-                "Longitude value from the coordinates of the payment location (as received from the payment terminal reader).\nMin: 0\nMax: 180"
-            ),
-        ]
-    ]
-
-
-TransactionFullLocationInput = TransactionFullLocationDict
 
 
 class TransactionFull(pydantic.BaseModel):
@@ -7438,302 +4488,17 @@ class TransactionFull(pydantic.BaseModel):
 	"""
 
 
-class TransactionFullDict(typing_extensions.TypedDict, total=False):
-    amount: typing_extensions.NotRequired[
-        typing_extensions.Annotated[
-            float, typing_extensions.Doc("Total amount of the transaction.")
-        ]
-    ]
-    auth_code: typing_extensions.NotRequired[
-        typing_extensions.Annotated[
-            str,
-            typing_extensions.Doc(
-                "Authorization code for the transaction sent by the payment card issuer or bank. Applicable only to card payments."
-            ),
-        ]
-    ]
-    card: typing_extensions.NotRequired[
-        typing_extensions.Annotated[
-            CardResponseInput, typing_extensions.Doc("Details of the payment card.")
-        ]
-    ]
-    client_transaction_id: typing_extensions.NotRequired[
-        typing_extensions.Annotated[str, typing_extensions.Doc("Client transaction id.")]
-    ]
-    currency: typing_extensions.NotRequired[
-        typing_extensions.Annotated[
-            CurrencyInput,
-            typing_extensions.Doc(
-                "Three-letter [ISO4217](https://en.wikipedia.org/wiki/ISO_4217) code of the currency for the amount. Currently supportedcurrency values are enumerated above."
-            ),
-        ]
-    ]
-    device_info: typing_extensions.NotRequired[
-        typing_extensions.Annotated[
-            DeviceInput,
-            typing_extensions.Doc("Details of the device used to create the transaction."),
-        ]
-    ]
-    elv_account: typing_extensions.NotRequired[
-        typing_extensions.Annotated[
-            ElvCardAccountInput,
-            typing_extensions.Doc(
-                "Details of the ELV card account associated with the transaction."
-            ),
-        ]
-    ]
-    entry_mode: typing_extensions.NotRequired[
-        typing_extensions.Annotated[
-            EntryModeInput, typing_extensions.Doc("Entry mode of the payment details.")
-        ]
-    ]
-    events: typing_extensions.NotRequired[
-        typing_extensions.Annotated[
-            typing.Sequence[EventInput],
-            typing_extensions.Doc("Compact list of events related to the transaction."),
-        ]
-    ]
-    fee_amount: typing_extensions.NotRequired[
-        typing_extensions.Annotated[
-            float, typing_extensions.Doc("Transaction SumUp total fee amount.\nFormat: decimal")
-        ]
-    ]
-    foreign_transaction_id: typing_extensions.NotRequired[
-        typing_extensions.Annotated[
-            str, typing_extensions.Doc("External/foreign transaction id (passed by clients).")
-        ]
-    ]
-    horizontal_accuracy: typing_extensions.NotRequired[
-        typing_extensions.Annotated[
-            HorizontalAccuracyInput,
-            typing_extensions.Doc(
-                "Indication of the precision of the geographical position received from the payment terminal."
-            ),
-        ]
-    ]
-    id: typing_extensions.NotRequired[
-        typing_extensions.Annotated[str, typing_extensions.Doc("Unique ID of the transaction.")]
-    ]
-    installments_count: typing_extensions.NotRequired[
-        typing_extensions.Annotated[
-            int,
-            typing_extensions.Doc(
-                "Current number of the installment for deferred payments.\nMin: 1"
-            ),
-        ]
-    ]
-    lat: typing_extensions.NotRequired[
-        typing_extensions.Annotated[
-            LatInput,
-            typing_extensions.Doc(
-                "Latitude value from the coordinates of the payment location (as received from the payment terminal reader).\nMin: 0\nMax: 90"
-            ),
-        ]
-    ]
-    links: typing_extensions.NotRequired[
-        typing_extensions.Annotated[
-            typing.Sequence[LinkInput],
-            typing_extensions.Doc("List of hyperlinks for accessing related resources."),
-        ]
-    ]
-    local_time: typing_extensions.NotRequired[
-        typing_extensions.Annotated[
-            datetime.datetime,
-            typing_extensions.Doc("Local date and time of the creation of the transaction."),
-        ]
-    ]
-    location: typing_extensions.NotRequired[
-        typing_extensions.Annotated[
-            TransactionFullLocationInput,
-            typing_extensions.Doc(
-                "Details of the payment location as received from the payment terminal."
-            ),
-        ]
-    ]
-    lon: typing_extensions.NotRequired[
-        typing_extensions.Annotated[
-            LonInput,
-            typing_extensions.Doc(
-                "Longitude value from the coordinates of the payment location (as received from the payment terminal reader).\nMin: 0\nMax: 180"
-            ),
-        ]
-    ]
-    merchant_code: typing_extensions.NotRequired[
-        typing_extensions.Annotated[
-            str,
-            typing_extensions.Doc(
-                "Unique code of the registered merchant to whom the payment is made."
-            ),
-        ]
-    ]
-    merchant_id: typing_extensions.NotRequired[
-        typing_extensions.Annotated[
-            int, typing_extensions.Doc("SumUp merchant internal Id.\nFormat: int64")
-        ]
-    ]
-    payment_type: typing_extensions.NotRequired[
-        typing_extensions.Annotated[
-            PaymentTypeInput, typing_extensions.Doc("Payment type used for the transaction.")
-        ]
-    ]
-    payout_date: typing_extensions.NotRequired[
-        typing_extensions.Annotated[
-            datetime.date, typing_extensions.Doc("The date of the payout.\nFormat: date")
-        ]
-    ]
-    payout_plan: typing_extensions.NotRequired[
-        typing_extensions.Annotated[
-            TransactionFullPayoutPlanInput,
-            typing_extensions.Doc(
-                "Payout plan of the registered user at the time when the transaction was made."
-            ),
-        ]
-    ]
-    payout_type: typing_extensions.NotRequired[
-        typing_extensions.Annotated[
-            TransactionFullPayoutTypeInput,
-            typing_extensions.Doc("Payout type for the transaction."),
-        ]
-    ]
-    payouts_received: typing_extensions.NotRequired[
-        typing_extensions.Annotated[
-            int,
-            typing_extensions.Doc(
-                "Number of payouts that are made to the registered user specified in the `user` property."
-            ),
-        ]
-    ]
-    payouts_total: typing_extensions.NotRequired[
-        typing_extensions.Annotated[
-            int,
-            typing_extensions.Doc(
-                "Total number of payouts to the registered user specified in the `user` property."
-            ),
-        ]
-    ]
-    process_as: typing_extensions.NotRequired[
-        typing_extensions.Annotated[
-            TransactionFullProcessAInput, typing_extensions.Doc("Debit/Credit.")
-        ]
-    ]
-    product_summary: typing_extensions.NotRequired[
-        typing_extensions.Annotated[
-            str,
-            typing_extensions.Doc(
-                "Short description of the payment. The value is taken from the `description` property of the related checkout resource."
-            ),
-        ]
-    ]
-    products: typing_extensions.NotRequired[
-        typing_extensions.Annotated[
-            typing.Sequence[ProductInput],
-            typing_extensions.Doc(
-                "List of products from the merchant's catalogue for which the transaction serves as a payment."
-            ),
-        ]
-    ]
-    simple_payment_type: typing_extensions.NotRequired[
-        typing_extensions.Annotated[
-            TransactionFullSimplePaymentTypeInput,
-            typing_extensions.Doc("Simple name of the payment type."),
-        ]
-    ]
-    simple_status: typing_extensions.NotRequired[
-        typing_extensions.Annotated[
-            TransactionFullSimpleStatusInput,
-            typing_extensions.Doc(
-                "High-level status of the transaction from the merchant's perspective.\n\n- `PENDING`: The payment has been initiated and is still being processed. A final outcome is not available yet.\n-`SUCCESSFUL`: The payment was completed successfully.\n- `PAID_OUT`: The payment was completed successfully and the funds have already been included in a payout tothe merchant.\n- `FAILED`: The payment did not complete successfully.\n- `CANCELLED`: The payment was cancelled or reversed and is no longer payable or payable to the merchant.\n- `CANCEL_FAILED`: An attempt to cancel or reverse the payment was not completed successfully.\n- `REFUNDED`: The payment was refunded in full or in part.\n- `REFUND_FAILED`: An attempt to refund the payment was not completed successfully.\n- `CHARGEBACK`: The payment was subject to a chargeback.\n- `NON_COLLECTION`: The amount could not be collected from the merchant after a chargeback or related adjustment."
-            ),
-        ]
-    ]
-    status: typing_extensions.NotRequired[
-        typing_extensions.Annotated[
-            TransactionFullStatusInput, typing_extensions.Doc("Current status of the transaction.")
-        ]
-    ]
-    tax_enabled: typing_extensions.NotRequired[
-        typing_extensions.Annotated[
-            bool,
-            typing_extensions.Doc(
-                "Indicates whether tax deduction is enabled for the transaction."
-            ),
-        ]
-    ]
-    timestamp: typing_extensions.NotRequired[
-        typing_extensions.Annotated[
-            datetime.datetime,
-            typing_extensions.Doc(
-                "Date and time of the creation of the transaction. Response format expressed according to [ISO8601](https://en.wikipedia.org/wiki/ISO_8601) code."
-            ),
-        ]
-    ]
-    tip_amount: typing_extensions.NotRequired[
-        typing_extensions.Annotated[
-            float, typing_extensions.Doc("Amount of the tip (out of the total transaction amount).")
-        ]
-    ]
-    transaction_code: typing_extensions.NotRequired[
-        typing_extensions.Annotated[
-            str,
-            typing_extensions.Doc(
-                "Transaction code returned by the acquirer/processing entity after processing the transaction."
-            ),
-        ]
-    ]
-    transaction_events: typing_extensions.NotRequired[
-        typing_extensions.Annotated[
-            typing.Sequence[TransactionEventInput],
-            typing_extensions.Doc("Detailed list of events related to the transaction."),
-        ]
-    ]
-    username: typing_extensions.NotRequired[
-        typing_extensions.Annotated[
-            str,
-            typing_extensions.Doc(
-                "Email address of the registered user (merchant) to whom the payment is made.\nFormat: email"
-            ),
-        ]
-    ]
-    vat_amount: typing_extensions.NotRequired[
-        typing_extensions.Annotated[
-            float,
-            typing_extensions.Doc(
-                "Amount of the applicable VAT (out of the total transaction amount)."
-            ),
-        ]
-    ]
-    vat_rates: typing_extensions.NotRequired[
-        typing_extensions.Annotated[
-            typing.Sequence[TransactionFullVatRateInput],
-            typing_extensions.Doc("List of VAT rates applicable to the transaction."),
-        ]
-    ]
-    verification_method: typing_extensions.NotRequired[
-        typing_extensions.Annotated[
-            TransactionFullVerificationMethodInput,
-            typing_extensions.Doc("Verification method used for the transaction."),
-        ]
-    ]
-
-
-TransactionFullInput = TransactionFullDict
-
-
 TransactionHistoryStatus = typing.Union[
     typing.Literal["CANCELLED", "FAILED", "PENDING", "SUCCESSFUL"], str
 ]
-TransactionHistoryStatusInput = TransactionHistoryStatus
 
 TransactionHistoryPayoutPlan = typing.Union[
     typing.Literal["ACCELERATED_INSTALLMENT", "SINGLE_PAYMENT", "TRUE_INSTALLMENT"], str
 ]
-TransactionHistoryPayoutPlanInput = TransactionHistoryPayoutPlan
 
 TransactionHistoryType = typing.Union[typing.Literal["CHARGE_BACK", "PAYMENT", "REFUND"], str]
-TransactionHistoryTypeInput = TransactionHistoryType
 
 TransactionHistoryPayoutType = typing.Union[typing.Literal["BANK_ACCOUNT", "PREPAID_CARD"], str]
-TransactionHistoryPayoutTypeInput = TransactionHistoryPayoutType
 
 
 class TransactionHistory(pydantic.BaseModel):
@@ -7846,144 +4611,6 @@ class TransactionHistory(pydantic.BaseModel):
 	"""
 
 
-class TransactionHistoryDict(typing_extensions.TypedDict, total=False):
-    amount: typing_extensions.NotRequired[
-        typing_extensions.Annotated[
-            float, typing_extensions.Doc("Total amount of the transaction.")
-        ]
-    ]
-    card_type: typing_extensions.NotRequired[
-        typing_extensions.Annotated[
-            CardTypeInput,
-            typing_extensions.Doc(
-                "Issuing card network of the payment card used for the transaction."
-            ),
-        ]
-    ]
-    client_transaction_id: typing_extensions.NotRequired[
-        typing_extensions.Annotated[
-            str, typing_extensions.Doc("Client-specific ID of the transaction.")
-        ]
-    ]
-    currency: typing_extensions.NotRequired[
-        typing_extensions.Annotated[
-            CurrencyInput,
-            typing_extensions.Doc(
-                "Three-letter [ISO4217](https://en.wikipedia.org/wiki/ISO_4217) code of the currency for the amount. Currently supportedcurrency values are enumerated above."
-            ),
-        ]
-    ]
-    id: typing_extensions.NotRequired[
-        typing_extensions.Annotated[str, typing_extensions.Doc("Unique ID of the transaction.")]
-    ]
-    installments_count: typing_extensions.NotRequired[
-        typing_extensions.Annotated[
-            int,
-            typing_extensions.Doc(
-                "Current number of the installment for deferred payments.\nMin: 1"
-            ),
-        ]
-    ]
-    payment_type: typing_extensions.NotRequired[
-        typing_extensions.Annotated[
-            PaymentTypeInput, typing_extensions.Doc("Payment type used for the transaction.")
-        ]
-    ]
-    payout_date: typing_extensions.NotRequired[
-        typing_extensions.Annotated[
-            datetime.date, typing_extensions.Doc("Payout date (if paid out at once).\nFormat: date")
-        ]
-    ]
-    payout_plan: typing_extensions.NotRequired[
-        typing_extensions.Annotated[
-            TransactionHistoryPayoutPlanInput,
-            typing_extensions.Doc(
-                "Payout plan of the registered user at the time when the transaction was made."
-            ),
-        ]
-    ]
-    payout_type: typing_extensions.NotRequired[
-        typing_extensions.Annotated[
-            TransactionHistoryPayoutTypeInput, typing_extensions.Doc("Payout type.")
-        ]
-    ]
-    payouts_received: typing_extensions.NotRequired[
-        typing_extensions.Annotated[
-            int,
-            typing_extensions.Doc(
-                "Number of payouts that are made to the registered user specified in the `user` property."
-            ),
-        ]
-    ]
-    payouts_total: typing_extensions.NotRequired[
-        typing_extensions.Annotated[
-            int,
-            typing_extensions.Doc(
-                "Total number of payouts to the registered user specified in the `user` property."
-            ),
-        ]
-    ]
-    product_summary: typing_extensions.NotRequired[
-        typing_extensions.Annotated[
-            str,
-            typing_extensions.Doc(
-                "Short description of the payment. The value is taken from the `description` property of the related checkout resource."
-            ),
-        ]
-    ]
-    refunded_amount: typing_extensions.NotRequired[
-        typing_extensions.Annotated[
-            float, typing_extensions.Doc("Total refunded amount.\nFormat: decimal")
-        ]
-    ]
-    status: typing_extensions.NotRequired[
-        typing_extensions.Annotated[
-            TransactionHistoryStatusInput,
-            typing_extensions.Doc("Current status of the transaction."),
-        ]
-    ]
-    timestamp: typing_extensions.NotRequired[
-        typing_extensions.Annotated[
-            datetime.datetime,
-            typing_extensions.Doc(
-                "Date and time of the creation of the transaction. Response format expressed according to [ISO8601](https://en.wikipedia.org/wiki/ISO_8601) code."
-            ),
-        ]
-    ]
-    transaction_code: typing_extensions.NotRequired[
-        typing_extensions.Annotated[
-            str,
-            typing_extensions.Doc(
-                "Transaction code returned by the acquirer/processing entity after processing the transaction."
-            ),
-        ]
-    ]
-    transaction_id: typing_extensions.NotRequired[
-        typing_extensions.Annotated[
-            TransactionIdInput, typing_extensions.Doc("Unique ID of the transaction.")
-        ]
-    ]
-    type: typing_extensions.NotRequired[
-        typing_extensions.Annotated[
-            TransactionHistoryTypeInput,
-            typing_extensions.Doc(
-                "Type of the transaction for the registered user specified in the `user` property."
-            ),
-        ]
-    ]
-    user: typing_extensions.NotRequired[
-        typing_extensions.Annotated[
-            str,
-            typing_extensions.Doc(
-                "Email address of the registered user (merchant) to whom the payment is made.\nFormat: email"
-            ),
-        ]
-    ]
-
-
-TransactionHistoryInput = TransactionHistoryDict
-
-
 class TransactionsHistoryLink(pydantic.BaseModel):
     """
     Hypermedia link used for transaction history pagination.
@@ -8000,22 +4627,9 @@ class TransactionsHistoryLink(pydantic.BaseModel):
 	"""
 
 
-class TransactionsHistoryLinkDict(typing_extensions.TypedDict, total=False):
-    href: typing_extensions.Required[
-        typing_extensions.Annotated[str, typing_extensions.Doc("Location.")]
-    ]
-    rel: typing_extensions.Required[
-        typing_extensions.Annotated[str, typing_extensions.Doc("Relation.")]
-    ]
-
-
-TransactionsHistoryLinkInput = TransactionsHistoryLinkDict
-
-
 UnauthorizedErrorsType = typing.Union[
     typing.Literal["INVALID_ACCESS_TOKEN", "INVALID_PASSWORD"], str
 ]
-UnauthorizedErrorsTypeInput = UnauthorizedErrorsType
 
 
 class UnauthorizedErrors(pydantic.BaseModel):
@@ -8034,35 +4648,9 @@ class UnauthorizedErrors(pydantic.BaseModel):
 	"""
 
 
-class UnauthorizedErrorsDict(typing_extensions.TypedDict, total=False):
-    detail: typing_extensions.Required[
-        typing_extensions.Annotated[
-            str, typing_extensions.Doc("Fuller message giving context to error")
-        ]
-    ]
-    type: typing_extensions.NotRequired[
-        typing_extensions.Annotated[
-            UnauthorizedErrorsTypeInput,
-            typing_extensions.Doc(
-                "Key indicating type of error. Present only for typed 401 responses (e.g. invalid token, invalid password). Absentfor generic unauthorized responses."
-            ),
-        ]
-    ]
-
-
-UnauthorizedErrorsInput = UnauthorizedErrorsDict
-
-
 class Unauthorized(pydantic.BaseModel):
     """
     401 Unauthorized
     """
 
     errors: UnauthorizedErrors
-
-
-class UnauthorizedDict(typing_extensions.TypedDict, total=False):
-    errors: typing_extensions.Required[UnauthorizedErrorsInput]
-
-
-UnauthorizedInput = UnauthorizedDict

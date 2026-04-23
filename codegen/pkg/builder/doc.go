@@ -47,12 +47,6 @@ func methodDoc(operation *v3.Operation) string {
 	return formatDoc(out.String())
 }
 
-// operationParamsDoc creates godoc comment for a struct representing
-// parameters of an operation.
-func operationParamsDoc(name string, operation *v3.Operation) string {
-	return formatDoc(name + ": query parameters for " + operation.OperationId)
-}
-
 // schemaDoc creates godoc for a schema.
 func schemaDoc(name string, schema *base.Schema) string {
 	out := new(strings.Builder)
@@ -191,5 +185,10 @@ func formatDoc(s string) string {
 		}
 	}
 
-	return strings.TrimSpace(out.String())
+	return escapePythonDocString(strings.TrimSpace(out.String()))
+}
+
+func escapePythonDocString(s string) string {
+	s = strings.ReplaceAll(s, "\\", "\\\\")
+	return s
 }

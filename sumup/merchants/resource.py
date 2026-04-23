@@ -39,30 +39,6 @@ from ..types import (
     Timestamps,
     Version,
 )
-from ..types import (
-    AddressInput,
-    AttributesInput,
-    BasePersonInput,
-    BrandingInput,
-    BusinessProfileInput,
-    ChangeStatusInput,
-    ClassicMerchantIdentifiersInput,
-    CompanyInput,
-    CompanyIdentifierInput,
-    CompanyIdentifiersInput,
-    CountryCodeInput,
-    LegalTypeInput,
-    ListPersonsResponseBodyInput,
-    MerchantInput,
-    MetaInput,
-    OwnershipInput,
-    PersonInput,
-    PersonalIdentifierInput,
-    PhoneNumberInput,
-    ProblemInput,
-    TimestampsInput,
-    VersionInput,
-)
 import datetime
 import httpx
 import typing

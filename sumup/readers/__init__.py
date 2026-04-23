@@ -2,7 +2,6 @@
 from .resource import (
     ReadersResource,
     AsyncReadersResource,
-    CreateReaderCheckoutBodyCardType,
     ListReaders200Response,
 )
 from ..types import (
@@ -30,7 +29,6 @@ from ..types import (
 __all__ = [
     "ReadersResource",
     "AsyncReadersResource",
-    "CreateReaderCheckoutBodyCardType",
     "ListReaders200Response",
     "BadRequest",
     "CreateReaderCheckoutError",

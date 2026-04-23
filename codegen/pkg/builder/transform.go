@@ -104,6 +104,14 @@ func markRequestType(typ Writable) {
 		t.RequestOnly = true
 	case *OneOfDeclaration:
 		t.RequestOnly = true
+	case *EnumDeclaration[string]:
+		t.RequestOnly = true
+	case *EnumDeclaration[int]:
+		t.RequestOnly = true
+	case *EnumDeclaration[int64]:
+		t.RequestOnly = true
+	case *EnumDeclaration[float64]:
+		t.RequestOnly = true
 	}
 }
 

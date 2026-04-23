@@ -55,24 +55,11 @@ from ..types import (
     AddressLegacyInput,
     CardInput,
     CardTypeInput,
-    CheckoutInput,
-    CheckoutAcceptedInput,
     CheckoutCreateRequestInput,
-    CheckoutSuccessInput,
     CurrencyInput,
-    DetailsErrorInput,
-    EntryModeInput,
-    ErrorInput,
-    ErrorExtendedInput,
-    ErrorForbiddenInput,
     MandatePayloadInput,
-    MandateResponseInput,
-    PaymentTypeInput,
     PersonalDetailsInput,
-    ProblemInput,
     ProcessCheckoutInput,
-    TransactionBaseInput,
-    TransactionCheckoutInfoInput,
 )
 import datetime
 import httpx
@@ -80,8 +67,9 @@ import typing
 import pydantic
 import typing_extensions
 
-CreateCheckoutBodyPurpose = typing.Union[typing.Literal["CHECKOUT", "SETUP_RECURRING_PAYMENT"], str]
-CreateCheckoutBodyPurposeInput = CreateCheckoutBodyPurpose
+CreateCheckoutBodyPurposeInput = typing.Union[
+    typing.Literal["CHECKOUT", "SETUP_RECURRING_PAYMENT"], str
+]
 
 
 class CreateCheckoutBodyInput(typing_extensions.TypedDict, total=False):
@@ -166,10 +154,9 @@ class CreateCheckoutBodyInput(typing_extensions.TypedDict, total=False):
     ]
 
 
-ProcessCheckoutBodyPaymentType = typing.Union[
+ProcessCheckoutBodyPaymentTypeInput = typing.Union[
     typing.Literal["apple_pay", "bancontact", "blik", "boleto", "card", "google_pay", "ideal"], str
 ]
-ProcessCheckoutBodyPaymentTypeInput = ProcessCheckoutBodyPaymentType
 
 ProcessCheckoutBodyGooglePayInput = typing.Mapping[str, object]
 """
@@ -290,19 +277,6 @@ class GetPaymentMethods200ResponseAvailablePaymentMethod(pydantic.BaseModel):
 	"""
 
 
-class GetPaymentMethods200ResponseAvailablePaymentMethodDict(
-    typing_extensions.TypedDict, total=False
-):
-    id: typing_extensions.Required[
-        typing_extensions.Annotated[str, typing_extensions.Doc("The ID of the payment method.")]
-    ]
-
-
-GetPaymentMethods200ResponseAvailablePaymentMethodInput = (
-    GetPaymentMethods200ResponseAvailablePaymentMethodDict
-)
-
-
 class GetPaymentMethods200Response(pydantic.BaseModel):
     """
     GetPaymentMethods200Response is a schema definition.
@@ -313,25 +287,14 @@ class GetPaymentMethods200Response(pydantic.BaseModel):
     ] = None
 
 
-class GetPaymentMethods200ResponseDict(typing_extensions.TypedDict, total=False):
-    available_payment_methods: typing_extensions.NotRequired[
-        typing.Sequence[GetPaymentMethods200ResponseAvailablePaymentMethodInput]
-    ]
-
-
-GetPaymentMethods200ResponseInput = GetPaymentMethods200ResponseDict
-
-
 ListCheckouts200Response = list[CheckoutSuccess]
-ListCheckouts200ResponseInput = typing.Sequence[CheckoutSuccessInput]
 """
 ListCheckouts200Response is a schema definition.
 """
 
 ProcessCheckoutResponse = typing.Union[CheckoutSuccess, CheckoutAccepted]
-ProcessCheckoutResponseInput = typing.Union[CheckoutSuccessInput, CheckoutAcceptedInput]
+
 CreateApplePaySession200Response = dict[str, object]
-CreateApplePaySession200ResponseInput = typing.Mapping[str, object]
 """
 CreateApplePaySession200Response is a schema definition.
 """
@@ -385,12 +348,12 @@ class CheckoutsResource(Resource):
         amount: float,
         currency: CurrencyInput,
         merchant_code: str,
-        description: typing.Union[str, NotGivenType] = NOT_GIVEN,
-        return_url: typing.Union[str, NotGivenType] = NOT_GIVEN,
-        customer_id: typing.Union[str, NotGivenType] = NOT_GIVEN,
-        purpose: typing.Union[CreateCheckoutBodyPurposeInput, NotGivenType] = NOT_GIVEN,
-        valid_until: typing.Union[datetime.datetime, NotGivenType] = NOT_GIVEN,
-        redirect_url: typing.Union[str, NotGivenType] = NOT_GIVEN,
+        description: typing.Union[str, None, NotGivenType] = NOT_GIVEN,
+        return_url: typing.Union[str, None, NotGivenType] = NOT_GIVEN,
+        customer_id: typing.Union[str, None, NotGivenType] = NOT_GIVEN,
+        purpose: typing.Union[CreateCheckoutBodyPurposeInput, None, NotGivenType] = NOT_GIVEN,
+        valid_until: typing.Union[datetime.datetime, None, NotGivenType] = NOT_GIVEN,
+        redirect_url: typing.Union[str, None, NotGivenType] = NOT_GIVEN,
         headers: typing.Optional[HeaderTypes] = None,
     ) -> Checkout:
         """
@@ -505,14 +468,14 @@ class CheckoutsResource(Resource):
         id: str,
         *,
         payment_type: ProcessCheckoutBodyPaymentTypeInput,
-        installments: typing.Union[int, NotGivenType] = NOT_GIVEN,
-        mandate: typing.Union[MandatePayloadInput, NotGivenType] = NOT_GIVEN,
-        card: typing.Union[CardInput, NotGivenType] = NOT_GIVEN,
-        google_pay: typing.Union[ProcessCheckoutBodyGooglePayInput, NotGivenType] = NOT_GIVEN,
-        apple_pay: typing.Union[ProcessCheckoutBodyApplePayInput, NotGivenType] = NOT_GIVEN,
-        token: typing.Union[str, NotGivenType] = NOT_GIVEN,
-        customer_id: typing.Union[str, NotGivenType] = NOT_GIVEN,
-        personal_details: typing.Union[PersonalDetailsInput, NotGivenType] = NOT_GIVEN,
+        installments: typing.Union[int, None, NotGivenType] = NOT_GIVEN,
+        mandate: typing.Union[MandatePayloadInput, None, NotGivenType] = NOT_GIVEN,
+        card: typing.Union[CardInput, None, NotGivenType] = NOT_GIVEN,
+        google_pay: typing.Union[ProcessCheckoutBodyGooglePayInput, None, NotGivenType] = NOT_GIVEN,
+        apple_pay: typing.Union[ProcessCheckoutBodyApplePayInput, None, NotGivenType] = NOT_GIVEN,
+        token: typing.Union[str, None, NotGivenType] = NOT_GIVEN,
+        customer_id: typing.Union[str, None, NotGivenType] = NOT_GIVEN,
+        personal_details: typing.Union[PersonalDetailsInput, None, NotGivenType] = NOT_GIVEN,
         headers: typing.Optional[HeaderTypes] = None,
     ) -> ProcessCheckoutResponse:
         """
@@ -686,12 +649,12 @@ class AsyncCheckoutsResource(AsyncResource):
         amount: float,
         currency: CurrencyInput,
         merchant_code: str,
-        description: typing.Union[str, NotGivenType] = NOT_GIVEN,
-        return_url: typing.Union[str, NotGivenType] = NOT_GIVEN,
-        customer_id: typing.Union[str, NotGivenType] = NOT_GIVEN,
-        purpose: typing.Union[CreateCheckoutBodyPurposeInput, NotGivenType] = NOT_GIVEN,
-        valid_until: typing.Union[datetime.datetime, NotGivenType] = NOT_GIVEN,
-        redirect_url: typing.Union[str, NotGivenType] = NOT_GIVEN,
+        description: typing.Union[str, None, NotGivenType] = NOT_GIVEN,
+        return_url: typing.Union[str, None, NotGivenType] = NOT_GIVEN,
+        customer_id: typing.Union[str, None, NotGivenType] = NOT_GIVEN,
+        purpose: typing.Union[CreateCheckoutBodyPurposeInput, None, NotGivenType] = NOT_GIVEN,
+        valid_until: typing.Union[datetime.datetime, None, NotGivenType] = NOT_GIVEN,
+        redirect_url: typing.Union[str, None, NotGivenType] = NOT_GIVEN,
         headers: typing.Optional[HeaderTypes] = None,
     ) -> Checkout:
         """
@@ -806,14 +769,14 @@ class AsyncCheckoutsResource(AsyncResource):
         id: str,
         *,
         payment_type: ProcessCheckoutBodyPaymentTypeInput,
-        installments: typing.Union[int, NotGivenType] = NOT_GIVEN,
-        mandate: typing.Union[MandatePayloadInput, NotGivenType] = NOT_GIVEN,
-        card: typing.Union[CardInput, NotGivenType] = NOT_GIVEN,
-        google_pay: typing.Union[ProcessCheckoutBodyGooglePayInput, NotGivenType] = NOT_GIVEN,
-        apple_pay: typing.Union[ProcessCheckoutBodyApplePayInput, NotGivenType] = NOT_GIVEN,
-        token: typing.Union[str, NotGivenType] = NOT_GIVEN,
-        customer_id: typing.Union[str, NotGivenType] = NOT_GIVEN,
-        personal_details: typing.Union[PersonalDetailsInput, NotGivenType] = NOT_GIVEN,
+        installments: typing.Union[int, None, NotGivenType] = NOT_GIVEN,
+        mandate: typing.Union[MandatePayloadInput, None, NotGivenType] = NOT_GIVEN,
+        card: typing.Union[CardInput, None, NotGivenType] = NOT_GIVEN,
+        google_pay: typing.Union[ProcessCheckoutBodyGooglePayInput, None, NotGivenType] = NOT_GIVEN,
+        apple_pay: typing.Union[ProcessCheckoutBodyApplePayInput, None, NotGivenType] = NOT_GIVEN,
+        token: typing.Union[str, None, NotGivenType] = NOT_GIVEN,
+        customer_id: typing.Union[str, None, NotGivenType] = NOT_GIVEN,
+        personal_details: typing.Union[PersonalDetailsInput, None, NotGivenType] = NOT_GIVEN,
         headers: typing.Optional[HeaderTypes] = None,
     ) -> ProcessCheckoutResponse:
         """

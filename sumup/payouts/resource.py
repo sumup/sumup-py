@@ -18,24 +18,19 @@ from .._service import (
 )
 from .._exceptions import APIError
 from ..types import Error, ErrorExtended, FinancialPayouts, Problem
-from ..types import ErrorInput, ErrorExtendedInput, FinancialPayoutsInput, ProblemInput
 import datetime
 import httpx
 import typing
 import pydantic
 import typing_extensions
 
-ListPayoutsV1ParamsFormat = typing.Union[typing.Literal["csv", "json"], str]
-ListPayoutsV1ParamsFormatInput = ListPayoutsV1ParamsFormat
+ListPayoutsV1ParamsFormatInput = typing.Union[typing.Literal["csv", "json"], str]
 
-ListPayoutsV1ParamsOrder = typing.Union[typing.Literal["asc", "desc"], str]
-ListPayoutsV1ParamsOrderInput = ListPayoutsV1ParamsOrder
+ListPayoutsV1ParamsOrderInput = typing.Union[typing.Literal["asc", "desc"], str]
 
-ListPayoutsParamsFormat = typing.Union[typing.Literal["csv", "json"], str]
-ListPayoutsParamsFormatInput = ListPayoutsParamsFormat
+ListPayoutsParamsFormatInput = typing.Union[typing.Literal["csv", "json"], str]
 
-ListPayoutsParamsOrder = typing.Union[typing.Literal["asc", "desc"], str]
-ListPayoutsParamsOrderInput = ListPayoutsParamsOrder
+ListPayoutsParamsOrderInput = typing.Union[typing.Literal["asc", "desc"], str]
 
 
 class PayoutsResource(Resource):

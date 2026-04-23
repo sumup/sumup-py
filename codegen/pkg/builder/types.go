@@ -112,29 +112,31 @@ func (c *ClassDeclaration) String() string {
 		fmt.Fprintf(buf, "\tdef additional_properties(self, value: dict[str, %s]) -> None:\n", c.AdditionalPropertiesType)
 		fmt.Fprint(buf, "\t\tobject.__setattr__(self, \"__pydantic_extra__\", dict(value))\n")
 	}
-	fmt.Fprint(buf, "\n")
-	fmt.Fprintf(buf, "class %sDict(typing_extensions.TypedDict, total=False):\n", c.Name)
-	if len(c.Fields) == 0 {
-		fmt.Fprint(buf, "\tpass\n")
-	} else {
-		fields := append([]Property(nil), c.Fields...)
-		slices.SortFunc(fields, func(a, b Property) int {
-			if a.Optional && !b.Optional {
-				return 1
+	if c.GenerateInput {
+		fmt.Fprint(buf, "\n")
+		fmt.Fprintf(buf, "class %sDict(typing_extensions.TypedDict, total=False):\n", c.Name)
+		if len(c.Fields) == 0 {
+			fmt.Fprint(buf, "\tpass\n")
+		} else {
+			fields := append([]Property(nil), c.Fields...)
+			slices.SortFunc(fields, func(a, b Property) int {
+				if a.Optional && !b.Optional {
+					return 1
+				}
+				if b.Optional && !a.Optional {
+					return -1
+				}
+				return strings.Compare(a.Name, b.Name)
+			})
+			for _, ft := range fields {
+				fmt.Fprint(buf, "\n")
+				fmt.Fprint(buf, indent(1, ft.TypedDictFieldString()))
 			}
-			if b.Optional && !a.Optional {
-				return -1
-			}
-			return strings.Compare(a.Name, b.Name)
-		})
-		for _, ft := range fields {
-			fmt.Fprint(buf, "\n")
-			fmt.Fprint(buf, indent(1, ft.TypedDictFieldString()))
 		}
+		fmt.Fprint(buf, "\n")
+		fmt.Fprintf(buf, "%sInput = %sDict\n", c.Name, c.Name)
+		fmt.Fprint(buf, "\n")
 	}
-	fmt.Fprint(buf, "\n")
-	fmt.Fprintf(buf, "%sInput = %sDict\n", c.Name, c.Name)
-	fmt.Fprint(buf, "\n")
 	return buf.String()
 }
 
@@ -155,7 +157,9 @@ func (o *OneOfDeclaration) String() string {
 	fmt.Fprintf(buf, "%s = typing.Union[", o.Name)
 	fmt.Fprint(buf, strings.Join(o.Options, ", "))
 	fmt.Fprintf(buf, "]\n")
-	fmt.Fprintf(buf, "%sInput = typing.Union[%s]", o.Name, strings.Join(options, ", "))
+	if o.GenerateInput {
+		fmt.Fprintf(buf, "%sInput = typing.Union[%s]", o.Name, strings.Join(options, ", "))
+	}
 	return buf.String()
 }
 
@@ -202,9 +206,12 @@ func (p Property) WireName() string {
 	return p.FieldName()
 }
 
-func (p Property) MethodParameterString() string {
+func (p Property) MethodParameterString(allowNone bool) string {
 	typeName := p.MethodParameterType()
 	if p.Optional {
+		if allowNone {
+			return fmt.Sprintf("%s: typing.Union[%s, None, NotGivenType] = NOT_GIVEN", p.FieldName(), typeName)
+		}
 		return fmt.Sprintf("%s: typing.Union[%s, NotGivenType] = NOT_GIVEN", p.FieldName(), typeName)
 	}
 
@@ -215,9 +222,12 @@ func (p Property) MethodParameterType() string {
 	return inputTypeName(p.Type)
 }
 
-func (p Property) BodyArgumentExpr() string {
+func (p Property) BodyArgumentExpr(allowNone bool) string {
 	name := p.FieldName()
 	if strings.HasPrefix(p.Type, "list[") {
+		if allowNone && p.Optional {
+			return fmt.Sprintf("(list(%s) if %s is not None else None)", name, name)
+		}
 		return fmt.Sprintf("list(%s)", name)
 	}
 
@@ -237,17 +247,20 @@ func (p Property) TypedDictFieldString() string {
 }
 
 func (e *EnumDeclaration[E]) String() string {
-	buf := new(strings.Builder)
-	fmt.Fprintf(buf, "%s = typing.Union[typing.Literal[", e.Name)
+	values := make([]string, 0, len(e.Values))
 	slices.Sort(e.Values)
-	for i, v := range e.Values {
-		if i != 0 {
-			fmt.Fprint(buf, ", ")
-		}
-		fmt.Fprintf(buf, "%#v", v)
+	for _, v := range e.Values {
+		values = append(values, fmt.Sprintf("%#v", v))
 	}
-	fmt.Fprintf(buf, "], %s]\n", pythonEnumBaseType(e.Type))
-	fmt.Fprintf(buf, "%sInput = %s\n", e.Name, e.Name)
+	alias := fmt.Sprintf("typing.Union[typing.Literal[%s], %s]", strings.Join(values, ", "), pythonEnumBaseType(e.Type))
+	if e.RequestOnly {
+		return fmt.Sprintf("%sInput = %s\n", e.Name, alias)
+	}
+	buf := new(strings.Builder)
+	fmt.Fprintf(buf, "%s = %s\n", e.Name, alias)
+	if e.GenerateInput {
+		fmt.Fprintf(buf, "%sInput = %s\n", e.Name, e.Name)
+	}
 	return buf.String()
 }
 

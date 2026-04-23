@@ -36,24 +36,11 @@ from ..types import (
     Unauthorized,
 )
 from ..types import (
-    BadRequestInput,
-    CreateReaderCheckoutErrorInput,
     CreateReaderCheckoutRequestInput,
-    CreateReaderCheckoutResponseInput,
-    CreateReaderCheckoutUnprocessableEntityInput,
-    CreateReaderTerminateErrorInput,
-    CreateReaderTerminateUnprocessableEntityInput,
     MetadataInput,
-    NotFoundInput,
-    ProblemInput,
-    ReaderInput,
-    ReaderDeviceInput,
     ReaderIdInput,
     ReaderNameInput,
     ReaderPairingCodeInput,
-    ReaderStatusInput,
-    StatusResponseInput,
-    UnauthorizedInput,
 )
 import datetime
 import httpx
@@ -186,8 +173,7 @@ class CreateReaderCheckoutBodyAffiliateInput(typing_extensions.TypedDict, total=
     ]
 
 
-CreateReaderCheckoutBodyCardType = typing.Union[typing.Literal["credit", "debit"], str]
-CreateReaderCheckoutBodyCardTypeInput = CreateReaderCheckoutBodyCardType
+CreateReaderCheckoutBodyCardTypeInput = typing.Union[typing.Literal["credit", "debit"], str]
 
 
 class CreateReaderCheckoutBodyTotalAmountInput(typing_extensions.TypedDict, total=False):
@@ -302,13 +288,6 @@ class ListReaders200Response(pydantic.BaseModel):
     items: list[Reader]
 
 
-class ListReaders200ResponseDict(typing_extensions.TypedDict, total=False):
-    items: typing_extensions.Required[typing.Sequence[ReaderInput]]
-
-
-ListReaders200ResponseInput = ListReaders200ResponseDict
-
-
 class ReadersResource(Resource):
     """API resource for the Readers endpoints."""
 
@@ -344,7 +323,7 @@ class ReadersResource(Resource):
         *,
         pairing_code: ReaderPairingCodeInput,
         name: ReaderNameInput,
-        metadata: typing.Union[MetadataInput, NotGivenType] = NOT_GIVEN,
+        metadata: typing.Union[MetadataInput, None, NotGivenType] = NOT_GIVEN,
         headers: typing.Optional[HeaderTypes] = None,
     ) -> Reader:
         """
@@ -431,8 +410,8 @@ class ReadersResource(Resource):
         merchant_code: str,
         id: ReaderId,
         *,
-        name: typing.Union[ReaderNameInput, NotGivenType] = NOT_GIVEN,
-        metadata: typing.Union[MetadataInput, NotGivenType] = NOT_GIVEN,
+        name: typing.Union[ReaderNameInput, None, NotGivenType] = NOT_GIVEN,
+        metadata: typing.Union[MetadataInput, None, NotGivenType] = NOT_GIVEN,
         headers: typing.Optional[HeaderTypes] = None,
     ) -> Reader:
         """
@@ -473,14 +452,18 @@ class ReadersResource(Resource):
         merchant_code: str,
         reader_id: str,
         *,
-        aade: typing.Union[CreateReaderCheckoutBodyAadeInput, NotGivenType] = NOT_GIVEN,
-        affiliate: typing.Union[CreateReaderCheckoutBodyAffiliateInput, NotGivenType] = NOT_GIVEN,
-        card_type: typing.Union[CreateReaderCheckoutBodyCardTypeInput, NotGivenType] = NOT_GIVEN,
-        description: typing.Union[str, NotGivenType] = NOT_GIVEN,
-        installments: typing.Union[int, NotGivenType] = NOT_GIVEN,
-        return_url: typing.Union[str, NotGivenType] = NOT_GIVEN,
-        tip_rates: typing.Union[typing.Sequence[float], NotGivenType] = NOT_GIVEN,
-        tip_timeout: typing.Union[int, NotGivenType] = NOT_GIVEN,
+        aade: typing.Union[CreateReaderCheckoutBodyAadeInput, None, NotGivenType] = NOT_GIVEN,
+        affiliate: typing.Union[
+            CreateReaderCheckoutBodyAffiliateInput, None, NotGivenType
+        ] = NOT_GIVEN,
+        card_type: typing.Union[
+            CreateReaderCheckoutBodyCardTypeInput, None, NotGivenType
+        ] = NOT_GIVEN,
+        description: typing.Union[str, None, NotGivenType] = NOT_GIVEN,
+        installments: typing.Union[int, None, NotGivenType] = NOT_GIVEN,
+        return_url: typing.Union[str, None, NotGivenType] = NOT_GIVEN,
+        tip_rates: typing.Union[typing.Sequence[float], None, NotGivenType] = NOT_GIVEN,
+        tip_timeout: typing.Union[int, None, NotGivenType] = NOT_GIVEN,
         total_amount: CreateReaderCheckoutBodyTotalAmountInput,
         headers: typing.Optional[HeaderTypes] = None,
     ) -> CreateReaderCheckoutResponse:
@@ -513,7 +496,7 @@ class ReadersResource(Resource):
         if not isinstance(return_url, NotGivenType):
             body_data["return_url"] = return_url
         if not isinstance(tip_rates, NotGivenType):
-            body_data["tip_rates"] = list(tip_rates)
+            body_data["tip_rates"] = list(tip_rates) if tip_rates is not None else None
         if not isinstance(tip_timeout, NotGivenType):
             body_data["tip_timeout"] = tip_timeout
         body_data["total_amount"] = total_amount
@@ -681,7 +664,7 @@ class AsyncReadersResource(AsyncResource):
         *,
         pairing_code: ReaderPairingCodeInput,
         name: ReaderNameInput,
-        metadata: typing.Union[MetadataInput, NotGivenType] = NOT_GIVEN,
+        metadata: typing.Union[MetadataInput, None, NotGivenType] = NOT_GIVEN,
         headers: typing.Optional[HeaderTypes] = None,
     ) -> Reader:
         """
@@ -768,8 +751,8 @@ class AsyncReadersResource(AsyncResource):
         merchant_code: str,
         id: ReaderId,
         *,
-        name: typing.Union[ReaderNameInput, NotGivenType] = NOT_GIVEN,
-        metadata: typing.Union[MetadataInput, NotGivenType] = NOT_GIVEN,
+        name: typing.Union[ReaderNameInput, None, NotGivenType] = NOT_GIVEN,
+        metadata: typing.Union[MetadataInput, None, NotGivenType] = NOT_GIVEN,
         headers: typing.Optional[HeaderTypes] = None,
     ) -> Reader:
         """
@@ -810,14 +793,18 @@ class AsyncReadersResource(AsyncResource):
         merchant_code: str,
         reader_id: str,
         *,
-        aade: typing.Union[CreateReaderCheckoutBodyAadeInput, NotGivenType] = NOT_GIVEN,
-        affiliate: typing.Union[CreateReaderCheckoutBodyAffiliateInput, NotGivenType] = NOT_GIVEN,
-        card_type: typing.Union[CreateReaderCheckoutBodyCardTypeInput, NotGivenType] = NOT_GIVEN,
-        description: typing.Union[str, NotGivenType] = NOT_GIVEN,
-        installments: typing.Union[int, NotGivenType] = NOT_GIVEN,
-        return_url: typing.Union[str, NotGivenType] = NOT_GIVEN,
-        tip_rates: typing.Union[typing.Sequence[float], NotGivenType] = NOT_GIVEN,
-        tip_timeout: typing.Union[int, NotGivenType] = NOT_GIVEN,
+        aade: typing.Union[CreateReaderCheckoutBodyAadeInput, None, NotGivenType] = NOT_GIVEN,
+        affiliate: typing.Union[
+            CreateReaderCheckoutBodyAffiliateInput, None, NotGivenType
+        ] = NOT_GIVEN,
+        card_type: typing.Union[
+            CreateReaderCheckoutBodyCardTypeInput, None, NotGivenType
+        ] = NOT_GIVEN,
+        description: typing.Union[str, None, NotGivenType] = NOT_GIVEN,
+        installments: typing.Union[int, None, NotGivenType] = NOT_GIVEN,
+        return_url: typing.Union[str, None, NotGivenType] = NOT_GIVEN,
+        tip_rates: typing.Union[typing.Sequence[float], None, NotGivenType] = NOT_GIVEN,
+        tip_timeout: typing.Union[int, None, NotGivenType] = NOT_GIVEN,
         total_amount: CreateReaderCheckoutBodyTotalAmountInput,
         headers: typing.Optional[HeaderTypes] = None,
     ) -> CreateReaderCheckoutResponse:
@@ -850,7 +837,7 @@ class AsyncReadersResource(AsyncResource):
         if not isinstance(return_url, NotGivenType):
             body_data["return_url"] = return_url
         if not isinstance(tip_rates, NotGivenType):
-            body_data["tip_rates"] = list(tip_rates)
+            body_data["tip_rates"] = list(tip_rates) if tip_rates is not None else None
         if not isinstance(tip_timeout, NotGivenType):
             body_data["tip_timeout"] = tip_timeout
         body_data["total_amount"] = total_amount

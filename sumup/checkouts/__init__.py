@@ -2,8 +2,6 @@
 from .resource import (
     CheckoutsResource,
     AsyncCheckoutsResource,
-    CreateCheckoutBodyPurpose,
-    ProcessCheckoutBodyPaymentType,
     GetPaymentMethods200ResponseAvailablePaymentMethod,
     GetPaymentMethods200Response,
     ProcessCheckoutResponse,
@@ -36,8 +34,6 @@ from ..types import (
 __all__ = [
     "CheckoutsResource",
     "AsyncCheckoutsResource",
-    "CreateCheckoutBodyPurpose",
-    "ProcessCheckoutBodyPaymentType",
     "GetPaymentMethods200ResponseAvailablePaymentMethod",
     "GetPaymentMethods200Response",
     "ProcessCheckoutResponse",

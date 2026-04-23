@@ -16,7 +16,6 @@ from .._service import (
 )
 from .._exceptions import APIError
 from ..types import Operator, Permissions, Problem
-from ..types import OperatorInput, PermissionsInput, ProblemInput
 import datetime
 import httpx
 import typing
@@ -78,7 +77,6 @@ class UpdateSubAccountBodyInput(typing_extensions.TypedDict, total=False):
 
 
 ListSubAccounts200Response = list[Operator]
-ListSubAccounts200ResponseInput = typing.Sequence[OperatorInput]
 """
 ListSubAccounts200Response is a schema definition.
 """
@@ -135,8 +133,10 @@ class SubaccountsResource(Resource):
         *,
         username: str,
         password: str,
-        nickname: typing.Union[str, NotGivenType] = NOT_GIVEN,
-        permissions: typing.Union[CreateSubAccountBodyPermissionsInput, NotGivenType] = NOT_GIVEN,
+        nickname: typing.Union[str, None, NotGivenType] = NOT_GIVEN,
+        permissions: typing.Union[
+            CreateSubAccountBodyPermissionsInput, None, NotGivenType
+        ] = NOT_GIVEN,
         headers: typing.Optional[HeaderTypes] = None,
     ) -> Operator:
         """
@@ -199,11 +199,13 @@ class SubaccountsResource(Resource):
         self,
         operator_id: int,
         *,
-        password: typing.Union[str, NotGivenType] = NOT_GIVEN,
-        username: typing.Union[str, NotGivenType] = NOT_GIVEN,
-        disabled: typing.Union[bool, NotGivenType] = NOT_GIVEN,
-        nickname: typing.Union[str, NotGivenType] = NOT_GIVEN,
-        permissions: typing.Union[UpdateSubAccountBodyPermissionsInput, NotGivenType] = NOT_GIVEN,
+        password: typing.Union[str, None, NotGivenType] = NOT_GIVEN,
+        username: typing.Union[str, None, NotGivenType] = NOT_GIVEN,
+        disabled: typing.Union[bool, None, NotGivenType] = NOT_GIVEN,
+        nickname: typing.Union[str, None, NotGivenType] = NOT_GIVEN,
+        permissions: typing.Union[
+            UpdateSubAccountBodyPermissionsInput, None, NotGivenType
+        ] = NOT_GIVEN,
         headers: typing.Optional[HeaderTypes] = None,
     ) -> Operator:
         """
@@ -291,8 +293,10 @@ class AsyncSubaccountsResource(AsyncResource):
         *,
         username: str,
         password: str,
-        nickname: typing.Union[str, NotGivenType] = NOT_GIVEN,
-        permissions: typing.Union[CreateSubAccountBodyPermissionsInput, NotGivenType] = NOT_GIVEN,
+        nickname: typing.Union[str, None, NotGivenType] = NOT_GIVEN,
+        permissions: typing.Union[
+            CreateSubAccountBodyPermissionsInput, None, NotGivenType
+        ] = NOT_GIVEN,
         headers: typing.Optional[HeaderTypes] = None,
     ) -> Operator:
         """
@@ -355,11 +359,13 @@ class AsyncSubaccountsResource(AsyncResource):
         self,
         operator_id: int,
         *,
-        password: typing.Union[str, NotGivenType] = NOT_GIVEN,
-        username: typing.Union[str, NotGivenType] = NOT_GIVEN,
-        disabled: typing.Union[bool, NotGivenType] = NOT_GIVEN,
-        nickname: typing.Union[str, NotGivenType] = NOT_GIVEN,
-        permissions: typing.Union[UpdateSubAccountBodyPermissionsInput, NotGivenType] = NOT_GIVEN,
+        password: typing.Union[str, None, NotGivenType] = NOT_GIVEN,
+        username: typing.Union[str, None, NotGivenType] = NOT_GIVEN,
+        disabled: typing.Union[bool, None, NotGivenType] = NOT_GIVEN,
+        nickname: typing.Union[str, None, NotGivenType] = NOT_GIVEN,
+        permissions: typing.Union[
+            UpdateSubAccountBodyPermissionsInput, None, NotGivenType
+        ] = NOT_GIVEN,
         headers: typing.Optional[HeaderTypes] = None,
     ) -> Operator:
         """

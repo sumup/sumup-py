@@ -21,12 +21,15 @@ type ClassDeclaration struct {
 	AdditionalPropertiesType string
 	// RequestOnly marks request-only helper types that should not emit response models.
 	RequestOnly bool
+	// GenerateInput indicates this type needs an Input companion.
+	GenerateInput bool
 }
 
 type OneOfDeclaration struct {
-	Name        string
-	Options     []string
-	RequestOnly bool
+	Name          string
+	Options       []string
+	RequestOnly   bool
+	GenerateInput bool
 }
 
 // Property holds the information for Property of a type.
@@ -53,6 +56,9 @@ type EnumDeclaration[E cmp.Ordered] struct {
 	// Comment holds the description of the type
 	Comment string
 	Values  []E
+	// RequestOnly marks request-only helper types that should only emit input aliases.
+	RequestOnly   bool
+	GenerateInput bool
 }
 
 type Response struct {
@@ -72,7 +78,8 @@ type TypeAlias struct {
 	// Comment holds the description of the type
 	Comment string
 	// RequestOnly marks request-only helper types that should only emit input aliases.
-	RequestOnly bool
+	RequestOnly   bool
+	GenerateInput bool
 }
 
 func (ta *TypeAlias) String() string {
@@ -85,7 +92,9 @@ func (ta *TypeAlias) String() string {
 		return buf.String()
 	}
 	fmt.Fprintf(buf, "%s = %s\n", ta.Name, ta.Type)
-	fmt.Fprintf(buf, "%sInput = %s\n", ta.Name, inputTypeName(ta.Type))
+	if ta.GenerateInput {
+		fmt.Fprintf(buf, "%sInput = %s\n", ta.Name, inputTypeName(ta.Type))
+	}
 	if ta.Comment != "" {
 		fmt.Fprintf(buf, "'''\n%s\n'''\n", ta.Comment)
 	}
