@@ -29,6 +29,8 @@ type Builder struct {
 
 	// schemasByTag maps tags to respective schema references.
 	schemasByTag map[string][]*base.SchemaProxy
+	// requestSchemasByTag maps tags to schemas referenced from request bodies/query params.
+	requestSchemasByTag map[string][]*base.SchemaProxy
 
 	pathsByTag map[string]*v3.Paths
 
@@ -58,10 +60,11 @@ func New(cfg Config, opts ...Option) *Builder {
 	}
 
 	b := &Builder{
-		cfg:          cfg,
-		schemasByTag: make(map[string][]*base.SchemaProxy),
-		pathsByTag:   make(map[string]*v3.Paths),
-		templates:    templates,
+		cfg:                 cfg,
+		schemasByTag:        make(map[string][]*base.SchemaProxy),
+		requestSchemasByTag: make(map[string][]*base.SchemaProxy),
+		pathsByTag:          make(map[string]*v3.Paths),
+		templates:           templates,
 	}
 
 	for _, o := range opts {

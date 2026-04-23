@@ -3,6 +3,7 @@ from __future__ import annotations
 import datetime
 import typing
 import pydantic
+import typing_extensions
 
 CountryCode = str
 """
@@ -164,7 +165,49 @@ class AddressLegacy(pydantic.BaseModel):
 	"""
 
 
+class AddressLegacyDict(typing_extensions.TypedDict, total=False):
+    city: typing_extensions.NotRequired[
+        typing_extensions.Annotated[str, typing_extensions.Doc("City name from the address.")]
+    ]
+    country: typing_extensions.NotRequired[
+        typing_extensions.Annotated[
+            str,
+            typing_extensions.Doc(
+                "Two letter country code formatted according to [ISO3166-1 alpha-2](https://en.wikipedia.org/wiki/ISO_3166-1_alpha-2)."
+            ),
+        ]
+    ]
+    line_1: typing_extensions.NotRequired[
+        typing_extensions.Annotated[
+            str,
+            typing_extensions.Doc(
+                "First line of the address with details of the street name and number."
+            ),
+        ]
+    ]
+    line_2: typing_extensions.NotRequired[
+        typing_extensions.Annotated[
+            str,
+            typing_extensions.Doc(
+                "Second line of the address with details of the building, unit, apartment, and floor numbers."
+            ),
+        ]
+    ]
+    postal_code: typing_extensions.NotRequired[
+        typing_extensions.Annotated[str, typing_extensions.Doc("Postal code from the address.")]
+    ]
+    state: typing_extensions.NotRequired[
+        typing_extensions.Annotated[
+            str, typing_extensions.Doc("State name or abbreviation from the address.")
+        ]
+    ]
+
+
+AddressLegacyInput = AddressLegacyDict
+
+
 Attributes = dict[str, object]
+AttributesInput = typing.Mapping[str, object]
 """
 Object attributes that are modifiable only by SumUp applications.
 """
@@ -435,7 +478,7 @@ class BusinessProfile(pydantic.BaseModel):
 	The more recognisable your descriptor is, the less risk you have of receiving disputes (e.g. chargebacks).
 	Min length: 1
 	Max length: 30
-	Pattern: ^[a-zA-Z0-9 \-+\'_.]{0,30}$
+	Pattern: ^[a-zA-Z0-9 \\-+\\'_.]{0,30}$
 	"""
 
     email: typing.Optional[str] = None
@@ -494,10 +537,12 @@ CardType = typing.Union[
     ],
     str,
 ]
+CardTypeInput = CardType
 
 CardExpiryMonth = typing.Union[
     typing.Literal["01", "02", "03", "04", "05", "06", "07", "08", "09", "10", "11", "12"], str
 ]
+CardExpiryMonthInput = CardExpiryMonth
 
 
 class Card(pydantic.BaseModel):
@@ -553,6 +598,65 @@ class Card(pydantic.BaseModel):
 	"""
 
 
+class CardDict(typing_extensions.TypedDict, total=False):
+    cvv: typing_extensions.Required[
+        typing_extensions.Annotated[
+            str,
+            typing_extensions.Doc(
+                "Three or four-digit card verification value (security code) of the payment card.\nWrite only\nMin length: 3\nMax length: 4"
+            ),
+        ]
+    ]
+    expiry_month: typing_extensions.Required[
+        typing_extensions.Annotated[
+            CardExpiryMonthInput,
+            typing_extensions.Doc(
+                "Month from the expiration time of the payment card. Accepted format is `MM`.\nWrite only"
+            ),
+        ]
+    ]
+    expiry_year: typing_extensions.Required[
+        typing_extensions.Annotated[
+            str,
+            typing_extensions.Doc(
+                "Year from the expiration time of the payment card. Accepted formats are `YY` and `YYYY`.\nWrite only\nMin length: 2\nMax length: 4"
+            ),
+        ]
+    ]
+    name: typing_extensions.Required[
+        typing_extensions.Annotated[
+            str,
+            typing_extensions.Doc(
+                "Name of the cardholder as it appears on the payment card.\nWrite only"
+            ),
+        ]
+    ]
+    number: typing_extensions.Required[
+        typing_extensions.Annotated[
+            str, typing_extensions.Doc("Number of the payment card (without spaces).\nWrite only")
+        ]
+    ]
+    type: typing_extensions.Required[
+        typing_extensions.Annotated[
+            CardTypeInput,
+            typing_extensions.Doc(
+                "Issuing card network of the payment card used for the transaction."
+            ),
+        ]
+    ]
+    zip_code: typing_extensions.NotRequired[
+        typing_extensions.Annotated[
+            str,
+            typing_extensions.Doc(
+                "Required five-digit ZIP code. Applicable only to merchant users in the USA.\nWrite only\nMin length: 5\nMax length: 5"
+            ),
+        ]
+    ]
+
+
+CardInput = CardDict
+
+
 class CardResponse(pydantic.BaseModel):
     """
     Details of the payment card.
@@ -593,6 +697,7 @@ Currency = typing.Union[
     ],
     str,
 ]
+CurrencyInput = Currency
 
 EntryMode = typing.Union[
     typing.Literal[
@@ -626,6 +731,7 @@ EntryMode = typing.Union[
     ],
     str,
 ]
+EntryModeInput = EntryMode
 
 MandateResponseStatus = typing.Union[typing.Literal["active", "inactive"], str]
 
@@ -667,6 +773,7 @@ PaymentType = typing.Union[
     ],
     str,
 ]
+PaymentTypeInput = PaymentType
 
 TransactionBaseStatus = typing.Union[
     typing.Literal["CANCELLED", "FAILED", "PENDING", "SUCCESSFUL"], str
@@ -958,6 +1065,7 @@ class CheckoutAccepted(pydantic.BaseModel):
 CheckoutCreateRequestPurpose = typing.Union[
     typing.Literal["CHECKOUT", "SETUP_RECURRING_PAYMENT"], str
 ]
+CheckoutCreateRequestPurposeInput = CheckoutCreateRequestPurpose
 
 
 class CheckoutCreateRequest(pydantic.BaseModel):
@@ -1017,6 +1125,87 @@ class CheckoutCreateRequest(pydantic.BaseModel):
     """
 	Optional expiration timestamp. The checkout must be processed before this moment, otherwise it becomes unusable.If omitted, the checkout does not have an explicit expiry time.
 	"""
+
+
+class CheckoutCreateRequestDict(typing_extensions.TypedDict, total=False):
+    amount: typing_extensions.Required[
+        typing_extensions.Annotated[
+            float,
+            typing_extensions.Doc("Amount to be charged to the payer, expressed in major units."),
+        ]
+    ]
+    checkout_reference: typing_extensions.Required[
+        typing_extensions.Annotated[
+            str,
+            typing_extensions.Doc(
+                "Merchant-defined reference for the new checkout. It should be unique enough for you to identify the payment attemptin your own systems.\nMax length: 90"
+            ),
+        ]
+    ]
+    currency: typing_extensions.Required[
+        typing_extensions.Annotated[
+            CurrencyInput,
+            typing_extensions.Doc(
+                "Three-letter [ISO4217](https://en.wikipedia.org/wiki/ISO_4217) code of the currency for the amount. Currently supportedcurrency values are enumerated above."
+            ),
+        ]
+    ]
+    merchant_code: typing_extensions.Required[
+        typing_extensions.Annotated[
+            str, typing_extensions.Doc("Merchant account that should receive the payment.")
+        ]
+    ]
+    customer_id: typing_extensions.NotRequired[
+        typing_extensions.Annotated[
+            str,
+            typing_extensions.Doc(
+                "Merchant-scoped customer identifier. Required when setting up recurring payments and useful when the checkoutshould be linked to a returning payer."
+            ),
+        ]
+    ]
+    description: typing_extensions.NotRequired[
+        typing_extensions.Annotated[
+            str,
+            typing_extensions.Doc(
+                "Short merchant-defined description shown in SumUp tools and reporting for easier identification of the checkout."
+            ),
+        ]
+    ]
+    purpose: typing_extensions.NotRequired[
+        typing_extensions.Annotated[
+            CheckoutCreateRequestPurposeInput,
+            typing_extensions.Doc(
+                'Business purpose of the checkout. Use `CHECKOUT` for a standard payment and `SETUP_RECURRING_PAYMENT` whencollecting consent and payment details for future recurring charges.\nDefault: "CHECKOUT"'
+            ),
+        ]
+    ]
+    redirect_url: typing_extensions.NotRequired[
+        typing_extensions.Annotated[
+            str,
+            typing_extensions.Doc(
+                "URL where the payer should be sent after a redirect-based payment or SCA flow completes. This is required for[APMs](https://developer.sumup.com/online-payments/apm/introduction) and recommended for card checkouts thatmay require [3DS](https://developer.sumup.com/online-payments/features/3ds). If it is omitted, the [Payment Widget](https://developer.sumup.com/online-payments/checkouts)can render the challenge in an iframe instead of using a full-page redirect."
+            ),
+        ]
+    ]
+    return_url: typing_extensions.NotRequired[
+        typing_extensions.Annotated[
+            str,
+            typing_extensions.Doc(
+                "Optional backend callback URL used by SumUp to notify your platform about processing updates for the checkout.\nFormat:uri"
+            ),
+        ]
+    ]
+    valid_until: typing_extensions.NotRequired[
+        typing_extensions.Annotated[
+            datetime.datetime,
+            typing_extensions.Doc(
+                "Optional expiration timestamp. The checkout must be processed before this moment, otherwise it becomes unusable.If omitted, the checkout does not have an explicit expiry time."
+            ),
+        ]
+    ]
+
+
+CheckoutCreateRequestInput = CheckoutCreateRequestDict
 
 
 CheckoutSuccessStatus = typing.Union[typing.Literal["EXPIRED", "FAILED", "PAID", "PENDING"], str]
@@ -1369,7 +1558,29 @@ class CreateReaderCheckoutRequestAade(pydantic.BaseModel):
 	"""
 
 
+class CreateReaderCheckoutRequestAadeDict(typing_extensions.TypedDict, total=False):
+    provider_id: typing_extensions.Required[
+        typing_extensions.Annotated[
+            str, typing_extensions.Doc("The identifier of the AADE signature provider.")
+        ]
+    ]
+    signature: typing_extensions.Required[
+        typing_extensions.Annotated[
+            str, typing_extensions.Doc("The base64 encoded signature of the transaction data.")
+        ]
+    ]
+    signature_data: typing_extensions.Required[
+        typing_extensions.Annotated[
+            str, typing_extensions.Doc("The string containing the signed transaction data.")
+        ]
+    ]
+
+
+CreateReaderCheckoutRequestAadeInput = CreateReaderCheckoutRequestAadeDict
+
+
 CreateReaderCheckoutRequestAffiliateTags = dict[str, object]
+CreateReaderCheckoutRequestAffiliateTagsInput = typing.Mapping[str, object]
 """
 Additional metadata for the transaction.
 It is key-value object that can be associated with the transaction.
@@ -1408,7 +1619,46 @@ class CreateReaderCheckoutRequestAffiliate(pydantic.BaseModel):
 	"""
 
 
+class CreateReaderCheckoutRequestAffiliateDict(typing_extensions.TypedDict, total=False):
+    app_id: typing_extensions.Required[
+        typing_extensions.Annotated[
+            str,
+            typing_extensions.Doc(
+                "Application ID of the affiliate.\nIt is a unique identifier for the application and should be set by the integrator in the [Affiliate Keys](https://developer.sumup.com/affiliate-keys) page."
+            ),
+        ]
+    ]
+    foreign_transaction_id: typing_extensions.Required[
+        typing_extensions.Annotated[
+            str,
+            typing_extensions.Doc(
+                "Foreign transaction ID of the affiliate.\nIt is a unique identifier for the transaction.\nIt can be used later to fetch the transaction details via the [Transactions API](https://developer.sumup.com/api/transactions/get)."
+            ),
+        ]
+    ]
+    key: typing_extensions.Required[
+        typing_extensions.Annotated[
+            str,
+            typing_extensions.Doc(
+                "Key of the affiliate.\nIt is a unique identifier for the key  and should be generated by the integrator in the [Affiliate Keys](https://developer.sumup.com/affiliate-keys) page."
+            ),
+        ]
+    ]
+    tags: typing_extensions.NotRequired[
+        typing_extensions.Annotated[
+            CreateReaderCheckoutRequestAffiliateTagsInput,
+            typing_extensions.Doc(
+                "Additional metadata for the transaction.\nIt is key-value object that can be associated with the transaction."
+            ),
+        ]
+    ]
+
+
+CreateReaderCheckoutRequestAffiliateInput = CreateReaderCheckoutRequestAffiliateDict
+
+
 CreateReaderCheckoutRequestCardType = typing.Union[typing.Literal["credit", "debit"], str]
+CreateReaderCheckoutRequestCardTypeInput = CreateReaderCheckoutRequestCardType
 
 
 class CreateReaderCheckoutRequestTotalAmount(pydantic.BaseModel):
@@ -1437,6 +1687,28 @@ class CreateReaderCheckoutRequestTotalAmount(pydantic.BaseModel):
 	Integer value of the amount.
 	Min: 0
 	"""
+
+
+class CreateReaderCheckoutRequestTotalAmountDict(typing_extensions.TypedDict, total=False):
+    currency: typing_extensions.Required[
+        typing_extensions.Annotated[str, typing_extensions.Doc("Currency ISO 4217 code")]
+    ]
+    minor_unit: typing_extensions.Required[
+        typing_extensions.Annotated[
+            int,
+            typing_extensions.Doc(
+                "The minor units of the currency.\nIt represents the number of decimals of the currency. For the currencies CLP, COP and HUF, the minor unit is0.\nMin: 0"
+            ),
+        ]
+    ]
+    value: typing_extensions.Required[
+        typing_extensions.Annotated[
+            int, typing_extensions.Doc("Integer value of the amount.\nMin: 0")
+        ]
+    ]
+
+
+CreateReaderCheckoutRequestTotalAmountInput = CreateReaderCheckoutRequestTotalAmountDict
 
 
 class CreateReaderCheckoutRequest(pydantic.BaseModel):
@@ -1514,6 +1786,82 @@ class CreateReaderCheckoutRequest(pydantic.BaseModel):
 	Min: 30
 	Max: 120
 	"""
+
+
+class CreateReaderCheckoutRequestDict(typing_extensions.TypedDict, total=False):
+    total_amount: typing_extensions.Required[
+        typing_extensions.Annotated[
+            CreateReaderCheckoutRequestTotalAmountInput,
+            typing_extensions.Doc(
+                "Amount structure.\n\nThe amount is represented as an integer value altogether with the currency and the minor unit.\n\nFor example, EUR 1.00 is represented as value 100 with minor unit of 2."
+            ),
+        ]
+    ]
+    aade: typing_extensions.NotRequired[
+        typing_extensions.Annotated[
+            CreateReaderCheckoutRequestAadeInput,
+            typing_extensions.Doc(
+                "Optional object containing data for transactions from ERP integrators in Greece that comply with the AADE1155 protocol.\nWhen such regulatory/business requirements apply, this object must be provided and contains the data needed tovalidate the transaction with the AADE signature provider."
+            ),
+        ]
+    ]
+    affiliate: typing_extensions.NotRequired[
+        typing_extensions.Annotated[
+            CreateReaderCheckoutRequestAffiliateInput,
+            typing_extensions.Doc(
+                "Affiliate metadata for the transaction.\nIt is a field that allow for integrators to track the source of the transaction."
+            ),
+        ]
+    ]
+    card_type: typing_extensions.NotRequired[
+        typing_extensions.Annotated[
+            CreateReaderCheckoutRequestCardTypeInput,
+            typing_extensions.Doc(
+                "The card type of the card used for the transaction.\nIs is required only for some countries (e.g: Brazil)."
+            ),
+        ]
+    ]
+    description: typing_extensions.NotRequired[
+        typing_extensions.Annotated[
+            str,
+            typing_extensions.Doc("Description of the checkout to be shown in the Merchant Sales"),
+        ]
+    ]
+    installments: typing_extensions.NotRequired[
+        typing_extensions.Annotated[
+            int,
+            typing_extensions.Doc(
+                "Number of installments for the transaction.\nIt may vary according to the merchant country.\nFor example, in Brazil, the maximum number of installments is 12.\n\nOmit if the merchant country does support installments.\nOtherwise, the checkout will be rejected.\nMin: 1"
+            ),
+        ]
+    ]
+    return_url: typing_extensions.NotRequired[
+        typing_extensions.Annotated[
+            str,
+            typing_extensions.Doc(
+                "Webhook URL to which the payment result will be sent.\nIt must be a HTTPS url.\nFormat: uri"
+            ),
+        ]
+    ]
+    tip_rates: typing_extensions.NotRequired[
+        typing_extensions.Annotated[
+            typing.Sequence[float],
+            typing_extensions.Doc(
+                "List of tipping rates to be displayed to the cardholder.\nThe rates are in percentage and should be between 0.01 and 0.99.\nThe list should be sorted in ascending order."
+            ),
+        ]
+    ]
+    tip_timeout: typing_extensions.NotRequired[
+        typing_extensions.Annotated[
+            int,
+            typing_extensions.Doc(
+                "Time in seconds the cardholder has to select a tip rate.\nIf not provided, the default value is 30 seconds.\n\nIt can only be set if `tip_rates` is provided.\n\n**Note**: If the target device is a Solo, it must be in version 3.3.38.0 or higher.\nDefault: 30\n\nMin: 30\nMax: 120"
+            ),
+        ]
+    ]
+
+
+CreateReaderCheckoutRequestInput = CreateReaderCheckoutRequestDict
 
 
 class CreateReaderCheckoutResponseData(pydantic.BaseModel):
@@ -1632,6 +1980,42 @@ class PersonalDetails(pydantic.BaseModel):
 	"""
 
 
+class PersonalDetailsDict(typing_extensions.TypedDict, total=False):
+    address: typing_extensions.NotRequired[
+        typing_extensions.Annotated[
+            AddressLegacyInput, typing_extensions.Doc("Profile's personal address information.")
+        ]
+    ]
+    birth_date: typing_extensions.NotRequired[
+        typing_extensions.Annotated[
+            datetime.date, typing_extensions.Doc("Date of birth of the customer.\nFormat: date")
+        ]
+    ]
+    email: typing_extensions.NotRequired[
+        typing_extensions.Annotated[str, typing_extensions.Doc("Email address of the customer.")]
+    ]
+    first_name: typing_extensions.NotRequired[
+        typing_extensions.Annotated[str, typing_extensions.Doc("First name of the customer.")]
+    ]
+    last_name: typing_extensions.NotRequired[
+        typing_extensions.Annotated[str, typing_extensions.Doc("Last name of the customer.")]
+    ]
+    phone: typing_extensions.NotRequired[
+        typing_extensions.Annotated[str, typing_extensions.Doc("Phone number of the customer.")]
+    ]
+    tax_id: typing_extensions.NotRequired[
+        typing_extensions.Annotated[
+            str,
+            typing_extensions.Doc(
+                "An identification number user for tax purposes (e.g. CPF)\nMax length: 255"
+            ),
+        ]
+    ]
+
+
+PersonalDetailsInput = PersonalDetailsDict
+
+
 class Customer(pydantic.BaseModel):
     """
     Saved customer details.
@@ -1646,6 +2030,20 @@ class Customer(pydantic.BaseModel):
     """
 	Personal details for the customer.
 	"""
+
+
+class CustomerDict(typing_extensions.TypedDict, total=False):
+    customer_id: typing_extensions.Required[
+        typing_extensions.Annotated[str, typing_extensions.Doc("Unique ID of the customer.")]
+    ]
+    personal_details: typing_extensions.NotRequired[
+        typing_extensions.Annotated[
+            PersonalDetailsInput, typing_extensions.Doc("Personal details for the customer.")
+        ]
+    ]
+
+
+CustomerInput = CustomerDict
 
 
 class DetailsErrorFailedConstraint(pydantic.BaseModel):
@@ -2112,6 +2510,7 @@ Max: 180
 """
 
 MandatePayloadType = typing.Union[typing.Literal["recurrent"], str]
+MandatePayloadTypeInput = MandatePayloadType
 
 
 class MandatePayload(pydantic.BaseModel):
@@ -2135,9 +2534,35 @@ class MandatePayload(pydantic.BaseModel):
 	"""
 
 
+class MandatePayloadDict(typing_extensions.TypedDict, total=False):
+    type: typing_extensions.Required[
+        typing_extensions.Annotated[
+            MandatePayloadTypeInput,
+            typing_extensions.Doc("Type of mandate to create for the saved payment instrument."),
+        ]
+    ]
+    user_agent: typing_extensions.Required[
+        typing_extensions.Annotated[
+            str,
+            typing_extensions.Doc(
+                "Browser or client user agent observed when consent was collected."
+            ),
+        ]
+    ]
+    user_ip: typing_extensions.NotRequired[
+        typing_extensions.Annotated[
+            str, typing_extensions.Doc("IP address of the payer when the mandate was accepted.")
+        ]
+    ]
+
+
+MandatePayloadInput = MandatePayloadDict
+
+
 MembershipStatus = typing.Union[
     typing.Literal["accepted", "disabled", "expired", "pending", "unknown"], str
 ]
+MembershipStatusInput = MembershipStatus
 
 
 class MembershipUserClassic(pydantic.BaseModel):
@@ -2206,6 +2631,7 @@ class MembershipUser(pydantic.BaseModel):
 
 
 Metadata = dict[str, object]
+MetadataInput = typing.Mapping[str, object]
 """
 Set of user-defined key-value pairs attached to the object. Partial updates are not supported. When updating, alwayssubmit whole metadata. Maximum of 64 parameters are allowed in the object.
 Max properties: 64
@@ -2271,6 +2697,7 @@ class Member(pydantic.BaseModel):
 
 
 ResourceType = str
+ResourceTypeInput = str
 """
 The type of the membership resource.
 Possible values are:
@@ -2737,13 +3164,16 @@ class Problem(pydantic.BaseModel):
 ProcessCheckoutPaymentType = typing.Union[
     typing.Literal["apple_pay", "bancontact", "blik", "boleto", "card", "google_pay", "ideal"], str
 ]
+ProcessCheckoutPaymentTypeInput = ProcessCheckoutPaymentType
 
 ProcessCheckoutGooglePay = dict[str, object]
+ProcessCheckoutGooglePayInput = typing.Mapping[str, object]
 """
 Raw `PaymentData` object received from Google Pay. Send the Google Pay response payload as-is.
 """
 
 ProcessCheckoutApplePay = dict[str, object]
+ProcessCheckoutApplePayInput = typing.Mapping[str, object]
 """
 Raw payment token object received from Apple Pay. Send the Apple Pay response payload as-is.
 """
@@ -2800,6 +3230,81 @@ class ProcessCheckout(pydantic.BaseModel):
     """
 	Saved-card token to use instead of raw card details when processing with a previously stored payment instrument.
 	"""
+
+
+class ProcessCheckoutDict(typing_extensions.TypedDict, total=False):
+    payment_type: typing_extensions.Required[
+        typing_extensions.Annotated[
+            ProcessCheckoutPaymentTypeInput,
+            typing_extensions.Doc(
+                "Payment method used for this processing attempt. It determines which additional request fields are required."
+            ),
+        ]
+    ]
+    apple_pay: typing_extensions.NotRequired[
+        typing_extensions.Annotated[
+            ProcessCheckoutApplePayInput,
+            typing_extensions.Doc(
+                "Raw payment token object received from Apple Pay. Send the Apple Pay response payload as-is."
+            ),
+        ]
+    ]
+    card: typing_extensions.NotRequired[
+        typing_extensions.Annotated[
+            CardInput,
+            typing_extensions.Doc(
+                "__Required when payment type is `card`.__ Details of the payment card."
+            ),
+        ]
+    ]
+    customer_id: typing_extensions.NotRequired[
+        typing_extensions.Annotated[
+            str,
+            typing_extensions.Doc(
+                "Customer identifier associated with the saved payment instrument. Required when `token` is provided."
+            ),
+        ]
+    ]
+    google_pay: typing_extensions.NotRequired[
+        typing_extensions.Annotated[
+            ProcessCheckoutGooglePayInput,
+            typing_extensions.Doc(
+                "Raw `PaymentData` object received from Google Pay. Send the Google Pay response payload as-is."
+            ),
+        ]
+    ]
+    installments: typing_extensions.NotRequired[
+        typing_extensions.Annotated[
+            int,
+            typing_extensions.Doc(
+                "Number of installments for deferred payments. Available only to merchant users in Brazil.\nMin: 1\nMax: 12"
+            ),
+        ]
+    ]
+    mandate: typing_extensions.NotRequired[
+        typing_extensions.Annotated[
+            MandatePayloadInput,
+            typing_extensions.Doc(
+                "Mandate details used when a checkout should create a reusable card token for future recurring or merchant-initiated payments."
+            ),
+        ]
+    ]
+    personal_details: typing_extensions.NotRequired[
+        typing_extensions.Annotated[
+            PersonalDetailsInput, typing_extensions.Doc("Personal details for the customer.")
+        ]
+    ]
+    token: typing_extensions.NotRequired[
+        typing_extensions.Annotated[
+            str,
+            typing_extensions.Doc(
+                "Saved-card token to use instead of raw card details when processing with a previously stored payment instrument."
+            ),
+        ]
+    ]
+
+
+ProcessCheckoutInput = ProcessCheckoutDict
 
 
 class Product(pydantic.BaseModel):
@@ -2885,6 +3390,7 @@ class ReaderDevice(pydantic.BaseModel):
 
 
 ReaderId = str
+ReaderIdInput = str
 """
 Unique identifier of the object.
 
@@ -2894,6 +3400,7 @@ Max length: 30
 """
 
 ReaderName = str
+ReaderNameInput = str
 """
 Custom human-readable, user-defined name for easier identification of the reader.
 Max length: 500
@@ -3024,6 +3531,7 @@ class ReaderCheckoutStatusChange(pydantic.BaseModel):
 
 
 ReaderPairingCode = str
+ReaderPairingCodeInput = str
 """
 The pairing code is a 8 or 9 character alphanumeric string that is displayed on a SumUp Device after initiatingthe pairing. It is used to link the physical device to the created pairing.
 Min length: 8

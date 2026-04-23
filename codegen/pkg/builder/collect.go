@@ -51,41 +51,51 @@ func (b *Builder) collectPaths() {
 func (b *Builder) collectSchemas() {
 	// Map of schemas grouped by tag
 	schemasByTag := make(map[string][]*base.SchemaProxy)
+	requestSchemasByTag := make(map[string][]*base.SchemaProxy)
 
 	for path, pathItem := range b.spec.Paths.PathItems.FromOldest() {
 		for method, op := range pathItem.GetOperations().FromOldest() {
-			c := make(SchemaProxyCollection, 0, 100)
-			c.collectSchemasInResponse(op)
-			c.collectSchemasInParams(op)
-			c.collectSchemasInRequest(op)
+			allSchemas := make(SchemaProxyCollection, 0, 100)
+			allSchemas.collectSchemasInResponse(op)
+			allSchemas.collectSchemasInParams(op)
+			allSchemas.collectSchemasInRequest(op)
+			b.collectSchemasByTag(schemasByTag, path, method, op, allSchemas)
 
-			for _, schema := range c {
-				if schema.GetReference() == "" {
-					continue
-				}
-
-				if len(op.Tags) == 0 {
-					slog.Error("no tags for schema under operation",
-						slog.String("path", path),
-						slog.String("method", method),
-						slog.String("ref", schema.GetReference()),
-					)
-					continue
-				}
-
-				for _, tag := range op.Tags {
-					tagLower := strings.ToLower(tag)
-					if !slices.ContainsFunc(schemasByTag[tagLower], func(sp *base.SchemaProxy) bool {
-						return sp.GetReference() == schema.GetReference()
-					}) {
-						schemasByTag[tagLower] = append(schemasByTag[tagLower], schema)
-					}
-				}
-			}
+			requestSchemas := make(SchemaProxyCollection, 0, 100)
+			requestSchemas.collectSchemasInParams(op)
+			requestSchemas.collectSchemasInRequest(op)
+			b.collectSchemasByTag(requestSchemasByTag, path, method, op, requestSchemas)
 		}
 	}
 
 	b.schemasByTag = schemasByTag
+	b.requestSchemasByTag = requestSchemasByTag
+}
+
+func (b *Builder) collectSchemasByTag(dest map[string][]*base.SchemaProxy, path, method string, op *v3.Operation, schemas SchemaProxyCollection) {
+	for _, schema := range schemas {
+		if schema.GetReference() == "" {
+			continue
+		}
+
+		if len(op.Tags) == 0 {
+			slog.Error("no tags for schema under operation",
+				slog.String("path", path),
+				slog.String("method", method),
+				slog.String("ref", schema.GetReference()),
+			)
+			continue
+		}
+
+		for _, tag := range op.Tags {
+			tagLower := strings.ToLower(tag)
+			if !slices.ContainsFunc(dest[tagLower], func(sp *base.SchemaProxy) bool {
+				return sp.GetReference() == schema.GetReference()
+			}) {
+				dest[tagLower] = append(dest[tagLower], schema)
+			}
+		}
+	}
 }
 
 type SchemaProxyCollection []*base.SchemaProxy

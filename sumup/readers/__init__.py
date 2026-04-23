@@ -2,13 +2,6 @@
 from .resource import (
     ReadersResource,
     AsyncReadersResource,
-    CreateReaderBody,
-    UpdateReaderBody,
-    CreateReaderCheckoutBodyAade,
-    CreateReaderCheckoutBodyAffiliate,
-    CreateReaderCheckoutBodyCardType,
-    CreateReaderCheckoutBodyTotalAmount,
-    CreateReaderCheckoutBody,
     ListReaders200Response,
 )
 from ..types import (
@@ -36,13 +29,6 @@ from ..types import (
 __all__ = [
     "ReadersResource",
     "AsyncReadersResource",
-    "CreateReaderBody",
-    "UpdateReaderBody",
-    "CreateReaderCheckoutBodyAade",
-    "CreateReaderCheckoutBodyAffiliate",
-    "CreateReaderCheckoutBodyCardType",
-    "CreateReaderCheckoutBodyTotalAmount",
-    "CreateReaderCheckoutBody",
     "ListReaders200Response",
     "BadRequest",
     "CreateReaderCheckoutError",

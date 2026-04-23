@@ -43,6 +43,8 @@ func (b *Builder) pathsToBodyTypes(paths *v3.Paths) []Writable {
 				if ok && mt.Schema != nil {
 					name := operationName + "Body"
 					bodyObject, additionalTypes := b.createObject(mt.Schema.Schema(), name)
+					markRequestTypes(additionalTypes)
+					markRequestType(bodyObject)
 					paramTypes = append(paramTypes, additionalTypes...)
 					paramTypes = append(paramTypes, bodyObject)
 				}
@@ -66,7 +68,6 @@ func (b *Builder) pathsToParamTypes(paths *v3.Paths) []Writable {
 			operationName := strcase.ToCamel(opSpec.OperationId)
 
 			if len(opSpec.Parameters) > 0 {
-				fields := make([]Property, 0)
 				fieldTypes := make([]Writable, 0)
 				paramsTypeName := operationName + "Params"
 				for _, p := range opSpec.Parameters {
@@ -77,34 +78,41 @@ func (b *Builder) pathsToParamTypes(paths *v3.Paths) []Writable {
 
 					alias := p.Name
 					name := parameterFieldName(alias)
-					typeName, types := b.genSchema(p.Schema, paramsTypeName+strcase.ToCamel(name))
+					_, types := b.genSchema(p.Schema, paramsTypeName+strcase.ToCamel(name))
+					markRequestTypes(types)
 					fieldTypes = append(fieldTypes, types...)
-
-					fields = append(fields, Property{
-						Name:           name,
-						SerializedName: alias,
-						Type:           typeName,
-						Optional:       p.Required == nil || !*p.Required,
-						Comment:        parameterPropertyDoc(p.Schema.Schema()),
-					})
 				}
-
-				if len(fields) != 0 {
-					paramsTpl := ClassDeclaration{
-						Type:        "struct",
-						Name:        paramsTypeName,
-						Description: operationParamsDoc(paramsTypeName, opSpec),
-						Fields:      fields,
-					}
-
-					paramTypes = append(paramTypes, fieldTypes...)
-					paramTypes = append(paramTypes, &paramsTpl)
-				}
+				paramTypes = append(paramTypes, fieldTypes...)
 			}
 		}
 	}
 
 	return paramTypes
+}
+
+func markRequestTypes(types []Writable) {
+	for _, typ := range types {
+		markRequestType(typ)
+	}
+}
+
+func markRequestType(typ Writable) {
+	switch t := typ.(type) {
+	case *ClassDeclaration:
+		t.RequestOnly = true
+	case *TypeAlias:
+		t.RequestOnly = true
+	case *OneOfDeclaration:
+		t.RequestOnly = true
+	case *EnumDeclaration[string]:
+		t.RequestOnly = true
+	case *EnumDeclaration[int]:
+		t.RequestOnly = true
+	case *EnumDeclaration[int64]:
+		t.RequestOnly = true
+	case *EnumDeclaration[float64]:
+		t.RequestOnly = true
+	}
 }
 
 func parameterFieldName(name string) string {

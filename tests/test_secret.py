@@ -1,5 +1,5 @@
 from sumup._secret import Secret
-from sumup.members.resource import CreateMerchantMemberBody
+from sumup._service import serialize_request_data
 
 
 def test_secret_masks_repr_but_preserves_value() -> None:
@@ -11,17 +11,17 @@ def test_secret_masks_repr_but_preserves_value() -> None:
     assert secret == "super-secret"
 
 
-def test_password_fields_use_secret_and_dump_plain_text() -> None:
-    body = CreateMerchantMemberBody(
-        email="user@example.com",
-        roles=["role_manager"],
-        is_managed_user=True,
-        password=Secret("super-secret"),
-    )
+def test_request_serialization_dumps_secret_plain_text() -> None:
+    payload = {
+        "email": "user@example.com",
+        "password": Secret("super-secret"),
+        "nested": {"password": Secret("super-secret")},
+    }
 
-    assert isinstance(body.password, Secret)
-    dumped = body.model_dump()
-    assert dumped["password"] == "super-secret"
+    dumped = serialize_request_data(payload)
 
-    body_repr = repr(body)
-    assert "super-secret" not in body_repr
+    assert dumped == {
+        "email": "user@example.com",
+        "password": "super-secret",
+        "nested": {"password": "super-secret"},
+    }

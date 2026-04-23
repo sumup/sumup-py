@@ -2,9 +2,6 @@
 from .resource import (
     MerchantsResource,
     AsyncMerchantsResource,
-    GetMerchantParams,
-    ListPersonsParams,
-    GetPersonParams,
 )
 from ..types import (
     Address,
@@ -35,9 +32,6 @@ from ..types import (
 __all__ = [
     "MerchantsResource",
     "AsyncMerchantsResource",
-    "GetMerchantParams",
-    "ListPersonsParams",
-    "GetPersonParams",
     "Address",
     "Attributes",
     "BasePerson",

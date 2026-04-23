@@ -29,7 +29,11 @@ func (b *Builder) generateSharedTypes() error {
 				continue
 			}
 			typeName := strcase.ToCamel(name)
-			types = append(types, b.generateSchemaComponents(typeName, schema.Schema())...)
+			generated := b.generateSchemaComponents(typeName, schema.Schema())
+			if b.isRequestSchema(typeName) {
+				markGenerateInput(generated)
+			}
+			types = append(types, generated...)
 		}
 	}
 	usesSecret := usesSecretType(types)
@@ -102,6 +106,7 @@ func (b *Builder) generateResourceIndex(tagName string, resourceTypes []string) 
 type resourceTemplateData struct {
 	PackageName    string
 	TypeNames      []string
+	InputTypeNames []string
 	Params         []Writable
 	Service        string
 	Methods        []*Method
@@ -127,6 +132,7 @@ func (b *Builder) generateResourceFile(tagName string, paths *v3.Paths) ([]strin
 	if err != nil {
 		return nil, fmt.Errorf("convert paths to methods: %w", err)
 	}
+	flattenMethodBodies(methods, bodyTypes)
 
 	slog.Info("generating file",
 		slog.String("tag", tag.Name),
@@ -142,6 +148,7 @@ func (b *Builder) generateResourceFile(tagName string, paths *v3.Paths) ([]strin
 	if err := b.templates.ExecuteTemplate(serviceBuf, "resource.py.tmpl", resourceTemplateData{
 		PackageName:    strcase.ToSnake(tag.Name),
 		TypeNames:      typeNames,
+		InputTypeNames: inputTypeNames(b.requestSchemaTypeNamesByTag(tagName)),
 		Params:         innerTypes,
 		Service:        strcase.ToCamel(tag.Name),
 		Methods:        methods,
@@ -168,11 +175,39 @@ func (b *Builder) generateResourceFile(tagName string, paths *v3.Paths) ([]strin
 	resourceTypes := make([]string, 0, len(innerTypes))
 	for _, t := range innerTypes {
 		if typ, ok := t.(Type); ok {
+			if writableRequestOnly(t) {
+				continue
+			}
 			resourceTypes = append(resourceTypes, typ.TypeName())
 		}
 	}
 
 	return resourceTypes, nil
+}
+
+func flattenMethodBodies(methods []*Method, bodyTypes []Writable) {
+	bodyClasses := make(map[string]*ClassDeclaration)
+	for _, writable := range bodyTypes {
+		class, ok := writable.(*ClassDeclaration)
+		if !ok {
+			continue
+		}
+		if len(class.Fields) == 0 || class.AdditionalPropertiesType != "" {
+			continue
+		}
+		bodyClasses[class.Name] = class
+	}
+
+	for _, method := range methods {
+		if !method.HasBody {
+			continue
+		}
+		class, ok := bodyClasses[method.BodyType]
+		if !ok {
+			continue
+		}
+		method.BodyFields = append([]Property(nil), class.Fields...)
+	}
 }
 
 func (b *Builder) generateResource(tagName string, paths *v3.Paths) error {
@@ -321,4 +356,75 @@ func (b *Builder) schemaTypeNamesByTag(tagName string) []string {
 	}
 	slices.Sort(typeNames)
 	return typeNames
+}
+
+func inputTypeNames(typeNames []string) []string {
+	res := make([]string, 0, len(typeNames))
+	for _, name := range typeNames {
+		res = append(res, name+"Input")
+	}
+	return res
+}
+
+func (b *Builder) requestSchemaTypeNamesByTag(tagName string) []string {
+	resolvedSchemas := b.requestSchemasByTag[tagName]
+	typeNames := make([]string, 0, len(resolvedSchemas))
+	for _, s := range resolvedSchemas {
+		if name := b.getReferenceSchema(s); name != "" {
+			typeNames = append(typeNames, name)
+		}
+	}
+	slices.Sort(typeNames)
+	return slices.Compact(typeNames)
+}
+
+func (b *Builder) isRequestSchema(typeName string) bool {
+	for tagName := range b.requestSchemasByTag {
+		if slices.Contains(b.requestSchemaTypeNamesByTag(tagName), typeName) {
+			return true
+		}
+	}
+	return false
+}
+
+func markGenerateInput(types []Writable) {
+	for _, typ := range types {
+		switch t := typ.(type) {
+		case *ClassDeclaration:
+			t.GenerateInput = true
+		case *TypeAlias:
+			t.GenerateInput = true
+		case *OneOfDeclaration:
+			t.GenerateInput = true
+		case *EnumDeclaration[string]:
+			t.GenerateInput = true
+		case *EnumDeclaration[int]:
+			t.GenerateInput = true
+		case *EnumDeclaration[int64]:
+			t.GenerateInput = true
+		case *EnumDeclaration[float64]:
+			t.GenerateInput = true
+		}
+	}
+}
+
+func writableRequestOnly(w Writable) bool {
+	switch typed := w.(type) {
+	case *ClassDeclaration:
+		return typed.RequestOnly
+	case *TypeAlias:
+		return typed.RequestOnly
+	case *OneOfDeclaration:
+		return typed.RequestOnly
+	case *EnumDeclaration[string]:
+		return typed.RequestOnly
+	case *EnumDeclaration[int]:
+		return typed.RequestOnly
+	case *EnumDeclaration[int64]:
+		return typed.RequestOnly
+	case *EnumDeclaration[float64]:
+		return typed.RequestOnly
+	default:
+		return false
+	}
 }
