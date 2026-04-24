@@ -973,6 +973,13 @@ class Checkout(pydantic.BaseModel):
 	Short merchant-defined description shown in SumUp tools and reporting. Use it to make the checkout easier torecognize in dashboards, support workflows, and reconciliation.
 	"""
 
+    hosted_checkout_url: typing.Optional[str] = None
+    """
+	URL of the SumUp-hosted payment page that handles the payment flow. Returned when Hosted Checkout is enabledfor the checkout.
+	Read only
+	Format: uri
+	"""
+
     id: typing.Optional[str] = None
     """
 	Unique SumUp identifier of the checkout resource.
@@ -1062,6 +1069,31 @@ class CheckoutAccepted(pydantic.BaseModel):
 	"""
 
 
+class HostedCheckout(pydantic.BaseModel):
+    """
+    Hosted Checkout configuration. Enable it to receive a SumUp-hosted payment page URL in the checkout response.
+    """
+
+    enabled: bool
+    """
+	Whether the checkout should include a SumUp-hosted payment page.
+	"""
+
+
+class HostedCheckoutDict(typing_extensions.TypedDict, total=False):
+    enabled: typing_extensions.Required[
+        typing_extensions.Annotated[
+            bool,
+            typing_extensions.Doc(
+                "Whether the checkout should include a SumUp-hosted payment page."
+            ),
+        ]
+    ]
+
+
+HostedCheckoutInput = HostedCheckoutDict
+
+
 CheckoutCreateRequestPurpose = typing.Union[
     typing.Literal["CHECKOUT", "SETUP_RECURRING_PAYMENT"], str
 ]
@@ -1102,6 +1134,11 @@ class CheckoutCreateRequest(pydantic.BaseModel):
     description: typing.Optional[str] = None
     """
 	Short merchant-defined description shown in SumUp tools and reporting for easier identification of the checkout.
+	"""
+
+    hosted_checkout: typing.Optional[HostedCheckout] = None
+    """
+	Hosted Checkout configuration. Enable it to receive a SumUp-hosted payment page URL in the checkout response.
 	"""
 
     purpose: typing.Optional[CheckoutCreateRequestPurpose] = None
@@ -1168,6 +1205,14 @@ class CheckoutCreateRequestDict(typing_extensions.TypedDict, total=False):
             str,
             typing_extensions.Doc(
                 "Short merchant-defined description shown in SumUp tools and reporting for easier identification of the checkout."
+            ),
+        ]
+    ]
+    hosted_checkout: typing_extensions.NotRequired[
+        typing_extensions.Annotated[
+            HostedCheckoutInput,
+            typing_extensions.Doc(
+                "Hosted Checkout configuration. Enable it to receive a SumUp-hosted payment page URL in the checkout response."
             ),
         ]
     ]
@@ -1332,6 +1377,13 @@ class CheckoutSuccess(pydantic.BaseModel):
     description: typing.Optional[str] = None
     """
 	Short merchant-defined description shown in SumUp tools and reporting. Use it to make the checkout easier torecognize in dashboards, support workflows, and reconciliation.
+	"""
+
+    hosted_checkout_url: typing.Optional[str] = None
+    """
+	URL of the SumUp-hosted payment page that handles the payment flow. Returned when Hosted Checkout is enabledfor the checkout.
+	Read only
+	Format: uri
 	"""
 
     id: typing.Optional[str] = None
