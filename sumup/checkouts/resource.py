@@ -42,6 +42,7 @@ from ..types import (
     Error,
     ErrorExtended,
     ErrorForbidden,
+    HostedCheckout,
     MandatePayload,
     MandateResponse,
     PaymentType,
@@ -57,6 +58,7 @@ from ..types import (
     CardTypeInput,
     CheckoutCreateRequestInput,
     CurrencyInput,
+    HostedCheckoutInput,
     MandatePayloadInput,
     PersonalDetailsInput,
     ProcessCheckoutInput,
@@ -117,6 +119,14 @@ class CreateCheckoutBodyInput(typing_extensions.TypedDict, total=False):
             str,
             typing_extensions.Doc(
                 "Short merchant-defined description shown in SumUp tools and reporting for easier identification of the checkout."
+            ),
+        ]
+    ]
+    hosted_checkout: typing_extensions.NotRequired[
+        typing_extensions.Annotated[
+            HostedCheckoutInput,
+            typing_extensions.Doc(
+                "Hosted Checkout configuration. Enable it to receive a SumUp-hosted payment page URL in the checkout response."
             ),
         ]
     ]
@@ -354,6 +364,7 @@ class CheckoutsResource(Resource):
         purpose: typing.Union[CreateCheckoutBodyPurposeInput, None, NotGivenType] = NOT_GIVEN,
         valid_until: typing.Union[datetime.datetime, None, NotGivenType] = NOT_GIVEN,
         redirect_url: typing.Union[str, None, NotGivenType] = NOT_GIVEN,
+        hosted_checkout: typing.Union[HostedCheckoutInput, None, NotGivenType] = NOT_GIVEN,
         headers: typing.Optional[HeaderTypes] = None,
     ) -> Checkout:
         """
@@ -362,6 +373,7 @@ class CheckoutsResource(Resource):
         Creates a new payment checkout resource. The unique `checkout_reference` created by this request, is used for furthermanipulation of the checkout.
 
         For 3DS checkouts, add the `redirect_url` parameter to your request body schema.
+        To use the [Hosted Checkout](https://developer.sumup.com/online-payments/checkouts/hosted-checkout/) page, setthe `hosted_checkout.enabled` to `true`.
 
         Follow by processing a checkout to charge the provided payment instrument.
         """
@@ -382,6 +394,8 @@ class CheckoutsResource(Resource):
             body_data["valid_until"] = valid_until
         if not isinstance(redirect_url, NotGivenType):
             body_data["redirect_url"] = redirect_url
+        if not isinstance(hosted_checkout, NotGivenType):
+            body_data["hosted_checkout"] = hosted_checkout
 
         resp = self._client.post(
             f"/v0.1/checkouts",
@@ -655,6 +669,7 @@ class AsyncCheckoutsResource(AsyncResource):
         purpose: typing.Union[CreateCheckoutBodyPurposeInput, None, NotGivenType] = NOT_GIVEN,
         valid_until: typing.Union[datetime.datetime, None, NotGivenType] = NOT_GIVEN,
         redirect_url: typing.Union[str, None, NotGivenType] = NOT_GIVEN,
+        hosted_checkout: typing.Union[HostedCheckoutInput, None, NotGivenType] = NOT_GIVEN,
         headers: typing.Optional[HeaderTypes] = None,
     ) -> Checkout:
         """
@@ -663,6 +678,7 @@ class AsyncCheckoutsResource(AsyncResource):
         Creates a new payment checkout resource. The unique `checkout_reference` created by this request, is used for furthermanipulation of the checkout.
 
         For 3DS checkouts, add the `redirect_url` parameter to your request body schema.
+        To use the [Hosted Checkout](https://developer.sumup.com/online-payments/checkouts/hosted-checkout/) page, setthe `hosted_checkout.enabled` to `true`.
 
         Follow by processing a checkout to charge the provided payment instrument.
         """
@@ -683,6 +699,8 @@ class AsyncCheckoutsResource(AsyncResource):
             body_data["valid_until"] = valid_until
         if not isinstance(redirect_url, NotGivenType):
             body_data["redirect_url"] = redirect_url
+        if not isinstance(hosted_checkout, NotGivenType):
+            body_data["hosted_checkout"] = hosted_checkout
 
         resp = await self._client.post(
             f"/v0.1/checkouts",
