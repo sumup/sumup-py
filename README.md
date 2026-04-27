@@ -107,6 +107,22 @@ reader_checkout = client.readers.create_checkout(
 print(f"Reader checkout created: {reader_checkout}")
 ```
 
+### OAuth2 Authorization Code Flow
+
+Run a local browser-based example that exchanges an authorization code for an
+access token and then fetches merchant information through the SDK:
+
+```sh
+pip install -e ".[examples]"
+CLIENT_ID=your_client_id \
+CLIENT_SECRET=your_client_secret \
+REDIRECT_URI=http://localhost:8080/callback \
+python examples/oauth2.py
+```
+
+This example uses Authlib for the OAuth2 Authorization Code flow with PKCE and
+the Python standard library for the local callback server.
+
 ## Version support policy
 
 `sumup-py` maintains compatibility with Python versions that are no pass their End of life support, see [Status of Python versions](https://devguide.python.org/versions/).
