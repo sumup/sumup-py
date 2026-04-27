@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.2.2](https://github.com/sumup/sumup-py/compare/v0.2.1...v0.2.2) (2026-04-27)
+
+
+### Chores
+
+* synced file(s) with sumup/apis ([#283](https://github.com/sumup/sumup-py/issues/283)) ([dab1149](https://github.com/sumup/sumup-py/commit/dab1149d08f5fe57b49f4733cb970b634baff2d6))
+
 ## [0.2.1](https://github.com/sumup/sumup-py/compare/v0.2.0...v0.2.1) (2026-04-24)
 
 
