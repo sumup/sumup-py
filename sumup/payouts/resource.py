@@ -17,7 +17,7 @@ from .._service import (
     serialize_request_data,
 )
 from .._exceptions import APIError
-from ..types import Error, ErrorExtended, FinancialPayouts, Problem
+from ..types import Error, ErrorExtended, FinancialPayout, FinancialPayouts, Problem
 import datetime
 import httpx
 import typing
@@ -27,10 +27,6 @@ import typing_extensions
 ListPayoutsV1ParamsFormatInput = typing.Union[typing.Literal["csv", "json"], str]
 
 ListPayoutsV1ParamsOrderInput = typing.Union[typing.Literal["asc", "desc"], str]
-
-ListPayoutsParamsFormatInput = typing.Union[typing.Literal["csv", "json"], str]
-
-ListPayoutsParamsOrderInput = typing.Union[typing.Literal["asc", "desc"], str]
 
 
 class PayoutsResource(Resource):
@@ -53,7 +49,13 @@ class PayoutsResource(Resource):
         """
         List payouts
 
-        Lists ordered payouts for the merchant account.
+        Lists payout and payout-deduction records for the specified merchant account within the requested date range.
+
+        The response can include:
+        - regular payouts (`type = PAYOUT`)
+        - deduction records for refunds, chargebacks, direct debit returns, or balance adjustments
+
+        Results are sorted by payout date in the requested `order`.
         """
         query_data: dict[str, typing.Any] = {}
         query_data["start_date"] = start_date
@@ -67,52 +69,6 @@ class PayoutsResource(Resource):
 
         resp = self._client.get(
             f"/v1.0/merchants/{merchant_code}/payouts",
-            params=serialize_query_params(query_data) if query_data else None,
-            headers=headers,
-        )
-        if resp.status_code == 200:
-            return pydantic.TypeAdapter(FinancialPayouts).validate_python(resp.json())
-        elif resp.status_code == 400:
-            raise APIError(
-                "The request is invalid for the submitted query parameters.",
-                status=resp.status_code,
-                body=resp.text,
-            )
-        elif resp.status_code == 401:
-            raise APIError(
-                "The request is not authorized.", status=resp.status_code, body=resp.text
-            )
-        else:
-            raise APIError(f"Unexpected response", status=resp.status_code, body=resp.text)
-
-    @typing_extensions.deprecated("This method is deprecated")
-    def list_deprecated(
-        self,
-        *,
-        start_date: datetime.date,
-        end_date: datetime.date,
-        format: typing.Union[ListPayoutsParamsFormatInput, NotGivenType] = NOT_GIVEN,
-        limit: typing.Union[int, NotGivenType] = NOT_GIVEN,
-        order: typing.Union[ListPayoutsParamsOrderInput, NotGivenType] = NOT_GIVEN,
-        headers: typing.Optional[HeaderTypes] = None,
-    ) -> FinancialPayouts:
-        """
-        List payouts
-
-        Lists ordered payouts for the merchant account.
-        """
-        query_data: dict[str, typing.Any] = {}
-        query_data["start_date"] = start_date
-        query_data["end_date"] = end_date
-        if not isinstance(format, NotGivenType) and format is not None:
-            query_data["format"] = format
-        if not isinstance(limit, NotGivenType) and limit is not None:
-            query_data["limit"] = limit
-        if not isinstance(order, NotGivenType) and order is not None:
-            query_data["order"] = order
-
-        resp = self._client.get(
-            f"/v0.1/me/financials/payouts",
             params=serialize_query_params(query_data) if query_data else None,
             headers=headers,
         )
@@ -152,7 +108,13 @@ class AsyncPayoutsResource(AsyncResource):
         """
         List payouts
 
-        Lists ordered payouts for the merchant account.
+        Lists payout and payout-deduction records for the specified merchant account within the requested date range.
+
+        The response can include:
+        - regular payouts (`type = PAYOUT`)
+        - deduction records for refunds, chargebacks, direct debit returns, or balance adjustments
+
+        Results are sorted by payout date in the requested `order`.
         """
         query_data: dict[str, typing.Any] = {}
         query_data["start_date"] = start_date
@@ -166,52 +128,6 @@ class AsyncPayoutsResource(AsyncResource):
 
         resp = await self._client.get(
             f"/v1.0/merchants/{merchant_code}/payouts",
-            params=serialize_query_params(query_data) if query_data else None,
-            headers=headers,
-        )
-        if resp.status_code == 200:
-            return pydantic.TypeAdapter(FinancialPayouts).validate_python(resp.json())
-        elif resp.status_code == 400:
-            raise APIError(
-                "The request is invalid for the submitted query parameters.",
-                status=resp.status_code,
-                body=resp.text,
-            )
-        elif resp.status_code == 401:
-            raise APIError(
-                "The request is not authorized.", status=resp.status_code, body=resp.text
-            )
-        else:
-            raise APIError(f"Unexpected response", status=resp.status_code, body=resp.text)
-
-    @typing_extensions.deprecated("This method is deprecated")
-    async def list_deprecated(
-        self,
-        *,
-        start_date: datetime.date,
-        end_date: datetime.date,
-        format: typing.Union[ListPayoutsParamsFormatInput, NotGivenType] = NOT_GIVEN,
-        limit: typing.Union[int, NotGivenType] = NOT_GIVEN,
-        order: typing.Union[ListPayoutsParamsOrderInput, NotGivenType] = NOT_GIVEN,
-        headers: typing.Optional[HeaderTypes] = None,
-    ) -> FinancialPayouts:
-        """
-        List payouts
-
-        Lists ordered payouts for the merchant account.
-        """
-        query_data: dict[str, typing.Any] = {}
-        query_data["start_date"] = start_date
-        query_data["end_date"] = end_date
-        if not isinstance(format, NotGivenType) and format is not None:
-            query_data["format"] = format
-        if not isinstance(limit, NotGivenType) and limit is not None:
-            query_data["limit"] = limit
-        if not isinstance(order, NotGivenType) and order is not None:
-            query_data["order"] = order
-
-        resp = await self._client.get(
-            f"/v0.1/me/financials/payouts",
             params=serialize_query_params(query_data) if query_data else None,
             headers=headers,
         )

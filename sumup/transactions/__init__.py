@@ -3,7 +3,6 @@ from .resource import (
     TransactionsResource,
     AsyncTransactionsResource,
     ListTransactionsV21200Response,
-    ListTransactions200Response,
 )
 from ..types import (
     CardResponse,
@@ -39,7 +38,6 @@ __all__ = [
     "TransactionsResource",
     "AsyncTransactionsResource",
     "ListTransactionsV21200Response",
-    "ListTransactions200Response",
     "CardResponse",
     "CardType",
     "Currency",

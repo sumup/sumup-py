@@ -7,12 +7,10 @@ import typing_extensions
 
 CountryCode = str
 """
-An [ISO3166-1 alpha-2](https://en.wikipedia.org/wiki/ISO_3166-1_alpha-2)
-country code. This definition users `oneOf` with a two-character string
-type to allow for support of future countries in client code.
+An [ISO3166-1 alpha-2](https://en.wikipedia.org/wiki/ISO_3166-1_alpha-2) country code. This definition users`oneOf` with a two-character string type to allow for support of future countries in client code.
+
 Min length: 2
 Max length: 2
-Pattern: ^[A-Z]{2}$
 """
 
 
@@ -20,112 +18,110 @@ class Address(pydantic.BaseModel):
     """
             An address somewhere in the world. The address fields used depend on the country conventions. For example, inGreat Britain, `city` is `post_town`. In the United States, the top-level administrative unit used in addressesis `state`, whereas in Chile it's `region`.
     Whether an address is valid or not depends on whether the locally required fields are present. Fields not supported ina country will be ignored.
-    Address documentation: https://backstage.sumup.net/docs/default/Component/merchants/merchant/#addresses
+    Address documentation: https://developer.sumup.com/tools/glossary/merchant#addresses
     """
 
     country: CountryCode
     """
-	An [ISO3166-1 alpha-2](https://en.wikipedia.org/wiki/ISO_3166-1_alpha-2)
-	country code. This definition users `oneOf` with a two-character string
-	type to allow for support of future countries in client code.
+	An [ISO3166-1 alpha-2](https://en.wikipedia.org/wiki/ISO_3166-1_alpha-2) country code. This definition users`oneOf` with a two-character string type to allow for support of future countries in client code.
 	Min length: 2
 	Max length: 2
-	Pattern: ^[A-Z]{2}$
 	"""
 
     autonomous_community: typing.Optional[str] = None
     """
 	In Spain, an autonomous community is the first sub-national level of political and administrative division.
-	Max length: 512
+	Max length: 60
 	"""
 
     city: typing.Optional[str] = None
     """
 	The city of the address.
-	Max length: 512
+	Max length: 60
 	"""
 
     commune: typing.Optional[str] = None
     """
 	In many countries, terms cognate with "commune" are used, referring to the community living in the area andthe common interest. Used in countries such as Chile.
-	Max length: 512
+	Max length: 60
 	"""
 
     county: typing.Optional[str] = None
     """
 	A county is a geographic region of a country used for administrative or other purposes in some nations. Usedin countries such as Ireland, Romania, etc.
-	Max length: 512
+	Max length: 60
 	"""
 
     department: typing.Optional[str] = None
     """
 	A department (French: département, Spanish: departamento) is an administrative or political division inseveral countries. Used in countries such as Colombia.
-	Max length: 512
+	Max length: 60
 	"""
 
     district: typing.Optional[str] = None
     """
 	A district is a type of administrative division that in some countries is managed by the local government. Usedin countries such as Portugal.
-	Max length: 512
+	Max length: 60
 	"""
 
     eircode: typing.Optional[str] = None
     """
 	A postal address in Ireland.
-	Max length: 512
+	Max length: 10
 	"""
 
     municipality: typing.Optional[str] = None
     """
 	A municipality is usually a single administrative division having corporate status and powers of self-government orjurisdiction as granted by national and regional laws to which it is subordinate. Used in countries such asColombia.
-	Max length: 512
+	Max length: 60
 	"""
 
     neighborhood: typing.Optional[str] = None
     """
 	Locality level of the address. Used in countries such as Brazil or Chile.
-	Max length: 512
+	Max length: 60
 	"""
 
     post_code: typing.Optional[str] = None
     """
 	The postal code (aka. zip code) of the address.
-	Max length: 32
+	Max length: 10
 	"""
 
     post_town: typing.Optional[str] = None
     """
 	A post town is a required part of all postal addresses in the United Kingdom and Ireland, and a basic unitof the postal delivery system.
-	Max length: 512
+	Max length: 60
 	"""
 
     province: typing.Optional[str] = None
     """
 	The province where the address is located. This may not be relevant in some countries.
-	Max length: 512
+	Max length: 60
 	"""
 
     region: typing.Optional[str] = None
     """
 	The region where the address is located. This may not be relevant in some countries.
-	Max length: 512
+	Max length: 60
 	"""
 
     state: typing.Optional[str] = None
     """
 	Most often, a country has a single state, with various administrative divisions. The term "state" is sometimesused to refer to the federated polities that make up the federation. Used in countries such as the United Statesand Brazil.
-	Max length: 512
+	Max length: 60
 	"""
 
     street_address: typing.Optional[list[str]] = None
     """
+	Min items: 1
 	Max items: 2
 	"""
 
     zip_code: typing.Optional[str] = None
     """
 	A US system of postal codes used by the United States Postal Service (USPS).
-	Max length: 512
+	Max length: 10
 	"""
 
 
@@ -277,14 +273,13 @@ class PersonalIdentifier(pydantic.BaseModel):
 
     ref: str
     """
-	The unique reference for the personal identifier type.
-	Max length: 32
+	The unique reference for the personal identifier type as defined in the country SDK.
 	"""
 
     value: str
     """
 	The company identifier value.
-	Max length: 128
+	Max length: 30
 	"""
 
 
@@ -318,7 +313,7 @@ class BasePerson(pydantic.BaseModel):
     """
 	An address somewhere in the world. The address fields used depend on the country conventions. For example, inGreat Britain, `city` is `post_town`. In the United States, the top-level administrative unit used in addressesis `state`, whereas in Chile it's `region`.
 	Whether an address is valid or not depends on whether the locally required fields are present. Fields not supported ina country will be ignored.
-	Address documentation: https://backstage.sumup.net/docs/default/Component/merchants/merchant/#addresses
+	Address documentation: https://developer.sumup.com/tools/glossary/merchant#addresses
 	"""
 
     birthdate: typing.Optional[datetime.date] = None
@@ -336,12 +331,9 @@ class BasePerson(pydantic.BaseModel):
 
     citizenship: typing.Optional[CountryCode] = None
     """
-	An [ISO3166-1 alpha-2](https://en.wikipedia.org/wiki/ISO_3166-1_alpha-2)
-	country code. This definition users `oneOf` with a two-character string
-	type to allow for support of future countries in client code.
+	An [ISO3166-1 alpha-2](https://en.wikipedia.org/wiki/ISO_3166-1_alpha-2) country code. This definition users`oneOf` with a two-character string type to allow for support of future countries in client code.
 	Min length: 2
 	Max length: 2
-	Pattern: ^[A-Z]{2}$
 	"""
 
     country_of_residence: typing.Optional[str] = None
@@ -464,7 +456,7 @@ class BusinessProfile(pydantic.BaseModel):
     """
 	An address somewhere in the world. The address fields used depend on the country conventions. For example, inGreat Britain, `city` is `post_town`. In the United States, the top-level administrative unit used in addressesis `state`, whereas in Chile it's `region`.
 	Whether an address is valid or not depends on whether the locally required fields are present. Fields not supported ina country will be ignored.
-	Address documentation: https://backstage.sumup.net/docs/default/Component/merchants/merchant/#addresses
+	Address documentation: https://developer.sumup.com/tools/glossary/merchant#addresses
 	"""
 
     branding: typing.Optional[Branding] = None
@@ -1509,7 +1501,7 @@ class Company(pydantic.BaseModel):
     """
 	An address somewhere in the world. The address fields used depend on the country conventions. For example, inGreat Britain, `city` is `post_town`. In the United States, the top-level administrative unit used in addressesis `state`, whereas in Chile it's `region`.
 	Whether an address is valid or not depends on whether the locally required fields are present. Fields not supported ina country will be ignored.
-	Address documentation: https://backstage.sumup.net/docs/default/Component/merchants/merchant/#addresses
+	Address documentation: https://developer.sumup.com/tools/glossary/merchant#addresses
 	"""
 
     attributes: typing.Optional[Attributes] = None
@@ -1553,7 +1545,7 @@ class Company(pydantic.BaseModel):
     """
 	An address somewhere in the world. The address fields used depend on the country conventions. For example, inGreat Britain, `city` is `post_town`. In the United States, the top-level administrative unit used in addressesis `state`, whereas in Chile it's `region`.
 	Whether an address is valid or not depends on whether the locally required fields are present. Fields not supported ina country will be ignored.
-	Address documentation: https://backstage.sumup.net/docs/default/Component/merchants/merchant/#addresses
+	Address documentation: https://developer.sumup.com/tools/glossary/merchant#addresses
 	"""
 
     website: typing.Optional[str] = None
@@ -2337,8 +2329,6 @@ class Event(pydantic.BaseModel):
 	"""
 
 
-FinancialPayoutStatus = typing.Union[typing.Literal["FAILED", "SUCCESSFUL"], str]
-
 FinancialPayoutType = typing.Union[
     typing.Literal[
         "BALANCE_DEDUCTION",
@@ -2350,37 +2340,68 @@ FinancialPayoutType = typing.Union[
     str,
 ]
 
+FinancialPayoutStatus = typing.Union[typing.Literal["FAILED", "SUCCESSFUL"], str]
+
 
 class FinancialPayout(pydantic.BaseModel):
     """
-    FinancialPayout is a schema definition.
+            A single payout-related record.
+
+    A record can represent either:
+    - an actual payout sent to the merchant (`type = PAYOUT`)
+    - a deduction applied against merchant funds for a refund, chargeback, direct debit return, or balance adjustment
     """
 
-    amount: typing.Optional[float] = None
-
-    currency: typing.Optional[str] = None
-
-    date: typing.Optional[datetime.date] = None
+    amount: float
     """
+	Amount of the payout or deduction in major units.
+	"""
+
+    currency: str
+    """
+	Three-letter ISO 4217 currency code of the payout.
+	"""
+
+    date: datetime.date
+    """
+	Payout date associated with the record, in `YYYY-MM-DD` format.
 	Format: date
 	"""
 
-    fee: typing.Optional[float] = None
+    fee: float
+    """
+	Fee amount associated with the payout record, in major units.
+	"""
 
-    id: typing.Optional[int] = None
+    id: int
+    """
+	Unique identifier of the payout-related record.
+	"""
 
-    reference: typing.Optional[str] = None
+    reference: str
+    """
+	Processor or payout reference associated with the record.
+	"""
 
-    status: typing.Optional[FinancialPayoutStatus] = None
+    status: FinancialPayoutStatus
+    """
+	Merchant-facing outcome of the payout record.
+	"""
 
-    transaction_code: typing.Optional[str] = None
+    transaction_code: str
+    """
+	Transaction code of the original sale associated with the payout or deduction.
+	"""
 
-    type: typing.Optional[FinancialPayoutType] = None
+    type: FinancialPayoutType
+    """
+	High-level payout record category.
+	"""
 
 
 FinancialPayouts = list[FinancialPayout]
 """
-List of payout summaries.
+Ordered list of payout and payout-deduction records.
 """
 
 HorizontalAccuracy = float
@@ -2458,7 +2479,7 @@ class Person(pydantic.BaseModel):
     """
 	An address somewhere in the world. The address fields used depend on the country conventions. For example, inGreat Britain, `city` is `post_town`. In the United States, the top-level administrative unit used in addressesis `state`, whereas in Chile it's `region`.
 	Whether an address is valid or not depends on whether the locally required fields are present. Fields not supported ina country will be ignored.
-	Address documentation: https://backstage.sumup.net/docs/default/Component/merchants/merchant/#addresses
+	Address documentation: https://developer.sumup.com/tools/glossary/merchant#addresses
 	"""
 
     birthdate: typing.Optional[datetime.date] = None
@@ -2476,12 +2497,9 @@ class Person(pydantic.BaseModel):
 
     citizenship: typing.Optional[CountryCode] = None
     """
-	An [ISO3166-1 alpha-2](https://en.wikipedia.org/wiki/ISO_3166-1_alpha-2)
-	country code. This definition users `oneOf` with a two-character string
-	type to allow for support of future countries in client code.
+	An [ISO3166-1 alpha-2](https://en.wikipedia.org/wiki/ISO_3166-1_alpha-2) country code. This definition users`oneOf` with a two-character string type to allow for support of future countries in client code.
 	Min length: 2
 	Max length: 2
-	Pattern: ^[A-Z]{2}$
 	"""
 
     country_of_residence: typing.Optional[str] = None
@@ -2909,12 +2927,9 @@ class Merchant(pydantic.BaseModel):
 
     country: CountryCode
     """
-	An [ISO3166-1 alpha-2](https://en.wikipedia.org/wiki/ISO_3166-1_alpha-2)
-	country code. This definition users `oneOf` with a two-character string
-	type to allow for support of future countries in client code.
+	An [ISO3166-1 alpha-2](https://en.wikipedia.org/wiki/ISO_3166-1_alpha-2) country code. This definition users`oneOf` with a two-character string type to allow for support of future countries in client code.
 	Min length: 2
 	Max length: 2
-	Pattern: ^[A-Z]{2}$
 	"""
 
     created_at: datetime.datetime
@@ -3032,59 +3047,6 @@ class NotFound(pydantic.BaseModel):
     """
 
     errors: NotFoundErrors
-
-
-class Permissions(pydantic.BaseModel):
-    """
-    Permissions assigned to an operator or user.
-    """
-
-    admin: bool
-
-    create_moto_payments: bool
-
-    create_referral: bool
-
-    full_transaction_history_view: bool
-
-    refund_transactions: bool
-
-
-OperatorAccountType = typing.Union[typing.Literal["normal", "operator"], str]
-
-
-class Operator(pydantic.BaseModel):
-    """
-    Operator account for a merchant.
-    """
-
-    account_type: OperatorAccountType
-
-    created_at: datetime.datetime
-    """
-	The timestamp of when the operator was created.
-	"""
-
-    disabled: bool
-
-    id: int
-    """
-	Format: int32
-	"""
-
-    permissions: Permissions
-    """
-	Permissions assigned to an operator or user.
-	"""
-
-    updated_at: datetime.datetime
-    """
-	The timestamp of when the operator was last updated.
-	"""
-
-    username: str
-
-    nickname: typing.Optional[str] = None
 
 
 PaymentInstrumentResponseType = typing.Union[typing.Literal["card"], str]

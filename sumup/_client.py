@@ -13,7 +13,6 @@ from .payouts import PayoutsResource, AsyncPayoutsResource
 from .readers import ReadersResource, AsyncReadersResource
 from .receipts import ReceiptsResource, AsyncReceiptsResource
 from .roles import RolesResource, AsyncRolesResource
-from .subaccounts import SubaccountsResource, AsyncSubaccountsResource
 from .transactions import TransactionsResource, AsyncTransactionsResource
 
 BASE_URL = "https://api.sumup.com"
@@ -114,13 +113,6 @@ class Sumup(Resource):
         return RolesResource(self._client)
 
     @property
-    def subaccounts(self) -> SubaccountsResource:
-        """Access the Subaccounts API endpoints."""
-        from .subaccounts.resource import SubaccountsResource
-
-        return SubaccountsResource(self._client)
-
-    @property
     def transactions(self) -> TransactionsResource:
         """Access the Transactions API endpoints."""
         from .transactions.resource import TransactionsResource
@@ -211,13 +203,6 @@ class AsyncSumup(AsyncResource):
         from .roles.resource import AsyncRolesResource
 
         return AsyncRolesResource(self._client)
-
-    @property
-    def subaccounts(self) -> AsyncSubaccountsResource:
-        """Access the Subaccounts API endpoints."""
-        from .subaccounts.resource import AsyncSubaccountsResource
-
-        return AsyncSubaccountsResource(self._client)
 
     @property
     def transactions(self) -> AsyncTransactionsResource:

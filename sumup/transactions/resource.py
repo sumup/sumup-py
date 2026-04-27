@@ -93,30 +93,10 @@ ListTransactionsV21ParamsTypeInput = typing.Union[
     typing.Literal["CHARGE_BACK", "PAYMENT", "REFUND"], str
 ]
 
-ListTransactionsParamsOrderInput = typing.Union[typing.Literal["ascending", "descending"], str]
-
-ListTransactionsParamsStatuseInput = typing.Union[
-    typing.Literal["CANCELLED", "CHARGE_BACK", "FAILED", "REFUNDED", "SUCCESSFUL"], str
-]
-
-ListTransactionsParamsTypeInput = typing.Union[
-    typing.Literal["CHARGE_BACK", "PAYMENT", "REFUND"], str
-]
-
 
 class ListTransactionsV21200Response(pydantic.BaseModel):
     """
     ListTransactionsV21200Response is a schema definition.
-    """
-
-    items: typing.Optional[list[TransactionHistory]] = None
-
-    links: typing.Optional[list[TransactionsHistoryLink]] = None
-
-
-class ListTransactions200Response(pydantic.BaseModel):
-    """
-    ListTransactions200Response is a schema definition.
     """
 
     items: typing.Optional[list[TransactionHistory]] = None
@@ -132,7 +112,8 @@ class TransactionsResource(Resource):
 
     def refund(
         self,
-        txn_id: str,
+        merchant_code: str,
+        id: str,
         *,
         amount: typing.Union[float, None, NotGivenType] = NOT_GIVEN,
         headers: typing.Optional[HeaderTypes] = None,
@@ -147,7 +128,7 @@ class TransactionsResource(Resource):
             body_data["amount"] = amount
 
         resp = self._client.post(
-            f"/v0.1/me/refund/{txn_id}",
+            f"/v1.0/merchants/{merchant_code}/payments/{id}/refunds",
             json=serialize_request_data(body_data),
             headers=headers,
         )
@@ -203,47 +184,6 @@ class TransactionsResource(Resource):
 
         resp = self._client.get(
             f"/v2.1/merchants/{merchant_code}/transactions",
-            params=serialize_query_params(query_data) if query_data else None,
-            headers=headers,
-        )
-        if resp.status_code == 200:
-            return pydantic.TypeAdapter(TransactionFull).validate_python(resp.json())
-        elif resp.status_code == 401:
-            raise APIError(
-                "The request is not authorized.", status=resp.status_code, body=resp.text
-            )
-        elif resp.status_code == 404:
-            raise APIError(
-                "The requested resource does not exist.", status=resp.status_code, body=resp.text
-            )
-        else:
-            raise APIError(f"Unexpected response", status=resp.status_code, body=resp.text)
-
-    @typing_extensions.deprecated("This method is deprecated")
-    def get_deprecated(
-        self,
-        *,
-        id: typing.Union[str, NotGivenType] = NOT_GIVEN,
-        transaction_code: typing.Union[str, NotGivenType] = NOT_GIVEN,
-        headers: typing.Optional[HeaderTypes] = None,
-    ) -> TransactionFull:
-        """
-        Retrieve a transaction
-
-        Retrieves the full details of an identified transaction. The transaction resource is identified by a query parameter and*one* of following parameters is required:
-        - `id`
-        - `transaction_code`
-        - `foreign_transaction_id`
-        - `client_transaction_id`
-        """
-        query_data: dict[str, typing.Any] = {}
-        if not isinstance(id, NotGivenType) and id is not None:
-            query_data["id"] = id
-        if not isinstance(transaction_code, NotGivenType) and transaction_code is not None:
-            query_data["transaction_code"] = transaction_code
-
-        resp = self._client.get(
-            f"/v0.1/me/transactions",
             params=serialize_query_params(query_data) if query_data else None,
             headers=headers,
         )
@@ -336,79 +276,6 @@ class TransactionsResource(Resource):
         else:
             raise APIError(f"Unexpected response", status=resp.status_code, body=resp.text)
 
-    @typing_extensions.deprecated("This method is deprecated")
-    def list_deprecated(
-        self,
-        *,
-        transaction_code: typing.Union[str, NotGivenType] = NOT_GIVEN,
-        order: typing.Union[ListTransactionsParamsOrderInput, NotGivenType] = NOT_GIVEN,
-        limit: typing.Union[int, NotGivenType] = NOT_GIVEN,
-        users: typing.Union[typing.Sequence[str], NotGivenType] = NOT_GIVEN,
-        statuses: typing.Union[
-            typing.Sequence[ListTransactionsParamsStatuseInput], NotGivenType
-        ] = NOT_GIVEN,
-        payment_types: typing.Union[typing.Sequence[PaymentTypeInput], NotGivenType] = NOT_GIVEN,
-        types: typing.Union[
-            typing.Sequence[ListTransactionsParamsTypeInput], NotGivenType
-        ] = NOT_GIVEN,
-        changes_since: typing.Union[datetime.datetime, NotGivenType] = NOT_GIVEN,
-        newest_time: typing.Union[datetime.datetime, NotGivenType] = NOT_GIVEN,
-        newest_ref: typing.Union[str, NotGivenType] = NOT_GIVEN,
-        oldest_time: typing.Union[datetime.datetime, NotGivenType] = NOT_GIVEN,
-        oldest_ref: typing.Union[str, NotGivenType] = NOT_GIVEN,
-        headers: typing.Optional[HeaderTypes] = None,
-    ) -> ListTransactions200Response:
-        """
-        List transactions
-
-        Lists detailed history of all transactions associated with the merchant profile.
-        """
-        query_data: dict[str, typing.Any] = {}
-        if not isinstance(transaction_code, NotGivenType) and transaction_code is not None:
-            query_data["transaction_code"] = transaction_code
-        if not isinstance(order, NotGivenType) and order is not None:
-            query_data["order"] = order
-        if not isinstance(limit, NotGivenType) and limit is not None:
-            query_data["limit"] = limit
-        if not isinstance(users, NotGivenType) and users is not None:
-            query_data["users"] = list(users)
-        if not isinstance(statuses, NotGivenType) and statuses is not None:
-            query_data["statuses[]"] = list(statuses)
-        if not isinstance(payment_types, NotGivenType) and payment_types is not None:
-            query_data["payment_types"] = list(payment_types)
-        if not isinstance(types, NotGivenType) and types is not None:
-            query_data["types"] = list(types)
-        if not isinstance(changes_since, NotGivenType) and changes_since is not None:
-            query_data["changes_since"] = changes_since
-        if not isinstance(newest_time, NotGivenType) and newest_time is not None:
-            query_data["newest_time"] = newest_time
-        if not isinstance(newest_ref, NotGivenType) and newest_ref is not None:
-            query_data["newest_ref"] = newest_ref
-        if not isinstance(oldest_time, NotGivenType) and oldest_time is not None:
-            query_data["oldest_time"] = oldest_time
-        if not isinstance(oldest_ref, NotGivenType) and oldest_ref is not None:
-            query_data["oldest_ref"] = oldest_ref
-
-        resp = self._client.get(
-            f"/v0.1/me/transactions/history",
-            params=serialize_query_params(query_data) if query_data else None,
-            headers=headers,
-        )
-        if resp.status_code == 200:
-            return pydantic.TypeAdapter(ListTransactions200Response).validate_python(resp.json())
-        elif resp.status_code == 400:
-            raise APIError(
-                "The request is invalid for the submitted query parameters.",
-                status=resp.status_code,
-                body=resp.text,
-            )
-        elif resp.status_code == 401:
-            raise APIError(
-                "The request is not authorized.", status=resp.status_code, body=resp.text
-            )
-        else:
-            raise APIError(f"Unexpected response", status=resp.status_code, body=resp.text)
-
 
 class AsyncTransactionsResource(AsyncResource):
     """Async API resource for the Transactions endpoints."""
@@ -418,7 +285,8 @@ class AsyncTransactionsResource(AsyncResource):
 
     async def refund(
         self,
-        txn_id: str,
+        merchant_code: str,
+        id: str,
         *,
         amount: typing.Union[float, None, NotGivenType] = NOT_GIVEN,
         headers: typing.Optional[HeaderTypes] = None,
@@ -433,7 +301,7 @@ class AsyncTransactionsResource(AsyncResource):
             body_data["amount"] = amount
 
         resp = await self._client.post(
-            f"/v0.1/me/refund/{txn_id}",
+            f"/v1.0/merchants/{merchant_code}/payments/{id}/refunds",
             json=serialize_request_data(body_data),
             headers=headers,
         )
@@ -489,47 +357,6 @@ class AsyncTransactionsResource(AsyncResource):
 
         resp = await self._client.get(
             f"/v2.1/merchants/{merchant_code}/transactions",
-            params=serialize_query_params(query_data) if query_data else None,
-            headers=headers,
-        )
-        if resp.status_code == 200:
-            return pydantic.TypeAdapter(TransactionFull).validate_python(resp.json())
-        elif resp.status_code == 401:
-            raise APIError(
-                "The request is not authorized.", status=resp.status_code, body=resp.text
-            )
-        elif resp.status_code == 404:
-            raise APIError(
-                "The requested resource does not exist.", status=resp.status_code, body=resp.text
-            )
-        else:
-            raise APIError(f"Unexpected response", status=resp.status_code, body=resp.text)
-
-    @typing_extensions.deprecated("This method is deprecated")
-    async def get_deprecated(
-        self,
-        *,
-        id: typing.Union[str, NotGivenType] = NOT_GIVEN,
-        transaction_code: typing.Union[str, NotGivenType] = NOT_GIVEN,
-        headers: typing.Optional[HeaderTypes] = None,
-    ) -> TransactionFull:
-        """
-        Retrieve a transaction
-
-        Retrieves the full details of an identified transaction. The transaction resource is identified by a query parameter and*one* of following parameters is required:
-        - `id`
-        - `transaction_code`
-        - `foreign_transaction_id`
-        - `client_transaction_id`
-        """
-        query_data: dict[str, typing.Any] = {}
-        if not isinstance(id, NotGivenType) and id is not None:
-            query_data["id"] = id
-        if not isinstance(transaction_code, NotGivenType) and transaction_code is not None:
-            query_data["transaction_code"] = transaction_code
-
-        resp = await self._client.get(
-            f"/v0.1/me/transactions",
             params=serialize_query_params(query_data) if query_data else None,
             headers=headers,
         )
@@ -609,79 +436,6 @@ class AsyncTransactionsResource(AsyncResource):
         )
         if resp.status_code == 200:
             return pydantic.TypeAdapter(ListTransactionsV21200Response).validate_python(resp.json())
-        elif resp.status_code == 400:
-            raise APIError(
-                "The request is invalid for the submitted query parameters.",
-                status=resp.status_code,
-                body=resp.text,
-            )
-        elif resp.status_code == 401:
-            raise APIError(
-                "The request is not authorized.", status=resp.status_code, body=resp.text
-            )
-        else:
-            raise APIError(f"Unexpected response", status=resp.status_code, body=resp.text)
-
-    @typing_extensions.deprecated("This method is deprecated")
-    async def list_deprecated(
-        self,
-        *,
-        transaction_code: typing.Union[str, NotGivenType] = NOT_GIVEN,
-        order: typing.Union[ListTransactionsParamsOrderInput, NotGivenType] = NOT_GIVEN,
-        limit: typing.Union[int, NotGivenType] = NOT_GIVEN,
-        users: typing.Union[typing.Sequence[str], NotGivenType] = NOT_GIVEN,
-        statuses: typing.Union[
-            typing.Sequence[ListTransactionsParamsStatuseInput], NotGivenType
-        ] = NOT_GIVEN,
-        payment_types: typing.Union[typing.Sequence[PaymentTypeInput], NotGivenType] = NOT_GIVEN,
-        types: typing.Union[
-            typing.Sequence[ListTransactionsParamsTypeInput], NotGivenType
-        ] = NOT_GIVEN,
-        changes_since: typing.Union[datetime.datetime, NotGivenType] = NOT_GIVEN,
-        newest_time: typing.Union[datetime.datetime, NotGivenType] = NOT_GIVEN,
-        newest_ref: typing.Union[str, NotGivenType] = NOT_GIVEN,
-        oldest_time: typing.Union[datetime.datetime, NotGivenType] = NOT_GIVEN,
-        oldest_ref: typing.Union[str, NotGivenType] = NOT_GIVEN,
-        headers: typing.Optional[HeaderTypes] = None,
-    ) -> ListTransactions200Response:
-        """
-        List transactions
-
-        Lists detailed history of all transactions associated with the merchant profile.
-        """
-        query_data: dict[str, typing.Any] = {}
-        if not isinstance(transaction_code, NotGivenType) and transaction_code is not None:
-            query_data["transaction_code"] = transaction_code
-        if not isinstance(order, NotGivenType) and order is not None:
-            query_data["order"] = order
-        if not isinstance(limit, NotGivenType) and limit is not None:
-            query_data["limit"] = limit
-        if not isinstance(users, NotGivenType) and users is not None:
-            query_data["users"] = list(users)
-        if not isinstance(statuses, NotGivenType) and statuses is not None:
-            query_data["statuses[]"] = list(statuses)
-        if not isinstance(payment_types, NotGivenType) and payment_types is not None:
-            query_data["payment_types"] = list(payment_types)
-        if not isinstance(types, NotGivenType) and types is not None:
-            query_data["types"] = list(types)
-        if not isinstance(changes_since, NotGivenType) and changes_since is not None:
-            query_data["changes_since"] = changes_since
-        if not isinstance(newest_time, NotGivenType) and newest_time is not None:
-            query_data["newest_time"] = newest_time
-        if not isinstance(newest_ref, NotGivenType) and newest_ref is not None:
-            query_data["newest_ref"] = newest_ref
-        if not isinstance(oldest_time, NotGivenType) and oldest_time is not None:
-            query_data["oldest_time"] = oldest_time
-        if not isinstance(oldest_ref, NotGivenType) and oldest_ref is not None:
-            query_data["oldest_ref"] = oldest_ref
-
-        resp = await self._client.get(
-            f"/v0.1/me/transactions/history",
-            params=serialize_query_params(query_data) if query_data else None,
-            headers=headers,
-        )
-        if resp.status_code == 200:
-            return pydantic.TypeAdapter(ListTransactions200Response).validate_python(resp.json())
         elif resp.status_code == 400:
             raise APIError(
                 "The request is invalid for the submitted query parameters.",
