@@ -1,7 +1,5 @@
 import datetime
 import json
-import warnings
-
 import httpx
 
 
@@ -54,40 +52,3 @@ def test_create_checkout_serializes_datetime_fields(sdk_factory):
         "merchant_code": "merchant-123",
         "valid_until": "2024-01-02T03:04:05",
     }
-
-
-def test_update_subaccount_accepts_explicit_null_fields(sdk_factory):
-    captured_request: dict[str, httpx.Request] = {}
-
-    def handler(request: httpx.Request) -> httpx.Response:
-        captured_request["request"] = request
-        return httpx.Response(
-            200,
-            json={
-                "account_type": "operator",
-                "created_at": "2024-01-01T00:00:00Z",
-                "disabled": False,
-                "id": 1,
-                "permissions": {
-                    "admin": False,
-                    "create_moto_payments": False,
-                    "create_referral": False,
-                    "full_transaction_history_view": False,
-                    "refund_transactions": False,
-                },
-                "updated_at": "2024-01-02T00:00:00Z",
-                "username": "operator@example.com",
-                "nickname": None,
-            },
-        )
-
-    sdk = sdk_factory(handler)
-    with warnings.catch_warnings():
-        warnings.simplefilter("ignore", DeprecationWarning)
-        response = sdk.subaccounts.update_sub_account(1, nickname=None)
-
-    assert response.nickname is None
-    assert "request" in captured_request
-    request = captured_request["request"]
-    assert request.url.path == "/v0.1/me/accounts/1"
-    assert json.loads(request.content) == {"nickname": None}

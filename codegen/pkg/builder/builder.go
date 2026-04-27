@@ -93,6 +93,10 @@ func (b *Builder) Build() error {
 		return fmt.Errorf("missing specs: call Load to load the specs first")
 	}
 
+	if err := b.cleanupGeneratedResourceDirs(); err != nil {
+		return err
+	}
+
 	if err := b.generateSharedTypes(); err != nil {
 		return err
 	}

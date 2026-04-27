@@ -259,6 +259,56 @@ func writableUsesSecret(w Writable) bool {
 	return false
 }
 
+func (b *Builder) cleanupGeneratedResourceDirs() error {
+	entries, err := os.ReadDir(b.cfg.Out)
+	if err != nil {
+		if os.IsNotExist(err) {
+			return nil
+		}
+		return fmt.Errorf("read output directory: %w", err)
+	}
+
+	expected := make(map[string]struct{}, len(b.pathsByTag))
+	for tagName := range b.pathsByTag {
+		tag := b.tagByTagName(tagName)
+		expected[strcase.ToSnake(tag.Name)] = struct{}{}
+	}
+
+	for _, entry := range entries {
+		if !entry.IsDir() {
+			continue
+		}
+
+		name := entry.Name()
+		if _, ok := expected[name]; ok {
+			continue
+		}
+		if !isGeneratedResourceDir(path.Join(b.cfg.Out, name)) {
+			continue
+		}
+
+		if err := os.RemoveAll(path.Join(b.cfg.Out, name)); err != nil {
+			return fmt.Errorf("remove stale generated resource %q: %w", name, err)
+		}
+	}
+
+	return nil
+}
+
+func isGeneratedResourceDir(dir string) bool {
+	resourceFile := path.Join(dir, "resource.py")
+	indexFile := path.Join(dir, "__init__.py")
+
+	if _, err := os.Stat(resourceFile); err != nil {
+		return false
+	}
+	if _, err := os.Stat(indexFile); err != nil {
+		return false
+	}
+
+	return true
+}
+
 func (b *Builder) writeClientFile(fname string, tags []string) error {
 	f, err := os.OpenFile(fname, os.O_RDWR|os.O_CREATE|os.O_TRUNC, os.FileMode(0o755))
 	if err != nil {
