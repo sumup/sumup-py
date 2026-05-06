@@ -1,5 +1,18 @@
 # Changelog
 
+## [0.2.2](https://github.com/sumup/sumup-py/compare/v0.2.1...v0.2.2) (2026-05-06)
+
+
+### Chores
+
+* **deps-dev:** bump ruff from 0.15.11 to 0.15.12 ([#287](https://github.com/sumup/sumup-py/issues/287)) ([b20733c](https://github.com/sumup/sumup-py/commit/b20733c64b9d1a698072fb7adb4d3fd42c0bb21b))
+* **deps-dev:** bump ty from 0.0.32 to 0.0.33 ([#286](https://github.com/sumup/sumup-py/issues/286)) ([367b3a1](https://github.com/sumup/sumup-py/commit/367b3a12f030d3ef71bb2d8dca87bf9e60a65532))
+* **deps-dev:** bump ty from 0.0.33 to 0.0.34 ([#290](https://github.com/sumup/sumup-py/issues/290)) ([959e405](https://github.com/sumup/sumup-py/commit/959e4059ecbe475026370b5de1ef2379e327e175))
+* **deps:** bump github.com/pb33f/libopenapi from 0.36.1 to 0.36.2 in /codegen ([#285](https://github.com/sumup/sumup-py/issues/285)) ([04cc50e](https://github.com/sumup/sumup-py/commit/04cc50e485fe2dd3667eada2c3eae82738f0c46f))
+* **deps:** bump github.com/pb33f/libopenapi from 0.36.2 to 0.36.3 in /codegen ([#289](https://github.com/sumup/sumup-py/issues/289)) ([911bc6d](https://github.com/sumup/sumup-py/commit/911bc6d50b4be3c6e9f39338f66cfba72df92d7a))
+* **deps:** bump googleapis/release-please-action from 4.4.1 to 5.0.0 ([#284](https://github.com/sumup/sumup-py/issues/284)) ([9e5b367](https://github.com/sumup/sumup-py/commit/9e5b367ff64c1b00ea139823d1c2fad396b64a6f))
+* synced file(s) with sumup/apis ([#283](https://github.com/sumup/sumup-py/issues/283)) ([dab1149](https://github.com/sumup/sumup-py/commit/dab1149d08f5fe57b49f4733cb970b634baff2d6))
+
 ## [0.2.1](https://github.com/sumup/sumup-py/compare/v0.2.0...v0.2.1) (2026-04-24)
 
 
