@@ -767,8 +767,8 @@ PaymentType = typing.Union[
 ]
 PaymentTypeInput = PaymentType
 
-TransactionBaseStatus = typing.Union[
-    typing.Literal["CANCELLED", "FAILED", "PENDING", "SUCCESSFUL"], str
+TransactionStatus = typing.Union[
+    typing.Literal["CANCELLED", "FAILED", "PENDING", "REFUNDED", "SUCCESSFUL"], str
 ]
 
 
@@ -803,9 +803,15 @@ class TransactionBase(pydantic.BaseModel):
 	Payment type used for the transaction.
 	"""
 
-    status: typing.Optional[TransactionBaseStatus] = None
+    status: typing.Optional[TransactionStatus] = None
     """
 	Current status of the transaction.
+	
+	- `PENDING`: The transaction has been created but its final outcome is not known yet.
+	- `SUCCESSFUL`: The transaction completed successfully.
+	- `CANCELLED`: The transaction was cancelled or otherwise reversed before completion.
+	- `FAILED`: The transaction attempt did not complete successfully.
+	- `REFUNDED`: The transaction was refunded in full or in part.
 	"""
 
     timestamp: typing.Optional[datetime.datetime] = None
@@ -851,10 +857,6 @@ class TransactionCheckoutInfo(pydantic.BaseModel):
 
 
 CheckoutStatus = typing.Union[typing.Literal["EXPIRED", "FAILED", "PAID", "PENDING"], str]
-
-CheckoutTransactionStatus = typing.Union[
-    typing.Literal["CANCELLED", "FAILED", "PENDING", "SUCCESSFUL"], str
-]
 
 
 class CheckoutTransaction(pydantic.BaseModel):
@@ -903,9 +905,15 @@ class CheckoutTransaction(pydantic.BaseModel):
 	Payment type used for the transaction.
 	"""
 
-    status: typing.Optional[CheckoutTransactionStatus] = None
+    status: typing.Optional[TransactionStatus] = None
     """
 	Current status of the transaction.
+	
+	- `PENDING`: The transaction has been created but its final outcome is not known yet.
+	- `SUCCESSFUL`: The transaction completed successfully.
+	- `CANCELLED`: The transaction was cancelled or otherwise reversed before completion.
+	- `FAILED`: The transaction attempt did not complete successfully.
+	- `REFUNDED`: The transaction was refunded in full or in part.
 	"""
 
     timestamp: typing.Optional[datetime.datetime] = None
@@ -1247,10 +1255,6 @@ CheckoutCreateRequestInput = CheckoutCreateRequestDict
 
 CheckoutSuccessStatus = typing.Union[typing.Literal["EXPIRED", "FAILED", "PAID", "PENDING"], str]
 
-CheckoutSuccessTransactionStatus = typing.Union[
-    typing.Literal["CANCELLED", "FAILED", "PENDING", "SUCCESSFUL"], str
-]
-
 
 class CheckoutSuccessTransaction(pydantic.BaseModel):
     """
@@ -1298,9 +1302,15 @@ class CheckoutSuccessTransaction(pydantic.BaseModel):
 	Payment type used for the transaction.
 	"""
 
-    status: typing.Optional[CheckoutSuccessTransactionStatus] = None
+    status: typing.Optional[TransactionStatus] = None
     """
 	Current status of the transaction.
+	
+	- `PENDING`: The transaction has been created but its final outcome is not known yet.
+	- `SUCCESSFUL`: The transaction completed successfully.
+	- `CANCELLED`: The transaction was cancelled or otherwise reversed before completion.
+	- `FAILED`: The transaction attempt did not complete successfully.
+	- `REFUNDED`: The transaction was refunded in full or in part.
 	"""
 
     timestamp: typing.Optional[datetime.datetime] = None
@@ -4154,10 +4164,6 @@ class TransactionMixinHistory(pydantic.BaseModel):
 	"""
 
 
-TransactionFullStatus = typing.Union[
-    typing.Literal["CANCELLED", "FAILED", "PENDING", "SUCCESSFUL"], str
-]
-
 TransactionFullPayoutPlan = typing.Union[
     typing.Literal["ACCELERATED_INSTALLMENT", "SINGLE_PAYMENT", "TRUE_INSTALLMENT"], str
 ]
@@ -4450,9 +4456,15 @@ class TransactionFull(pydantic.BaseModel):
 	- `NON_COLLECTION`: The amount could not be collected from the merchant after a chargeback or related adjustment.
 	"""
 
-    status: typing.Optional[TransactionFullStatus] = None
+    status: typing.Optional[TransactionStatus] = None
     """
 	Current status of the transaction.
+	
+	- `PENDING`: The transaction has been created but its final outcome is not known yet.
+	- `SUCCESSFUL`: The transaction completed successfully.
+	- `CANCELLED`: The transaction was cancelled or otherwise reversed before completion.
+	- `FAILED`: The transaction attempt did not complete successfully.
+	- `REFUNDED`: The transaction was refunded in full or in part.
 	"""
 
     tax_enabled: typing.Optional[bool] = None
@@ -4501,10 +4513,6 @@ class TransactionFull(pydantic.BaseModel):
 	Verification method used for the transaction.
 	"""
 
-
-TransactionHistoryStatus = typing.Union[
-    typing.Literal["CANCELLED", "FAILED", "PENDING", "SUCCESSFUL"], str
-]
 
 TransactionHistoryPayoutPlan = typing.Union[
     typing.Literal["ACCELERATED_INSTALLMENT", "SINGLE_PAYMENT", "TRUE_INSTALLMENT"], str
@@ -4593,9 +4601,15 @@ class TransactionHistory(pydantic.BaseModel):
 	Format: decimal
 	"""
 
-    status: typing.Optional[TransactionHistoryStatus] = None
+    status: typing.Optional[TransactionStatus] = None
     """
 	Current status of the transaction.
+	
+	- `PENDING`: The transaction has been created but its final outcome is not known yet.
+	- `SUCCESSFUL`: The transaction completed successfully.
+	- `CANCELLED`: The transaction was cancelled or otherwise reversed before completion.
+	- `FAILED`: The transaction attempt did not complete successfully.
+	- `REFUNDED`: The transaction was refunded in full or in part.
 	"""
 
     timestamp: typing.Optional[datetime.datetime] = None
