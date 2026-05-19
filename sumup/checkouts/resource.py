@@ -51,6 +51,7 @@ from ..types import (
     ProcessCheckout,
     TransactionBase,
     TransactionCheckoutInfo,
+    TransactionStatus,
 )
 from ..types import (
     AddressLegacyInput,

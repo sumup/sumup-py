@@ -58,6 +58,7 @@ from ..types import (
     TransactionHistory,
     TransactionId,
     TransactionMixinHistory,
+    TransactionStatus,
     TransactionsHistoryLink,
 )
 from ..types import EntryModeInput, PaymentTypeInput

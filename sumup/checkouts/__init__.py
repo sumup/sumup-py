@@ -29,6 +29,7 @@ from ..types import (
     ProcessCheckout,
     TransactionBase,
     TransactionCheckoutInfo,
+    TransactionStatus,
 )
 
 
@@ -60,4 +61,5 @@ __all__ = [
     "ProcessCheckout",
     "TransactionBase",
     "TransactionCheckoutInfo",
+    "TransactionStatus",
 ]

@@ -30,6 +30,7 @@ from ..types import (
     TransactionHistory,
     TransactionId,
     TransactionMixinHistory,
+    TransactionStatus,
     TransactionsHistoryLink,
 )
 
@@ -63,5 +64,6 @@ __all__ = [
     "TransactionHistory",
     "TransactionId",
     "TransactionMixinHistory",
+    "TransactionStatus",
     "TransactionsHistoryLink",
 ]
