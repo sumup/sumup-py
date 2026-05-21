@@ -44,7 +44,7 @@ class ReceiptsResource(Resource):
 
     def get(
         self,
-        id: str,
+        transaction_id: str,
         *,
         mid: str,
         tx_event_id: typing.Union[int, NotGivenType] = NOT_GIVEN,
