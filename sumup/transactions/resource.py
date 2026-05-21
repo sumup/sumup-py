@@ -114,7 +114,7 @@ class TransactionsResource(Resource):
     def refund(
         self,
         merchant_code: str,
-        id: str,
+        transaction_id: str,
         *,
         amount: typing.Union[float, None, NotGivenType] = NOT_GIVEN,
         headers: typing.Optional[HeaderTypes] = None,
@@ -136,7 +136,7 @@ class TransactionsResource(Resource):
             body_data["amount"] = amount
 
         resp = self._client.post(
-            f"/v1.0/merchants/{merchant_code}/payments/{id}/refunds",
+            f"/v1.0/merchants/{merchant_code}/payments/{transaction_id}/refunds",
             json=serialize_request_data(body_data),
             headers=headers,
         )
@@ -308,7 +308,7 @@ class AsyncTransactionsResource(AsyncResource):
     async def refund(
         self,
         merchant_code: str,
-        id: str,
+        transaction_id: str,
         *,
         amount: typing.Union[float, None, NotGivenType] = NOT_GIVEN,
         headers: typing.Optional[HeaderTypes] = None,
@@ -330,7 +330,7 @@ class AsyncTransactionsResource(AsyncResource):
             body_data["amount"] = amount
 
         resp = await self._client.post(
-            f"/v1.0/merchants/{merchant_code}/payments/{id}/refunds",
+            f"/v1.0/merchants/{merchant_code}/payments/{transaction_id}/refunds",
             json=serialize_request_data(body_data),
             headers=headers,
         )

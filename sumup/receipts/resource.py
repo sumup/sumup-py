@@ -44,7 +44,7 @@ class ReceiptsResource(Resource):
 
     def get(
         self,
-        id: str,
+        transaction_id: str,
         *,
         mid: str,
         tx_event_id: typing.Union[int, NotGivenType] = NOT_GIVEN,
@@ -69,7 +69,7 @@ class ReceiptsResource(Resource):
             query_data["tx_event_id"] = tx_event_id
 
         resp = self._client.get(
-            f"/v1.1/receipts/{id}",
+            f"/v1.1/receipts/{transaction_id}",
             params=serialize_query_params(query_data) if query_data else None,
             headers=headers,
         )
@@ -103,7 +103,7 @@ class AsyncReceiptsResource(AsyncResource):
 
     async def get(
         self,
-        id: str,
+        transaction_id: str,
         *,
         mid: str,
         tx_event_id: typing.Union[int, NotGivenType] = NOT_GIVEN,
@@ -128,7 +128,7 @@ class AsyncReceiptsResource(AsyncResource):
             query_data["tx_event_id"] = tx_event_id
 
         resp = await self._client.get(
-            f"/v1.1/receipts/{id}",
+            f"/v1.1/receipts/{transaction_id}",
             params=serialize_query_params(query_data) if query_data else None,
             headers=headers,
         )
