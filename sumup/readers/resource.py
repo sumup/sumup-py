@@ -374,7 +374,7 @@ class ReadersResource(Resource):
             raise APIError(f"Unexpected response", status=resp.status_code, body=resp.text)
 
     def get(
-        self, merchant_code: str, id: ReaderId, headers: typing.Optional[HeaderTypes] = None
+        self, merchant_code: str, reader_id: ReaderId, headers: typing.Optional[HeaderTypes] = None
     ) -> Reader:
         """
         Retrieve a Reader
@@ -388,7 +388,7 @@ class ReadersResource(Resource):
                 Unexpected response statuses also raise this exception.
         """
         resp = self._client.get(
-            f"/v0.1/merchants/{merchant_code}/readers/{id}",
+            f"/v0.1/merchants/{merchant_code}/readers/{reader_id}",
             headers=headers,
         )
         if resp.status_code == 200:
@@ -403,7 +403,7 @@ class ReadersResource(Resource):
             raise APIError(f"Unexpected response", status=resp.status_code, body=resp.text)
 
     def delete(
-        self, merchant_code: str, id: ReaderId, headers: typing.Optional[HeaderTypes] = None
+        self, merchant_code: str, reader_id: ReaderId, headers: typing.Optional[HeaderTypes] = None
     ):
         """
         Delete a reader
@@ -417,7 +417,7 @@ class ReadersResource(Resource):
                 Unexpected response statuses also raise this exception.
         """
         resp = self._client.delete(
-            f"/v0.1/merchants/{merchant_code}/readers/{id}",
+            f"/v0.1/merchants/{merchant_code}/readers/{reader_id}",
             headers=headers,
         )
         if resp.status_code == 200:
@@ -434,7 +434,7 @@ class ReadersResource(Resource):
     def update(
         self,
         merchant_code: str,
-        id: ReaderId,
+        reader_id: ReaderId,
         *,
         name: typing.Union[ReaderNameInput, None, NotGivenType] = NOT_GIVEN,
         metadata: typing.Union[MetadataInput, None, NotGivenType] = NOT_GIVEN,
@@ -459,7 +459,7 @@ class ReadersResource(Resource):
             body_data["metadata"] = metadata
 
         resp = self._client.patch(
-            f"/v0.1/merchants/{merchant_code}/readers/{id}",
+            f"/v0.1/merchants/{merchant_code}/readers/{reader_id}",
             json=serialize_request_data(body_data),
             headers=headers,
         )
@@ -777,7 +777,7 @@ class AsyncReadersResource(AsyncResource):
             raise APIError(f"Unexpected response", status=resp.status_code, body=resp.text)
 
     async def get(
-        self, merchant_code: str, id: ReaderId, headers: typing.Optional[HeaderTypes] = None
+        self, merchant_code: str, reader_id: ReaderId, headers: typing.Optional[HeaderTypes] = None
     ) -> Reader:
         """
         Retrieve a Reader
@@ -791,7 +791,7 @@ class AsyncReadersResource(AsyncResource):
                 Unexpected response statuses also raise this exception.
         """
         resp = await self._client.get(
-            f"/v0.1/merchants/{merchant_code}/readers/{id}",
+            f"/v0.1/merchants/{merchant_code}/readers/{reader_id}",
             headers=headers,
         )
         if resp.status_code == 200:
@@ -806,7 +806,7 @@ class AsyncReadersResource(AsyncResource):
             raise APIError(f"Unexpected response", status=resp.status_code, body=resp.text)
 
     async def delete(
-        self, merchant_code: str, id: ReaderId, headers: typing.Optional[HeaderTypes] = None
+        self, merchant_code: str, reader_id: ReaderId, headers: typing.Optional[HeaderTypes] = None
     ):
         """
         Delete a reader
@@ -820,7 +820,7 @@ class AsyncReadersResource(AsyncResource):
                 Unexpected response statuses also raise this exception.
         """
         resp = await self._client.delete(
-            f"/v0.1/merchants/{merchant_code}/readers/{id}",
+            f"/v0.1/merchants/{merchant_code}/readers/{reader_id}",
             headers=headers,
         )
         if resp.status_code == 200:
@@ -837,7 +837,7 @@ class AsyncReadersResource(AsyncResource):
     async def update(
         self,
         merchant_code: str,
-        id: ReaderId,
+        reader_id: ReaderId,
         *,
         name: typing.Union[ReaderNameInput, None, NotGivenType] = NOT_GIVEN,
         metadata: typing.Union[MetadataInput, None, NotGivenType] = NOT_GIVEN,
@@ -862,7 +862,7 @@ class AsyncReadersResource(AsyncResource):
             body_data["metadata"] = metadata
 
         resp = await self._client.patch(
-            f"/v0.1/merchants/{merchant_code}/readers/{id}",
+            f"/v0.1/merchants/{merchant_code}/readers/{reader_id}",
             json=serialize_request_data(body_data),
             headers=headers,
         )

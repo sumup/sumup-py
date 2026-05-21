@@ -476,7 +476,9 @@ class CheckoutsResource(Resource):
         else:
             raise APIError(f"Unexpected response", status=resp.status_code, body=resp.text)
 
-    def get(self, id: str, headers: typing.Optional[HeaderTypes] = None) -> CheckoutSuccess:
+    def get(
+        self, checkout_id: str, headers: typing.Optional[HeaderTypes] = None
+    ) -> CheckoutSuccess:
         """
         Retrieve a checkout
 
@@ -490,7 +492,7 @@ class CheckoutsResource(Resource):
                 Unexpected response statuses also raise this exception.
         """
         resp = self._client.get(
-            f"/v0.1/checkouts/{id}",
+            f"/v0.1/checkouts/{checkout_id}",
             headers=headers,
         )
         if resp.status_code == 200:
@@ -508,7 +510,7 @@ class CheckoutsResource(Resource):
 
     def process(
         self,
-        id: str,
+        checkout_id: str,
         *,
         payment_type: ProcessCheckoutBodyPaymentTypeInput,
         installments: typing.Union[int, None, NotGivenType] = NOT_GIVEN,
@@ -557,7 +559,7 @@ class CheckoutsResource(Resource):
             body_data["personal_details"] = personal_details
 
         resp = self._client.put(
-            f"/v0.1/checkouts/{id}",
+            f"/v0.1/checkouts/{checkout_id}",
             json=serialize_request_data(body_data),
             headers=headers,
         )
@@ -588,7 +590,9 @@ class CheckoutsResource(Resource):
         else:
             raise APIError(f"Unexpected response", status=resp.status_code, body=resp.text)
 
-    def deactivate(self, id: str, headers: typing.Optional[HeaderTypes] = None) -> Checkout:
+    def deactivate(
+        self, checkout_id: str, headers: typing.Optional[HeaderTypes] = None
+    ) -> Checkout:
         """
         Deactivate a checkout
 
@@ -603,7 +607,7 @@ class CheckoutsResource(Resource):
                 Unexpected response statuses also raise this exception.
         """
         resp = self._client.delete(
-            f"/v0.1/checkouts/{id}",
+            f"/v0.1/checkouts/{checkout_id}",
             headers=headers,
         )
         if resp.status_code == 200:
@@ -626,7 +630,12 @@ class CheckoutsResource(Resource):
             raise APIError(f"Unexpected response", status=resp.status_code, body=resp.text)
 
     def create_apple_pay_session(
-        self, id: str, *, context: str, target: str, headers: typing.Optional[HeaderTypes] = None
+        self,
+        checkout_id: str,
+        *,
+        context: str,
+        target: str,
+        headers: typing.Optional[HeaderTypes] = None,
     ) -> CreateApplePaySession200Response:
         """
         Create an Apple Pay session
@@ -651,7 +660,7 @@ class CheckoutsResource(Resource):
         body_data["target"] = target
 
         resp = self._client.put(
-            f"/v0.2/checkouts/{id}/apple-pay-session",
+            f"/v0.2/checkouts/{checkout_id}/apple-pay-session",
             json=serialize_request_data(body_data),
             headers=headers,
         )
@@ -834,7 +843,9 @@ class AsyncCheckoutsResource(AsyncResource):
         else:
             raise APIError(f"Unexpected response", status=resp.status_code, body=resp.text)
 
-    async def get(self, id: str, headers: typing.Optional[HeaderTypes] = None) -> CheckoutSuccess:
+    async def get(
+        self, checkout_id: str, headers: typing.Optional[HeaderTypes] = None
+    ) -> CheckoutSuccess:
         """
         Retrieve a checkout
 
@@ -848,7 +859,7 @@ class AsyncCheckoutsResource(AsyncResource):
                 Unexpected response statuses also raise this exception.
         """
         resp = await self._client.get(
-            f"/v0.1/checkouts/{id}",
+            f"/v0.1/checkouts/{checkout_id}",
             headers=headers,
         )
         if resp.status_code == 200:
@@ -866,7 +877,7 @@ class AsyncCheckoutsResource(AsyncResource):
 
     async def process(
         self,
-        id: str,
+        checkout_id: str,
         *,
         payment_type: ProcessCheckoutBodyPaymentTypeInput,
         installments: typing.Union[int, None, NotGivenType] = NOT_GIVEN,
@@ -915,7 +926,7 @@ class AsyncCheckoutsResource(AsyncResource):
             body_data["personal_details"] = personal_details
 
         resp = await self._client.put(
-            f"/v0.1/checkouts/{id}",
+            f"/v0.1/checkouts/{checkout_id}",
             json=serialize_request_data(body_data),
             headers=headers,
         )
@@ -946,7 +957,9 @@ class AsyncCheckoutsResource(AsyncResource):
         else:
             raise APIError(f"Unexpected response", status=resp.status_code, body=resp.text)
 
-    async def deactivate(self, id: str, headers: typing.Optional[HeaderTypes] = None) -> Checkout:
+    async def deactivate(
+        self, checkout_id: str, headers: typing.Optional[HeaderTypes] = None
+    ) -> Checkout:
         """
         Deactivate a checkout
 
@@ -961,7 +974,7 @@ class AsyncCheckoutsResource(AsyncResource):
                 Unexpected response statuses also raise this exception.
         """
         resp = await self._client.delete(
-            f"/v0.1/checkouts/{id}",
+            f"/v0.1/checkouts/{checkout_id}",
             headers=headers,
         )
         if resp.status_code == 200:
@@ -984,7 +997,12 @@ class AsyncCheckoutsResource(AsyncResource):
             raise APIError(f"Unexpected response", status=resp.status_code, body=resp.text)
 
     async def create_apple_pay_session(
-        self, id: str, *, context: str, target: str, headers: typing.Optional[HeaderTypes] = None
+        self,
+        checkout_id: str,
+        *,
+        context: str,
+        target: str,
+        headers: typing.Optional[HeaderTypes] = None,
     ) -> CreateApplePaySession200Response:
         """
         Create an Apple Pay session
@@ -1009,7 +1027,7 @@ class AsyncCheckoutsResource(AsyncResource):
         body_data["target"] = target
 
         resp = await self._client.put(
-            f"/v0.2/checkouts/{id}/apple-pay-session",
+            f"/v0.2/checkouts/{checkout_id}/apple-pay-session",
             json=serialize_request_data(body_data),
             headers=headers,
         )
