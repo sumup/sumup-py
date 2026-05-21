@@ -301,6 +301,12 @@ class ReadersResource(Resource):
         List Readers
 
         List all readers of the merchant.
+
+
+        Raises:
+            APIError: Raised when the API returns one of the documented error responses:
+                401: Authentication failed or missing required scope.
+                Unexpected response statuses also raise this exception.
         """
         resp = self._client.get(
             f"/v0.1/merchants/{merchant_code}/readers",
@@ -330,6 +336,14 @@ class ReadersResource(Resource):
         Create a Reader
 
         Create a new Reader for the merchant account.
+
+
+        Raises:
+            APIError: Raised when the API returns one of the documented error responses:
+                400: The request is invalid.
+                404: There's no pending reader for the submitted pairing code.
+                409: The Reader is not in a pending state.
+                Unexpected response statuses also raise this exception.
         """
         body_data: dict[str, typing.Any] = {}
         body_data["pairing_code"] = pairing_code
@@ -366,6 +380,12 @@ class ReadersResource(Resource):
         Retrieve a Reader
 
         Retrieve a Reader.
+
+
+        Raises:
+            APIError: Raised when the API returns one of the documented error responses:
+                404: The requested Reader resource does not exist.
+                Unexpected response statuses also raise this exception.
         """
         resp = self._client.get(
             f"/v0.1/merchants/{merchant_code}/readers/{id}",
@@ -389,6 +409,12 @@ class ReadersResource(Resource):
         Delete a reader
 
         Delete a reader.
+
+
+        Raises:
+            APIError: Raised when the API returns one of the documented error responses:
+                404: The requested Reader resource does not exist.
+                Unexpected response statuses also raise this exception.
         """
         resp = self._client.delete(
             f"/v0.1/merchants/{merchant_code}/readers/{id}",
@@ -418,6 +444,13 @@ class ReadersResource(Resource):
         Update a Reader
 
         Update a Reader.
+
+
+        Raises:
+            APIError: Raised when the API returns one of the documented error responses:
+                403: The request isn't sufficiently authorized to modify the reader.
+                404: The requested Reader resource does not exist.
+                Unexpected response statuses also raise this exception.
         """
         body_data: dict[str, typing.Any] = {}
         if not isinstance(name, NotGivenType):
@@ -481,6 +514,16 @@ class ReadersResource(Resource):
 
 
         **Note**: If the target device is a Solo, it must be in version 3.3.24.3 or higher.
+
+
+
+        Raises:
+            APIError: Raised when the API returns one of the documented error responses:
+                400: Response when given params (or one of them) are invalid
+                401: Unauthorized
+                404: Response when given reader is not found
+                422: Response when given params (or one of them) are invalid
+                Unexpected response statuses also raise this exception.
         """
         body_data: dict[str, typing.Any] = {}
         if not isinstance(aade, NotGivenType):
@@ -554,6 +597,15 @@ class ReadersResource(Resource):
         * `OFFLINE` – Device disconnected (last state persisted)
 
         **Note**: If the target device is a Solo, it must be in version 3.3.39.0 or higher.
+
+
+
+        Raises:
+            APIError: Raised when the API returns one of the documented error responses:
+                400: Response when given params (or one of them) are invalid
+                401: Response when given merchant's token is invalid
+                404: Response when given reader is not found
+                Unexpected response statuses also raise this exception.
         """
         resp = self._client.get(
             f"/v0.1/merchants/{merchant_code}/readers/{reader_id}/status",
@@ -600,6 +652,16 @@ class ReadersResource(Resource):
 
 
         **Note**: If the target device is a Solo, it must be in version 3.3.28.0 or higher.
+
+
+
+        Raises:
+            APIError: Raised when the API returns one of the documented error responses:
+                400: Response when given params (or one of them) are invalid
+                401: Unauthorized
+                404: Response when given reader is not found
+                422: Response when given params (or one of them) are invalid
+                Unexpected response statuses also raise this exception.
         """
         resp = self._client.post(
             f"/v0.1/merchants/{merchant_code}/readers/{reader_id}/terminate",
@@ -642,6 +704,12 @@ class AsyncReadersResource(AsyncResource):
         List Readers
 
         List all readers of the merchant.
+
+
+        Raises:
+            APIError: Raised when the API returns one of the documented error responses:
+                401: Authentication failed or missing required scope.
+                Unexpected response statuses also raise this exception.
         """
         resp = await self._client.get(
             f"/v0.1/merchants/{merchant_code}/readers",
@@ -671,6 +739,14 @@ class AsyncReadersResource(AsyncResource):
         Create a Reader
 
         Create a new Reader for the merchant account.
+
+
+        Raises:
+            APIError: Raised when the API returns one of the documented error responses:
+                400: The request is invalid.
+                404: There's no pending reader for the submitted pairing code.
+                409: The Reader is not in a pending state.
+                Unexpected response statuses also raise this exception.
         """
         body_data: dict[str, typing.Any] = {}
         body_data["pairing_code"] = pairing_code
@@ -707,6 +783,12 @@ class AsyncReadersResource(AsyncResource):
         Retrieve a Reader
 
         Retrieve a Reader.
+
+
+        Raises:
+            APIError: Raised when the API returns one of the documented error responses:
+                404: The requested Reader resource does not exist.
+                Unexpected response statuses also raise this exception.
         """
         resp = await self._client.get(
             f"/v0.1/merchants/{merchant_code}/readers/{id}",
@@ -730,6 +812,12 @@ class AsyncReadersResource(AsyncResource):
         Delete a reader
 
         Delete a reader.
+
+
+        Raises:
+            APIError: Raised when the API returns one of the documented error responses:
+                404: The requested Reader resource does not exist.
+                Unexpected response statuses also raise this exception.
         """
         resp = await self._client.delete(
             f"/v0.1/merchants/{merchant_code}/readers/{id}",
@@ -759,6 +847,13 @@ class AsyncReadersResource(AsyncResource):
         Update a Reader
 
         Update a Reader.
+
+
+        Raises:
+            APIError: Raised when the API returns one of the documented error responses:
+                403: The request isn't sufficiently authorized to modify the reader.
+                404: The requested Reader resource does not exist.
+                Unexpected response statuses also raise this exception.
         """
         body_data: dict[str, typing.Any] = {}
         if not isinstance(name, NotGivenType):
@@ -822,6 +917,16 @@ class AsyncReadersResource(AsyncResource):
 
 
         **Note**: If the target device is a Solo, it must be in version 3.3.24.3 or higher.
+
+
+
+        Raises:
+            APIError: Raised when the API returns one of the documented error responses:
+                400: Response when given params (or one of them) are invalid
+                401: Unauthorized
+                404: Response when given reader is not found
+                422: Response when given params (or one of them) are invalid
+                Unexpected response statuses also raise this exception.
         """
         body_data: dict[str, typing.Any] = {}
         if not isinstance(aade, NotGivenType):
@@ -895,6 +1000,15 @@ class AsyncReadersResource(AsyncResource):
         * `OFFLINE` – Device disconnected (last state persisted)
 
         **Note**: If the target device is a Solo, it must be in version 3.3.39.0 or higher.
+
+
+
+        Raises:
+            APIError: Raised when the API returns one of the documented error responses:
+                400: Response when given params (or one of them) are invalid
+                401: Response when given merchant's token is invalid
+                404: Response when given reader is not found
+                Unexpected response statuses also raise this exception.
         """
         resp = await self._client.get(
             f"/v0.1/merchants/{merchant_code}/readers/{reader_id}/status",
@@ -941,6 +1055,16 @@ class AsyncReadersResource(AsyncResource):
 
 
         **Note**: If the target device is a Solo, it must be in version 3.3.28.0 or higher.
+
+
+
+        Raises:
+            APIError: Raised when the API returns one of the documented error responses:
+                400: Response when given params (or one of them) are invalid
+                401: Unauthorized
+                404: Response when given reader is not found
+                422: Response when given params (or one of them) are invalid
+                Unexpected response statuses also raise this exception.
         """
         resp = await self._client.post(
             f"/v0.1/merchants/{merchant_code}/readers/{reader_id}/terminate",

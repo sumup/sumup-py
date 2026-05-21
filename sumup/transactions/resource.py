@@ -123,6 +123,13 @@ class TransactionsResource(Resource):
         Refund a transaction
 
         Refunds an identified transaction either in full or partially.
+
+
+        Raises:
+            APIError: Raised when the API returns one of the documented error responses:
+                404: The requested resource does not exist.
+                409: The transaction cannot be refunded due to business constraints.
+                Unexpected response statuses also raise this exception.
         """
         body_data: dict[str, typing.Any] = {}
         if not isinstance(amount, NotGivenType):
@@ -166,6 +173,13 @@ class TransactionsResource(Resource):
         - `transaction_code`
         - `foreign_transaction_id`
         - `client_transaction_id`
+
+
+        Raises:
+            APIError: Raised when the API returns one of the documented error responses:
+                401: The request is not authorized.
+                404: The requested resource does not exist.
+                Unexpected response statuses also raise this exception.
         """
         query_data: dict[str, typing.Any] = {}
         if not isinstance(id, NotGivenType) and id is not None:
@@ -228,6 +242,13 @@ class TransactionsResource(Resource):
         List transactions
 
         Lists detailed history of all transactions associated with the merchant profile.
+
+
+        Raises:
+            APIError: Raised when the API returns one of the documented error responses:
+                400: The request is invalid for the submitted query parameters.
+                401: The request is not authorized.
+                Unexpected response statuses also raise this exception.
         """
         query_data: dict[str, typing.Any] = {}
         if not isinstance(transaction_code, NotGivenType) and transaction_code is not None:
@@ -296,6 +317,13 @@ class AsyncTransactionsResource(AsyncResource):
         Refund a transaction
 
         Refunds an identified transaction either in full or partially.
+
+
+        Raises:
+            APIError: Raised when the API returns one of the documented error responses:
+                404: The requested resource does not exist.
+                409: The transaction cannot be refunded due to business constraints.
+                Unexpected response statuses also raise this exception.
         """
         body_data: dict[str, typing.Any] = {}
         if not isinstance(amount, NotGivenType):
@@ -339,6 +367,13 @@ class AsyncTransactionsResource(AsyncResource):
         - `transaction_code`
         - `foreign_transaction_id`
         - `client_transaction_id`
+
+
+        Raises:
+            APIError: Raised when the API returns one of the documented error responses:
+                401: The request is not authorized.
+                404: The requested resource does not exist.
+                Unexpected response statuses also raise this exception.
         """
         query_data: dict[str, typing.Any] = {}
         if not isinstance(id, NotGivenType) and id is not None:
@@ -401,6 +436,13 @@ class AsyncTransactionsResource(AsyncResource):
         List transactions
 
         Lists detailed history of all transactions associated with the merchant profile.
+
+
+        Raises:
+            APIError: Raised when the API returns one of the documented error responses:
+                400: The request is invalid for the submitted query parameters.
+                401: The request is not authorized.
+                Unexpected response statuses also raise this exception.
         """
         query_data: dict[str, typing.Any] = {}
         if not isinstance(transaction_code, NotGivenType) and transaction_code is not None:

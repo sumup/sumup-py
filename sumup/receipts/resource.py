@@ -54,6 +54,14 @@ class ReceiptsResource(Resource):
         Retrieve receipt details
 
         Retrieves receipt specific data for a transaction.
+
+
+        Raises:
+            APIError: Raised when the API returns one of the documented error responses:
+                400: The request is invalid for the submitted parameters.
+                401: The request is not authorized.
+                404: The requested transaction event does not exist for the provided transaction.
+                Unexpected response statuses also raise this exception.
         """
         query_data: dict[str, typing.Any] = {}
         query_data["mid"] = mid
@@ -105,6 +113,14 @@ class AsyncReceiptsResource(AsyncResource):
         Retrieve receipt details
 
         Retrieves receipt specific data for a transaction.
+
+
+        Raises:
+            APIError: Raised when the API returns one of the documented error responses:
+                400: The request is invalid for the submitted parameters.
+                401: The request is not authorized.
+                404: The requested transaction event does not exist for the provided transaction.
+                Unexpected response statuses also raise this exception.
         """
         query_data: dict[str, typing.Any] = {}
         query_data["mid"] = mid

@@ -56,6 +56,13 @@ class PayoutsResource(Resource):
         - deduction records for refunds, chargebacks, direct debit returns, or balance adjustments
 
         Results are sorted by payout date in the requested `order`.
+
+
+        Raises:
+            APIError: Raised when the API returns one of the documented error responses:
+                400: The request is invalid for the submitted query parameters.
+                401: The request is not authorized.
+                Unexpected response statuses also raise this exception.
         """
         query_data: dict[str, typing.Any] = {}
         query_data["start_date"] = start_date
@@ -115,6 +122,13 @@ class AsyncPayoutsResource(AsyncResource):
         - deduction records for refunds, chargebacks, direct debit returns, or balance adjustments
 
         Results are sorted by payout date in the requested `order`.
+
+
+        Raises:
+            APIError: Raised when the API returns one of the documented error responses:
+                400: The request is invalid for the submitted query parameters.
+                401: The request is not authorized.
+                Unexpected response statuses also raise this exception.
         """
         query_data: dict[str, typing.Any] = {}
         query_data["start_date"] = start_date

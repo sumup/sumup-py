@@ -65,6 +65,12 @@ class MerchantsResource(Resource):
         Retrieve a merchant.
 
         Merchant documentation: https://developer.sumup.com/tools/models/merchant
+
+
+        Raises:
+            APIError: Raised when the API returns one of the documented error responses:
+                404: The requested Merchant does not exist.
+                Unexpected response statuses also raise this exception.
         """
         query_data: dict[str, typing.Any] = {}
         if not isinstance(version, NotGivenType) and version is not None:
@@ -97,6 +103,12 @@ class MerchantsResource(Resource):
         Returns a list of persons related to the merchant.
 
         Persons documentation: https://developer.sumup.com/tools/models/merchant#persons
+
+
+        Raises:
+            APIError: Raised when the API returns one of the documented error responses:
+                404: The requested Merchant does not exist.
+                Unexpected response statuses also raise this exception.
         """
         query_data: dict[str, typing.Any] = {}
         if not isinstance(version, NotGivenType) and version is not None:
@@ -130,6 +142,12 @@ class MerchantsResource(Resource):
         Returns a single person related to the merchant.
 
         Persons documentation: https://developer.sumup.com/tools/models/merchant#persons
+
+
+        Raises:
+            APIError: Raised when the API returns one of the documented error responses:
+                404: The requested Person does not exist.
+                Unexpected response statuses also raise this exception.
         """
         query_data: dict[str, typing.Any] = {}
         if not isinstance(version, NotGivenType) and version is not None:
@@ -169,6 +187,12 @@ class AsyncMerchantsResource(AsyncResource):
         Retrieve a merchant.
 
         Merchant documentation: https://developer.sumup.com/tools/models/merchant
+
+
+        Raises:
+            APIError: Raised when the API returns one of the documented error responses:
+                404: The requested Merchant does not exist.
+                Unexpected response statuses also raise this exception.
         """
         query_data: dict[str, typing.Any] = {}
         if not isinstance(version, NotGivenType) and version is not None:
@@ -201,6 +225,12 @@ class AsyncMerchantsResource(AsyncResource):
         Returns a list of persons related to the merchant.
 
         Persons documentation: https://developer.sumup.com/tools/models/merchant#persons
+
+
+        Raises:
+            APIError: Raised when the API returns one of the documented error responses:
+                404: The requested Merchant does not exist.
+                Unexpected response statuses also raise this exception.
         """
         query_data: dict[str, typing.Any] = {}
         if not isinstance(version, NotGivenType) and version is not None:
@@ -234,6 +264,12 @@ class AsyncMerchantsResource(AsyncResource):
         Returns a single person related to the merchant.
 
         Persons documentation: https://developer.sumup.com/tools/models/merchant#persons
+
+
+        Raises:
+            APIError: Raised when the API returns one of the documented error responses:
+                404: The requested Person does not exist.
+                Unexpected response statuses also raise this exception.
         """
         query_data: dict[str, typing.Any] = {}
         if not isinstance(version, NotGivenType) and version is not None:

@@ -26,7 +26,7 @@ func deprecationNotice(operation *v3.Operation) *string {
 }
 
 // methodDoc creates godoc comment for an operation.
-func methodDoc(operation *v3.Operation) string {
+func methodDoc(operation *v3.Operation, responses []Response) string {
 	out := new(strings.Builder)
 
 	if operation.Summary != "" {
@@ -44,7 +44,48 @@ func methodDoc(operation *v3.Operation) string {
 		fmt.Fprintf(out, "\n%s: %s\n", extDescription, operation.ExternalDocs.URL)
 	}
 
+	if raisesDoc := methodRaisesDoc(responses); raisesDoc != "" {
+		fmt.Fprintf(out, "\n\n%s", raisesDoc)
+	}
+
 	return formatDoc(out.String())
+}
+
+func methodRaisesDoc(responses []Response) string {
+	errorDescriptions := make([]string, 0, len(responses))
+
+	for _, response := range responses {
+		if !response.IsErr {
+			continue
+		}
+
+		description := response.ErrDescription
+		if description == "" {
+			description = "the API returns an error response"
+		}
+
+		if response.IsDefault {
+			errorDescriptions = append(errorDescriptions, description)
+			continue
+		}
+
+		errorDescriptions = append(errorDescriptions, fmt.Sprintf("%d: %s", response.Code, description))
+	}
+
+	out := new(strings.Builder)
+	out.WriteString("Raises:\n")
+	if len(errorDescriptions) == 0 {
+		out.WriteString("    APIError: Raised when the API returns an unexpected response.")
+		return out.String()
+	}
+
+	out.WriteString("    APIError: Raised when the API returns one of the documented error responses:\n")
+	for _, description := range errorDescriptions {
+		fmt.Fprintf(out, "        %s\n", description)
+	}
+	out.WriteString("        Unexpected response statuses also raise this exception.")
+
+	return out.String()
 }
 
 // schemaDoc creates godoc for a schema.

@@ -329,6 +329,12 @@ class CheckoutsResource(Resource):
         Get available payment methods
 
         Get payment methods available for the given merchant to use with a checkout.
+
+
+        Raises:
+            APIError: Raised when the API returns one of the documented error responses:
+                400: The request is invalid for the submitted query parameters.
+                Unexpected response statuses also raise this exception.
         """
         query_data: dict[str, typing.Any] = {}
         if not isinstance(amount, NotGivenType) and amount is not None:
@@ -377,6 +383,15 @@ class CheckoutsResource(Resource):
         To use the [Hosted Checkout](https://developer.sumup.com/online-payments/checkouts/hosted-checkout/) page, setthe `hosted_checkout.enabled` to `true`.
 
         Follow by processing a checkout to charge the provided payment instrument.
+
+
+        Raises:
+            APIError: Raised when the API returns one of the documented error responses:
+                400: The request body is invalid.
+                401: The request is not authorized.
+                403: The request isn't sufficiently authorized to create a checkout.
+                409: A checkout already exists for the provided unique parameters.
+                Unexpected response statuses also raise this exception.
         """
         body_data: dict[str, typing.Any] = {}
         body_data["checkout_reference"] = checkout_reference
@@ -436,6 +451,12 @@ class CheckoutsResource(Resource):
         List checkouts
 
         Lists created checkout resources according to the applied `checkout_reference`.
+
+
+        Raises:
+            APIError: Raised when the API returns one of the documented error responses:
+                401: The request is not authorized.
+                Unexpected response statuses also raise this exception.
         """
         query_data: dict[str, typing.Any] = {}
         if not isinstance(checkout_reference, NotGivenType) and checkout_reference is not None:
@@ -460,6 +481,13 @@ class CheckoutsResource(Resource):
         Retrieve a checkout
 
         Retrieves an identified checkout resource. Use this request after processing a checkout to confirm its status and informthe end user respectively.
+
+
+        Raises:
+            APIError: Raised when the API returns one of the documented error responses:
+                401: The request is not authorized.
+                404: The requested resource does not exist.
+                Unexpected response statuses also raise this exception.
         """
         resp = self._client.get(
             f"/v0.1/checkouts/{id}",
@@ -499,6 +527,15 @@ class CheckoutsResource(Resource):
         Processing a checkout will attempt to charge the provided payment instrument for the amount of the specified checkout resourceinitiated in the `Create a checkout` endpoint.
 
         Follow this request with `Retrieve a checkout` to confirm its status.
+
+
+        Raises:
+            APIError: Raised when the API returns one of the documented error responses:
+                400: The request body is invalid for processing the checkout.
+                401: The request is not authorized.
+                404: The requested resource does not exist.
+                409: The request conflicts with the current state of the resource.
+                Unexpected response statuses also raise this exception.
         """
         body_data: dict[str, typing.Any] = {}
         body_data["payment_type"] = payment_type
@@ -556,6 +593,14 @@ class CheckoutsResource(Resource):
         Deactivate a checkout
 
         Deactivates an identified checkout resource. If the checkout has already been processed it can not be deactivated.
+
+
+        Raises:
+            APIError: Raised when the API returns one of the documented error responses:
+                401: The request is not authorized.
+                404: The requested resource does not exist.
+                409: The request conflicts with the current state of the resource.
+                Unexpected response statuses also raise this exception.
         """
         resp = self._client.delete(
             f"/v0.1/checkouts/{id}",
@@ -592,6 +637,14 @@ class CheckoutsResource(Resource):
         `ApplePaySession.completeMerchantValidation(...)` in the browser.
         SumUp validates the merchant session request and returns the Apple Pay
         session object that your frontend should pass to Apple's JavaScript API.
+
+
+
+        Raises:
+            APIError: Raised when the API returns one of the documented error responses:
+                400: Bad Request
+                404: The requested resource does not exist.
+                Unexpected response statuses also raise this exception.
         """
         body_data: dict[str, typing.Any] = {}
         body_data["context"] = context
@@ -634,6 +687,12 @@ class AsyncCheckoutsResource(AsyncResource):
         Get available payment methods
 
         Get payment methods available for the given merchant to use with a checkout.
+
+
+        Raises:
+            APIError: Raised when the API returns one of the documented error responses:
+                400: The request is invalid for the submitted query parameters.
+                Unexpected response statuses also raise this exception.
         """
         query_data: dict[str, typing.Any] = {}
         if not isinstance(amount, NotGivenType) and amount is not None:
@@ -682,6 +741,15 @@ class AsyncCheckoutsResource(AsyncResource):
         To use the [Hosted Checkout](https://developer.sumup.com/online-payments/checkouts/hosted-checkout/) page, setthe `hosted_checkout.enabled` to `true`.
 
         Follow by processing a checkout to charge the provided payment instrument.
+
+
+        Raises:
+            APIError: Raised when the API returns one of the documented error responses:
+                400: The request body is invalid.
+                401: The request is not authorized.
+                403: The request isn't sufficiently authorized to create a checkout.
+                409: A checkout already exists for the provided unique parameters.
+                Unexpected response statuses also raise this exception.
         """
         body_data: dict[str, typing.Any] = {}
         body_data["checkout_reference"] = checkout_reference
@@ -741,6 +809,12 @@ class AsyncCheckoutsResource(AsyncResource):
         List checkouts
 
         Lists created checkout resources according to the applied `checkout_reference`.
+
+
+        Raises:
+            APIError: Raised when the API returns one of the documented error responses:
+                401: The request is not authorized.
+                Unexpected response statuses also raise this exception.
         """
         query_data: dict[str, typing.Any] = {}
         if not isinstance(checkout_reference, NotGivenType) and checkout_reference is not None:
@@ -765,6 +839,13 @@ class AsyncCheckoutsResource(AsyncResource):
         Retrieve a checkout
 
         Retrieves an identified checkout resource. Use this request after processing a checkout to confirm its status and informthe end user respectively.
+
+
+        Raises:
+            APIError: Raised when the API returns one of the documented error responses:
+                401: The request is not authorized.
+                404: The requested resource does not exist.
+                Unexpected response statuses also raise this exception.
         """
         resp = await self._client.get(
             f"/v0.1/checkouts/{id}",
@@ -804,6 +885,15 @@ class AsyncCheckoutsResource(AsyncResource):
         Processing a checkout will attempt to charge the provided payment instrument for the amount of the specified checkout resourceinitiated in the `Create a checkout` endpoint.
 
         Follow this request with `Retrieve a checkout` to confirm its status.
+
+
+        Raises:
+            APIError: Raised when the API returns one of the documented error responses:
+                400: The request body is invalid for processing the checkout.
+                401: The request is not authorized.
+                404: The requested resource does not exist.
+                409: The request conflicts with the current state of the resource.
+                Unexpected response statuses also raise this exception.
         """
         body_data: dict[str, typing.Any] = {}
         body_data["payment_type"] = payment_type
@@ -861,6 +951,14 @@ class AsyncCheckoutsResource(AsyncResource):
         Deactivate a checkout
 
         Deactivates an identified checkout resource. If the checkout has already been processed it can not be deactivated.
+
+
+        Raises:
+            APIError: Raised when the API returns one of the documented error responses:
+                401: The request is not authorized.
+                404: The requested resource does not exist.
+                409: The request conflicts with the current state of the resource.
+                Unexpected response statuses also raise this exception.
         """
         resp = await self._client.delete(
             f"/v0.1/checkouts/{id}",
@@ -897,6 +995,14 @@ class AsyncCheckoutsResource(AsyncResource):
         `ApplePaySession.completeMerchantValidation(...)` in the browser.
         SumUp validates the merchant session request and returns the Apple Pay
         session object that your frontend should pass to Apple's JavaScript API.
+
+
+
+        Raises:
+            APIError: Raised when the API returns one of the documented error responses:
+                400: Bad Request
+                404: The requested resource does not exist.
+                Unexpected response statuses also raise this exception.
         """
         body_data: dict[str, typing.Any] = {}
         body_data["context"] = context
