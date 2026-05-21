@@ -78,6 +78,13 @@ class MembershipsResource(Resource):
         List memberships
 
         List memberships of the current user.
+
+
+        Raises:
+            APIError: Raised when the API returns one of the documented error responses:
+                400: Invalid query parameter combination.
+                401: Authentication failed or missing required scope.
+                Unexpected response statuses also raise this exception.
         """
         query_data: dict[str, typing.Any] = {}
         if not isinstance(offset, NotGivenType) and offset is not None:
@@ -152,6 +159,13 @@ class AsyncMembershipsResource(AsyncResource):
         List memberships
 
         List memberships of the current user.
+
+
+        Raises:
+            APIError: Raised when the API returns one of the documented error responses:
+                400: Invalid query parameter combination.
+                401: Authentication failed or missing required scope.
+                Unexpected response statuses also raise this exception.
         """
         query_data: dict[str, typing.Any] = {}
         if not isinstance(offset, NotGivenType) and offset is not None:

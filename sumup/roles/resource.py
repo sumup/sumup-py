@@ -93,6 +93,12 @@ class RolesResource(Resource):
         List roles
 
         List merchant's custom roles.
+
+
+        Raises:
+            APIError: Raised when the API returns one of the documented error responses:
+                404: Merchant not found.
+                Unexpected response statuses also raise this exception.
         """
         resp = self._client.get(
             f"/v0.1/merchants/{merchant_code}/roles",
@@ -119,6 +125,13 @@ class RolesResource(Resource):
         Create a role
 
         Create a custom role for the merchant. Roles are defined by the set of permissions that they grant to the members thatthey are assigned to.
+
+
+        Raises:
+            APIError: Raised when the API returns one of the documented error responses:
+                400: Invalid request.
+                404: Merchant not found.
+                Unexpected response statuses also raise this exception.
         """
         body_data: dict[str, typing.Any] = {}
         body_data["name"] = name
@@ -149,6 +162,12 @@ class RolesResource(Resource):
         Retrieve a role
 
         Retrieve a custom role by ID.
+
+
+        Raises:
+            APIError: Raised when the API returns one of the documented error responses:
+                404: Merchant or role not found.
+                Unexpected response statuses also raise this exception.
         """
         resp = self._client.get(
             f"/v0.1/merchants/{merchant_code}/roles/{role_id}",
@@ -168,6 +187,13 @@ class RolesResource(Resource):
         Delete a role
 
         Delete a custom role.
+
+
+        Raises:
+            APIError: Raised when the API returns one of the documented error responses:
+                400: Invalid request.
+                404: Merchant not found.
+                Unexpected response statuses also raise this exception.
         """
         resp = self._client.delete(
             f"/v0.1/merchants/{merchant_code}/roles/{role_id}",
@@ -196,6 +222,13 @@ class RolesResource(Resource):
         Update a role
 
         Update a custom role.
+
+
+        Raises:
+            APIError: Raised when the API returns one of the documented error responses:
+                400: Invalid request.
+                404: Merchant not found.
+                Unexpected response statuses also raise this exception.
         """
         body_data: dict[str, typing.Any] = {}
         if not isinstance(name, NotGivenType):
@@ -233,6 +266,12 @@ class AsyncRolesResource(AsyncResource):
         List roles
 
         List merchant's custom roles.
+
+
+        Raises:
+            APIError: Raised when the API returns one of the documented error responses:
+                404: Merchant not found.
+                Unexpected response statuses also raise this exception.
         """
         resp = await self._client.get(
             f"/v0.1/merchants/{merchant_code}/roles",
@@ -259,6 +298,13 @@ class AsyncRolesResource(AsyncResource):
         Create a role
 
         Create a custom role for the merchant. Roles are defined by the set of permissions that they grant to the members thatthey are assigned to.
+
+
+        Raises:
+            APIError: Raised when the API returns one of the documented error responses:
+                400: Invalid request.
+                404: Merchant not found.
+                Unexpected response statuses also raise this exception.
         """
         body_data: dict[str, typing.Any] = {}
         body_data["name"] = name
@@ -289,6 +335,12 @@ class AsyncRolesResource(AsyncResource):
         Retrieve a role
 
         Retrieve a custom role by ID.
+
+
+        Raises:
+            APIError: Raised when the API returns one of the documented error responses:
+                404: Merchant or role not found.
+                Unexpected response statuses also raise this exception.
         """
         resp = await self._client.get(
             f"/v0.1/merchants/{merchant_code}/roles/{role_id}",
@@ -308,6 +360,13 @@ class AsyncRolesResource(AsyncResource):
         Delete a role
 
         Delete a custom role.
+
+
+        Raises:
+            APIError: Raised when the API returns one of the documented error responses:
+                400: Invalid request.
+                404: Merchant not found.
+                Unexpected response statuses also raise this exception.
         """
         resp = await self._client.delete(
             f"/v0.1/merchants/{merchant_code}/roles/{role_id}",
@@ -336,6 +395,13 @@ class AsyncRolesResource(AsyncResource):
         Update a role
 
         Update a custom role.
+
+
+        Raises:
+            APIError: Raised when the API returns one of the documented error responses:
+                400: Invalid request.
+                404: Merchant not found.
+                Unexpected response statuses also raise this exception.
         """
         body_data: dict[str, typing.Any] = {}
         if not isinstance(name, NotGivenType):

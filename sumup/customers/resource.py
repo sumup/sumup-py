@@ -89,6 +89,15 @@ class CustomersResource(Resource):
         Create a customer
 
         Creates a new saved customer resource which you can later manipulate and save payment instruments to.
+
+
+        Raises:
+            APIError: Raised when the API returns one of the documented error responses:
+                400: The request body is invalid.
+                401: The request is not authorized.
+                403: The request is authenticated but not permitted for this operation.
+                409: A customer with the provided identifier already exists.
+                Unexpected response statuses also raise this exception.
         """
         body_data: dict[str, typing.Any] = {}
         body_data["customer_id"] = customer_id
@@ -128,6 +137,14 @@ class CustomersResource(Resource):
         Retrieve a customer
 
         Retrieves an identified saved customer resource through the unique `customer_id` parameter, generated upon customer creation.
+
+
+        Raises:
+           APIError: Raised when the API returns one of the documented error responses:
+                401: The request is not authorized.
+                403: The request is authenticated but not permitted for this operation.
+                404: The requested resource does not exist.
+                Unexpected response statuses also raise this exception.
         """
         resp = self._client.get(
             f"/v0.1/customers/{customer_id}",
@@ -165,6 +182,14 @@ class CustomersResource(Resource):
         Updates an identified saved customer resource's personal details.
 
         The request only overwrites the parameters included in the request, all other parameters will remain with theirinitially assigned values.
+
+
+        Raises:
+            APIError: Raised when the API returns one of the documented error responses:
+                401: The request is not authorized.
+                403: The request is authenticated but not permitted for this operation.
+                404: The requested resource does not exist.
+                Unexpected response statuses also raise this exception.
         """
         body_data: dict[str, typing.Any] = {}
         if not isinstance(personal_details, NotGivenType):
@@ -201,6 +226,14 @@ class CustomersResource(Resource):
         List payment instruments
 
         Lists all payment instrument resources that are saved for an identified customer.
+
+
+        Raises:
+            APIError: Raised when the API returns one of the documented error responses:
+                401: The request is not authorized.
+                403: The request is authenticated but not permitted for this operation.
+                404: The requested resource does not exist.
+                Unexpected response statuses also raise this exception.
         """
         resp = self._client.get(
             f"/v0.1/customers/{customer_id}/payment-instruments",
@@ -234,6 +267,15 @@ class CustomersResource(Resource):
         Deactivate a payment instrument
 
         Deactivates an identified card payment instrument resource for a customer.
+
+
+        Raises:
+            APIError: Raised when the API returns one of the documented error responses:
+                400: The request is invalid.
+                401: The request is not authorized.
+                403: The request is authenticated but not permitted for this operation.
+                404: The requested resource does not exist.
+                Unexpected response statuses also raise this exception.
         """
         resp = self._client.delete(
             f"/v0.1/customers/{customer_id}/payment-instruments/{token}",
@@ -278,6 +320,15 @@ class AsyncCustomersResource(AsyncResource):
         Create a customer
 
         Creates a new saved customer resource which you can later manipulate and save payment instruments to.
+
+
+        Raises:
+            APIError: Raised when the API returns one of the documented error responses:
+                400: The request body is invalid.
+                401: The request is not authorized.
+                403: The request is authenticated but not permitted for this operation.
+                409: A customer with the provided identifier already exists.
+                Unexpected response statuses also raise this exception.
         """
         body_data: dict[str, typing.Any] = {}
         body_data["customer_id"] = customer_id
@@ -317,6 +368,14 @@ class AsyncCustomersResource(AsyncResource):
         Retrieve a customer
 
         Retrieves an identified saved customer resource through the unique `customer_id` parameter, generated upon customer creation.
+
+
+        Raises:
+           APIError: Raised when the API returns one of the documented error responses:
+                401: The request is not authorized.
+                403: The request is authenticated but not permitted for this operation.
+                404: The requested resource does not exist.
+                Unexpected response statuses also raise this exception.
         """
         resp = await self._client.get(
             f"/v0.1/customers/{customer_id}",
@@ -354,6 +413,14 @@ class AsyncCustomersResource(AsyncResource):
         Updates an identified saved customer resource's personal details.
 
         The request only overwrites the parameters included in the request, all other parameters will remain with theirinitially assigned values.
+
+
+        Raises:
+            APIError: Raised when the API returns one of the documented error responses:
+                401: The request is not authorized.
+                403: The request is authenticated but not permitted for this operation.
+                404: The requested resource does not exist.
+                Unexpected response statuses also raise this exception.
         """
         body_data: dict[str, typing.Any] = {}
         if not isinstance(personal_details, NotGivenType):
@@ -390,6 +457,14 @@ class AsyncCustomersResource(AsyncResource):
         List payment instruments
 
         Lists all payment instrument resources that are saved for an identified customer.
+
+
+        Raises:
+            APIError: Raised when the API returns one of the documented error responses:
+                401: The request is not authorized.
+                403: The request is authenticated but not permitted for this operation.
+                404: The requested resource does not exist.
+                Unexpected response statuses also raise this exception.
         """
         resp = await self._client.get(
             f"/v0.1/customers/{customer_id}/payment-instruments",
@@ -423,6 +498,15 @@ class AsyncCustomersResource(AsyncResource):
         Deactivate a payment instrument
 
         Deactivates an identified card payment instrument resource for a customer.
+
+
+        Raises:
+            APIError: Raised when the API returns one of the documented error responses:
+                400: The request is invalid.
+                401: The request is not authorized.
+                403: The request is authenticated but not permitted for this operation.
+                404: The requested resource does not exist.
+                Unexpected response statuses also raise this exception.
         """
         resp = await self._client.delete(
             f"/v0.1/customers/{customer_id}/payment-instruments/{token}",

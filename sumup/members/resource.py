@@ -175,6 +175,12 @@ class MembersResource(Resource):
         List members
 
         Lists merchant members.
+
+
+        Raises:
+            APIError: Raised when the API returns one of the documented error responses:
+                404: Merchant not found.
+                Unexpected response statuses also raise this exception.
         """
         query_data: dict[str, typing.Any] = {}
         if not isinstance(offset, NotGivenType) and offset is not None:
@@ -221,6 +227,14 @@ class MembersResource(Resource):
         Create a member
 
         Create a merchant member.
+
+
+        Raises:
+            APIError: Raised when the API returns one of the documented error responses:
+                400: Invalid request.
+                404: Merchant not found.
+                429: Too many invitations were sent to that user and the rate limit was exceeded. The Retry-After headerindicates when the client can retry.
+                Unexpected response statuses also raise this exception.
         """
         body_data: dict[str, typing.Any] = {}
         if not isinstance(is_managed_user, NotGivenType):
@@ -263,6 +277,12 @@ class MembersResource(Resource):
         Retrieve a member
 
         Retrieve a merchant member.
+
+
+        Raises:
+            APIError: Raised when the API returns one of the documented error responses:
+                404: Merchant or member not found.
+                Unexpected response statuses also raise this exception.
         """
         resp = self._client.get(
             f"/v0.1/merchants/{merchant_code}/members/{member_id}",
@@ -290,6 +310,15 @@ class MembersResource(Resource):
         Update a member
 
         Update the merchant member.
+
+
+        Raises:
+            APIError: Raised when the API returns one of the documented error responses:
+                400: Cannot set password or nickname for an invited user.
+                403: Cannot change password for managed user. Password was already used before.
+                404: Merchant or member not found.
+                409: Cannot update member as some data conflict with existing members.
+                Unexpected response statuses also raise this exception.
         """
         body_data: dict[str, typing.Any] = {}
         if not isinstance(roles, NotGivenType):
@@ -338,6 +367,12 @@ class MembersResource(Resource):
         Delete a member
 
         Deletes a merchant member.
+
+
+        Raises:
+            APIError: Raised when the API returns one of the documented error responses:
+                404: Merchant or member not found.
+                Unexpected response statuses also raise this exception.
         """
         resp = self._client.delete(
             f"/v0.1/merchants/{merchant_code}/members/{member_id}",
@@ -374,6 +409,12 @@ class AsyncMembersResource(AsyncResource):
         List members
 
         Lists merchant members.
+
+
+        Raises:
+            APIError: Raised when the API returns one of the documented error responses:
+                404: Merchant not found.
+                Unexpected response statuses also raise this exception.
         """
         query_data: dict[str, typing.Any] = {}
         if not isinstance(offset, NotGivenType) and offset is not None:
@@ -420,6 +461,14 @@ class AsyncMembersResource(AsyncResource):
         Create a member
 
         Create a merchant member.
+
+
+        Raises:
+            APIError: Raised when the API returns one of the documented error responses:
+                400: Invalid request.
+                404: Merchant not found.
+                429: Too many invitations were sent to that user and the rate limit was exceeded. The Retry-After headerindicates when the client can retry.
+                Unexpected response statuses also raise this exception.
         """
         body_data: dict[str, typing.Any] = {}
         if not isinstance(is_managed_user, NotGivenType):
@@ -462,6 +511,12 @@ class AsyncMembersResource(AsyncResource):
         Retrieve a member
 
         Retrieve a merchant member.
+
+
+        Raises:
+            APIError: Raised when the API returns one of the documented error responses:
+                404: Merchant or member not found.
+                Unexpected response statuses also raise this exception.
         """
         resp = await self._client.get(
             f"/v0.1/merchants/{merchant_code}/members/{member_id}",
@@ -489,6 +544,15 @@ class AsyncMembersResource(AsyncResource):
         Update a member
 
         Update the merchant member.
+
+
+        Raises:
+            APIError: Raised when the API returns one of the documented error responses:
+                400: Cannot set password or nickname for an invited user.
+                403: Cannot change password for managed user. Password was already used before.
+                404: Merchant or member not found.
+                409: Cannot update member as some data conflict with existing members.
+                Unexpected response statuses also raise this exception.
         """
         body_data: dict[str, typing.Any] = {}
         if not isinstance(roles, NotGivenType):
@@ -537,6 +601,12 @@ class AsyncMembersResource(AsyncResource):
         Delete a member
 
         Deletes a merchant member.
+
+
+        Raises:
+            APIError: Raised when the API returns one of the documented error responses:
+                404: Merchant or member not found.
+                Unexpected response statuses also raise this exception.
         """
         resp = await self._client.delete(
             f"/v0.1/merchants/{merchant_code}/members/{member_id}",

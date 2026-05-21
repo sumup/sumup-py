@@ -241,7 +241,7 @@ func (b *Builder) operationToMethod(method, path string, o *v3.Operation) (*Meth
 	)
 
 	return &Method{
-		Description:       methodDoc(o),
+		Description:       methodDoc(o, responses),
 		DeprecationNotice: deprecationNotice(o),
 		Method:            strings.ToLower(method),
 		FunctionName:      methodName,
