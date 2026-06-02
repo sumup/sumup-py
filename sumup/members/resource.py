@@ -99,7 +99,7 @@ class UpdateMerchantMemberBodyUserInput(typing_extensions.TypedDict, total=False
 
     nickname: typing_extensions.NotRequired[
         typing_extensions.Annotated[
-            str, typing_extensions.Doc("User's preferred name. Used for display purposes only.")
+            str, typing_extensions.Doc("User's nickname. Used for display purposes only.")
         ]
     ]
     password: typing_extensions.NotRequired[

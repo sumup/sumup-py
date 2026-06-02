@@ -278,10 +278,17 @@ class PersonalIdentifier(pydantic.BaseModel):
 
     value: str
     """
-	The company identifier value.
+	The value of the personal identifier.
 	Max length: 30
 	"""
 
+
+PersonalIdentifiers = list[PersonalIdentifier]
+"""
+A list of country-specific personal identifiers.
+
+Max items: 5
+"""
 
 PhoneNumber = str
 """
@@ -355,7 +362,7 @@ class BasePerson(pydantic.BaseModel):
 	Max length: 60
 	"""
 
-    identifiers: typing.Optional[list[PersonalIdentifier]] = None
+    identifiers: typing.Optional[PersonalIdentifiers] = None
     """
 	A list of country-specific personal identifiers.
 	Max items: 5
@@ -495,7 +502,6 @@ class BusinessProfile(pydantic.BaseModel):
     website: typing.Optional[str] = None
     """
 	The business's publicly available website.
-	Format: uri
 	Max length: 255
 	"""
 
@@ -1561,7 +1567,6 @@ class Company(pydantic.BaseModel):
     website: typing.Optional[str] = None
     """
 	HTTP(S) URL of the company's website.
-	Format: uri
 	Max length: 255
 	"""
 
@@ -2531,7 +2536,7 @@ class Person(pydantic.BaseModel):
 	Max length: 60
 	"""
 
-    identifiers: typing.Optional[list[PersonalIdentifier]] = None
+    identifiers: typing.Optional[PersonalIdentifiers] = None
     """
 	A list of country-specific personal identifiers.
 	Max items: 5
@@ -2700,7 +2705,7 @@ class MembershipUser(pydantic.BaseModel):
 
     nickname: typing.Optional[str] = None
     """
-	User's preferred name. Used for display purposes only.
+	User's nickname. Used for display purposes only.
 	"""
 
     picture: typing.Optional[str] = None
