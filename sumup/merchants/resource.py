@@ -34,6 +34,7 @@ from ..types import (
     Ownership,
     Person,
     PersonalIdentifier,
+    PersonalIdentifiers,
     PhoneNumber,
     Problem,
     Timestamps,
