@@ -33,14 +33,20 @@ jobs:
         run: uv run ty check
 
   test:
-    name: Test
+    name: Test (Python ${{ matrix.python-version }})
     runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        python-version: ["3.10", "3.11", "3.12", "3.13", "3.14"]
     steps:
       - name: Checkout code
         uses: actions/checkout@df4cb1c069e1874edd31b4311f1884172cec0e10 # v6.0.3
 
       - name: Install uv
         uses: astral-sh/setup-uv@fac544c07dec837d0ccb6301d7b5580bf5edae39 # v8.2.0
+        with:
+          python-version: ${{ matrix.python-version }}
 
       - name: Install the project
         run: uv sync --all-extras --dev
@@ -50,6 +56,20 @@ jobs:
 
       - name: Run tests
         run: uv run pytest
+
+  test-summary:
+    name: Test
+    if: ${{ always() }}
+    needs:
+      - test
+    runs-on: ubuntu-latest
+    steps:
+      - name: Fail if any matrix job failed or was cancelled
+        run: |
+          if [ "${{ needs.test.result }}" != "success" ]; then
+            echo "At least one matrix leg did not pass"
+            exit 1
+          fi
 
   release-please:
     name: Prepare release
