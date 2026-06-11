@@ -258,15 +258,15 @@ class TransactionsResource(Resource):
         if not isinstance(limit, NotGivenType) and limit is not None:
             query_data["limit"] = limit
         if not isinstance(users, NotGivenType) and users is not None:
-            query_data["users"] = list(users)
+            query_data["users[]"] = list(users)
         if not isinstance(statuses, NotGivenType) and statuses is not None:
             query_data["statuses[]"] = list(statuses)
         if not isinstance(payment_types, NotGivenType) and payment_types is not None:
-            query_data["payment_types"] = list(payment_types)
+            query_data["payment_types[]"] = list(payment_types)
         if not isinstance(entry_modes, NotGivenType) and entry_modes is not None:
             query_data["entry_modes[]"] = list(entry_modes)
         if not isinstance(types, NotGivenType) and types is not None:
-            query_data["types"] = list(types)
+            query_data["types[]"] = list(types)
         if not isinstance(changes_since, NotGivenType) and changes_since is not None:
             query_data["changes_since"] = changes_since
         if not isinstance(newest_time, NotGivenType) and newest_time is not None:
@@ -452,15 +452,15 @@ class AsyncTransactionsResource(AsyncResource):
         if not isinstance(limit, NotGivenType) and limit is not None:
             query_data["limit"] = limit
         if not isinstance(users, NotGivenType) and users is not None:
-            query_data["users"] = list(users)
+            query_data["users[]"] = list(users)
         if not isinstance(statuses, NotGivenType) and statuses is not None:
             query_data["statuses[]"] = list(statuses)
         if not isinstance(payment_types, NotGivenType) and payment_types is not None:
-            query_data["payment_types"] = list(payment_types)
+            query_data["payment_types[]"] = list(payment_types)
         if not isinstance(entry_modes, NotGivenType) and entry_modes is not None:
             query_data["entry_modes[]"] = list(entry_modes)
         if not isinstance(types, NotGivenType) and types is not None:
-            query_data["types"] = list(types)
+            query_data["types[]"] = list(types)
         if not isinstance(changes_since, NotGivenType) and changes_since is not None:
             query_data["changes_since"] = changes_since
         if not isinstance(newest_time, NotGivenType) and newest_time is not None:
