@@ -2658,7 +2658,8 @@ class MembershipUserClassic(pydantic.BaseModel):
 
     user_id: int
     """
-	Format: int32
+	Min: 0
+	Max: 2.147483647e+09
 	"""
 
 
