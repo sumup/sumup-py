@@ -8282,7 +8282,7 @@
         },
         "externalDocs": {
           "description": "Address documentation",
-          "url": "https://backstage.sumup.net/docs/default/Component/merchants/merchant/#addresses"
+          "url": "https://developer.sumup.com/tools/glossary/address"
         },
         "required": [
           "country"
