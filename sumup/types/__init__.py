@@ -7,10 +7,12 @@ import typing_extensions
 
 CountryCode = str
 """
-An [ISO3166-1 alpha-2](https://en.wikipedia.org/wiki/ISO_3166-1_alpha-2) country code. This definition users`oneOf` with a two-character string type to allow for support of future countries in client code.
-
+An [ISO3166-1 alpha-2](https://en.wikipedia.org/wiki/ISO_3166-1_alpha-2)
+country code. This definition users `oneOf` with a two-character string
+type to allow for support of future countries in client code.
 Min length: 2
 Max length: 2
+Pattern: ^[A-Z]{2}$
 """
 
 
@@ -18,14 +20,17 @@ class Address(pydantic.BaseModel):
     """
             An address somewhere in the world. The address fields used depend on the country conventions. For example, inGreat Britain, `city` is `post_town`. In the United States, the top-level administrative unit used in addressesis `state`, whereas in Chile it's `region`.
     Whether an address is valid or not depends on whether the locally required fields are present. Fields not supported ina country will be ignored.
-    Address documentation: https://developer.sumup.com/tools/glossary/merchant#addresses
+    Address documentation: https://backstage.sumup.net/docs/default/Component/merchants/merchant/#addresses
     """
 
     country: CountryCode
     """
-	An [ISO3166-1 alpha-2](https://en.wikipedia.org/wiki/ISO_3166-1_alpha-2) country code. This definition users`oneOf` with a two-character string type to allow for support of future countries in client code.
+	An [ISO3166-1 alpha-2](https://en.wikipedia.org/wiki/ISO_3166-1_alpha-2)
+	country code. This definition users `oneOf` with a two-character string
+	type to allow for support of future countries in client code.
 	Min length: 2
 	Max length: 2
+	Pattern: ^[A-Z]{2}$
 	"""
 
     autonomous_community: typing.Optional[str] = None
@@ -114,7 +119,6 @@ class Address(pydantic.BaseModel):
 
     street_address: typing.Optional[list[str]] = None
     """
-	Min items: 1
 	Max items: 2
 	"""
 
@@ -273,21 +277,21 @@ class PersonalIdentifier(pydantic.BaseModel):
 
     ref: str
     """
-	The unique reference for the personal identifier type as defined in the country SDK.
+	The unique reference for the personal identifier type.
+	Max length: 32
 	"""
 
     value: str
     """
-	The value of the personal identifier.
-	Max length: 30
+	The company identifier value.
+	Max length: 128
 	"""
 
 
 PersonalIdentifiers = list[PersonalIdentifier]
 """
 A list of country-specific personal identifiers.
-
-Max items: 5
+Max items: 32
 """
 
 PhoneNumber = str
@@ -320,7 +324,7 @@ class BasePerson(pydantic.BaseModel):
     """
 	An address somewhere in the world. The address fields used depend on the country conventions. For example, inGreat Britain, `city` is `post_town`. In the United States, the top-level administrative unit used in addressesis `state`, whereas in Chile it's `region`.
 	Whether an address is valid or not depends on whether the locally required fields are present. Fields not supported ina country will be ignored.
-	Address documentation: https://developer.sumup.com/tools/glossary/merchant#addresses
+	Address documentation: https://backstage.sumup.net/docs/default/Component/merchants/merchant/#addresses
 	"""
 
     birthdate: typing.Optional[datetime.date] = None
@@ -338,9 +342,12 @@ class BasePerson(pydantic.BaseModel):
 
     citizenship: typing.Optional[CountryCode] = None
     """
-	An [ISO3166-1 alpha-2](https://en.wikipedia.org/wiki/ISO_3166-1_alpha-2) country code. This definition users`oneOf` with a two-character string type to allow for support of future countries in client code.
+	An [ISO3166-1 alpha-2](https://en.wikipedia.org/wiki/ISO_3166-1_alpha-2)
+	country code. This definition users `oneOf` with a two-character string
+	type to allow for support of future countries in client code.
 	Min length: 2
 	Max length: 2
+	Pattern: ^[A-Z]{2}$
 	"""
 
     country_of_residence: typing.Optional[str] = None
@@ -365,7 +372,7 @@ class BasePerson(pydantic.BaseModel):
     identifiers: typing.Optional[PersonalIdentifiers] = None
     """
 	A list of country-specific personal identifiers.
-	Max items: 5
+	Max items: 32
 	"""
 
     middle_name: typing.Optional[str] = None
@@ -463,7 +470,7 @@ class BusinessProfile(pydantic.BaseModel):
     """
 	An address somewhere in the world. The address fields used depend on the country conventions. For example, inGreat Britain, `city` is `post_town`. In the United States, the top-level administrative unit used in addressesis `state`, whereas in Chile it's `region`.
 	Whether an address is valid or not depends on whether the locally required fields are present. Fields not supported ina country will be ignored.
-	Address documentation: https://developer.sumup.com/tools/glossary/merchant#addresses
+	Address documentation: https://backstage.sumup.net/docs/default/Component/merchants/merchant/#addresses
 	"""
 
     branding: typing.Optional[Branding] = None
@@ -1517,7 +1524,7 @@ class Company(pydantic.BaseModel):
     """
 	An address somewhere in the world. The address fields used depend on the country conventions. For example, inGreat Britain, `city` is `post_town`. In the United States, the top-level administrative unit used in addressesis `state`, whereas in Chile it's `region`.
 	Whether an address is valid or not depends on whether the locally required fields are present. Fields not supported ina country will be ignored.
-	Address documentation: https://developer.sumup.com/tools/glossary/merchant#addresses
+	Address documentation: https://backstage.sumup.net/docs/default/Component/merchants/merchant/#addresses
 	"""
 
     attributes: typing.Optional[Attributes] = None
@@ -1561,7 +1568,7 @@ class Company(pydantic.BaseModel):
     """
 	An address somewhere in the world. The address fields used depend on the country conventions. For example, inGreat Britain, `city` is `post_town`. In the United States, the top-level administrative unit used in addressesis `state`, whereas in Chile it's `region`.
 	Whether an address is valid or not depends on whether the locally required fields are present. Fields not supported ina country will be ignored.
-	Address documentation: https://developer.sumup.com/tools/glossary/merchant#addresses
+	Address documentation: https://backstage.sumup.net/docs/default/Component/merchants/merchant/#addresses
 	"""
 
     website: typing.Optional[str] = None
@@ -2494,7 +2501,7 @@ class Person(pydantic.BaseModel):
     """
 	An address somewhere in the world. The address fields used depend on the country conventions. For example, inGreat Britain, `city` is `post_town`. In the United States, the top-level administrative unit used in addressesis `state`, whereas in Chile it's `region`.
 	Whether an address is valid or not depends on whether the locally required fields are present. Fields not supported ina country will be ignored.
-	Address documentation: https://developer.sumup.com/tools/glossary/merchant#addresses
+	Address documentation: https://backstage.sumup.net/docs/default/Component/merchants/merchant/#addresses
 	"""
 
     birthdate: typing.Optional[datetime.date] = None
@@ -2512,9 +2519,12 @@ class Person(pydantic.BaseModel):
 
     citizenship: typing.Optional[CountryCode] = None
     """
-	An [ISO3166-1 alpha-2](https://en.wikipedia.org/wiki/ISO_3166-1_alpha-2) country code. This definition users`oneOf` with a two-character string type to allow for support of future countries in client code.
+	An [ISO3166-1 alpha-2](https://en.wikipedia.org/wiki/ISO_3166-1_alpha-2)
+	country code. This definition users `oneOf` with a two-character string
+	type to allow for support of future countries in client code.
 	Min length: 2
 	Max length: 2
+	Pattern: ^[A-Z]{2}$
 	"""
 
     country_of_residence: typing.Optional[str] = None
@@ -2539,7 +2549,7 @@ class Person(pydantic.BaseModel):
     identifiers: typing.Optional[PersonalIdentifiers] = None
     """
 	A list of country-specific personal identifiers.
-	Max items: 5
+	Max items: 32
 	"""
 
     middle_name: typing.Optional[str] = None
@@ -2663,6 +2673,11 @@ class MembershipUserClassic(pydantic.BaseModel):
 	"""
 
 
+UserType = typing.Union[
+    typing.Literal["managed_user", "service_account", "system_account", "user"], str
+]
+
+
 class MembershipUser(pydantic.BaseModel):
     """
     Information about the user associated with the membership.
@@ -2686,11 +2701,18 @@ class MembershipUser(pydantic.BaseModel):
     service_account_user: bool
     """
 	True if the user is a service account.
+	Deprecated: Rely on `type` instead.
+	"""
+
+    type: UserType
+    """
+	Type of the user account.
 	"""
 
     virtual_user: bool
     """
 	True if the user is a virtual user (operator).
+	Deprecated: Rely on `type` instead.
 	"""
 
     classic: typing.Optional[MembershipUserClassic] = None
@@ -2943,9 +2965,12 @@ class Merchant(pydantic.BaseModel):
 
     country: CountryCode
     """
-	An [ISO3166-1 alpha-2](https://en.wikipedia.org/wiki/ISO_3166-1_alpha-2) country code. This definition users`oneOf` with a two-character string type to allow for support of future countries in client code.
+	An [ISO3166-1 alpha-2](https://en.wikipedia.org/wiki/ISO_3166-1_alpha-2)
+	country code. This definition users `oneOf` with a two-character string
+	type to allow for support of future countries in client code.
 	Min length: 2
 	Max length: 2
+	Pattern: ^[A-Z]{2}$
 	"""
 
     created_at: datetime.datetime
