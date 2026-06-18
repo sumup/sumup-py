@@ -25,6 +25,7 @@ from ..types import (
     MembershipUserClassic,
     Metadata,
     Problem,
+    UserType,
 )
 from ..types import AttributesInput, MembershipStatusInput, MetadataInput
 import datetime
@@ -371,6 +372,7 @@ class MembersResource(Resource):
 
         Raises:
             APIError: Raised when the API returns one of the documented error responses:
+                403: Member deletion was forbidden.
                 404: Merchant or member not found.
                 Unexpected response statuses also raise this exception.
         """
@@ -380,6 +382,10 @@ class MembersResource(Resource):
         )
         if resp.status_code == 200:
             return
+        elif resp.status_code == 403:
+            raise APIError(
+                "Member deletion was forbidden.", status=resp.status_code, body=resp.text
+            )
         elif resp.status_code == 404:
             raise APIError("Merchant or member not found.", status=resp.status_code, body=resp.text)
         else:
@@ -605,6 +611,7 @@ class AsyncMembersResource(AsyncResource):
 
         Raises:
             APIError: Raised when the API returns one of the documented error responses:
+                403: Member deletion was forbidden.
                 404: Merchant or member not found.
                 Unexpected response statuses also raise this exception.
         """
@@ -614,6 +621,10 @@ class AsyncMembersResource(AsyncResource):
         )
         if resp.status_code == 200:
             return
+        elif resp.status_code == 403:
+            raise APIError(
+                "Member deletion was forbidden.", status=resp.status_code, body=resp.text
+            )
         elif resp.status_code == 404:
             raise APIError("Merchant or member not found.", status=resp.status_code, body=resp.text)
         else:
