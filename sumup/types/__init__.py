@@ -20,7 +20,7 @@ class Address(pydantic.BaseModel):
     """
             An address somewhere in the world. The address fields used depend on the country conventions. For example, inGreat Britain, `city` is `post_town`. In the United States, the top-level administrative unit used in addressesis `state`, whereas in Chile it's `region`.
     Whether an address is valid or not depends on whether the locally required fields are present. Fields not supported ina country will be ignored.
-    Address documentation: https://backstage.sumup.net/docs/default/Component/merchants/merchant/#addresses
+    Address documentation: https://developer.sumup.com/tools/glossary/address
     """
 
     country: CountryCode
@@ -324,7 +324,7 @@ class BasePerson(pydantic.BaseModel):
     """
 	An address somewhere in the world. The address fields used depend on the country conventions. For example, inGreat Britain, `city` is `post_town`. In the United States, the top-level administrative unit used in addressesis `state`, whereas in Chile it's `region`.
 	Whether an address is valid or not depends on whether the locally required fields are present. Fields not supported ina country will be ignored.
-	Address documentation: https://backstage.sumup.net/docs/default/Component/merchants/merchant/#addresses
+	Address documentation: https://developer.sumup.com/tools/glossary/address
 	"""
 
     birthdate: typing.Optional[datetime.date] = None
@@ -470,7 +470,7 @@ class BusinessProfile(pydantic.BaseModel):
     """
 	An address somewhere in the world. The address fields used depend on the country conventions. For example, inGreat Britain, `city` is `post_town`. In the United States, the top-level administrative unit used in addressesis `state`, whereas in Chile it's `region`.
 	Whether an address is valid or not depends on whether the locally required fields are present. Fields not supported ina country will be ignored.
-	Address documentation: https://backstage.sumup.net/docs/default/Component/merchants/merchant/#addresses
+	Address documentation: https://developer.sumup.com/tools/glossary/address
 	"""
 
     branding: typing.Optional[Branding] = None
@@ -1524,7 +1524,7 @@ class Company(pydantic.BaseModel):
     """
 	An address somewhere in the world. The address fields used depend on the country conventions. For example, inGreat Britain, `city` is `post_town`. In the United States, the top-level administrative unit used in addressesis `state`, whereas in Chile it's `region`.
 	Whether an address is valid or not depends on whether the locally required fields are present. Fields not supported ina country will be ignored.
-	Address documentation: https://backstage.sumup.net/docs/default/Component/merchants/merchant/#addresses
+	Address documentation: https://developer.sumup.com/tools/glossary/address
 	"""
 
     attributes: typing.Optional[Attributes] = None
@@ -1568,7 +1568,7 @@ class Company(pydantic.BaseModel):
     """
 	An address somewhere in the world. The address fields used depend on the country conventions. For example, inGreat Britain, `city` is `post_town`. In the United States, the top-level administrative unit used in addressesis `state`, whereas in Chile it's `region`.
 	Whether an address is valid or not depends on whether the locally required fields are present. Fields not supported ina country will be ignored.
-	Address documentation: https://backstage.sumup.net/docs/default/Component/merchants/merchant/#addresses
+	Address documentation: https://developer.sumup.com/tools/glossary/address
 	"""
 
     website: typing.Optional[str] = None
@@ -2501,7 +2501,7 @@ class Person(pydantic.BaseModel):
     """
 	An address somewhere in the world. The address fields used depend on the country conventions. For example, inGreat Britain, `city` is `post_town`. In the United States, the top-level administrative unit used in addressesis `state`, whereas in Chile it's `region`.
 	Whether an address is valid or not depends on whether the locally required fields are present. Fields not supported ina country will be ignored.
-	Address documentation: https://backstage.sumup.net/docs/default/Component/merchants/merchant/#addresses
+	Address documentation: https://developer.sumup.com/tools/glossary/address
 	"""
 
     birthdate: typing.Optional[datetime.date] = None
