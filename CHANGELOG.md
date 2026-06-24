@@ -1,5 +1,19 @@
 # Changelog
 
+## [0.3.1](https://github.com/sumup/sumup-py/compare/v0.3.0...v0.3.1) (2026-06-24)
+
+
+### Chores
+
+* **deps-dev:** bump pytest from 9.0.3 to 9.1.1 ([#339](https://github.com/sumup/sumup-py/issues/339)) ([a65c5aa](https://github.com/sumup/sumup-py/commit/a65c5aa421379eca9e94b5fbdb721ac0ac72bd6d))
+* **deps-dev:** bump ruff from 0.15.16 to 0.15.19 ([#337](https://github.com/sumup/sumup-py/issues/337)) ([a8892c2](https://github.com/sumup/sumup-py/commit/a8892c2fbeb9966963a04fda7e7c210e17bad707))
+* **deps-dev:** bump ty from 0.0.46 to 0.0.52 ([#335](https://github.com/sumup/sumup-py/issues/335)) ([ea1e0f4](https://github.com/sumup/sumup-py/commit/ea1e0f4b9c29e4a4cee99994f2a4b33cbc5a89b7))
+* **deps:** bump actions/checkout from 6.0.3 to 7.0.0 ([#334](https://github.com/sumup/sumup-py/issues/334)) ([c624bd3](https://github.com/sumup/sumup-py/commit/c624bd35d182eb03307259c4475057d719f98a93))
+* **deps:** bump actions/setup-go from 6.4.0 to 6.5.0 ([#333](https://github.com/sumup/sumup-py/issues/333)) ([cd31b9a](https://github.com/sumup/sumup-py/commit/cd31b9a17adeca77462c0b719244438f5bb9b818))
+* **deps:** bump github.com/pb33f/libopenapi in /codegen ([#338](https://github.com/sumup/sumup-py/issues/338)) ([94619ba](https://github.com/sumup/sumup-py/commit/94619ba549010fc79dda5c3434a051ad82c2a79c))
+* synced file(s) with sumup/apis ([#327](https://github.com/sumup/sumup-py/issues/327)) ([10e3134](https://github.com/sumup/sumup-py/commit/10e3134d2ffb43e4bef9def5b776c1004287d9d4))
+* synced file(s) with sumup/apis ([#332](https://github.com/sumup/sumup-py/issues/332)) ([5755ea7](https://github.com/sumup/sumup-py/commit/5755ea754eb9fe4f6e60e357a0f733f96ed343b4))
+
 ## [0.3.0](https://github.com/sumup/sumup-py/compare/v0.2.2...v0.3.0) (2026-06-11)
 
 
