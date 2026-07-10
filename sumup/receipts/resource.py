@@ -17,9 +17,6 @@ from .._service import (
 from .._exceptions import APIError
 from ..types import (
     Error,
-    EventId,
-    EventStatus,
-    EventType,
     Problem,
     Receipt,
     ReceiptCard,
@@ -27,6 +24,9 @@ from ..types import (
     ReceiptMerchantData,
     ReceiptReader,
     ReceiptTransaction,
+    TransactionEventId,
+    TransactionEventStatus,
+    TransactionEventType,
     TransactionId,
 )
 import datetime

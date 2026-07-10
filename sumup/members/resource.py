@@ -42,13 +42,16 @@ class CreateMerchantMemberBodyInput(typing_extensions.TypedDict, total=False):
 
     email: typing_extensions.Required[
         typing_extensions.Annotated[
-            str, typing_extensions.Doc("Email address of the member to add.\nFormat: email")
+            str,
+            typing_extensions.Doc(
+                "Email address of the member to add.\nFormat: email\nMax length: 256"
+            ),
         ]
     ]
     roles: typing_extensions.Required[
         typing_extensions.Annotated[
             typing.Sequence[str],
-            typing_extensions.Doc("List of roles to assign to the new member."),
+            typing_extensions.Doc("List of roles to assign to the new member.\nMax items: 124"),
         ]
     ]
     attributes: typing_extensions.NotRequired[
@@ -79,7 +82,7 @@ class CreateMerchantMemberBodyInput(typing_extensions.TypedDict, total=False):
         typing_extensions.Annotated[
             str,
             typing_extensions.Doc(
-                "Nickname of the member to add. Only used if `is_managed_user` is true. Used for display purposes only."
+                "Nickname of the member to add. Only used if `is_managed_user` is true. Used for display purposes only.\nMax length: 64"
             ),
         ]
     ]
@@ -100,7 +103,10 @@ class UpdateMerchantMemberBodyUserInput(typing_extensions.TypedDict, total=False
 
     nickname: typing_extensions.NotRequired[
         typing_extensions.Annotated[
-            str, typing_extensions.Doc("User's nickname. Used for display purposes only.")
+            str,
+            typing_extensions.Doc(
+                "User's nickname. Used for display purposes only.\nMax length: 64"
+            ),
         ]
     ]
     password: typing_extensions.NotRequired[
@@ -134,7 +140,9 @@ class UpdateMerchantMemberBodyInput(typing_extensions.TypedDict, total=False):
             ),
         ]
     ]
-    roles: typing_extensions.NotRequired[typing.Sequence[str]]
+    roles: typing_extensions.NotRequired[
+        typing_extensions.Annotated[typing.Sequence[str], typing_extensions.Doc("Max items: 124")]
+    ]
     user: typing_extensions.NotRequired[
         typing_extensions.Annotated[
             UpdateMerchantMemberBodyUserInput,

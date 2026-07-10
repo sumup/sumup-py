@@ -5,9 +5,6 @@ from .resource import (
 )
 from ..types import (
     Error,
-    EventId,
-    EventStatus,
-    EventType,
     Problem,
     Receipt,
     ReceiptCard,
@@ -15,6 +12,9 @@ from ..types import (
     ReceiptMerchantData,
     ReceiptReader,
     ReceiptTransaction,
+    TransactionEventId,
+    TransactionEventStatus,
+    TransactionEventType,
     TransactionId,
 )
 
@@ -23,9 +23,6 @@ __all__ = [
     "ReceiptsResource",
     "AsyncReceiptsResource",
     "Error",
-    "EventId",
-    "EventStatus",
-    "EventType",
     "Problem",
     "Receipt",
     "ReceiptCard",
@@ -33,5 +30,8 @@ __all__ = [
     "ReceiptMerchantData",
     "ReceiptReader",
     "ReceiptTransaction",
+    "TransactionEventId",
+    "TransactionEventStatus",
+    "TransactionEventType",
     "TransactionId",
 ]

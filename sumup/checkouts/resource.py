@@ -36,6 +36,7 @@ from ..types import (
     CheckoutAccepted,
     CheckoutCreateRequest,
     CheckoutSuccess,
+    CheckoutUpdateRequest,
     Currency,
     DetailsError,
     EntryMode,
@@ -58,6 +59,7 @@ from ..types import (
     CardInput,
     CardTypeInput,
     CheckoutCreateRequestInput,
+    CheckoutUpdateRequestInput,
     CurrencyInput,
     HostedCheckoutInput,
     MandatePayloadInput,
@@ -160,6 +162,61 @@ class CreateCheckoutBodyInput(typing_extensions.TypedDict, total=False):
             datetime.datetime,
             typing_extensions.Doc(
                 "Optional expiration timestamp. The checkout must be processed before this moment, otherwise it becomes unusable.If omitted, the checkout does not have an explicit expiry time."
+            ),
+        ]
+    ]
+
+
+class UpdateCheckoutBodyInput(typing_extensions.TypedDict, total=False):
+    """
+    Request body for updating an existing checkout. Include only the fields that should be changed.
+    """
+
+    amount: typing_extensions.NotRequired[
+        typing_extensions.Annotated[
+            float,
+            typing_extensions.Doc(
+                "Updated amount to be charged to the payer, expressed in major units."
+            ),
+        ]
+    ]
+    checkout_reference: typing_extensions.NotRequired[
+        typing_extensions.Annotated[
+            str,
+            typing_extensions.Doc(
+                "Updated merchant-defined reference for the checkout.\nMax length: 90"
+            ),
+        ]
+    ]
+    currency: typing_extensions.NotRequired[
+        typing_extensions.Annotated[
+            CurrencyInput,
+            typing_extensions.Doc(
+                "Three-letter [ISO4217](https://en.wikipedia.org/wiki/ISO_4217) code of the currency for the amount. Currently supportedcurrency values are enumerated above."
+            ),
+        ]
+    ]
+    customer_id: typing_extensions.NotRequired[
+        typing_extensions.Annotated[
+            str,
+            typing_extensions.Doc(
+                "Updated merchant-scoped customer identifier associated with the checkout."
+            ),
+        ]
+    ]
+    description: typing_extensions.NotRequired[
+        typing_extensions.Annotated[
+            str,
+            typing_extensions.Doc(
+                "Updated short merchant-defined description shown in SumUp tools and reporting."
+            ),
+        ]
+    ]
+    valid_until: typing_extensions.NotRequired[
+        typing_extensions.Annotated[
+            datetime.datetime,
+            typing_extensions.Doc(
+                "Updated expiration timestamp. The checkout must be processed before this moment, otherwise it becomes unusable."
             ),
         ]
     ]
@@ -497,6 +554,62 @@ class CheckoutsResource(Resource):
         )
         if resp.status_code == 200:
             return pydantic.TypeAdapter(CheckoutSuccess).validate_python(resp.json())
+        elif resp.status_code == 401:
+            raise APIError(
+                "The request is not authorized.", status=resp.status_code, body=resp.text
+            )
+        elif resp.status_code == 404:
+            raise APIError(
+                "The requested resource does not exist.", status=resp.status_code, body=resp.text
+            )
+        else:
+            raise APIError(f"Unexpected response", status=resp.status_code, body=resp.text)
+
+    def update(
+        self,
+        checkout_id: str,
+        *,
+        amount: typing.Union[float, None, NotGivenType] = NOT_GIVEN,
+        currency: typing.Union[CurrencyInput, None, NotGivenType] = NOT_GIVEN,
+        description: typing.Union[str, None, NotGivenType] = NOT_GIVEN,
+        checkout_reference: typing.Union[str, None, NotGivenType] = NOT_GIVEN,
+        valid_until: typing.Union[datetime.datetime, None, NotGivenType] = NOT_GIVEN,
+        customer_id: typing.Union[str, None, NotGivenType] = NOT_GIVEN,
+        headers: typing.Optional[HeaderTypes] = None,
+    ) -> Checkout:
+        """
+        Update a checkout
+
+        Updates an identified checkout resource.
+
+
+        Raises:
+            APIError: Raised when the API returns one of the documented error responses:
+                401: The request is not authorized.
+                404: The requested resource does not exist.
+                Unexpected response statuses also raise this exception.
+        """
+        body_data: dict[str, typing.Any] = {}
+        if not isinstance(amount, NotGivenType):
+            body_data["amount"] = amount
+        if not isinstance(currency, NotGivenType):
+            body_data["currency"] = currency
+        if not isinstance(description, NotGivenType):
+            body_data["description"] = description
+        if not isinstance(checkout_reference, NotGivenType):
+            body_data["checkout_reference"] = checkout_reference
+        if not isinstance(valid_until, NotGivenType):
+            body_data["valid_until"] = valid_until
+        if not isinstance(customer_id, NotGivenType):
+            body_data["customer_id"] = customer_id
+
+        resp = self._client.patch(
+            f"/v0.1/checkouts/{checkout_id}",
+            json=serialize_request_data(body_data),
+            headers=headers,
+        )
+        if resp.status_code == 200:
+            return pydantic.TypeAdapter(Checkout).validate_python(resp.json())
         elif resp.status_code == 401:
             raise APIError(
                 "The request is not authorized.", status=resp.status_code, body=resp.text
@@ -864,6 +977,62 @@ class AsyncCheckoutsResource(AsyncResource):
         )
         if resp.status_code == 200:
             return pydantic.TypeAdapter(CheckoutSuccess).validate_python(resp.json())
+        elif resp.status_code == 401:
+            raise APIError(
+                "The request is not authorized.", status=resp.status_code, body=resp.text
+            )
+        elif resp.status_code == 404:
+            raise APIError(
+                "The requested resource does not exist.", status=resp.status_code, body=resp.text
+            )
+        else:
+            raise APIError(f"Unexpected response", status=resp.status_code, body=resp.text)
+
+    async def update(
+        self,
+        checkout_id: str,
+        *,
+        amount: typing.Union[float, None, NotGivenType] = NOT_GIVEN,
+        currency: typing.Union[CurrencyInput, None, NotGivenType] = NOT_GIVEN,
+        description: typing.Union[str, None, NotGivenType] = NOT_GIVEN,
+        checkout_reference: typing.Union[str, None, NotGivenType] = NOT_GIVEN,
+        valid_until: typing.Union[datetime.datetime, None, NotGivenType] = NOT_GIVEN,
+        customer_id: typing.Union[str, None, NotGivenType] = NOT_GIVEN,
+        headers: typing.Optional[HeaderTypes] = None,
+    ) -> Checkout:
+        """
+        Update a checkout
+
+        Updates an identified checkout resource.
+
+
+        Raises:
+            APIError: Raised when the API returns one of the documented error responses:
+                401: The request is not authorized.
+                404: The requested resource does not exist.
+                Unexpected response statuses also raise this exception.
+        """
+        body_data: dict[str, typing.Any] = {}
+        if not isinstance(amount, NotGivenType):
+            body_data["amount"] = amount
+        if not isinstance(currency, NotGivenType):
+            body_data["currency"] = currency
+        if not isinstance(description, NotGivenType):
+            body_data["description"] = description
+        if not isinstance(checkout_reference, NotGivenType):
+            body_data["checkout_reference"] = checkout_reference
+        if not isinstance(valid_until, NotGivenType):
+            body_data["valid_until"] = valid_until
+        if not isinstance(customer_id, NotGivenType):
+            body_data["customer_id"] = customer_id
+
+        resp = await self._client.patch(
+            f"/v0.1/checkouts/{checkout_id}",
+            json=serialize_request_data(body_data),
+            headers=headers,
+        )
+        if resp.status_code == 200:
+            return pydantic.TypeAdapter(Checkout).validate_python(resp.json())
         elif resp.status_code == 401:
             raise APIError(
                 "The request is not authorized.", status=resp.status_code, body=resp.text
