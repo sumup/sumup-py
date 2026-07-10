@@ -249,7 +249,7 @@ class BadRequest(pydantic.BaseModel):
 
 ChangeStatus = str
 """
-Reflects the status of changes submitted through the `PATCH` endpoints for the merchant or persons. If somechanges have not been applied yet, the status will be `pending`. If all changes have been applied, the status`done`.
+Reflects the status of changes submitted through the `PATCH` endpoints for the Merchant or Persons. If somechanges have not been applied yet, the status will be `pending`. If all changes have been applied, the status`done`.
 The status is only returned after write operations or on read endpoints when the `version` query parameter isprovided.
 
 Read only
@@ -263,7 +263,7 @@ class Ownership(pydantic.BaseModel):
 
     share: int
     """
-	The percent of ownership shares held by the person expressed in percent mille (1/100000). Only persons withthe relationship `owner` can have ownership.
+	The percent of ownership shares held by the Person expressed in percent mille (1/100000). Only Persons withthe relationship `owner` can have ownership.
 	Format: int32
 	Min: 25000
 	Max: 100000
@@ -309,14 +309,14 @@ The version of the resource. The version reflects a specific change submitted to
 
 class BasePerson(pydantic.BaseModel):
     """
-            Base schema for a person associated with a merchant. This can be a legal representative, business owner (ultimatebeneficial owner), or an officer. A legal representative is the person who registered the merchant with SumUp.They should always have a `user_id`.
+            Base schema for a Person associated with a Merchant. This can be a legal representative, business owner (ultimatebeneficial owner), or an officer. A legal representative is the Person who registered the Merchant with SumUp.They should always have a `user_id`.
 
     Person documentation: https://developer.sumup.com/tools/glossary/merchant#persons
     """
 
     id: str
     """
-	The unique identifier for the person. This is a [typeid](https://github.com/sumup/typeid).
+	The unique identifier for the Person. This is a [typeid](https://github.com/sumup/typeid).
 	Read only
 	"""
 
@@ -335,7 +335,7 @@ class BasePerson(pydantic.BaseModel):
 
     change_status: typing.Optional[ChangeStatus] = None
     """
-	Reflects the status of changes submitted through the `PATCH` endpoints for the merchant or persons. If somechanges have not been applied yet, the status will be `pending`. If all changes have been applied, the status`done`.
+	Reflects the status of changes submitted through the `PATCH` endpoints for the Merchant or Persons. If somechanges have not been applied yet, the status will be `pending`. If all changes have been applied, the status`done`.
 	The status is only returned after write operations or on read endpoints when the `version` query parameter isprovided.
 	Read only
 	"""
@@ -352,7 +352,7 @@ class BasePerson(pydantic.BaseModel):
 
     country_of_residence: typing.Optional[str] = None
     """
-	An [ISO3166-1 alpha-2](https://en.wikipedia.org/wiki/ISO_3166-1_alpha-2) country code representing the countrywhere the person resides.
+	An [ISO3166-1 alpha-2](https://en.wikipedia.org/wiki/ISO_3166-1_alpha-2) country code representing the countrywhere the Person resides.
 	Min length: 2
 	Max length: 2
 	"""
@@ -383,7 +383,7 @@ class BasePerson(pydantic.BaseModel):
 
     nationality: typing.Optional[str] = None
     """
-	The persons nationality. May be an [ISO3166-1 alpha-2](https://en.wikipedia.org/wiki/ISO_3166-1_alpha-2) countrycode, but legacy data may not conform to this standard.
+	The Person's nationality. May be an [ISO3166-1 alpha-2](https://en.wikipedia.org/wiki/ISO_3166-1_alpha-2) countrycode, but legacy data may not conform to this standard.
 	"""
 
     ownership: typing.Optional[Ownership] = None
@@ -396,14 +396,14 @@ class BasePerson(pydantic.BaseModel):
 
     relationships: typing.Optional[list[str]] = None
     """
-	A list of roles the person has in the merchant or towards SumUp. A merchant must have at least one person withthe relationship `representative`.
+	A list of roles the Person has in the Merchant or towards SumUp. A Merchant must have at least one Person withthe relationship `representative`.
 	Min items: 1
 	Max items: 1
 	"""
 
     user_id: typing.Optional[str] = None
     """
-	A corresponding identity user ID for the person, if they have a user account.
+	A corresponding identity user ID for the Person, if they have a user account.
 	"""
 
     version: typing.Optional[Version] = None
@@ -420,6 +420,13 @@ class Branding(pydantic.BaseModel):
     background_color: typing.Optional[str] = None
     """
 	A hex color value representing the preferred background color of this merchant.
+	"""
+
+    footer_text: typing.Optional[str] = None
+    """
+	Footer text rendered on receipts and other customer-facing products.
+	Min length: 1
+	Max length: 500
 	"""
 
     hero: typing.Optional[str] = None
@@ -1467,6 +1474,97 @@ class CheckoutSuccess(pydantic.BaseModel):
 	"""
 
 
+class CheckoutUpdateRequest(pydantic.BaseModel):
+    """
+    Request body for updating an existing checkout. Include only the fields that should be changed.
+    """
+
+    amount: typing.Optional[float] = None
+    """
+	Updated amount to be charged to the payer, expressed in major units.
+	"""
+
+    checkout_reference: typing.Optional[str] = None
+    """
+	Updated merchant-defined reference for the checkout.
+	Max length: 90
+	"""
+
+    currency: typing.Optional[Currency] = None
+    """
+	Three-letter [ISO4217](https://en.wikipedia.org/wiki/ISO_4217) code of the currency for the amount. Currently supportedcurrency values are enumerated above.
+	"""
+
+    customer_id: typing.Optional[str] = None
+    """
+	Updated merchant-scoped customer identifier associated with the checkout.
+	"""
+
+    description: typing.Optional[str] = None
+    """
+	Updated short merchant-defined description shown in SumUp tools and reporting.
+	"""
+
+    valid_until: typing.Optional[datetime.datetime] = None
+    """
+	Updated expiration timestamp. The checkout must be processed before this moment, otherwise it becomes unusable.
+	"""
+
+
+class CheckoutUpdateRequestDict(typing_extensions.TypedDict, total=False):
+    amount: typing_extensions.NotRequired[
+        typing_extensions.Annotated[
+            float,
+            typing_extensions.Doc(
+                "Updated amount to be charged to the payer, expressed in major units."
+            ),
+        ]
+    ]
+    checkout_reference: typing_extensions.NotRequired[
+        typing_extensions.Annotated[
+            str,
+            typing_extensions.Doc(
+                "Updated merchant-defined reference for the checkout.\nMax length: 90"
+            ),
+        ]
+    ]
+    currency: typing_extensions.NotRequired[
+        typing_extensions.Annotated[
+            CurrencyInput,
+            typing_extensions.Doc(
+                "Three-letter [ISO4217](https://en.wikipedia.org/wiki/ISO_4217) code of the currency for the amount. Currently supportedcurrency values are enumerated above."
+            ),
+        ]
+    ]
+    customer_id: typing_extensions.NotRequired[
+        typing_extensions.Annotated[
+            str,
+            typing_extensions.Doc(
+                "Updated merchant-scoped customer identifier associated with the checkout."
+            ),
+        ]
+    ]
+    description: typing_extensions.NotRequired[
+        typing_extensions.Annotated[
+            str,
+            typing_extensions.Doc(
+                "Updated short merchant-defined description shown in SumUp tools and reporting."
+            ),
+        ]
+    ]
+    valid_until: typing_extensions.NotRequired[
+        typing_extensions.Annotated[
+            datetime.datetime,
+            typing_extensions.Doc(
+                "Updated expiration timestamp. The checkout must be processed before this moment, otherwise it becomes unusable."
+            ),
+        ]
+    ]
+
+
+CheckoutUpdateRequestInput = CheckoutUpdateRequestDict
+
+
 class ClassicMerchantIdentifiers(pydantic.BaseModel):
     """
     ClassicMerchantIdentifiers is a schema definition.
@@ -2263,20 +2361,22 @@ class ErrorForbidden(pydantic.BaseModel):
 	"""
 
 
-EventId = int
+TransactionEventId = int
 """
 Unique ID of the transaction event.
 Format: int64
 """
 
-EventStatus = typing.Union[
+TransactionEventStatus = typing.Union[
     typing.Literal[
         "FAILED", "PAID_OUT", "PENDING", "RECONCILED", "REFUNDED", "SCHEDULED", "SUCCESSFUL"
     ],
     str,
 ]
 
-EventType = typing.Union[typing.Literal["CHARGE_BACK", "PAYOUT", "PAYOUT_DEDUCTION", "REFUND"], str]
+TransactionEventType = typing.Union[
+    typing.Literal["CHARGE_BACK", "PAYOUT", "PAYOUT_DEDUCTION", "REFUND"], str
+]
 
 TransactionId = str
 """
@@ -2309,7 +2409,7 @@ class Event(pydantic.BaseModel):
 	Amount of the fee related to the event.
 	"""
 
-    id: typing.Optional[EventId] = None
+    id: typing.Optional[TransactionEventId] = None
     """
 	Unique ID of the transaction event.
 	Format: int64
@@ -2320,7 +2420,7 @@ class Event(pydantic.BaseModel):
 	Consecutive number of the installment.
 	"""
 
-    status: typing.Optional[EventStatus] = None
+    status: typing.Optional[TransactionEventStatus] = None
     """
 	Status of the transaction event.
 	
@@ -2345,7 +2445,7 @@ class Event(pydantic.BaseModel):
 	Unique ID of the transaction.
 	"""
 
-    type: typing.Optional[EventType] = None
+    type: typing.Optional[TransactionEventType] = None
     """
 	Type of the transaction event.
 	"""
@@ -2493,7 +2593,7 @@ class Person(pydantic.BaseModel):
 
     id: str
     """
-	The unique identifier for the person. This is a [typeid](https://github.com/sumup/typeid).
+	The unique identifier for the Person. This is a [typeid](https://github.com/sumup/typeid).
 	Read only
 	"""
 
@@ -2512,7 +2612,7 @@ class Person(pydantic.BaseModel):
 
     change_status: typing.Optional[ChangeStatus] = None
     """
-	Reflects the status of changes submitted through the `PATCH` endpoints for the merchant or persons. If somechanges have not been applied yet, the status will be `pending`. If all changes have been applied, the status`done`.
+	Reflects the status of changes submitted through the `PATCH` endpoints for the Merchant or Persons. If somechanges have not been applied yet, the status will be `pending`. If all changes have been applied, the status`done`.
 	The status is only returned after write operations or on read endpoints when the `version` query parameter isprovided.
 	Read only
 	"""
@@ -2529,7 +2629,7 @@ class Person(pydantic.BaseModel):
 
     country_of_residence: typing.Optional[str] = None
     """
-	An [ISO3166-1 alpha-2](https://en.wikipedia.org/wiki/ISO_3166-1_alpha-2) country code representing the countrywhere the person resides.
+	An [ISO3166-1 alpha-2](https://en.wikipedia.org/wiki/ISO_3166-1_alpha-2) country code representing the countrywhere the Person resides.
 	Min length: 2
 	Max length: 2
 	"""
@@ -2560,7 +2660,7 @@ class Person(pydantic.BaseModel):
 
     nationality: typing.Optional[str] = None
     """
-	The persons nationality. May be an [ISO3166-1 alpha-2](https://en.wikipedia.org/wiki/ISO_3166-1_alpha-2) countrycode, but legacy data may not conform to this standard.
+	The Person's nationality. May be an [ISO3166-1 alpha-2](https://en.wikipedia.org/wiki/ISO_3166-1_alpha-2) countrycode, but legacy data may not conform to this standard.
 	"""
 
     ownership: typing.Optional[Ownership] = None
@@ -2573,14 +2673,14 @@ class Person(pydantic.BaseModel):
 
     relationships: typing.Optional[list[str]] = None
     """
-	A list of roles the person has in the merchant or towards SumUp. A merchant must have at least one person withthe relationship `representative`.
+	A list of roles the Person has in the Merchant or towards SumUp. A Merchant must have at least one Person withthe relationship `representative`.
 	Min items: 1
 	Max items: 1
 	"""
 
     user_id: typing.Optional[str] = None
     """
-	A corresponding identity user ID for the person, if they have a user account.
+	A corresponding identity user ID for the Person, if they have a user account.
 	"""
 
     version: typing.Optional[Version] = None
@@ -3035,7 +3135,7 @@ class Merchant(pydantic.BaseModel):
 
     change_status: typing.Optional[ChangeStatus] = None
     """
-	Reflects the status of changes submitted through the `PATCH` endpoints for the merchant or persons. If somechanges have not been applied yet, the status will be `pending`. If all changes have been applied, the status`done`.
+	Reflects the status of changes submitted through the `PATCH` endpoints for the Merchant or Persons. If somechanges have not been applied yet, the status will be `pending`. If all changes have been applied, the status`done`.
 	The status is only returned after write operations or on read endpoints when the `version` query parameter isprovided.
 	Read only
 	"""
@@ -3621,7 +3721,7 @@ class ReceiptEvent(pydantic.BaseModel):
 	Format: double
 	"""
 
-    id: typing.Optional[EventId] = None
+    id: typing.Optional[TransactionEventId] = None
     """
 	Unique ID of the transaction event.
 	Format: int64
@@ -3632,7 +3732,7 @@ class ReceiptEvent(pydantic.BaseModel):
 	Receipt number associated with the event.
 	"""
 
-    status: typing.Optional[EventStatus] = None
+    status: typing.Optional[TransactionEventStatus] = None
     """
 	Status of the transaction event.
 	
@@ -3657,7 +3757,7 @@ class ReceiptEvent(pydantic.BaseModel):
 	Unique ID of the transaction.
 	"""
 
-    type: typing.Optional[EventType] = None
+    type: typing.Optional[TransactionEventType] = None
     """
 	Type of the transaction event.
 	"""
@@ -4127,12 +4227,12 @@ class TransactionEvent(pydantic.BaseModel):
 	Format: date
 	"""
 
-    event_type: typing.Optional[EventType] = None
+    event_type: typing.Optional[TransactionEventType] = None
     """
 	Type of the transaction event.
 	"""
 
-    id: typing.Optional[EventId] = None
+    id: typing.Optional[TransactionEventId] = None
     """
 	Unique ID of the transaction event.
 	Format: int64
@@ -4143,7 +4243,7 @@ class TransactionEvent(pydantic.BaseModel):
 	Consecutive number of the installment that is paid. Applicable only payout events, i.e. `event_type = PAYOUT`.
 	"""
 
-    status: typing.Optional[EventStatus] = None
+    status: typing.Optional[TransactionEventStatus] = None
     """
 	Status of the transaction event.
 	
