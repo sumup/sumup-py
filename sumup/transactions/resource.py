@@ -94,6 +94,11 @@ ListTransactionsV21ParamsTypeInput = typing.Union[
     typing.Literal["CHARGE_BACK", "PAYMENT", "REFUND"], str
 ]
 
+RefundTransaction201Response = dict[str, object]
+"""
+RefundTransaction201Response is a schema definition.
+"""
+
 
 class ListTransactionsV21200Response(pydantic.BaseModel):
     """
@@ -118,7 +123,7 @@ class TransactionsResource(Resource):
         *,
         amount: typing.Union[float, None, NotGivenType] = NOT_GIVEN,
         headers: typing.Optional[HeaderTypes] = None,
-    ):
+    ) -> RefundTransaction201Response:
         """
         Refund a transaction
 
@@ -127,8 +132,11 @@ class TransactionsResource(Resource):
 
         Raises:
             APIError: Raised when the API returns one of the documented error responses:
-                404: The requested resource does not exist.
+                400: The refund request is invalid.
+                403: The request is authenticated but not permitted for this operation.
+                404: The requested transaction does not exist or does not belong to the merchant.
                 409: The transaction cannot be refunded due to business constraints.
+                422: The refund could not be processed by the payment processor.
                 Unexpected response statuses also raise this exception.
         """
         body_data: dict[str, typing.Any] = {}
@@ -140,15 +148,33 @@ class TransactionsResource(Resource):
             json=serialize_request_data(body_data),
             headers=headers,
         )
-        if resp.status_code == 204:
-            return
+        if resp.status_code == 201:
+            return pydantic.TypeAdapter(RefundTransaction201Response).validate_python(resp.json())
+        elif resp.status_code == 400:
+            raise APIError(
+                "The refund request is invalid.", status=resp.status_code, body=resp.text
+            )
+        elif resp.status_code == 403:
+            raise APIError(
+                "The request is authenticated but not permitted for this operation.",
+                status=resp.status_code,
+                body=resp.text,
+            )
         elif resp.status_code == 404:
             raise APIError(
-                "The requested resource does not exist.", status=resp.status_code, body=resp.text
+                "The requested transaction does not exist or does not belong to the merchant.",
+                status=resp.status_code,
+                body=resp.text,
             )
         elif resp.status_code == 409:
             raise APIError(
                 "The transaction cannot be refunded due to business constraints.",
+                status=resp.status_code,
+                body=resp.text,
+            )
+        elif resp.status_code == 422:
+            raise APIError(
+                "The refund could not be processed by the payment processor.",
                 status=resp.status_code,
                 body=resp.text,
             )
@@ -312,7 +338,7 @@ class AsyncTransactionsResource(AsyncResource):
         *,
         amount: typing.Union[float, None, NotGivenType] = NOT_GIVEN,
         headers: typing.Optional[HeaderTypes] = None,
-    ):
+    ) -> RefundTransaction201Response:
         """
         Refund a transaction
 
@@ -321,8 +347,11 @@ class AsyncTransactionsResource(AsyncResource):
 
         Raises:
             APIError: Raised when the API returns one of the documented error responses:
-                404: The requested resource does not exist.
+                400: The refund request is invalid.
+                403: The request is authenticated but not permitted for this operation.
+                404: The requested transaction does not exist or does not belong to the merchant.
                 409: The transaction cannot be refunded due to business constraints.
+                422: The refund could not be processed by the payment processor.
                 Unexpected response statuses also raise this exception.
         """
         body_data: dict[str, typing.Any] = {}
@@ -334,15 +363,33 @@ class AsyncTransactionsResource(AsyncResource):
             json=serialize_request_data(body_data),
             headers=headers,
         )
-        if resp.status_code == 204:
-            return
+        if resp.status_code == 201:
+            return pydantic.TypeAdapter(RefundTransaction201Response).validate_python(resp.json())
+        elif resp.status_code == 400:
+            raise APIError(
+                "The refund request is invalid.", status=resp.status_code, body=resp.text
+            )
+        elif resp.status_code == 403:
+            raise APIError(
+                "The request is authenticated but not permitted for this operation.",
+                status=resp.status_code,
+                body=resp.text,
+            )
         elif resp.status_code == 404:
             raise APIError(
-                "The requested resource does not exist.", status=resp.status_code, body=resp.text
+                "The requested transaction does not exist or does not belong to the merchant.",
+                status=resp.status_code,
+                body=resp.text,
             )
         elif resp.status_code == 409:
             raise APIError(
                 "The transaction cannot be refunded due to business constraints.",
+                status=resp.status_code,
+                body=resp.text,
+            )
+        elif resp.status_code == 422:
+            raise APIError(
+                "The refund could not be processed by the payment processor.",
                 status=resp.status_code,
                 body=resp.text,
             )
