@@ -389,6 +389,7 @@ func (b *Builder) createFields(properties *orderedmap.Map[string, *base.SchemaPr
 			Type:     typeName,
 			Comment:  schemaPropertyGodoc(schema.Schema()),
 			Optional: optional,
+			Schema:   schema,
 		})
 		types = append(types, moreTypes...)
 	}

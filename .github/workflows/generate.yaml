@@ -5,6 +5,9 @@ on:
   pull_request:
     paths:
       - openapi.json
+      - codegen/**
+      - justfile
+      - sumup/_version.py
     branches:
       - main
 
@@ -40,6 +43,14 @@ jobs:
 
       - name: Generate SDK
         run: go run ./... generate --out ../sumup/ ../openapi.json
+        working-directory: codegen
+
+      - name: Test code generator and code samples
+        run: go test -race ./...
+        working-directory: codegen
+
+      - name: Generate code sample catalog
+        run: go run . samples --sdk-version-file ../sumup/_version.py --out /tmp/sumup-py-code-samples.json ../openapi.json
         working-directory: codegen
 
       - name: Format

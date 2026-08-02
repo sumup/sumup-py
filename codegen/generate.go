@@ -4,7 +4,6 @@ import (
 	"fmt"
 	"os"
 
-	"github.com/pb33f/libopenapi"
 	"github.com/urfave/cli/v2"
 
 	"github.com/sumup/sumup-py/codegen/pkg/builder"
@@ -30,26 +29,16 @@ func Generate() *cli.Command {
 				return fmt.Errorf("create output directory %q: %w", out, err)
 			}
 
-			spec, err := os.ReadFile(specs)
+			spec, err := loadOpenAPIDocument(specs)
 			if err != nil {
-				return fmt.Errorf("read specs: %w", err)
-			}
-
-			doc, err := libopenapi.NewDocument(spec)
-			if err != nil {
-				return fmt.Errorf("load openapi document: %w", err)
-			}
-
-			model, err := doc.BuildV3Model()
-			if err != nil {
-				return fmt.Errorf("build openapi v3 model: %w", err)
+				return err
 			}
 
 			builder := builder.New(builder.Config{
 				Out: out,
 			})
 
-			if err := builder.Load(&model.Model); err != nil {
+			if err := builder.Load(spec); err != nil {
 				return fmt.Errorf("load spec: %w", err)
 			}
 
