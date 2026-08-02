@@ -1,3 +1,14 @@
+# /// script
+# requires-python = ">=3.10"
+# dependencies = []
+# [tool.ty.environment]
+# extra-paths = [".."]
+# ///
+"""Run from the repository root: uv run --with-editable . examples/card_reader_checkout.py
+
+Set SUMUP_API_KEY and SUMUP_MERCHANT_CODE before running.
+"""
+
 import asyncio
 import os
 

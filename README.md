@@ -109,28 +109,44 @@ reader_checkout = client.readers.create_checkout(
 print(f"Reader checkout created: {reader_checkout}")
 ```
 
-### Verifying Webhooks
+### Handling Events
+
+Create a handler with your event signing secret and register typed callbacks:
 
 ```python
-from sumup import Sumup, WebhookHandler
-from sumup.webhooks import WebhookSignatureError
+import os
 
-client = Sumup(api_key="sup_sk_MvxmLOl0...")
-webhooks = WebhookHandler(secret="whsec_...", client=client)
+from sumup import Sumup
+from sumup.events import EventNotification, ReaderCreatedEvent
 
-def handle_webhook(headers: dict[str, str], body: bytes) -> None:
-    try:
-        event = webhooks.parse_and_verify(headers, body)
-    except WebhookSignatureError:
-        # Reject the request with 400/401 in your web framework.
-        raise
+client = Sumup(api_key=os.environ["SUMUP_API_KEY"])
 
-    if event.type == "checkout.created":
-        checkout = event.fetch_object()
-        print(f"Checkout {checkout.id} is now {checkout.status}")
+
+def fallback(event: EventNotification) -> None:
+    print(f"Received {event.type}")
+
+
+events = client.events_handler(os.environ["SUMUP_EVENT_SECRET"], fallback)
+
+
+@events.on_reader_created
+def reader_created(event: ReaderCreatedEvent) -> None:
+    reader = event.fetch_object()
+    print(f"Reader paired: {reader.id}")
+
+
+# In your HTTP route, pass the unchanged body and the complete
+# X-SumUp-Webhook-Signature header value:
+events.handle(raw_body, signature)
 ```
 
-For a minimal end-to-end example using Python's built-in HTTP server, see [examples/webhooks.py](./examples/webhooks.py).
+You can also register an existing function with `events.on_reader_created(callback)`.
+
+Send a 2xx response after handling succeeds. Reject `EventSignatureError` and `EventPayloadError` with 400; return 500 for `EventCallbackError` so processing can be retried. Make callbacks idempotent and configure body limits in your server.
+
+Use `AsyncSumup` with async callbacks, `await events.handle(...)`, and `await event.fetch_object_async()` for async servers. For parsing without callbacks, use `client.parse_event_notification(body, signature, secret)`.
+
+See the runnable [Flask](examples/events-flask/) and [FastAPI](examples/events-fastapi/) examples for complete HTTP routes and error handling.
 
 ## Version Support Policy
 
