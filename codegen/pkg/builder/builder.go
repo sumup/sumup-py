@@ -32,6 +32,8 @@ type Builder struct {
 
 	pathsByTag map[string]*v3.Paths
 
+	events []EventDefinition
+
 	templates *template.Template
 
 	start time.Time
@@ -79,6 +81,9 @@ func (b *Builder) Load(spec *v3.Document) error {
 
 	b.collectPaths()
 	b.collectSchemas()
+	if err := b.collectEvents(); err != nil {
+		return err
+	}
 
 	return nil
 }
@@ -91,6 +96,10 @@ func (b *Builder) Build() error {
 	}
 
 	if err := b.generateSharedTypes(); err != nil {
+		return err
+	}
+
+	if err := b.writeEventsFile(path.Join(b.cfg.Out, "events.py")); err != nil {
 		return err
 	}
 

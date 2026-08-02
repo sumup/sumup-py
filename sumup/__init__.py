@@ -1,14 +1,15 @@
-from sumup._client import Sumup, AsyncSumup
-from sumup._service import Resource, AsyncResource
+from sumup._client import AsyncSumup, Sumup
 from sumup._exceptions import APIError
-from sumup.webhooks import WebhookHandler
+from sumup._service import AsyncResource, Resource
+from sumup.events import AsyncEventsHandler, EventsHandler
 
 __all__ = [
     "APIError",
+    "AsyncEventsHandler",
     "AsyncResource",
     "AsyncSumup",
+    "EventsHandler",
     "MerchantAccount",
     "Resource",
     "Sumup",
-    "WebhookHandler",
 ]

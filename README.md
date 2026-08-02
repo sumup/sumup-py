@@ -110,28 +110,43 @@ reader_checkout = client.readers.create_checkout(
 print(f"Reader checkout created: {reader_checkout}")
 ```
 
-### Verifying Webhooks
+### Handling Events
 
 ```python
-from sumup import Sumup, WebhookHandler
-from sumup.webhooks import WebhookSignatureError
+from sumup import Sumup
+from sumup.events import (
+    EventNotification,
+    EventSignatureError,
+    EventTimestampError,
+    ReaderCreatedEvent,
+)
 
 client = Sumup(api_key="sup_sk_MvxmLOl0...")
-webhooks = WebhookHandler(secret="whsec_...", client=client)
 
-def handle_webhook(headers: dict[str, str], body: bytes) -> None:
+def handle_unhandled_event(event: EventNotification, _client: Sumup) -> None:
+    print(f"Received unhandled event type: {event.type}")
+
+def handle_reader_created(event: ReaderCreatedEvent, _client: Sumup) -> None:
+    reader = event.fetch_object()
+    print(f"Reader paired: {reader.id}")
+
+events = client.events_handler("event_secret", handle_unhandled_event)
+events.on(ReaderCreatedEvent, handle_reader_created)
+
+def handle_request(body: bytes, signature: str, timestamp: str) -> None:
     try:
-        event = webhooks.parse_and_verify(headers, body)
-    except WebhookSignatureError:
+        events.handle(body, signature, timestamp)
+    except (EventSignatureError, EventTimestampError):
         # Reject the request with 400/401 in your web framework.
         raise
-
-    if event.type == "checkout.created":
-        checkout = event.fetch_object()
-        print(f"Checkout {checkout.id} is now {checkout.status}")
 ```
 
-For a minimal end-to-end example using Python's built-in HTTP server, see [examples/webhooks.py](./examples/webhooks.py).
+Pass the exact raw request body together with the
+`X-SumUp-Webhook-Signature` and `X-SumUp-Webhook-Timestamp` header values.
+Events without a registered callback are sent to the required fallback callback.
+
+For a minimal end-to-end example using Python's built-in HTTP server, see
+[examples/events.py](./examples/events.py).
 
 ## Version support policy
 

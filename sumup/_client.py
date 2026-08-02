@@ -7,7 +7,7 @@ import typing
 from ._service import Resource, AsyncResource, runtime_headers
 
 if typing.TYPE_CHECKING:
-    from .webhooks import WebhookHandler
+    from .events import AsyncEventCallback, AsyncEventsHandler, EventCallback, EventsHandler
 from .checkouts import CheckoutsResource, AsyncCheckoutsResource
 from .customers import CustomersResource, AsyncCustomersResource
 from .members import MembersResource, AsyncMembersResource
@@ -54,19 +54,21 @@ class Sumup(Resource):
             )
         )
 
-    def webhook_handler(
+    def events_handler(
         self,
+        secret: str,
+        fallback: "EventCallback",
         *,
-        secret: typing.Optional[str] = None,
         tolerance: typing.Optional[dt.timedelta] = None,
-    ) -> "WebhookHandler":
-        """Create a webhook handler bound to this client."""
-        from .webhooks import DEFAULT_WEBHOOK_TOLERANCE, WebhookHandler
+    ) -> "EventsHandler":
+        """Create a verified event handler bound to this client."""
+        from .events import DEFAULT_TOLERANCE, EventsHandler
 
-        return WebhookHandler(
+        return EventsHandler(
             secret=secret,
-            tolerance=tolerance or DEFAULT_WEBHOOK_TOLERANCE,
+            fallback=fallback,
             client=self,
+            tolerance=DEFAULT_TOLERANCE if tolerance is None else tolerance,
         )
 
     @property
@@ -168,19 +170,21 @@ class AsyncSumup(AsyncResource):
             )
         )
 
-    def webhook_handler(
+    def events_handler(
         self,
+        secret: str,
+        fallback: "AsyncEventCallback",
         *,
-        secret: typing.Optional[str] = None,
         tolerance: typing.Optional[dt.timedelta] = None,
-    ) -> "WebhookHandler":
-        """Create a webhook handler bound to this client."""
-        from .webhooks import DEFAULT_WEBHOOK_TOLERANCE, WebhookHandler
+    ) -> "AsyncEventsHandler":
+        """Create a verified async event handler bound to this client."""
+        from .events import AsyncEventsHandler, DEFAULT_TOLERANCE
 
-        return WebhookHandler(
+        return AsyncEventsHandler(
             secret=secret,
-            tolerance=tolerance or DEFAULT_WEBHOOK_TOLERANCE,
+            fallback=fallback,
             client=self,
+            tolerance=DEFAULT_TOLERANCE if tolerance is None else tolerance,
         )
 
     @property
