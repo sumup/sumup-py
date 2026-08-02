@@ -48,7 +48,7 @@ func (mt Method) ParamsString() string {
 	res.WriteString("self")
 	for _, p := range mt.PathParams {
 		res.WriteString(", ")
-		res.WriteString(fmt.Sprintf("%s: %s", strcase.ToSnake(p.Name), p.Type))
+		fmt.Fprintf(&res, "%s: %s", strcase.ToSnake(p.Name), p.Type)
 	}
 	needsKeywordOnly := mt.HasFlattenedBody() || len(mt.QueryFields) > 0
 	if mt.HasFlattenedBody() {
@@ -61,7 +61,7 @@ func (mt Method) ParamsString() string {
 		}
 	} else if mt.HasBody {
 		res.WriteString(", ")
-		res.WriteString(fmt.Sprintf("body: %sInput", mt.BodyType))
+		fmt.Fprintf(&res, "body: %sInput", mt.BodyType)
 	}
 	if len(mt.QueryFields) > 0 {
 		if !mt.HasFlattenedBody() {
@@ -160,7 +160,7 @@ func pathBuilder(path string) string {
 		if match == nil {
 			res.WriteString(part)
 		} else {
-			res.WriteString(fmt.Sprintf("{%s}", strcase.ToSnake(match[1])))
+			fmt.Fprintf(&res, "{%s}", strcase.ToSnake(match[1]))
 		}
 	}
 	res.WriteString(`"`)
@@ -277,6 +277,7 @@ func (b *Builder) buildQueryFields(o *v3.Operation) ([]Property, error) {
 			SerializedName: alias,
 			Type:           typeName,
 			Optional:       p.Required == nil || !*p.Required,
+			Schema:         p.Schema,
 			Comment:        parameterPropertyDoc(p.Schema.Schema()),
 		})
 	}

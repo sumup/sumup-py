@@ -4,6 +4,8 @@ import (
 	"cmp"
 	"fmt"
 	"strings"
+
+	"github.com/pb33f/libopenapi/datamodel/high/base"
 )
 
 // ClassDeclaration holds the information for generating a type.
@@ -43,6 +45,8 @@ type Property struct {
 	Type string
 	// Optional field.
 	Optional bool
+	// Schema is the OpenAPI schema used to generate this property.
+	Schema *base.SchemaProxy
 
 	Comment string
 }
