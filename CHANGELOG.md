@@ -1,5 +1,24 @@
 # Changelog
 
+## [0.3.2](https://github.com/sumup/sumup-py/compare/v0.3.1...v0.3.2) (2026-08-03)
+
+
+### Features
+
+* **codegen:** generate validated Python code samples ([#367](https://github.com/sumup/sumup-py/issues/367)) ([aebb848](https://github.com/sumup/sumup-py/commit/aebb848dae1d8e455e22e0235ee5f76790cd9735))
+
+
+### Chores
+
+* **deps-dev:** bump ruff from 0.15.21 to 0.15.22 ([#361](https://github.com/sumup/sumup-py/issues/361)) ([285ba9d](https://github.com/sumup/sumup-py/commit/285ba9d0d84826f7ed216ea66c956552045bb4f6))
+* **deps-dev:** bump ty from 0.0.59 to 0.0.62 ([#362](https://github.com/sumup/sumup-py/issues/362)) ([6580690](https://github.com/sumup/sumup-py/commit/65806900f6b7120382717d01735e5d0691b5f24a))
+* **deps:** bump actions/checkout from 7.0.0 to 7.0.1 ([#358](https://github.com/sumup/sumup-py/issues/358)) ([37d343e](https://github.com/sumup/sumup-py/commit/37d343effed75d08fd1b799d1900ad20cdf7e5de))
+* **deps:** bump actions/setup-go from 6.5.0 to 7.0.0 ([#356](https://github.com/sumup/sumup-py/issues/356)) ([ccfb4b7](https://github.com/sumup/sumup-py/commit/ccfb4b791d60ac7fae76895ac75dcb7d25a8c6e8))
+* **deps:** bump astral-sh/setup-uv from 8.3.2 to 9.0.0 ([#360](https://github.com/sumup/sumup-py/issues/360)) ([1ce62e0](https://github.com/sumup/sumup-py/commit/1ce62e070441e9878148c9a0efea70493404bb38))
+* **deps:** bump github.com/pb33f/libopenapi in /codegen ([#359](https://github.com/sumup/sumup-py/issues/359)) ([6f1cc88](https://github.com/sumup/sumup-py/commit/6f1cc887461014b2f111271f6850a93b06f36904))
+* **deps:** bump reviewdog/action-actionlint from 1.72.0 to 1.73.0 ([#357](https://github.com/sumup/sumup-py/issues/357)) ([0eac0de](https://github.com/sumup/sumup-py/commit/0eac0de0c18f26fb15c57dbb41aa3e1a9793e470))
+* synced file(s) with sumup/apis ([#363](https://github.com/sumup/sumup-py/issues/363)) ([b7d32ba](https://github.com/sumup/sumup-py/commit/b7d32ba6d9911242c1297d3c267c39b827b265e6))
+
 ## [0.3.1](https://github.com/sumup/sumup-py/compare/v0.3.0...v0.3.1) (2026-07-17)
 
 
