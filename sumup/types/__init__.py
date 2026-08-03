@@ -206,6 +206,54 @@ class AddressLegacyDict(typing_extensions.TypedDict, total=False):
 AddressLegacyInput = AddressLegacyDict
 
 
+class Affiliate(pydantic.BaseModel):
+    """
+    Affiliate is a schema definition.
+    """
+
+    app_id: str
+
+    key: str
+
+
+class AffiliateDict(typing_extensions.TypedDict, total=False):
+    app_id: typing_extensions.Required[str]
+    key: typing_extensions.Required[str]
+
+
+AffiliateInput = AffiliateDict
+
+
+class Amount(pydantic.BaseModel):
+    """
+    Amount is a schema definition.
+    """
+
+    currency: str
+    """
+	Currency ISO 4217 code
+	"""
+
+    value: int
+    """
+	Amount in minor units (e.g. cents).
+	"""
+
+
+class AmountDict(typing_extensions.TypedDict, total=False):
+    currency: typing_extensions.Required[
+        typing_extensions.Annotated[str, typing_extensions.Doc("Currency ISO 4217 code")]
+    ]
+    value: typing_extensions.Required[
+        typing_extensions.Annotated[
+            int, typing_extensions.Doc("Amount in minor units (e.g. cents).")
+        ]
+    ]
+
+
+AmountInput = AmountDict
+
+
 Attributes = dict[str, object]
 AttributesInput = typing.Mapping[str, object]
 """
@@ -2040,6 +2088,11 @@ class CreateReaderCheckoutResponseData(pydantic.BaseModel):
 	It can be used later to fetch the transaction details via the [Transactions API](https://developer.sumup.com/api/transactions/get).
 	"""
 
+    checkout_id: typing.Optional[str] = None
+    """
+	The checkout ID is a unique identifier for the checkout.
+	"""
+
 
 class CreateReaderCheckoutResponse(pydantic.BaseModel):
     """
@@ -2525,6 +2578,132 @@ FinancialPayouts = list[FinancialPayout]
 """
 Ordered list of payout and payout-deduction records.
 """
+
+GetReaderCheckoutResponseDataCardType = typing.Union[typing.Literal["credit", "debit"], str]
+
+GetReaderCheckoutResponseDataPaymentType = typing.Union[typing.Literal["card", "pix"], str]
+
+GetReaderCheckoutResponseDataStatus = typing.Union[
+    typing.Literal["cancelled", "failed", "pending", "successful"], str
+]
+
+
+class GetReaderCheckoutResponseDataTotalAmount(pydantic.BaseModel):
+    """
+            Amount structure.
+
+    The amount is represented as an integer value altogether with the currency and the minor unit.
+
+    For example, EUR 1.00 is represented as value 100 with minor unit of 2.
+    """
+
+    currency: str
+    """
+	Currency ISO 4217 code
+	"""
+
+    minor_unit: int
+    """
+	The minor units of the currency.
+	It represents the number of decimals of the currency. For the currencies CLP, COP and HUF, the minor unit is0.
+	Min: 0
+	"""
+
+    value: int
+    """
+	Integer value of the amount.
+	Min: 0
+	"""
+
+
+class GetReaderCheckoutResponseData(pydantic.BaseModel):
+    """
+    GetReaderCheckoutResponseData is a schema definition.
+    """
+
+    card_type: GetReaderCheckoutResponseDataCardType
+    """
+	Type of the card. Required for some countries
+	"""
+
+    checkout_id: str
+    """
+	Unique identifier for the checkout
+	Format: uuid
+	"""
+
+    client_transaction_id: str
+    """
+	Client transaction identifier associated with the checkout
+	"""
+
+    created_at: datetime.datetime
+    """
+	Checkout creation timestamp
+	"""
+
+    installments: int
+    """
+	Number of installments for the transaction. Required for some countries.
+	"""
+
+    payment_status: str
+    """
+	Payment status from payments v2 event
+	"""
+
+    payment_type: GetReaderCheckoutResponseDataPaymentType
+    """
+	Type of the payment. Required for some countries
+	"""
+
+    reader_firmware_version: str
+    """
+	Reader firmware version
+	"""
+
+    reader_serial_number: str
+    """
+	Device serial number
+	"""
+
+    status: GetReaderCheckoutResponseDataStatus
+    """
+	Current status of the checkout
+	"""
+
+    total_amount: GetReaderCheckoutResponseDataTotalAmount
+    """
+	Amount structure.
+	
+	The amount is represented as an integer value altogether with the currency and the minor unit.
+	
+	For example, EUR 1.00 is represented as value 100 with minor unit of 2.
+	"""
+
+    updated_at: datetime.datetime
+    """
+	Checkout last update timestamp
+	"""
+
+    valid_until: datetime.datetime
+    """
+	Checkout expiration timestamp. After this time, the checkout will be automatically cancelled.
+	"""
+
+    payment_failure_reason: typing.Optional[str] = None
+    """
+	Payment failure reason
+	"""
+
+
+class GetReaderCheckoutResponse(pydantic.BaseModel):
+    """
+    GetReaderCheckoutResponse is a schema definition.
+    """
+
+    data: GetReaderCheckoutResponseData
+
 
 HorizontalAccuracy = float
 """
@@ -3547,10 +3726,8 @@ class ReaderDevice(pydantic.BaseModel):
 ReaderId = str
 ReaderIdInput = str
 """
-Unique identifier of the object.
-
-Note that this identifies the instance of the physical devices pairing with your SumUp account. If you [delete](https://developer.sumup.com/api/readers/delete-reader) areader, and pair the device again, the ID will be different. Do not use this ID to refer to a physical device.
-Minlength: 30
+Unique identifier of the reader that the payment is initiated on.
+Min length: 30
 Max length: 30
 """
 
@@ -3581,10 +3758,8 @@ class Reader(pydantic.BaseModel):
 
     id: ReaderId
     """
-	Unique identifier of the object.
-	
-	Note that this identifies the instance of the physical devices pairing with your SumUp account. If you [delete](https://developer.sumup.com/api/readers/delete-reader) areader, and pair the device again, the ID will be different. Do not use this ID to refer to a physical device.
-	Minlength: 30
+	Unique identifier of the reader that the payment is initiated on.
+	Min length: 30
 	Max length: 30
 	"""
 
@@ -3692,6 +3867,74 @@ The pairing code is a 8 or 9 character alphanumeric string that is displayed on 
 Min length: 8
 Max length: 9
 """
+
+
+class ReaderPaymentRequestParams(pydantic.BaseModel):
+    """
+    ReaderPaymentRequestParams is a schema definition.
+    """
+
+    client_transaction_id: str
+    """
+	Caller-supplied correlation identifier, used as the idempotency key.
+	"""
+
+    total_amount: Amount
+
+    affiliate: typing.Optional[Affiliate] = None
+
+    tip_amount: typing.Optional[int] = None
+    """
+	Optional tip amount in minor units, added on top of total_amount.
+	"""
+
+
+class ReaderPaymentRequestParamsDict(typing_extensions.TypedDict, total=False):
+    client_transaction_id: typing_extensions.Required[
+        typing_extensions.Annotated[
+            str,
+            typing_extensions.Doc(
+                "Caller-supplied correlation identifier, used as the idempotency key."
+            ),
+        ]
+    ]
+    total_amount: typing_extensions.Required[AmountInput]
+    affiliate: typing_extensions.NotRequired[AffiliateInput]
+    tip_amount: typing_extensions.NotRequired[
+        typing_extensions.Annotated[
+            int,
+            typing_extensions.Doc(
+                "Optional tip amount in minor units, added on top of total_amount."
+            ),
+        ]
+    ]
+
+
+ReaderPaymentRequestParamsInput = ReaderPaymentRequestParamsDict
+
+
+class ReaderPaymentResponseData(pydantic.BaseModel):
+    """
+    ReaderPaymentResponseData is a schema definition.
+    """
+
+    client_transaction_id: typing.Optional[str] = None
+    """
+	Caller-supplied correlation identifier that was provided in the request.
+	"""
+
+    transaction_code: typing.Optional[str] = None
+    """
+	Transaction code returned by the acquirer/processing entity after processing the transaction.
+	"""
+
+
+class ReaderPaymentResponse(pydantic.BaseModel):
+    """
+    ReaderPaymentResponse is a schema definition.
+    """
+
+    data: typing.Optional[ReaderPaymentResponseData] = None
 
 
 class ReceiptCard(pydantic.BaseModel):
