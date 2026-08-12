@@ -1,5 +1,30 @@
 # Changelog
 
+## [0.3.2](https://github.com/sumup/sumup-py/compare/v0.3.1...v0.3.2) (2026-08-12)
+
+
+### Features
+
+* **codegen:** generate validated Python code samples ([#367](https://github.com/sumup/sumup-py/issues/367)) ([aebb848](https://github.com/sumup/sumup-py/commit/aebb848dae1d8e455e22e0235ee5f76790cd9735))
+* **codegen:** sample generator ([#278](https://github.com/sumup/sumup-py/issues/278)) ([fa63455](https://github.com/sumup/sumup-py/commit/fa63455ea15ba080766ce1c84dfbe4757c9b5657))
+
+
+### Chores
+
+* **deps-dev:** bump ruff from 0.15.21 to 0.15.22 ([#361](https://github.com/sumup/sumup-py/issues/361)) ([285ba9d](https://github.com/sumup/sumup-py/commit/285ba9d0d84826f7ed216ea66c956552045bb4f6))
+* **deps-dev:** bump ruff from 0.15.22 to 0.16.2 ([#371](https://github.com/sumup/sumup-py/issues/371)) ([fc09fcb](https://github.com/sumup/sumup-py/commit/fc09fcb80a28a48da445c68e35336481d59ef069))
+* **deps-dev:** bump ty from 0.0.59 to 0.0.62 ([#362](https://github.com/sumup/sumup-py/issues/362)) ([6580690](https://github.com/sumup/sumup-py/commit/65806900f6b7120382717d01735e5d0691b5f24a))
+* **deps-dev:** bump ty from 0.0.62 to 0.0.69 ([#373](https://github.com/sumup/sumup-py/issues/373)) ([ed21077](https://github.com/sumup/sumup-py/commit/ed21077547647041521b86b4a2338e4912191f39))
+* **deps:** bump actions/checkout from 7.0.0 to 7.0.1 ([#358](https://github.com/sumup/sumup-py/issues/358)) ([37d343e](https://github.com/sumup/sumup-py/commit/37d343effed75d08fd1b799d1900ad20cdf7e5de))
+* **deps:** bump actions/setup-go from 6.5.0 to 7.0.0 ([#356](https://github.com/sumup/sumup-py/issues/356)) ([ccfb4b7](https://github.com/sumup/sumup-py/commit/ccfb4b791d60ac7fae76895ac75dcb7d25a8c6e8))
+* **deps:** bump astral-sh/setup-uv from 8.3.2 to 9.0.0 ([#360](https://github.com/sumup/sumup-py/issues/360)) ([1ce62e0](https://github.com/sumup/sumup-py/commit/1ce62e070441e9878148c9a0efea70493404bb38))
+* **deps:** bump github.com/lmittmann/tint in /codegen ([#351](https://github.com/sumup/sumup-py/issues/351)) ([212c521](https://github.com/sumup/sumup-py/commit/212c521029830e77c006447d048cbc01cb9d3117))
+* **deps:** bump github.com/pb33f/libopenapi in /codegen ([#359](https://github.com/sumup/sumup-py/issues/359)) ([6f1cc88](https://github.com/sumup/sumup-py/commit/6f1cc887461014b2f111271f6850a93b06f36904))
+* **deps:** bump reviewdog/action-actionlint from 1.72.0 to 1.73.0 ([#357](https://github.com/sumup/sumup-py/issues/357)) ([0eac0de](https://github.com/sumup/sumup-py/commit/0eac0de0c18f26fb15c57dbb41aa3e1a9793e470))
+* **deps:** bump reviewdog/action-actionlint from 1.73.0 to 1.73.1 ([#372](https://github.com/sumup/sumup-py/issues/372)) ([470d299](https://github.com/sumup/sumup-py/commit/470d29950aa1c2fa8ecb8a4912cf64ef8460c903))
+* synced file(s) with sumup/apis ([#363](https://github.com/sumup/sumup-py/issues/363)) ([b7d32ba](https://github.com/sumup/sumup-py/commit/b7d32ba6d9911242c1297d3c267c39b827b265e6))
+* synced file(s) with sumup/apis ([#368](https://github.com/sumup/sumup-py/issues/368)) ([7436d0d](https://github.com/sumup/sumup-py/commit/7436d0d134eb64437e0d912525a3fb63c1224d32))
+
 ## [0.3.1](https://github.com/sumup/sumup-py/compare/v0.3.0...v0.3.1) (2026-07-17)
 
 
