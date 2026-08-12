@@ -38,7 +38,7 @@ class Secret:
     def __hash__(self) -> int:
         return hash(self._value)
 
-    def __eq__(self, other: Any) -> bool:
+    def __eq__(self, other: object) -> bool:
         if isinstance(other, Secret):
             return self._value == other._value
         if isinstance(other, str):
@@ -51,14 +51,14 @@ class Secret:
     ) -> core_schema.CoreSchema:
         """Allow pydantic models to accept raw strings but serialize as plain str."""
 
-        def validate(value: Any) -> "Secret":
+        def validate(value: Any) -> Secret:
             if isinstance(value, Secret):
                 return value
             if isinstance(value, str):
                 return cls(value)
             raise TypeError("Secret value must be a string")
 
-        def serialize(value: "Secret") -> str:
+        def serialize(value: Secret) -> str:
             return value._value
 
         return core_schema.no_info_plain_validator_function(

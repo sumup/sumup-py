@@ -5,34 +5,39 @@ Endpoints to manage account members. Members are users that have membership with
 """
 
 from __future__ import annotations
+
+import datetime
+import typing
+
+import httpx
+import pydantic
+import typing_extensions
+
+from .._exceptions import APIError
+from .._secret import Secret
 from .._service import (
-    Resource,
+    NOT_GIVEN,
     AsyncResource,
     HeaderTypes,
     NotGivenType,
-    NOT_GIVEN,
+    Resource,
     serialize_query_params,
     serialize_request_data,
 )
-from .._exceptions import APIError
-from .._secret import Secret
 from ..types import (
     Attributes,
+    AttributesInput,
     Invite,
     Member,
     MembershipStatus,
+    MembershipStatusInput,
     MembershipUser,
     MembershipUserClassic,
     Metadata,
+    MetadataInput,
     Problem,
     UserType,
 )
-from ..types import AttributesInput, MembershipStatusInput, MetadataInput
-import datetime
-import httpx
-import typing
-import pydantic
-import typing_extensions
 
 
 class CreateMerchantMemberBodyInput(typing_extensions.TypedDict, total=False):
@@ -158,7 +163,7 @@ class ListMerchantMembers200Response(pydantic.BaseModel):
 
     items: list[Member]
 
-    total_count: typing.Optional[int] = None
+    total_count: int | None = None
 
 
 class MembersResource(Resource):
@@ -171,14 +176,14 @@ class MembersResource(Resource):
         self,
         merchant_code: str,
         *,
-        offset: typing.Union[int, NotGivenType] = NOT_GIVEN,
-        limit: typing.Union[int, NotGivenType] = NOT_GIVEN,
-        scroll: typing.Union[bool, NotGivenType] = NOT_GIVEN,
-        email: typing.Union[str, NotGivenType] = NOT_GIVEN,
-        user_id: typing.Union[str, NotGivenType] = NOT_GIVEN,
-        status: typing.Union[MembershipStatusInput, NotGivenType] = NOT_GIVEN,
-        roles: typing.Union[typing.Sequence[str], NotGivenType] = NOT_GIVEN,
-        headers: typing.Optional[HeaderTypes] = None,
+        offset: int | NotGivenType = NOT_GIVEN,
+        limit: int | NotGivenType = NOT_GIVEN,
+        scroll: bool | NotGivenType = NOT_GIVEN,
+        email: str | NotGivenType = NOT_GIVEN,
+        user_id: str | NotGivenType = NOT_GIVEN,
+        status: MembershipStatusInput | NotGivenType = NOT_GIVEN,
+        roles: typing.Sequence[str] | NotGivenType = NOT_GIVEN,
+        headers: HeaderTypes | None = None,
     ) -> ListMerchantMembers200Response:
         """
         List members
@@ -223,14 +228,14 @@ class MembersResource(Resource):
         self,
         merchant_code: str,
         *,
-        is_managed_user: typing.Union[bool, None, NotGivenType] = NOT_GIVEN,
+        is_managed_user: bool | None | NotGivenType = NOT_GIVEN,
         email: str,
-        password: typing.Union[Secret, None, NotGivenType] = NOT_GIVEN,
-        nickname: typing.Union[str, None, NotGivenType] = NOT_GIVEN,
+        password: Secret | None | NotGivenType = NOT_GIVEN,
+        nickname: str | None | NotGivenType = NOT_GIVEN,
         roles: typing.Sequence[str],
-        metadata: typing.Union[MetadataInput, None, NotGivenType] = NOT_GIVEN,
-        attributes: typing.Union[AttributesInput, None, NotGivenType] = NOT_GIVEN,
-        headers: typing.Optional[HeaderTypes] = None,
+        metadata: MetadataInput | None | NotGivenType = NOT_GIVEN,
+        attributes: AttributesInput | None | NotGivenType = NOT_GIVEN,
+        headers: HeaderTypes | None = None,
     ) -> Member:
         """
         Create a member
@@ -279,9 +284,7 @@ class MembersResource(Resource):
         else:
             raise APIError(f"Unexpected response", status=resp.status_code, body=resp.text)
 
-    def get(
-        self, merchant_code: str, member_id: str, headers: typing.Optional[HeaderTypes] = None
-    ) -> Member:
+    def get(self, merchant_code: str, member_id: str, headers: HeaderTypes | None = None) -> Member:
         """
         Retrieve a member
 
@@ -309,11 +312,11 @@ class MembersResource(Resource):
         merchant_code: str,
         member_id: str,
         *,
-        roles: typing.Union[typing.Sequence[str], None, NotGivenType] = NOT_GIVEN,
-        metadata: typing.Union[MetadataInput, None, NotGivenType] = NOT_GIVEN,
-        attributes: typing.Union[AttributesInput, None, NotGivenType] = NOT_GIVEN,
-        user: typing.Union[UpdateMerchantMemberBodyUserInput, None, NotGivenType] = NOT_GIVEN,
-        headers: typing.Optional[HeaderTypes] = None,
+        roles: typing.Sequence[str] | None | NotGivenType = NOT_GIVEN,
+        metadata: MetadataInput | None | NotGivenType = NOT_GIVEN,
+        attributes: AttributesInput | None | NotGivenType = NOT_GIVEN,
+        user: UpdateMerchantMemberBodyUserInput | None | NotGivenType = NOT_GIVEN,
+        headers: HeaderTypes | None = None,
     ) -> Member:
         """
         Update a member
@@ -369,9 +372,7 @@ class MembersResource(Resource):
         else:
             raise APIError(f"Unexpected response", status=resp.status_code, body=resp.text)
 
-    def delete(
-        self, merchant_code: str, member_id: str, headers: typing.Optional[HeaderTypes] = None
-    ):
+    def delete(self, merchant_code: str, member_id: str, headers: HeaderTypes | None = None):
         """
         Delete a member
 
@@ -410,14 +411,14 @@ class AsyncMembersResource(AsyncResource):
         self,
         merchant_code: str,
         *,
-        offset: typing.Union[int, NotGivenType] = NOT_GIVEN,
-        limit: typing.Union[int, NotGivenType] = NOT_GIVEN,
-        scroll: typing.Union[bool, NotGivenType] = NOT_GIVEN,
-        email: typing.Union[str, NotGivenType] = NOT_GIVEN,
-        user_id: typing.Union[str, NotGivenType] = NOT_GIVEN,
-        status: typing.Union[MembershipStatusInput, NotGivenType] = NOT_GIVEN,
-        roles: typing.Union[typing.Sequence[str], NotGivenType] = NOT_GIVEN,
-        headers: typing.Optional[HeaderTypes] = None,
+        offset: int | NotGivenType = NOT_GIVEN,
+        limit: int | NotGivenType = NOT_GIVEN,
+        scroll: bool | NotGivenType = NOT_GIVEN,
+        email: str | NotGivenType = NOT_GIVEN,
+        user_id: str | NotGivenType = NOT_GIVEN,
+        status: MembershipStatusInput | NotGivenType = NOT_GIVEN,
+        roles: typing.Sequence[str] | NotGivenType = NOT_GIVEN,
+        headers: HeaderTypes | None = None,
     ) -> ListMerchantMembers200Response:
         """
         List members
@@ -462,14 +463,14 @@ class AsyncMembersResource(AsyncResource):
         self,
         merchant_code: str,
         *,
-        is_managed_user: typing.Union[bool, None, NotGivenType] = NOT_GIVEN,
+        is_managed_user: bool | None | NotGivenType = NOT_GIVEN,
         email: str,
-        password: typing.Union[Secret, None, NotGivenType] = NOT_GIVEN,
-        nickname: typing.Union[str, None, NotGivenType] = NOT_GIVEN,
+        password: Secret | None | NotGivenType = NOT_GIVEN,
+        nickname: str | None | NotGivenType = NOT_GIVEN,
         roles: typing.Sequence[str],
-        metadata: typing.Union[MetadataInput, None, NotGivenType] = NOT_GIVEN,
-        attributes: typing.Union[AttributesInput, None, NotGivenType] = NOT_GIVEN,
-        headers: typing.Optional[HeaderTypes] = None,
+        metadata: MetadataInput | None | NotGivenType = NOT_GIVEN,
+        attributes: AttributesInput | None | NotGivenType = NOT_GIVEN,
+        headers: HeaderTypes | None = None,
     ) -> Member:
         """
         Create a member
@@ -519,7 +520,7 @@ class AsyncMembersResource(AsyncResource):
             raise APIError(f"Unexpected response", status=resp.status_code, body=resp.text)
 
     async def get(
-        self, merchant_code: str, member_id: str, headers: typing.Optional[HeaderTypes] = None
+        self, merchant_code: str, member_id: str, headers: HeaderTypes | None = None
     ) -> Member:
         """
         Retrieve a member
@@ -548,11 +549,11 @@ class AsyncMembersResource(AsyncResource):
         merchant_code: str,
         member_id: str,
         *,
-        roles: typing.Union[typing.Sequence[str], None, NotGivenType] = NOT_GIVEN,
-        metadata: typing.Union[MetadataInput, None, NotGivenType] = NOT_GIVEN,
-        attributes: typing.Union[AttributesInput, None, NotGivenType] = NOT_GIVEN,
-        user: typing.Union[UpdateMerchantMemberBodyUserInput, None, NotGivenType] = NOT_GIVEN,
-        headers: typing.Optional[HeaderTypes] = None,
+        roles: typing.Sequence[str] | None | NotGivenType = NOT_GIVEN,
+        metadata: MetadataInput | None | NotGivenType = NOT_GIVEN,
+        attributes: AttributesInput | None | NotGivenType = NOT_GIVEN,
+        user: UpdateMerchantMemberBodyUserInput | None | NotGivenType = NOT_GIVEN,
+        headers: HeaderTypes | None = None,
     ) -> Member:
         """
         Update a member
@@ -608,9 +609,7 @@ class AsyncMembersResource(AsyncResource):
         else:
             raise APIError(f"Unexpected response", status=resp.status_code, body=resp.text)
 
-    async def delete(
-        self, merchant_code: str, member_id: str, headers: typing.Optional[HeaderTypes] = None
-    ):
+    async def delete(self, merchant_code: str, member_id: str, headers: HeaderTypes | None = None):
         """
         Delete a member
 

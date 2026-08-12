@@ -22,16 +22,24 @@ Typical workflow:
 """
 
 from __future__ import annotations
+
+import datetime
+import typing
+
+import httpx
+import pydantic
+import typing_extensions
+
+from .._exceptions import APIError
 from .._service import (
-    Resource,
+    NOT_GIVEN,
     AsyncResource,
     HeaderTypes,
     NotGivenType,
-    NOT_GIVEN,
+    Resource,
     serialize_query_params,
     serialize_request_data,
 )
-from .._exceptions import APIError
 from ..types import (
     CardResponse,
     CardType,
@@ -39,6 +47,7 @@ from ..types import (
     Device,
     ElvCardAccount,
     EntryMode,
+    EntryModeInput,
     Error,
     Event,
     HorizontalAccuracy,
@@ -46,6 +55,7 @@ from ..types import (
     Link,
     Lon,
     PaymentType,
+    PaymentTypeInput,
     Problem,
     Product,
     TransactionBase,
@@ -58,15 +68,9 @@ from ..types import (
     TransactionHistory,
     TransactionId,
     TransactionMixinHistory,
-    TransactionStatus,
     TransactionsHistoryLink,
+    TransactionStatus,
 )
-from ..types import EntryModeInput, PaymentTypeInput
-import datetime
-import httpx
-import typing
-import pydantic
-import typing_extensions
 
 
 class RefundTransactionBodyInput(typing_extensions.TypedDict, total=False):
@@ -84,15 +88,13 @@ class RefundTransactionBodyInput(typing_extensions.TypedDict, total=False):
     ]
 
 
-ListTransactionsV21ParamsOrderInput = typing.Union[typing.Literal["ascending", "descending"], str]
+ListTransactionsV21ParamsOrderInput = typing.Literal["ascending", "descending"] | str
 
-ListTransactionsV21ParamsStatuseInput = typing.Union[
-    typing.Literal["CANCELLED", "CHARGE_BACK", "FAILED", "REFUNDED", "SUCCESSFUL"], str
-]
+ListTransactionsV21ParamsStatuseInput = (
+    typing.Literal["CANCELLED", "CHARGE_BACK", "FAILED", "REFUNDED", "SUCCESSFUL"] | str
+)
 
-ListTransactionsV21ParamsTypeInput = typing.Union[
-    typing.Literal["CHARGE_BACK", "PAYMENT", "REFUND"], str
-]
+ListTransactionsV21ParamsTypeInput = typing.Literal["CHARGE_BACK", "PAYMENT", "REFUND"] | str
 
 RefundTransaction201Response = dict[str, object]
 """
@@ -105,9 +107,9 @@ class ListTransactionsV21200Response(pydantic.BaseModel):
     ListTransactionsV21200Response is a schema definition.
     """
 
-    items: typing.Optional[list[TransactionHistory]] = None
+    items: list[TransactionHistory] | None = None
 
-    links: typing.Optional[list[TransactionsHistoryLink]] = None
+    links: list[TransactionsHistoryLink] | None = None
 
 
 class TransactionsResource(Resource):
@@ -121,8 +123,8 @@ class TransactionsResource(Resource):
         merchant_code: str,
         transaction_id: str,
         *,
-        amount: typing.Union[float, None, NotGivenType] = NOT_GIVEN,
-        headers: typing.Optional[HeaderTypes] = None,
+        amount: float | None | NotGivenType = NOT_GIVEN,
+        headers: HeaderTypes | None = None,
     ) -> RefundTransaction201Response:
         """
         Refund a transaction
@@ -185,11 +187,11 @@ class TransactionsResource(Resource):
         self,
         merchant_code: str,
         *,
-        id: typing.Union[str, NotGivenType] = NOT_GIVEN,
-        transaction_code: typing.Union[str, NotGivenType] = NOT_GIVEN,
-        foreign_transaction_id: typing.Union[str, NotGivenType] = NOT_GIVEN,
-        client_transaction_id: typing.Union[str, NotGivenType] = NOT_GIVEN,
-        headers: typing.Optional[HeaderTypes] = None,
+        id: str | NotGivenType = NOT_GIVEN,
+        transaction_code: str | NotGivenType = NOT_GIVEN,
+        foreign_transaction_id: str | NotGivenType = NOT_GIVEN,
+        client_transaction_id: str | NotGivenType = NOT_GIVEN,
+        headers: HeaderTypes | None = None,
     ) -> TransactionFull:
         """
         Retrieve a transaction
@@ -245,24 +247,20 @@ class TransactionsResource(Resource):
         self,
         merchant_code: str,
         *,
-        transaction_code: typing.Union[str, NotGivenType] = NOT_GIVEN,
-        order: typing.Union[ListTransactionsV21ParamsOrderInput, NotGivenType] = NOT_GIVEN,
-        limit: typing.Union[int, NotGivenType] = NOT_GIVEN,
-        users: typing.Union[typing.Sequence[str], NotGivenType] = NOT_GIVEN,
-        statuses: typing.Union[
-            typing.Sequence[ListTransactionsV21ParamsStatuseInput], NotGivenType
-        ] = NOT_GIVEN,
-        payment_types: typing.Union[typing.Sequence[PaymentTypeInput], NotGivenType] = NOT_GIVEN,
-        entry_modes: typing.Union[typing.Sequence[EntryModeInput], NotGivenType] = NOT_GIVEN,
-        types: typing.Union[
-            typing.Sequence[ListTransactionsV21ParamsTypeInput], NotGivenType
-        ] = NOT_GIVEN,
-        changes_since: typing.Union[datetime.datetime, NotGivenType] = NOT_GIVEN,
-        newest_time: typing.Union[datetime.datetime, NotGivenType] = NOT_GIVEN,
-        newest_ref: typing.Union[str, NotGivenType] = NOT_GIVEN,
-        oldest_time: typing.Union[datetime.datetime, NotGivenType] = NOT_GIVEN,
-        oldest_ref: typing.Union[str, NotGivenType] = NOT_GIVEN,
-        headers: typing.Optional[HeaderTypes] = None,
+        transaction_code: str | NotGivenType = NOT_GIVEN,
+        order: ListTransactionsV21ParamsOrderInput | NotGivenType = NOT_GIVEN,
+        limit: int | NotGivenType = NOT_GIVEN,
+        users: typing.Sequence[str] | NotGivenType = NOT_GIVEN,
+        statuses: typing.Sequence[ListTransactionsV21ParamsStatuseInput] | NotGivenType = NOT_GIVEN,
+        payment_types: typing.Sequence[PaymentTypeInput] | NotGivenType = NOT_GIVEN,
+        entry_modes: typing.Sequence[EntryModeInput] | NotGivenType = NOT_GIVEN,
+        types: typing.Sequence[ListTransactionsV21ParamsTypeInput] | NotGivenType = NOT_GIVEN,
+        changes_since: datetime.datetime | NotGivenType = NOT_GIVEN,
+        newest_time: datetime.datetime | NotGivenType = NOT_GIVEN,
+        newest_ref: str | NotGivenType = NOT_GIVEN,
+        oldest_time: datetime.datetime | NotGivenType = NOT_GIVEN,
+        oldest_ref: str | NotGivenType = NOT_GIVEN,
+        headers: HeaderTypes | None = None,
     ) -> ListTransactionsV21200Response:
         """
         List transactions
@@ -336,8 +334,8 @@ class AsyncTransactionsResource(AsyncResource):
         merchant_code: str,
         transaction_id: str,
         *,
-        amount: typing.Union[float, None, NotGivenType] = NOT_GIVEN,
-        headers: typing.Optional[HeaderTypes] = None,
+        amount: float | None | NotGivenType = NOT_GIVEN,
+        headers: HeaderTypes | None = None,
     ) -> RefundTransaction201Response:
         """
         Refund a transaction
@@ -400,11 +398,11 @@ class AsyncTransactionsResource(AsyncResource):
         self,
         merchant_code: str,
         *,
-        id: typing.Union[str, NotGivenType] = NOT_GIVEN,
-        transaction_code: typing.Union[str, NotGivenType] = NOT_GIVEN,
-        foreign_transaction_id: typing.Union[str, NotGivenType] = NOT_GIVEN,
-        client_transaction_id: typing.Union[str, NotGivenType] = NOT_GIVEN,
-        headers: typing.Optional[HeaderTypes] = None,
+        id: str | NotGivenType = NOT_GIVEN,
+        transaction_code: str | NotGivenType = NOT_GIVEN,
+        foreign_transaction_id: str | NotGivenType = NOT_GIVEN,
+        client_transaction_id: str | NotGivenType = NOT_GIVEN,
+        headers: HeaderTypes | None = None,
     ) -> TransactionFull:
         """
         Retrieve a transaction
@@ -460,24 +458,20 @@ class AsyncTransactionsResource(AsyncResource):
         self,
         merchant_code: str,
         *,
-        transaction_code: typing.Union[str, NotGivenType] = NOT_GIVEN,
-        order: typing.Union[ListTransactionsV21ParamsOrderInput, NotGivenType] = NOT_GIVEN,
-        limit: typing.Union[int, NotGivenType] = NOT_GIVEN,
-        users: typing.Union[typing.Sequence[str], NotGivenType] = NOT_GIVEN,
-        statuses: typing.Union[
-            typing.Sequence[ListTransactionsV21ParamsStatuseInput], NotGivenType
-        ] = NOT_GIVEN,
-        payment_types: typing.Union[typing.Sequence[PaymentTypeInput], NotGivenType] = NOT_GIVEN,
-        entry_modes: typing.Union[typing.Sequence[EntryModeInput], NotGivenType] = NOT_GIVEN,
-        types: typing.Union[
-            typing.Sequence[ListTransactionsV21ParamsTypeInput], NotGivenType
-        ] = NOT_GIVEN,
-        changes_since: typing.Union[datetime.datetime, NotGivenType] = NOT_GIVEN,
-        newest_time: typing.Union[datetime.datetime, NotGivenType] = NOT_GIVEN,
-        newest_ref: typing.Union[str, NotGivenType] = NOT_GIVEN,
-        oldest_time: typing.Union[datetime.datetime, NotGivenType] = NOT_GIVEN,
-        oldest_ref: typing.Union[str, NotGivenType] = NOT_GIVEN,
-        headers: typing.Optional[HeaderTypes] = None,
+        transaction_code: str | NotGivenType = NOT_GIVEN,
+        order: ListTransactionsV21ParamsOrderInput | NotGivenType = NOT_GIVEN,
+        limit: int | NotGivenType = NOT_GIVEN,
+        users: typing.Sequence[str] | NotGivenType = NOT_GIVEN,
+        statuses: typing.Sequence[ListTransactionsV21ParamsStatuseInput] | NotGivenType = NOT_GIVEN,
+        payment_types: typing.Sequence[PaymentTypeInput] | NotGivenType = NOT_GIVEN,
+        entry_modes: typing.Sequence[EntryModeInput] | NotGivenType = NOT_GIVEN,
+        types: typing.Sequence[ListTransactionsV21ParamsTypeInput] | NotGivenType = NOT_GIVEN,
+        changes_since: datetime.datetime | NotGivenType = NOT_GIVEN,
+        newest_time: datetime.datetime | NotGivenType = NOT_GIVEN,
+        newest_ref: str | NotGivenType = NOT_GIVEN,
+        oldest_time: datetime.datetime | NotGivenType = NOT_GIVEN,
+        oldest_ref: str | NotGivenType = NOT_GIVEN,
+        headers: HeaderTypes | None = None,
     ) -> ListTransactionsV21200Response:
         """
         List transactions

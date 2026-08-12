@@ -1,6 +1,6 @@
 import os
 
-from sumup import Sumup, APIError
+from sumup import APIError, Sumup
 
 client = Sumup()
 

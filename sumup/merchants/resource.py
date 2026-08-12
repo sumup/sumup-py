@@ -5,16 +5,24 @@ A Merchant represents a single business which can use SumUp products like paymen
 """
 
 from __future__ import annotations
+
+import datetime
+import typing
+
+import httpx
+import pydantic
+import typing_extensions
+
+from .._exceptions import APIError
 from .._service import (
-    Resource,
+    NOT_GIVEN,
     AsyncResource,
     HeaderTypes,
     NotGivenType,
-    NOT_GIVEN,
+    Resource,
     serialize_query_params,
     serialize_request_data,
 )
-from .._exceptions import APIError
 from ..types import (
     Address,
     Attributes,
@@ -40,11 +48,6 @@ from ..types import (
     Timestamps,
     Version,
 )
-import datetime
-import httpx
-import typing
-import pydantic
-import typing_extensions
 
 
 class MerchantsResource(Resource):
@@ -57,8 +60,8 @@ class MerchantsResource(Resource):
         self,
         merchant_code: str,
         *,
-        version: typing.Union[str, NotGivenType] = NOT_GIVEN,
-        headers: typing.Optional[HeaderTypes] = None,
+        version: str | NotGivenType = NOT_GIVEN,
+        headers: HeaderTypes | None = None,
     ) -> Merchant:
         """
         Get Merchant
@@ -95,8 +98,8 @@ class MerchantsResource(Resource):
         self,
         merchant_code: str,
         *,
-        version: typing.Union[str, NotGivenType] = NOT_GIVEN,
-        headers: typing.Optional[HeaderTypes] = None,
+        version: str | NotGivenType = NOT_GIVEN,
+        headers: HeaderTypes | None = None,
     ) -> ListPersonsResponseBody:
         """
         List Persons
@@ -134,8 +137,8 @@ class MerchantsResource(Resource):
         merchant_code: str,
         person_id: str,
         *,
-        version: typing.Union[str, NotGivenType] = NOT_GIVEN,
-        headers: typing.Optional[HeaderTypes] = None,
+        version: str | NotGivenType = NOT_GIVEN,
+        headers: HeaderTypes | None = None,
     ) -> Person:
         """
         Get Person
@@ -179,8 +182,8 @@ class AsyncMerchantsResource(AsyncResource):
         self,
         merchant_code: str,
         *,
-        version: typing.Union[str, NotGivenType] = NOT_GIVEN,
-        headers: typing.Optional[HeaderTypes] = None,
+        version: str | NotGivenType = NOT_GIVEN,
+        headers: HeaderTypes | None = None,
     ) -> Merchant:
         """
         Get Merchant
@@ -217,8 +220,8 @@ class AsyncMerchantsResource(AsyncResource):
         self,
         merchant_code: str,
         *,
-        version: typing.Union[str, NotGivenType] = NOT_GIVEN,
-        headers: typing.Optional[HeaderTypes] = None,
+        version: str | NotGivenType = NOT_GIVEN,
+        headers: HeaderTypes | None = None,
     ) -> ListPersonsResponseBody:
         """
         List Persons
@@ -256,8 +259,8 @@ class AsyncMerchantsResource(AsyncResource):
         merchant_code: str,
         person_id: str,
         *,
-        version: typing.Union[str, NotGivenType] = NOT_GIVEN,
-        headers: typing.Optional[HeaderTypes] = None,
+        version: str | NotGivenType = NOT_GIVEN,
+        headers: HeaderTypes | None = None,
     ) -> Person:
         """
         Get Person

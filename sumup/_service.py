@@ -1,18 +1,19 @@
 import datetime
-import httpx
 import platform
 import sys
 import typing
-from functools import lru_cache
 from collections.abc import Mapping, Sequence
+from functools import lru_cache
+
+import httpx
 
 from ._api_version import __api_version__
-from ._version import __version__
 from ._secret import Secret
+from ._version import __version__
 
 HeaderTypes = typing.Mapping[str, str]
-PrimitiveQueryValue = typing.Optional[typing.Union[str, int, float]]
-QueryValue = typing.Union[PrimitiveQueryValue, typing.Sequence[PrimitiveQueryValue]]
+PrimitiveQueryValue = str | int | float | None
+QueryValue = PrimitiveQueryValue | typing.Sequence[PrimitiveQueryValue]
 QueryParamTypes = typing.Mapping[str, QueryValue]
 
 

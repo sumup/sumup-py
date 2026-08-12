@@ -151,14 +151,12 @@ func (o *OneOfDeclaration) String() string {
 		options = append(options, inputTypeName(option))
 	}
 	if o.RequestOnly {
-		fmt.Fprintf(buf, "%sInput = typing.Union[%s]", o.Name, strings.Join(options, ", "))
+		fmt.Fprintf(buf, "%sInput = %s", o.Name, strings.Join(options, " | "))
 		return buf.String()
 	}
-	fmt.Fprintf(buf, "%s = typing.Union[", o.Name)
-	fmt.Fprint(buf, strings.Join(o.Options, ", "))
-	fmt.Fprintf(buf, "]\n")
+	fmt.Fprintf(buf, "%s = %s\n", o.Name, strings.Join(o.Options, " | "))
 	if o.GenerateInput {
-		fmt.Fprintf(buf, "%sInput = typing.Union[%s]", o.Name, strings.Join(options, ", "))
+		fmt.Fprintf(buf, "%sInput = %s", o.Name, strings.Join(options, " | "))
 	}
 	return buf.String()
 }
@@ -179,12 +177,12 @@ func (p *Property) String() string {
 	if useAlias {
 		aliasChoices := fmt.Sprintf("pydantic.AliasChoices(%q, %q)", alias, fieldName)
 		if p.Optional {
-			fmt.Fprintf(buf, "%s: typing.Optional[%s] = pydantic.Field(default=None, serialization_alias=%q, validation_alias=%s)\n", fieldName, p.Type, alias, aliasChoices)
+			fmt.Fprintf(buf, "%s: %s | None = pydantic.Field(default=None, serialization_alias=%q, validation_alias=%s)\n", fieldName, p.Type, alias, aliasChoices)
 		} else {
 			fmt.Fprintf(buf, "%s: %s = pydantic.Field(serialization_alias=%q, validation_alias=%s)\n", fieldName, p.Type, alias, aliasChoices)
 		}
 	} else if p.Optional {
-		fmt.Fprintf(buf, "%s: typing.Optional[%s] = None\n", fieldName, p.Type)
+		fmt.Fprintf(buf, "%s: %s | None = None\n", fieldName, p.Type)
 	} else {
 		fmt.Fprintf(buf, "%s: %s\n", fieldName, p.Type)
 	}
@@ -210,9 +208,9 @@ func (p Property) MethodParameterString(allowNone bool) string {
 	typeName := p.MethodParameterType()
 	if p.Optional {
 		if allowNone {
-			return fmt.Sprintf("%s: typing.Union[%s, None, NotGivenType] = NOT_GIVEN", p.FieldName(), typeName)
+			return fmt.Sprintf("%s: %s | None | NotGivenType = NOT_GIVEN", p.FieldName(), typeName)
 		}
-		return fmt.Sprintf("%s: typing.Union[%s, NotGivenType] = NOT_GIVEN", p.FieldName(), typeName)
+		return fmt.Sprintf("%s: %s | NotGivenType = NOT_GIVEN", p.FieldName(), typeName)
 	}
 
 	return fmt.Sprintf("%s: %s", p.FieldName(), typeName)
@@ -252,7 +250,7 @@ func (e *EnumDeclaration[E]) String() string {
 	for _, v := range e.Values {
 		values = append(values, fmt.Sprintf("%#v", v))
 	}
-	alias := fmt.Sprintf("typing.Union[typing.Literal[%s], %s]", strings.Join(values, ", "), pythonEnumBaseType(e.Type))
+	alias := fmt.Sprintf("typing.Literal[%s] | %s", strings.Join(values, ", "), pythonEnumBaseType(e.Type))
 	if e.RequestOnly {
 		return fmt.Sprintf("%sInput = %s\n", e.Name, alias)
 	}
@@ -319,9 +317,9 @@ func inputTypeName(typeName string) string {
 		for i := range args {
 			args[i] = inputTypeName(args[i])
 		}
-		return "typing.Union[" + strings.Join(args, ", ") + "]"
+		return strings.Join(args, " | ")
 	case strings.HasPrefix(typeName, "typing.Optional[") && strings.HasSuffix(typeName, "]"):
-		return "typing.Optional[" + inputTypeName(typeName[len("typing.Optional["):len(typeName)-1]) + "]"
+		return inputTypeName(typeName[len("typing.Optional["):len(typeName)-1]) + " | None"
 	case isPrimitiveType(typeName):
 		return typeName
 	default:

@@ -39,7 +39,7 @@ class {{.Service}}Resource(Resource):
 {{- with .DeprecationNotice }}
 	@typing_extensions.deprecated("{{ . }}")
 {{- end }}
-	def {{.FunctionName}}({{.ParamsString}}, headers: typing.Optional[HeaderTypes] = None){{ with .ResponseType }} -> {{ . }}{{ end }}:
+	def {{.FunctionName}}({{.ParamsString}}, headers: HeaderTypes | None = None){{ with .ResponseType }} -> {{ . }}{{ end }}:
 {{- with .Description}}
 		'''
 {{ indent 2 . }}
@@ -97,7 +97,7 @@ class Async{{.Service}}Resource(AsyncResource):
 {{- with .DeprecationNotice }}
 	@typing_extensions.deprecated("{{ . }}")
 {{- end }}
-	async def {{.FunctionName}}({{.ParamsString}}, headers: typing.Optional[HeaderTypes] = None){{ with .ResponseType }} -> {{ . }}{{ end }}:
+	async def {{.FunctionName}}({{.ParamsString}}, headers: HeaderTypes | None = None){{ with .ResponseType }} -> {{ . }}{{ end }}:
 {{- with .Description}}
 		'''
 {{ indent 2 . }}

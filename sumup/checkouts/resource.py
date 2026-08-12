@@ -18,63 +18,62 @@ Checkouts are used to initiate and orchestrate online payments. Transactions rem
 """
 
 from __future__ import annotations
+
+import datetime
+import typing
+
+import httpx
+import pydantic
+import typing_extensions
+
+from .._exceptions import APIError
 from .._service import (
-    Resource,
+    NOT_GIVEN,
     AsyncResource,
     HeaderTypes,
     NotGivenType,
-    NOT_GIVEN,
+    Resource,
     serialize_query_params,
     serialize_request_data,
 )
-from .._exceptions import APIError
 from ..types import (
     AddressLegacy,
+    AddressLegacyInput,
     Card,
+    CardInput,
     CardType,
+    CardTypeInput,
     Checkout,
     CheckoutAccepted,
     CheckoutCreateRequest,
+    CheckoutCreateRequestInput,
     CheckoutSuccess,
     CheckoutUpdateRequest,
+    CheckoutUpdateRequestInput,
     Currency,
+    CurrencyInput,
     DetailsError,
     EntryMode,
     Error,
     ErrorExtended,
     ErrorForbidden,
     HostedCheckout,
+    HostedCheckoutInput,
     MandatePayload,
+    MandatePayloadInput,
     MandateResponse,
     PaymentType,
     PersonalDetails,
+    PersonalDetailsInput,
     Problem,
     ProcessCheckout,
+    ProcessCheckoutInput,
     TransactionBase,
     TransactionCheckoutInfo,
     TransactionStatus,
 )
-from ..types import (
-    AddressLegacyInput,
-    CardInput,
-    CardTypeInput,
-    CheckoutCreateRequestInput,
-    CheckoutUpdateRequestInput,
-    CurrencyInput,
-    HostedCheckoutInput,
-    MandatePayloadInput,
-    PersonalDetailsInput,
-    ProcessCheckoutInput,
-)
-import datetime
-import httpx
-import typing
-import pydantic
-import typing_extensions
 
-CreateCheckoutBodyPurposeInput = typing.Union[
-    typing.Literal["CHECKOUT", "SETUP_RECURRING_PAYMENT"], str
-]
+CreateCheckoutBodyPurposeInput = typing.Literal["CHECKOUT", "SETUP_RECURRING_PAYMENT"] | str
 
 
 class CreateCheckoutBodyInput(typing_extensions.TypedDict, total=False):
@@ -222,9 +221,9 @@ class UpdateCheckoutBodyInput(typing_extensions.TypedDict, total=False):
     ]
 
 
-ProcessCheckoutBodyPaymentTypeInput = typing.Union[
-    typing.Literal["apple_pay", "bancontact", "blik", "boleto", "card", "google_pay", "ideal"], str
-]
+ProcessCheckoutBodyPaymentTypeInput = (
+    typing.Literal["apple_pay", "bancontact", "blik", "boleto", "card", "google_pay", "ideal"] | str
+)
 
 ProcessCheckoutBodyGooglePayInput = typing.Mapping[str, object]
 """
@@ -350,9 +349,9 @@ class GetPaymentMethods200Response(pydantic.BaseModel):
     GetPaymentMethods200Response is a schema definition.
     """
 
-    available_payment_methods: typing.Optional[
-        list[GetPaymentMethods200ResponseAvailablePaymentMethod]
-    ] = None
+    available_payment_methods: list[GetPaymentMethods200ResponseAvailablePaymentMethod] | None = (
+        None
+    )
 
 
 ListCheckouts200Response = list[CheckoutSuccess]
@@ -360,7 +359,7 @@ ListCheckouts200Response = list[CheckoutSuccess]
 ListCheckouts200Response is a schema definition.
 """
 
-ProcessCheckoutResponse = typing.Union[CheckoutSuccess, CheckoutAccepted]
+ProcessCheckoutResponse = CheckoutSuccess | CheckoutAccepted
 
 CreateApplePaySession200Response = dict[str, object]
 """
@@ -378,9 +377,9 @@ class CheckoutsResource(Resource):
         self,
         merchant_code: str,
         *,
-        amount: typing.Union[float, NotGivenType] = NOT_GIVEN,
-        currency: typing.Union[str, NotGivenType] = NOT_GIVEN,
-        headers: typing.Optional[HeaderTypes] = None,
+        amount: float | NotGivenType = NOT_GIVEN,
+        currency: str | NotGivenType = NOT_GIVEN,
+        headers: HeaderTypes | None = None,
     ) -> GetPaymentMethods200Response:
         """
         Get available payment methods
@@ -422,14 +421,14 @@ class CheckoutsResource(Resource):
         amount: float,
         currency: CurrencyInput,
         merchant_code: str,
-        description: typing.Union[str, None, NotGivenType] = NOT_GIVEN,
-        return_url: typing.Union[str, None, NotGivenType] = NOT_GIVEN,
-        customer_id: typing.Union[str, None, NotGivenType] = NOT_GIVEN,
-        purpose: typing.Union[CreateCheckoutBodyPurposeInput, None, NotGivenType] = NOT_GIVEN,
-        valid_until: typing.Union[datetime.datetime, None, NotGivenType] = NOT_GIVEN,
-        redirect_url: typing.Union[str, None, NotGivenType] = NOT_GIVEN,
-        hosted_checkout: typing.Union[HostedCheckoutInput, None, NotGivenType] = NOT_GIVEN,
-        headers: typing.Optional[HeaderTypes] = None,
+        description: str | None | NotGivenType = NOT_GIVEN,
+        return_url: str | None | NotGivenType = NOT_GIVEN,
+        customer_id: str | None | NotGivenType = NOT_GIVEN,
+        purpose: CreateCheckoutBodyPurposeInput | None | NotGivenType = NOT_GIVEN,
+        valid_until: datetime.datetime | None | NotGivenType = NOT_GIVEN,
+        redirect_url: str | None | NotGivenType = NOT_GIVEN,
+        hosted_checkout: HostedCheckoutInput | None | NotGivenType = NOT_GIVEN,
+        headers: HeaderTypes | None = None,
     ) -> Checkout:
         """
         Create a checkout
@@ -501,8 +500,8 @@ class CheckoutsResource(Resource):
     def list(
         self,
         *,
-        checkout_reference: typing.Union[str, NotGivenType] = NOT_GIVEN,
-        headers: typing.Optional[HeaderTypes] = None,
+        checkout_reference: str | NotGivenType = NOT_GIVEN,
+        headers: HeaderTypes | None = None,
     ) -> ListCheckouts200Response:
         """
         List checkouts
@@ -533,9 +532,7 @@ class CheckoutsResource(Resource):
         else:
             raise APIError(f"Unexpected response", status=resp.status_code, body=resp.text)
 
-    def get(
-        self, checkout_id: str, headers: typing.Optional[HeaderTypes] = None
-    ) -> CheckoutSuccess:
+    def get(self, checkout_id: str, headers: HeaderTypes | None = None) -> CheckoutSuccess:
         """
         Retrieve a checkout
 
@@ -569,13 +566,13 @@ class CheckoutsResource(Resource):
         self,
         checkout_id: str,
         *,
-        amount: typing.Union[float, None, NotGivenType] = NOT_GIVEN,
-        currency: typing.Union[CurrencyInput, None, NotGivenType] = NOT_GIVEN,
-        description: typing.Union[str, None, NotGivenType] = NOT_GIVEN,
-        checkout_reference: typing.Union[str, None, NotGivenType] = NOT_GIVEN,
-        valid_until: typing.Union[datetime.datetime, None, NotGivenType] = NOT_GIVEN,
-        customer_id: typing.Union[str, None, NotGivenType] = NOT_GIVEN,
-        headers: typing.Optional[HeaderTypes] = None,
+        amount: float | None | NotGivenType = NOT_GIVEN,
+        currency: CurrencyInput | None | NotGivenType = NOT_GIVEN,
+        description: str | None | NotGivenType = NOT_GIVEN,
+        checkout_reference: str | None | NotGivenType = NOT_GIVEN,
+        valid_until: datetime.datetime | None | NotGivenType = NOT_GIVEN,
+        customer_id: str | None | NotGivenType = NOT_GIVEN,
+        headers: HeaderTypes | None = None,
     ) -> Checkout:
         """
         Update a checkout
@@ -626,15 +623,15 @@ class CheckoutsResource(Resource):
         checkout_id: str,
         *,
         payment_type: ProcessCheckoutBodyPaymentTypeInput,
-        installments: typing.Union[int, None, NotGivenType] = NOT_GIVEN,
-        mandate: typing.Union[MandatePayloadInput, None, NotGivenType] = NOT_GIVEN,
-        card: typing.Union[CardInput, None, NotGivenType] = NOT_GIVEN,
-        google_pay: typing.Union[ProcessCheckoutBodyGooglePayInput, None, NotGivenType] = NOT_GIVEN,
-        apple_pay: typing.Union[ProcessCheckoutBodyApplePayInput, None, NotGivenType] = NOT_GIVEN,
-        token: typing.Union[str, None, NotGivenType] = NOT_GIVEN,
-        customer_id: typing.Union[str, None, NotGivenType] = NOT_GIVEN,
-        personal_details: typing.Union[PersonalDetailsInput, None, NotGivenType] = NOT_GIVEN,
-        headers: typing.Optional[HeaderTypes] = None,
+        installments: int | None | NotGivenType = NOT_GIVEN,
+        mandate: MandatePayloadInput | None | NotGivenType = NOT_GIVEN,
+        card: CardInput | None | NotGivenType = NOT_GIVEN,
+        google_pay: ProcessCheckoutBodyGooglePayInput | None | NotGivenType = NOT_GIVEN,
+        apple_pay: ProcessCheckoutBodyApplePayInput | None | NotGivenType = NOT_GIVEN,
+        token: str | None | NotGivenType = NOT_GIVEN,
+        customer_id: str | None | NotGivenType = NOT_GIVEN,
+        personal_details: PersonalDetailsInput | None | NotGivenType = NOT_GIVEN,
+        headers: HeaderTypes | None = None,
     ) -> ProcessCheckoutResponse:
         """
         Process a checkout
@@ -703,9 +700,7 @@ class CheckoutsResource(Resource):
         else:
             raise APIError(f"Unexpected response", status=resp.status_code, body=resp.text)
 
-    def deactivate(
-        self, checkout_id: str, headers: typing.Optional[HeaderTypes] = None
-    ) -> Checkout:
+    def deactivate(self, checkout_id: str, headers: HeaderTypes | None = None) -> Checkout:
         """
         Deactivate a checkout
 
@@ -743,12 +738,7 @@ class CheckoutsResource(Resource):
             raise APIError(f"Unexpected response", status=resp.status_code, body=resp.text)
 
     def create_apple_pay_session(
-        self,
-        checkout_id: str,
-        *,
-        context: str,
-        target: str,
-        headers: typing.Optional[HeaderTypes] = None,
+        self, checkout_id: str, *, context: str, target: str, headers: HeaderTypes | None = None
     ) -> CreateApplePaySession200Response:
         """
         Create an Apple Pay session
@@ -801,9 +791,9 @@ class AsyncCheckoutsResource(AsyncResource):
         self,
         merchant_code: str,
         *,
-        amount: typing.Union[float, NotGivenType] = NOT_GIVEN,
-        currency: typing.Union[str, NotGivenType] = NOT_GIVEN,
-        headers: typing.Optional[HeaderTypes] = None,
+        amount: float | NotGivenType = NOT_GIVEN,
+        currency: str | NotGivenType = NOT_GIVEN,
+        headers: HeaderTypes | None = None,
     ) -> GetPaymentMethods200Response:
         """
         Get available payment methods
@@ -845,14 +835,14 @@ class AsyncCheckoutsResource(AsyncResource):
         amount: float,
         currency: CurrencyInput,
         merchant_code: str,
-        description: typing.Union[str, None, NotGivenType] = NOT_GIVEN,
-        return_url: typing.Union[str, None, NotGivenType] = NOT_GIVEN,
-        customer_id: typing.Union[str, None, NotGivenType] = NOT_GIVEN,
-        purpose: typing.Union[CreateCheckoutBodyPurposeInput, None, NotGivenType] = NOT_GIVEN,
-        valid_until: typing.Union[datetime.datetime, None, NotGivenType] = NOT_GIVEN,
-        redirect_url: typing.Union[str, None, NotGivenType] = NOT_GIVEN,
-        hosted_checkout: typing.Union[HostedCheckoutInput, None, NotGivenType] = NOT_GIVEN,
-        headers: typing.Optional[HeaderTypes] = None,
+        description: str | None | NotGivenType = NOT_GIVEN,
+        return_url: str | None | NotGivenType = NOT_GIVEN,
+        customer_id: str | None | NotGivenType = NOT_GIVEN,
+        purpose: CreateCheckoutBodyPurposeInput | None | NotGivenType = NOT_GIVEN,
+        valid_until: datetime.datetime | None | NotGivenType = NOT_GIVEN,
+        redirect_url: str | None | NotGivenType = NOT_GIVEN,
+        hosted_checkout: HostedCheckoutInput | None | NotGivenType = NOT_GIVEN,
+        headers: HeaderTypes | None = None,
     ) -> Checkout:
         """
         Create a checkout
@@ -924,8 +914,8 @@ class AsyncCheckoutsResource(AsyncResource):
     async def list(
         self,
         *,
-        checkout_reference: typing.Union[str, NotGivenType] = NOT_GIVEN,
-        headers: typing.Optional[HeaderTypes] = None,
+        checkout_reference: str | NotGivenType = NOT_GIVEN,
+        headers: HeaderTypes | None = None,
     ) -> ListCheckouts200Response:
         """
         List checkouts
@@ -956,9 +946,7 @@ class AsyncCheckoutsResource(AsyncResource):
         else:
             raise APIError(f"Unexpected response", status=resp.status_code, body=resp.text)
 
-    async def get(
-        self, checkout_id: str, headers: typing.Optional[HeaderTypes] = None
-    ) -> CheckoutSuccess:
+    async def get(self, checkout_id: str, headers: HeaderTypes | None = None) -> CheckoutSuccess:
         """
         Retrieve a checkout
 
@@ -992,13 +980,13 @@ class AsyncCheckoutsResource(AsyncResource):
         self,
         checkout_id: str,
         *,
-        amount: typing.Union[float, None, NotGivenType] = NOT_GIVEN,
-        currency: typing.Union[CurrencyInput, None, NotGivenType] = NOT_GIVEN,
-        description: typing.Union[str, None, NotGivenType] = NOT_GIVEN,
-        checkout_reference: typing.Union[str, None, NotGivenType] = NOT_GIVEN,
-        valid_until: typing.Union[datetime.datetime, None, NotGivenType] = NOT_GIVEN,
-        customer_id: typing.Union[str, None, NotGivenType] = NOT_GIVEN,
-        headers: typing.Optional[HeaderTypes] = None,
+        amount: float | None | NotGivenType = NOT_GIVEN,
+        currency: CurrencyInput | None | NotGivenType = NOT_GIVEN,
+        description: str | None | NotGivenType = NOT_GIVEN,
+        checkout_reference: str | None | NotGivenType = NOT_GIVEN,
+        valid_until: datetime.datetime | None | NotGivenType = NOT_GIVEN,
+        customer_id: str | None | NotGivenType = NOT_GIVEN,
+        headers: HeaderTypes | None = None,
     ) -> Checkout:
         """
         Update a checkout
@@ -1049,15 +1037,15 @@ class AsyncCheckoutsResource(AsyncResource):
         checkout_id: str,
         *,
         payment_type: ProcessCheckoutBodyPaymentTypeInput,
-        installments: typing.Union[int, None, NotGivenType] = NOT_GIVEN,
-        mandate: typing.Union[MandatePayloadInput, None, NotGivenType] = NOT_GIVEN,
-        card: typing.Union[CardInput, None, NotGivenType] = NOT_GIVEN,
-        google_pay: typing.Union[ProcessCheckoutBodyGooglePayInput, None, NotGivenType] = NOT_GIVEN,
-        apple_pay: typing.Union[ProcessCheckoutBodyApplePayInput, None, NotGivenType] = NOT_GIVEN,
-        token: typing.Union[str, None, NotGivenType] = NOT_GIVEN,
-        customer_id: typing.Union[str, None, NotGivenType] = NOT_GIVEN,
-        personal_details: typing.Union[PersonalDetailsInput, None, NotGivenType] = NOT_GIVEN,
-        headers: typing.Optional[HeaderTypes] = None,
+        installments: int | None | NotGivenType = NOT_GIVEN,
+        mandate: MandatePayloadInput | None | NotGivenType = NOT_GIVEN,
+        card: CardInput | None | NotGivenType = NOT_GIVEN,
+        google_pay: ProcessCheckoutBodyGooglePayInput | None | NotGivenType = NOT_GIVEN,
+        apple_pay: ProcessCheckoutBodyApplePayInput | None | NotGivenType = NOT_GIVEN,
+        token: str | None | NotGivenType = NOT_GIVEN,
+        customer_id: str | None | NotGivenType = NOT_GIVEN,
+        personal_details: PersonalDetailsInput | None | NotGivenType = NOT_GIVEN,
+        headers: HeaderTypes | None = None,
     ) -> ProcessCheckoutResponse:
         """
         Process a checkout
@@ -1126,9 +1114,7 @@ class AsyncCheckoutsResource(AsyncResource):
         else:
             raise APIError(f"Unexpected response", status=resp.status_code, body=resp.text)
 
-    async def deactivate(
-        self, checkout_id: str, headers: typing.Optional[HeaderTypes] = None
-    ) -> Checkout:
+    async def deactivate(self, checkout_id: str, headers: HeaderTypes | None = None) -> Checkout:
         """
         Deactivate a checkout
 
@@ -1166,12 +1152,7 @@ class AsyncCheckoutsResource(AsyncResource):
             raise APIError(f"Unexpected response", status=resp.status_code, body=resp.text)
 
     async def create_apple_pay_session(
-        self,
-        checkout_id: str,
-        *,
-        context: str,
-        target: str,
-        headers: typing.Optional[HeaderTypes] = None,
+        self, checkout_id: str, *, context: str, target: str, headers: HeaderTypes | None = None
     ) -> CreateApplePaySession200Response:
         """
         Create an Apple Pay session
