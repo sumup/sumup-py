@@ -48,12 +48,14 @@ import os
 
 from sumup import AsyncSumup
 
+
 async def main():
     client = AsyncSumup(api_key="sup_sk_MvxmLOl0...")
 
     # Get merchant profile
     merchant = await client.merchants.get(merchant_code=os.environ["SUMUP_MERCHANT_CODE"])
     print(f"Merchant: {merchant.merchant_code}")
+
 
 asyncio.run(main())
 ```
