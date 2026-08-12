@@ -26,7 +26,7 @@ check-fix:
 
 # Generate code from OpenAPI specs
 [group('misc')]
-generate: && fmt check-fix
+generate: && check-fix fmt
     go -C codegen run . generate \
         --out ../sumup/ \
         ../openapi.json

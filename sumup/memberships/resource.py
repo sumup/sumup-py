@@ -43,7 +43,6 @@ class ListMembershipsParamsResourceParentTypeInput(typing_extensions.TypedDict, 
     """
 
 
-
 class ListMemberships200Response(pydantic.BaseModel):
     """
     ListMemberships200Response is a schema definition.

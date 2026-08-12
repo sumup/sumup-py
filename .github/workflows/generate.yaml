@@ -53,11 +53,11 @@ jobs:
         run: go run . samples --sdk-version-file ../sumup/_version.py --out /tmp/sumup-py-code-samples.json ../openapi.json
         working-directory: codegen
 
-      - name: Format
-        run: uv run ruff format
-
       - name: Auto-fix
         run: uv run ruff check --fix
+
+      - name: Format
+        run: uv run ruff format
 
       - name: Create GitHub App token
         id: app-token
