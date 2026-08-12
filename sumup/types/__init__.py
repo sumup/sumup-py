@@ -2551,6 +2551,7 @@ class FinancialPayout(pydantic.BaseModel):
     id: int
     """
 	Unique identifier of the payout-related record.
+	Format: int64
 	"""
 
     reference: str
