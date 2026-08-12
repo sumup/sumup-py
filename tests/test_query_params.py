@@ -1,6 +1,7 @@
+import typing
+
 import httpx
 import pytest
-import typing
 
 from sumup._service import NotGivenType
 

@@ -5,40 +5,42 @@ Endpoints to manage user's memberships. Memberships are used to connect the user
 """
 
 from __future__ import annotations
+
+import datetime
+import typing
+
+import httpx
+import pydantic
+import typing_extensions
+
+from .._exceptions import APIError
 from .._service import (
-    Resource,
+    NOT_GIVEN,
     AsyncResource,
     HeaderTypes,
     NotGivenType,
-    NOT_GIVEN,
+    Resource,
     serialize_query_params,
     serialize_request_data,
 )
-from .._exceptions import APIError
 from ..types import (
     Attributes,
     Invite,
     Membership,
     MembershipResource,
     MembershipStatus,
+    MembershipStatusInput,
     Metadata,
     Problem,
     ResourceType,
+    ResourceTypeInput,
 )
-from ..types import MembershipStatusInput, ResourceTypeInput
-import datetime
-import httpx
-import typing
-import pydantic
-import typing_extensions
 
 
 class ListMembershipsParamsResourceParentTypeInput(typing_extensions.TypedDict, total=False):
     """
     ListMembershipsParamsResourceParentType is a schema definition.
     """
-
-    pass
 
 
 class ListMemberships200Response(pydantic.BaseModel):
@@ -60,19 +62,18 @@ class MembershipsResource(Resource):
     def list(
         self,
         *,
-        offset: typing.Union[int, NotGivenType] = NOT_GIVEN,
-        limit: typing.Union[int, NotGivenType] = NOT_GIVEN,
-        kind: typing.Union[ResourceTypeInput, NotGivenType] = NOT_GIVEN,
-        status: typing.Union[MembershipStatusInput, NotGivenType] = NOT_GIVEN,
-        resource_type: typing.Union[ResourceTypeInput, NotGivenType] = NOT_GIVEN,
-        resource_attributes_sandbox: typing.Union[bool, NotGivenType] = NOT_GIVEN,
-        resource_name: typing.Union[str, NotGivenType] = NOT_GIVEN,
-        resource_parent_id: typing.Union[str, NotGivenType] = NOT_GIVEN,
-        resource_parent_type: typing.Union[
-            ListMembershipsParamsResourceParentTypeInput, NotGivenType
-        ] = NOT_GIVEN,
-        roles: typing.Union[typing.Sequence[str], NotGivenType] = NOT_GIVEN,
-        headers: typing.Optional[HeaderTypes] = None,
+        offset: int | NotGivenType = NOT_GIVEN,
+        limit: int | NotGivenType = NOT_GIVEN,
+        kind: ResourceTypeInput | NotGivenType = NOT_GIVEN,
+        status: MembershipStatusInput | NotGivenType = NOT_GIVEN,
+        resource_type: ResourceTypeInput | NotGivenType = NOT_GIVEN,
+        resource_attributes_sandbox: bool | NotGivenType = NOT_GIVEN,
+        resource_name: str | NotGivenType = NOT_GIVEN,
+        resource_parent_id: str | NotGivenType = NOT_GIVEN,
+        resource_parent_type: ListMembershipsParamsResourceParentTypeInput
+        | NotGivenType = NOT_GIVEN,
+        roles: typing.Sequence[str] | NotGivenType = NOT_GIVEN,
+        headers: HeaderTypes | None = None,
     ) -> ListMemberships200Response:
         """
         List memberships
@@ -141,19 +142,18 @@ class AsyncMembershipsResource(AsyncResource):
     async def list(
         self,
         *,
-        offset: typing.Union[int, NotGivenType] = NOT_GIVEN,
-        limit: typing.Union[int, NotGivenType] = NOT_GIVEN,
-        kind: typing.Union[ResourceTypeInput, NotGivenType] = NOT_GIVEN,
-        status: typing.Union[MembershipStatusInput, NotGivenType] = NOT_GIVEN,
-        resource_type: typing.Union[ResourceTypeInput, NotGivenType] = NOT_GIVEN,
-        resource_attributes_sandbox: typing.Union[bool, NotGivenType] = NOT_GIVEN,
-        resource_name: typing.Union[str, NotGivenType] = NOT_GIVEN,
-        resource_parent_id: typing.Union[str, NotGivenType] = NOT_GIVEN,
-        resource_parent_type: typing.Union[
-            ListMembershipsParamsResourceParentTypeInput, NotGivenType
-        ] = NOT_GIVEN,
-        roles: typing.Union[typing.Sequence[str], NotGivenType] = NOT_GIVEN,
-        headers: typing.Optional[HeaderTypes] = None,
+        offset: int | NotGivenType = NOT_GIVEN,
+        limit: int | NotGivenType = NOT_GIVEN,
+        kind: ResourceTypeInput | NotGivenType = NOT_GIVEN,
+        status: MembershipStatusInput | NotGivenType = NOT_GIVEN,
+        resource_type: ResourceTypeInput | NotGivenType = NOT_GIVEN,
+        resource_attributes_sandbox: bool | NotGivenType = NOT_GIVEN,
+        resource_name: str | NotGivenType = NOT_GIVEN,
+        resource_parent_id: str | NotGivenType = NOT_GIVEN,
+        resource_parent_type: ListMembershipsParamsResourceParentTypeInput
+        | NotGivenType = NOT_GIVEN,
+        roles: typing.Sequence[str] | NotGivenType = NOT_GIVEN,
+        headers: HeaderTypes | None = None,
     ) -> ListMemberships200Response:
         """
         List memberships

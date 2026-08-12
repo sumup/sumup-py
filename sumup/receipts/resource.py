@@ -5,16 +5,24 @@ The Receipts model obtains receipt-like details for specific transactions.
 """
 
 from __future__ import annotations
+
+import datetime
+import typing
+
+import httpx
+import pydantic
+import typing_extensions
+
+from .._exceptions import APIError
 from .._service import (
-    Resource,
+    NOT_GIVEN,
     AsyncResource,
     HeaderTypes,
     NotGivenType,
-    NOT_GIVEN,
+    Resource,
     serialize_query_params,
     serialize_request_data,
 )
-from .._exceptions import APIError
 from ..types import (
     Error,
     Problem,
@@ -29,11 +37,6 @@ from ..types import (
     TransactionEventType,
     TransactionId,
 )
-import datetime
-import httpx
-import typing
-import pydantic
-import typing_extensions
 
 
 class ReceiptsResource(Resource):
@@ -47,8 +50,8 @@ class ReceiptsResource(Resource):
         transaction_id: str,
         *,
         mid: str,
-        tx_event_id: typing.Union[int, NotGivenType] = NOT_GIVEN,
-        headers: typing.Optional[HeaderTypes] = None,
+        tx_event_id: int | NotGivenType = NOT_GIVEN,
+        headers: HeaderTypes | None = None,
     ) -> Receipt:
         """
         Retrieve receipt details
@@ -106,8 +109,8 @@ class AsyncReceiptsResource(AsyncResource):
         transaction_id: str,
         *,
         mid: str,
-        tx_event_id: typing.Union[int, NotGivenType] = NOT_GIVEN,
-        headers: typing.Optional[HeaderTypes] = None,
+        tx_event_id: int | NotGivenType = NOT_GIVEN,
+        headers: HeaderTypes | None = None,
     ) -> Receipt:
         """
         Retrieve receipt details

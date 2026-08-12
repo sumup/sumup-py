@@ -1,6 +1,3 @@
-import typing
-
-
 class SumupError(Exception):
     pass
 
@@ -8,8 +5,8 @@ class SumupError(Exception):
 class APIError(SumupError):
     message: str
 
-    status: typing.Optional[int]
-    body: typing.Optional[object]
+    status: int | None
+    body: object | None
 
     """The API response body.
 
@@ -21,9 +18,7 @@ class APIError(SumupError):
     If there was no response associated with this error then it will be `None`.
     """
 
-    def __init__(
-        self, message: str, *, status: typing.Optional[int], body: typing.Optional[object]
-    ) -> None:
+    def __init__(self, message: str, *, status: int | None, body: object | None) -> None:
         super().__init__(message)
         self.message = message
         self.status = status

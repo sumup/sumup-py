@@ -1,5 +1,6 @@
 import datetime
 import json
+
 import httpx
 
 
@@ -39,7 +40,7 @@ def test_create_checkout_serializes_datetime_fields(sdk_factory):
         checkout_reference="checkout-ref",
         currency="EUR",
         merchant_code="merchant-123",
-        valid_until=datetime.datetime(2024, 1, 2, 3, 4, 5),
+        valid_until=datetime.datetime(2024, 1, 2, 3, 4, 5, tzinfo=datetime.timezone.utc),
     )
 
     assert response.id == "checkout-123"
@@ -50,5 +51,5 @@ def test_create_checkout_serializes_datetime_fields(sdk_factory):
         "checkout_reference": "checkout-ref",
         "currency": "EUR",
         "merchant_code": "merchant-123",
-        "valid_until": "2024-01-02T03:04:05",
+        "valid_until": "2024-01-02T03:04:05+00:00",
     }

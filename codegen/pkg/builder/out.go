@@ -310,9 +310,13 @@ func isGeneratedResourceDir(dir string) bool {
 }
 
 func (b *Builder) writeClientFile(fname string, tags []string) error {
-	f, err := os.OpenFile(fname, os.O_RDWR|os.O_CREATE|os.O_TRUNC, os.FileMode(0o755))
+	f, err := os.OpenFile(fname, os.O_RDWR|os.O_CREATE|os.O_TRUNC, os.FileMode(0o644))
 	if err != nil {
 		return fmt.Errorf("create %q: %w", fname, err)
+	}
+	if err := f.Chmod(0o644); err != nil {
+		_ = f.Close()
+		return fmt.Errorf("set permissions on %q: %w", fname, err)
 	}
 	defer func() {
 		_ = f.Close()
@@ -351,9 +355,13 @@ func (b *Builder) writeClientFile(fname string, tags []string) error {
 }
 
 func (b *Builder) writeAPIVersionFile(fname string) error {
-	f, err := os.OpenFile(fname, os.O_RDWR|os.O_CREATE|os.O_TRUNC, os.FileMode(0o755))
+	f, err := os.OpenFile(fname, os.O_RDWR|os.O_CREATE|os.O_TRUNC, os.FileMode(0o644))
 	if err != nil {
 		return fmt.Errorf("create %q: %w", fname, err)
+	}
+	if err := f.Chmod(0o644); err != nil {
+		_ = f.Close()
+		return fmt.Errorf("set permissions on %q: %w", fname, err)
 	}
 	defer func() {
 		_ = f.Close()
@@ -375,9 +383,13 @@ func openGeneratedFile(filename string) (*os.File, error) {
 	}
 
 	p := filepath.Join(cwd, filename)
-	f, err := os.OpenFile(p, os.O_RDWR|os.O_CREATE|os.O_TRUNC, os.FileMode(0o755))
+	f, err := os.OpenFile(p, os.O_RDWR|os.O_CREATE|os.O_TRUNC, os.FileMode(0o644))
 	if err != nil {
 		return nil, fmt.Errorf("create %q: %w", p, err)
+	}
+	if err := f.Chmod(0o644); err != nil {
+		_ = f.Close()
+		return nil, fmt.Errorf("set permissions on %q: %w", p, err)
 	}
 
 	return f, nil

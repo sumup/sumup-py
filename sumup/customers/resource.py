@@ -9,34 +9,39 @@ Depending on the needs you can allow, creating, listing or deactivating payment 
 """
 
 from __future__ import annotations
+
+import datetime
+import typing
+
+import httpx
+import pydantic
+import typing_extensions
+
+from .._exceptions import APIError
 from .._service import (
-    Resource,
+    NOT_GIVEN,
     AsyncResource,
     HeaderTypes,
     NotGivenType,
-    NOT_GIVEN,
+    Resource,
     serialize_query_params,
     serialize_request_data,
 )
-from .._exceptions import APIError
 from ..types import (
     AddressLegacy,
+    AddressLegacyInput,
     CardType,
     Customer,
+    CustomerInput,
     Error,
     ErrorExtended,
     ErrorForbidden,
     MandateResponse,
     PaymentInstrumentResponse,
     PersonalDetails,
+    PersonalDetailsInput,
     Problem,
 )
-from ..types import AddressLegacyInput, CustomerInput, PersonalDetailsInput
-import datetime
-import httpx
-import typing
-import pydantic
-import typing_extensions
 
 
 class CreateCustomerBodyInput(typing_extensions.TypedDict, total=False):
@@ -82,8 +87,8 @@ class CustomersResource(Resource):
         self,
         *,
         customer_id: str,
-        personal_details: typing.Union[PersonalDetailsInput, None, NotGivenType] = NOT_GIVEN,
-        headers: typing.Optional[HeaderTypes] = None,
+        personal_details: PersonalDetailsInput | None | NotGivenType = NOT_GIVEN,
+        headers: HeaderTypes | None = None,
     ) -> Customer:
         """
         Create a customer
@@ -132,7 +137,7 @@ class CustomersResource(Resource):
         else:
             raise APIError(f"Unexpected response", status=resp.status_code, body=resp.text)
 
-    def get(self, customer_id: str, headers: typing.Optional[HeaderTypes] = None) -> Customer:
+    def get(self, customer_id: str, headers: HeaderTypes | None = None) -> Customer:
         """
         Retrieve a customer
 
@@ -173,8 +178,8 @@ class CustomersResource(Resource):
         self,
         customer_id: str,
         *,
-        personal_details: typing.Union[PersonalDetailsInput, None, NotGivenType] = NOT_GIVEN,
-        headers: typing.Optional[HeaderTypes] = None,
+        personal_details: PersonalDetailsInput | None | NotGivenType = NOT_GIVEN,
+        headers: HeaderTypes | None = None,
     ) -> Customer:
         """
         Update a customer
@@ -220,7 +225,7 @@ class CustomersResource(Resource):
             raise APIError(f"Unexpected response", status=resp.status_code, body=resp.text)
 
     def list_payment_instruments(
-        self, customer_id: str, headers: typing.Optional[HeaderTypes] = None
+        self, customer_id: str, headers: HeaderTypes | None = None
     ) -> ListPaymentInstruments200Response:
         """
         List payment instruments
@@ -261,7 +266,7 @@ class CustomersResource(Resource):
             raise APIError(f"Unexpected response", status=resp.status_code, body=resp.text)
 
     def deactivate_payment_instrument(
-        self, customer_id: str, token: str, headers: typing.Optional[HeaderTypes] = None
+        self, customer_id: str, token: str, headers: HeaderTypes | None = None
     ):
         """
         Deactivate a payment instrument
@@ -313,8 +318,8 @@ class AsyncCustomersResource(AsyncResource):
         self,
         *,
         customer_id: str,
-        personal_details: typing.Union[PersonalDetailsInput, None, NotGivenType] = NOT_GIVEN,
-        headers: typing.Optional[HeaderTypes] = None,
+        personal_details: PersonalDetailsInput | None | NotGivenType = NOT_GIVEN,
+        headers: HeaderTypes | None = None,
     ) -> Customer:
         """
         Create a customer
@@ -363,7 +368,7 @@ class AsyncCustomersResource(AsyncResource):
         else:
             raise APIError(f"Unexpected response", status=resp.status_code, body=resp.text)
 
-    async def get(self, customer_id: str, headers: typing.Optional[HeaderTypes] = None) -> Customer:
+    async def get(self, customer_id: str, headers: HeaderTypes | None = None) -> Customer:
         """
         Retrieve a customer
 
@@ -404,8 +409,8 @@ class AsyncCustomersResource(AsyncResource):
         self,
         customer_id: str,
         *,
-        personal_details: typing.Union[PersonalDetailsInput, None, NotGivenType] = NOT_GIVEN,
-        headers: typing.Optional[HeaderTypes] = None,
+        personal_details: PersonalDetailsInput | None | NotGivenType = NOT_GIVEN,
+        headers: HeaderTypes | None = None,
     ) -> Customer:
         """
         Update a customer
@@ -451,7 +456,7 @@ class AsyncCustomersResource(AsyncResource):
             raise APIError(f"Unexpected response", status=resp.status_code, body=resp.text)
 
     async def list_payment_instruments(
-        self, customer_id: str, headers: typing.Optional[HeaderTypes] = None
+        self, customer_id: str, headers: HeaderTypes | None = None
     ) -> ListPaymentInstruments200Response:
         """
         List payment instruments
@@ -492,7 +497,7 @@ class AsyncCustomersResource(AsyncResource):
             raise APIError(f"Unexpected response", status=resp.status_code, body=resp.text)
 
     async def deactivate_payment_instrument(
-        self, customer_id: str, token: str, headers: typing.Optional[HeaderTypes] = None
+        self, customer_id: str, token: str, headers: HeaderTypes | None = None
     ):
         """
         Deactivate a payment instrument

@@ -5,23 +5,25 @@ Endpoints to manage custom roles. Custom roles allow you to tailor roles from in
 """
 
 from __future__ import annotations
+
+import datetime
+import typing
+
+import httpx
+import pydantic
+import typing_extensions
+
+from .._exceptions import APIError
 from .._service import (
-    Resource,
+    NOT_GIVEN,
     AsyncResource,
     HeaderTypes,
     NotGivenType,
-    NOT_GIVEN,
+    Resource,
     serialize_query_params,
     serialize_request_data,
 )
-from .._exceptions import APIError
-from ..types import Metadata, Problem, Role
-from ..types import MetadataInput
-import datetime
-import httpx
-import typing
-import pydantic
-import typing_extensions
+from ..types import Metadata, MetadataInput, Problem, Role
 
 
 class CreateMerchantRoleBodyInput(typing_extensions.TypedDict, total=False):
@@ -87,7 +89,7 @@ class RolesResource(Resource):
         super().__init__(client)
 
     def list(
-        self, merchant_code: str, headers: typing.Optional[HeaderTypes] = None
+        self, merchant_code: str, headers: HeaderTypes | None = None
     ) -> ListMerchantRoles200Response:
         """
         List roles
@@ -117,9 +119,9 @@ class RolesResource(Resource):
         *,
         name: str,
         permissions: typing.Sequence[str],
-        metadata: typing.Union[MetadataInput, None, NotGivenType] = NOT_GIVEN,
-        description: typing.Union[str, None, NotGivenType] = NOT_GIVEN,
-        headers: typing.Optional[HeaderTypes] = None,
+        metadata: MetadataInput | None | NotGivenType = NOT_GIVEN,
+        description: str | None | NotGivenType = NOT_GIVEN,
+        headers: HeaderTypes | None = None,
     ) -> Role:
         """
         Create a role
@@ -155,9 +157,7 @@ class RolesResource(Resource):
         else:
             raise APIError(f"Unexpected response", status=resp.status_code, body=resp.text)
 
-    def get(
-        self, merchant_code: str, role_id: str, headers: typing.Optional[HeaderTypes] = None
-    ) -> Role:
+    def get(self, merchant_code: str, role_id: str, headers: HeaderTypes | None = None) -> Role:
         """
         Retrieve a role
 
@@ -180,9 +180,7 @@ class RolesResource(Resource):
         else:
             raise APIError(f"Unexpected response", status=resp.status_code, body=resp.text)
 
-    def delete(
-        self, merchant_code: str, role_id: str, headers: typing.Optional[HeaderTypes] = None
-    ):
+    def delete(self, merchant_code: str, role_id: str, headers: HeaderTypes | None = None):
         """
         Delete a role
 
@@ -213,10 +211,10 @@ class RolesResource(Resource):
         merchant_code: str,
         role_id: str,
         *,
-        name: typing.Union[str, None, NotGivenType] = NOT_GIVEN,
-        permissions: typing.Union[typing.Sequence[str], None, NotGivenType] = NOT_GIVEN,
-        description: typing.Union[str, None, NotGivenType] = NOT_GIVEN,
-        headers: typing.Optional[HeaderTypes] = None,
+        name: str | None | NotGivenType = NOT_GIVEN,
+        permissions: typing.Sequence[str] | None | NotGivenType = NOT_GIVEN,
+        description: str | None | NotGivenType = NOT_GIVEN,
+        headers: HeaderTypes | None = None,
     ) -> Role:
         """
         Update a role
@@ -260,7 +258,7 @@ class AsyncRolesResource(AsyncResource):
         super().__init__(client)
 
     async def list(
-        self, merchant_code: str, headers: typing.Optional[HeaderTypes] = None
+        self, merchant_code: str, headers: HeaderTypes | None = None
     ) -> ListMerchantRoles200Response:
         """
         List roles
@@ -290,9 +288,9 @@ class AsyncRolesResource(AsyncResource):
         *,
         name: str,
         permissions: typing.Sequence[str],
-        metadata: typing.Union[MetadataInput, None, NotGivenType] = NOT_GIVEN,
-        description: typing.Union[str, None, NotGivenType] = NOT_GIVEN,
-        headers: typing.Optional[HeaderTypes] = None,
+        metadata: MetadataInput | None | NotGivenType = NOT_GIVEN,
+        description: str | None | NotGivenType = NOT_GIVEN,
+        headers: HeaderTypes | None = None,
     ) -> Role:
         """
         Create a role
@@ -329,7 +327,7 @@ class AsyncRolesResource(AsyncResource):
             raise APIError(f"Unexpected response", status=resp.status_code, body=resp.text)
 
     async def get(
-        self, merchant_code: str, role_id: str, headers: typing.Optional[HeaderTypes] = None
+        self, merchant_code: str, role_id: str, headers: HeaderTypes | None = None
     ) -> Role:
         """
         Retrieve a role
@@ -353,9 +351,7 @@ class AsyncRolesResource(AsyncResource):
         else:
             raise APIError(f"Unexpected response", status=resp.status_code, body=resp.text)
 
-    async def delete(
-        self, merchant_code: str, role_id: str, headers: typing.Optional[HeaderTypes] = None
-    ):
+    async def delete(self, merchant_code: str, role_id: str, headers: HeaderTypes | None = None):
         """
         Delete a role
 
@@ -386,10 +382,10 @@ class AsyncRolesResource(AsyncResource):
         merchant_code: str,
         role_id: str,
         *,
-        name: typing.Union[str, None, NotGivenType] = NOT_GIVEN,
-        permissions: typing.Union[typing.Sequence[str], None, NotGivenType] = NOT_GIVEN,
-        description: typing.Union[str, None, NotGivenType] = NOT_GIVEN,
-        headers: typing.Optional[HeaderTypes] = None,
+        name: str | None | NotGivenType = NOT_GIVEN,
+        permissions: typing.Sequence[str] | None | NotGivenType = NOT_GIVEN,
+        description: str | None | NotGivenType = NOT_GIVEN,
+        headers: HeaderTypes | None = None,
     ) -> Role:
         """
         Update a role

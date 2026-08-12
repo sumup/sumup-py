@@ -7,26 +7,29 @@ You can receive a detailed payouts list with information like dates, fees, refer
 """
 
 from __future__ import annotations
-from .._service import (
-    Resource,
-    AsyncResource,
-    HeaderTypes,
-    NotGivenType,
-    NOT_GIVEN,
-    serialize_query_params,
-    serialize_request_data,
-)
-from .._exceptions import APIError
-from ..types import Error, ErrorExtended, FinancialPayout, FinancialPayouts, Problem
+
 import datetime
-import httpx
 import typing
+
+import httpx
 import pydantic
 import typing_extensions
 
-ListPayoutsV1ParamsFormatInput = typing.Union[typing.Literal["csv", "json"], str]
+from .._exceptions import APIError
+from .._service import (
+    NOT_GIVEN,
+    AsyncResource,
+    HeaderTypes,
+    NotGivenType,
+    Resource,
+    serialize_query_params,
+    serialize_request_data,
+)
+from ..types import Error, ErrorExtended, FinancialPayout, FinancialPayouts, Problem
 
-ListPayoutsV1ParamsOrderInput = typing.Union[typing.Literal["asc", "desc"], str]
+ListPayoutsV1ParamsFormatInput = typing.Literal["csv", "json"] | str
+
+ListPayoutsV1ParamsOrderInput = typing.Literal["asc", "desc"] | str
 
 
 class PayoutsResource(Resource):
@@ -41,10 +44,10 @@ class PayoutsResource(Resource):
         *,
         start_date: datetime.date,
         end_date: datetime.date,
-        format: typing.Union[ListPayoutsV1ParamsFormatInput, NotGivenType] = NOT_GIVEN,
-        limit: typing.Union[int, NotGivenType] = NOT_GIVEN,
-        order: typing.Union[ListPayoutsV1ParamsOrderInput, NotGivenType] = NOT_GIVEN,
-        headers: typing.Optional[HeaderTypes] = None,
+        format: ListPayoutsV1ParamsFormatInput | NotGivenType = NOT_GIVEN,
+        limit: int | NotGivenType = NOT_GIVEN,
+        order: ListPayoutsV1ParamsOrderInput | NotGivenType = NOT_GIVEN,
+        headers: HeaderTypes | None = None,
     ) -> FinancialPayouts:
         """
         List payouts
@@ -107,10 +110,10 @@ class AsyncPayoutsResource(AsyncResource):
         *,
         start_date: datetime.date,
         end_date: datetime.date,
-        format: typing.Union[ListPayoutsV1ParamsFormatInput, NotGivenType] = NOT_GIVEN,
-        limit: typing.Union[int, NotGivenType] = NOT_GIVEN,
-        order: typing.Union[ListPayoutsV1ParamsOrderInput, NotGivenType] = NOT_GIVEN,
-        headers: typing.Optional[HeaderTypes] = None,
+        format: ListPayoutsV1ParamsFormatInput | NotGivenType = NOT_GIVEN,
+        limit: int | NotGivenType = NOT_GIVEN,
+        order: ListPayoutsV1ParamsOrderInput | NotGivenType = NOT_GIVEN,
+        headers: HeaderTypes | None = None,
     ) -> FinancialPayouts:
         """
         List payouts
