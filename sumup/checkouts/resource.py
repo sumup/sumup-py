@@ -99,13 +99,16 @@ class CreateCheckoutBodyInput(typing_extensions.TypedDict, total=False):
         typing_extensions.Annotated[
             CurrencyInput,
             typing_extensions.Doc(
-                "Three-letter [ISO4217](https://en.wikipedia.org/wiki/ISO_4217) code of the currency for the amount. Currently supportedcurrency values are enumerated above."
+                "Three-letter [ISO 4217](https://en.wikipedia.org/wiki/ISO_4217) currency code of the amount."
             ),
         ]
     ]
     merchant_code: typing_extensions.Required[
         typing_extensions.Annotated[
-            str, typing_extensions.Doc("Merchant account that should receive the payment.")
+            str,
+            typing_extensions.Doc(
+                "Short unique identifier for the merchant that should receive the payment."
+            ),
         ]
     ]
     customer_id: typing_extensions.NotRequired[
@@ -191,7 +194,7 @@ class UpdateCheckoutBodyInput(typing_extensions.TypedDict, total=False):
         typing_extensions.Annotated[
             CurrencyInput,
             typing_extensions.Doc(
-                "Three-letter [ISO4217](https://en.wikipedia.org/wiki/ISO_4217) code of the currency for the amount. Currently supportedcurrency values are enumerated above."
+                "Three-letter [ISO 4217](https://en.wikipedia.org/wiki/ISO_4217) currency code of the amount."
             ),
         ]
     ]
@@ -340,7 +343,7 @@ class GetPaymentMethods200ResponseAvailablePaymentMethod(pydantic.BaseModel):
 
     id: str
     """
-	The ID of the payment method.
+	Unique identifier of the payment method.
 	"""
 
 
@@ -352,6 +355,9 @@ class GetPaymentMethods200Response(pydantic.BaseModel):
     available_payment_methods: list[GetPaymentMethods200ResponseAvailablePaymentMethod] | None = (
         None
     )
+    """
+	Payment methods available to the merchant for the checkout.
+	"""
 
 
 ListCheckouts200Response = list[CheckoutSuccess]

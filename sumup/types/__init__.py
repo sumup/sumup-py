@@ -805,7 +805,7 @@ class MandateResponse(pydantic.BaseModel):
 
     merchant_code: str | None = None
     """
-	Merchant account for which the mandate is valid.
+	Short unique identifier for the merchant for which the mandate is valid.
 	"""
 
     status: MandateResponseStatus | None = None
@@ -842,7 +842,7 @@ TransactionStatus = typing.Literal["CANCELLED", "FAILED", "PENDING", "REFUNDED",
 
 class TransactionBase(pydantic.BaseModel):
     """
-    Details of the transaction.
+    Core details shared by transaction resources.
     """
 
     amount: float | None = None
@@ -852,17 +852,17 @@ class TransactionBase(pydantic.BaseModel):
 
     currency: Currency | None = None
     """
-	Three-letter [ISO4217](https://en.wikipedia.org/wiki/ISO_4217) code of the currency for the amount. Currently supportedcurrency values are enumerated above.
+	Three-letter [ISO 4217](https://en.wikipedia.org/wiki/ISO_4217) currency code of the amount.
 	"""
 
     id: str | None = None
     """
-	Unique ID of the transaction.
+	Unique identifier of the transaction.
 	"""
 
     installments_count: int | None = None
     """
-	Current number of the installment for deferred payments.
+	Number of installments for a deferred payment.
 	Min: 1
 	"""
 
@@ -884,7 +884,7 @@ class TransactionBase(pydantic.BaseModel):
 
     timestamp: datetime.datetime | None = None
     """
-	Date and time of the creation of the transaction. Response format expressed according to [ISO8601](https://en.wikipedia.org/wiki/ISO_8601) code.
+	The timestamp of when the transaction was created.
 	"""
 
     transaction_code: str | None = None
@@ -944,7 +944,7 @@ class CheckoutTransaction(pydantic.BaseModel):
 
     currency: Currency | None = None
     """
-	Three-letter [ISO4217](https://en.wikipedia.org/wiki/ISO_4217) code of the currency for the amount. Currently supportedcurrency values are enumerated above.
+	Three-letter [ISO 4217](https://en.wikipedia.org/wiki/ISO_4217) currency code of the amount.
 	"""
 
     entry_mode: EntryMode | None = None
@@ -954,12 +954,12 @@ class CheckoutTransaction(pydantic.BaseModel):
 
     id: str | None = None
     """
-	Unique ID of the transaction.
+	Unique identifier of the transaction.
 	"""
 
     installments_count: int | None = None
     """
-	Current number of the installment for deferred payments.
+	Number of installments for a deferred payment.
 	Min: 1
 	"""
 
@@ -986,7 +986,7 @@ class CheckoutTransaction(pydantic.BaseModel):
 
     timestamp: datetime.datetime | None = None
     """
-	Date and time of the creation of the transaction. Response format expressed according to [ISO8601](https://en.wikipedia.org/wiki/ISO_8601) code.
+	The timestamp of when the transaction was created.
 	"""
 
     tip_amount: float | None = None
@@ -1023,7 +1023,7 @@ class Checkout(pydantic.BaseModel):
 
     currency: Currency | None = None
     """
-	Three-letter [ISO4217](https://en.wikipedia.org/wiki/ISO_4217) code of the currency for the amount. Currently supportedcurrency values are enumerated above.
+	Three-letter [ISO 4217](https://en.wikipedia.org/wiki/ISO_4217) currency code of the amount.
 	"""
 
     customer_id: str | None = None
@@ -1033,7 +1033,7 @@ class Checkout(pydantic.BaseModel):
 
     date: datetime.datetime | None = None
     """
-	Date and time of the creation of the payment checkout. Response format expressed according to [ISO8601](https://en.wikipedia.org/wiki/ISO_8601) code.
+	The timestamp of when the checkout was created.
 	"""
 
     description: str | None = None
@@ -1061,7 +1061,7 @@ class Checkout(pydantic.BaseModel):
 
     merchant_code: str | None = None
     """
-	Merchant account that receives the payment.
+	Short unique identifier for the merchant that receives the payment.
 	"""
 
     return_url: str | None = None
@@ -1184,12 +1184,12 @@ class CheckoutCreateRequest(pydantic.BaseModel):
 
     currency: Currency
     """
-	Three-letter [ISO4217](https://en.wikipedia.org/wiki/ISO_4217) code of the currency for the amount. Currently supportedcurrency values are enumerated above.
+	Three-letter [ISO 4217](https://en.wikipedia.org/wiki/ISO_4217) currency code of the amount.
 	"""
 
     merchant_code: str
     """
-	Merchant account that should receive the payment.
+	Short unique identifier for the merchant that should receive the payment.
 	"""
 
     customer_id: str | None = None
@@ -1249,13 +1249,16 @@ class CheckoutCreateRequestDict(typing_extensions.TypedDict, total=False):
         typing_extensions.Annotated[
             CurrencyInput,
             typing_extensions.Doc(
-                "Three-letter [ISO4217](https://en.wikipedia.org/wiki/ISO_4217) code of the currency for the amount. Currently supportedcurrency values are enumerated above."
+                "Three-letter [ISO 4217](https://en.wikipedia.org/wiki/ISO_4217) currency code of the amount."
             ),
         ]
     ]
     merchant_code: typing_extensions.Required[
         typing_extensions.Annotated[
-            str, typing_extensions.Doc("Merchant account that should receive the payment.")
+            str,
+            typing_extensions.Doc(
+                "Short unique identifier for the merchant that should receive the payment."
+            ),
         ]
     ]
     customer_id: typing_extensions.NotRequired[
@@ -1339,7 +1342,7 @@ class CheckoutSuccessTransaction(pydantic.BaseModel):
 
     currency: Currency | None = None
     """
-	Three-letter [ISO4217](https://en.wikipedia.org/wiki/ISO_4217) code of the currency for the amount. Currently supportedcurrency values are enumerated above.
+	Three-letter [ISO 4217](https://en.wikipedia.org/wiki/ISO_4217) currency code of the amount.
 	"""
 
     entry_mode: EntryMode | None = None
@@ -1349,12 +1352,12 @@ class CheckoutSuccessTransaction(pydantic.BaseModel):
 
     id: str | None = None
     """
-	Unique ID of the transaction.
+	Unique identifier of the transaction.
 	"""
 
     installments_count: int | None = None
     """
-	Current number of the installment for deferred payments.
+	Number of installments for a deferred payment.
 	Min: 1
 	"""
 
@@ -1381,7 +1384,7 @@ class CheckoutSuccessTransaction(pydantic.BaseModel):
 
     timestamp: datetime.datetime | None = None
     """
-	Date and time of the creation of the transaction. Response format expressed according to [ISO8601](https://en.wikipedia.org/wiki/ISO_8601) code.
+	The timestamp of when the transaction was created.
 	"""
 
     tip_amount: float | None = None
@@ -1407,7 +1410,7 @@ class CheckoutSuccessPaymentInstrument(pydantic.BaseModel):
 
     token: str | None = None
     """
-	Token value
+	Unique token of the saved payment instrument.
 	"""
 
 
@@ -1429,7 +1432,7 @@ class CheckoutSuccess(pydantic.BaseModel):
 
     currency: Currency | None = None
     """
-	Three-letter [ISO4217](https://en.wikipedia.org/wiki/ISO_4217) code of the currency for the amount. Currently supportedcurrency values are enumerated above.
+	Three-letter [ISO 4217](https://en.wikipedia.org/wiki/ISO_4217) currency code of the amount.
 	"""
 
     customer_id: str | None = None
@@ -1439,7 +1442,7 @@ class CheckoutSuccess(pydantic.BaseModel):
 
     date: datetime.datetime | None = None
     """
-	Date and time of the creation of the payment checkout. Response format expressed according to [ISO8601](https://en.wikipedia.org/wiki/ISO_8601) code.
+	The timestamp of when the checkout was created.
 	"""
 
     description: str | None = None
@@ -1467,12 +1470,12 @@ class CheckoutSuccess(pydantic.BaseModel):
 
     merchant_code: str | None = None
     """
-	Merchant account that receives the payment.
+	Short unique identifier for the merchant that receives the payment.
 	"""
 
     merchant_name: str | None = None
     """
-	Name of the merchant
+	Name of the merchant.
 	"""
 
     payment_instrument: CheckoutSuccessPaymentInstrument | None = None
@@ -1504,7 +1507,7 @@ class CheckoutSuccess(pydantic.BaseModel):
 
     transaction_id: str | None = None
     """
-	Transaction ID of the successful transaction with which the payment for the checkout is completed.
+	Unique identifier of the successful transaction that completed payment for the checkout.
 	Read only
 	"""
 
@@ -1538,7 +1541,7 @@ class CheckoutUpdateRequest(pydantic.BaseModel):
 
     currency: Currency | None = None
     """
-	Three-letter [ISO4217](https://en.wikipedia.org/wiki/ISO_4217) code of the currency for the amount. Currently supportedcurrency values are enumerated above.
+	Three-letter [ISO 4217](https://en.wikipedia.org/wiki/ISO_4217) currency code of the amount.
 	"""
 
     customer_id: str | None = None
@@ -1578,7 +1581,7 @@ class CheckoutUpdateRequestDict(typing_extensions.TypedDict, total=False):
         typing_extensions.Annotated[
             CurrencyInput,
             typing_extensions.Doc(
-                "Three-letter [ISO4217](https://en.wikipedia.org/wiki/ISO_4217) code of the currency for the amount. Currently supportedcurrency values are enumerated above."
+                "Three-letter [ISO 4217](https://en.wikipedia.org/wiki/ISO_4217) currency code of the amount."
             ),
         ]
     ]
@@ -2190,7 +2193,7 @@ class PersonalDetails(pydantic.BaseModel):
 
     tax_id: str | None = None
     """
-	An identification number user for tax purposes (e.g. CPF)
+	Identification number used for tax purposes, such as a CPF in Brazil.
 	Max length: 255
 	"""
 
@@ -2222,7 +2225,7 @@ class PersonalDetailsDict(typing_extensions.TypedDict, total=False):
         typing_extensions.Annotated[
             str,
             typing_extensions.Doc(
-                "An identification number user for tax purposes (e.g. CPF)\nMax length: 255"
+                "Identification number used for tax purposes, such as a CPF in Brazil.\nMax length: 255"
             ),
         ]
     ]
@@ -2238,7 +2241,7 @@ class Customer(pydantic.BaseModel):
 
     customer_id: str
     """
-	Unique ID of the customer.
+	Unique identifier of the customer.
 	"""
 
     personal_details: PersonalDetails | None = None
@@ -2249,7 +2252,9 @@ class Customer(pydantic.BaseModel):
 
 class CustomerDict(typing_extensions.TypedDict, total=False):
     customer_id: typing_extensions.Required[
-        typing_extensions.Annotated[str, typing_extensions.Doc("Unique ID of the customer.")]
+        typing_extensions.Annotated[
+            str, typing_extensions.Doc("Unique identifier of the customer.")
+        ]
     ]
     personal_details: typing_extensions.NotRequired[
         typing_extensions.Annotated[
@@ -2267,13 +2272,19 @@ class DetailsErrorFailedConstraint(pydantic.BaseModel):
     """
 
     message: str | None = None
+    """
+	Human-readable description of the violated constraint.
+	"""
 
     reference: str | None = None
+    """
+	Name of the field that violated the constraint.
+	"""
 
 
 class DetailsError(pydantic.BaseModel):
     """
-    Error message structure.
+    Details of a request validation error.
     """
 
     details: str | None = None
@@ -2288,7 +2299,7 @@ class DetailsError(pydantic.BaseModel):
 
     status: float | None = None
     """
-	The status code.
+	HTTP status code for the error.
 	"""
 
     title: str | None = None
@@ -2356,7 +2367,7 @@ class ElvCardAccount(pydantic.BaseModel):
 
 class Error(pydantic.BaseModel):
     """
-    Error message structure.
+    Details of an API error.
     """
 
     error_code: str | None = None
@@ -2393,7 +2404,7 @@ class ErrorExtended(pydantic.BaseModel):
 
 class ErrorForbidden(pydantic.BaseModel):
     """
-    Error message for forbidden requests.
+    Details of an error returned for a forbidden request.
     """
 
     error_code: str | None = None
@@ -2414,7 +2425,7 @@ class ErrorForbidden(pydantic.BaseModel):
 
 TransactionEventId = int
 """
-Unique ID of the transaction event.
+Unique identifier of the transaction event.
 Format: int64
 """
 
@@ -2429,7 +2440,7 @@ TransactionEventType = typing.Literal["CHARGE_BACK", "PAYOUT", "PAYOUT_DEDUCTION
 
 TransactionId = str
 """
-Unique ID of the transaction.
+Unique identifier of the transaction.
 """
 
 
@@ -2440,33 +2451,33 @@ class Event(pydantic.BaseModel):
 
     amount: float | None = None
     """
-	Amount of the event.
+	Amount associated with the transaction event, in major units.
 	"""
 
     deducted_amount: float | None = None
     """
-	Amount deducted for the event.
+	Amount deducted from the merchant for the event, in major units.
 	"""
 
     deducted_fee_amount: float | None = None
     """
-	Amount of the fee deducted for the event.
+	Fee deducted from the merchant for the event, in major units.
 	"""
 
     fee_amount: float | None = None
     """
-	Amount of the fee related to the event.
+	Fee associated with the transaction event, in major units.
 	"""
 
     id: TransactionEventId | None = None
     """
-	Unique ID of the transaction event.
+	Unique identifier of the transaction event.
 	Format: int64
 	"""
 
     installment_number: int | None = None
     """
-	Consecutive number of the installment.
+	Consecutive number of the installment associated with the event.
 	"""
 
     status: TransactionEventStatus | None = None
@@ -2486,12 +2497,12 @@ class Event(pydantic.BaseModel):
 
     timestamp: datetime.datetime | None = None
     """
-	Date and time of the transaction event.
+	The timestamp of when the transaction event occurred.
 	"""
 
     transaction_id: TransactionId | None = None
     """
-	Unique ID of the transaction.
+	Unique identifier of the transaction.
 	"""
 
     type: TransactionEventType | None = None
@@ -2743,22 +2754,22 @@ class Link(pydantic.BaseModel):
 
     max_amount: float | None = None
     """
-	Maximum allowed amount for the refund.
+	Maximum amount allowed for a refund, in major units.
 	"""
 
     min_amount: float | None = None
     """
-	Minimum allowed amount for the refund.
+	Minimum amount allowed for a refund, in major units.
 	"""
 
     rel: str | None = None
     """
-	Specifies the relation to the current resource.
+	Relation of the linked resource to the current resource.
 	"""
 
     type: str | None = None
     """
-	Specifies the media type of the related resource.
+	Media type of the linked resource.
 	"""
 
 
@@ -3386,7 +3397,7 @@ class PaymentInstrumentResponseCard(pydantic.BaseModel):
 
 class PaymentInstrumentResponse(pydantic.BaseModel):
     """
-    Payment Instrument Response
+    Details of a saved payment instrument.
     """
 
     active: bool | None = None
@@ -3403,7 +3414,7 @@ class PaymentInstrumentResponse(pydantic.BaseModel):
 
     created_at: datetime.datetime | None = None
     """
-	Creation date of payment instrument. Response format expressed according to [ISO8601](https://en.wikipedia.org/wiki/ISO_8601) code.
+	The timestamp of when the payment instrument was created.
 	"""
 
     mandate: MandateResponse | None = None
@@ -3636,7 +3647,7 @@ ProcessCheckoutInput = ProcessCheckoutDict
 
 class Product(pydantic.BaseModel):
     """
-    Purchase product.
+    Product details associated with a transaction.
     """
 
     name: str | None = None
@@ -3652,12 +3663,12 @@ class Product(pydantic.BaseModel):
 
     price_label: str | None = None
     """
-	Product description.
+	Human-readable label for the product price.
 	"""
 
     price_with_vat: float | None = None
     """
-	Product price incl. VAT.
+	Product price including VAT.
 	Format: decimal
 	"""
 
@@ -3674,25 +3685,25 @@ class Product(pydantic.BaseModel):
 
     total_price: float | None = None
     """
-	Quantity x product price.
+	Total price calculated as the product price multiplied by the quantity.
 	Format: decimal
 	"""
 
     total_with_vat: float | None = None
     """
-	Total price incl. VAT.
+	Total product price including VAT.
 	Format: decimal
 	"""
 
     vat_amount: float | None = None
     """
-	VAT amount.
+	Total VAT amount for the product quantity.
 	Format: decimal
 	"""
 
     vat_rate: float | None = None
     """
-	VAT percentage.
+	VAT rate applied to the product price.
 	Format: decimal
 	"""
 
@@ -3937,12 +3948,12 @@ class ReceiptCard(pydantic.BaseModel):
 
     last_4_digits: str | None = None
     """
-	Card last 4 digits.
+	Last four digits of the payment card number.
 	"""
 
     type: str | None = None
     """
-	Card Scheme.
+	Issuing card network of the payment card.
 	"""
 
 
@@ -3953,13 +3964,13 @@ class ReceiptEvent(pydantic.BaseModel):
 
     amount: str | None = None
     """
-	Amount of the event.
+	Amount associated with the transaction event, in major units.
 	Format: double
 	"""
 
     id: TransactionEventId | None = None
     """
-	Unique ID of the transaction event.
+	Unique identifier of the transaction event.
 	Format: int64
 	"""
 
@@ -3985,12 +3996,12 @@ class ReceiptEvent(pydantic.BaseModel):
 
     timestamp: datetime.datetime | None = None
     """
-	Date and time of the transaction event.
+	The timestamp of when the transaction event occurred.
 	"""
 
     transaction_id: TransactionId | None = None
     """
-	Unique ID of the transaction.
+	Unique identifier of the transaction.
 	"""
 
     type: TransactionEventType | None = None
@@ -4001,26 +4012,53 @@ class ReceiptEvent(pydantic.BaseModel):
 
 class ReceiptMerchantDataMerchantProfileAddress(pydantic.BaseModel):
     """
-    ReceiptMerchantDataMerchantProfileAddress is a schema definition.
+    Business address of the merchant.
     """
 
     address_line1: str | None = None
+    """
+	First line of the merchant address.
+	"""
 
     address_line2: str | None = None
+    """
+	Second line of the merchant address.
+	"""
 
     city: str | None = None
+    """
+	City of the merchant address.
+	"""
 
     country: str | None = None
+    """
+	Two-letter ISO 3166-1 alpha-2 country code of the merchant address.
+	"""
 
     country_en_name: str | None = None
+    """
+	English name of the country in the merchant address.
+	"""
 
     country_native_name: str | None = None
+    """
+	Localized name of the country in the merchant address.
+	"""
 
     landline: str | None = None
+    """
+	Landline phone number of the merchant.
+	"""
 
     post_code: str | None = None
+    """
+	Postal code of the merchant address.
+	"""
 
     region_name: str | None = None
+    """
+	Region or state of the merchant address.
+	"""
 
 
 class ReceiptMerchantDataMerchantProfile(pydantic.BaseModel):
@@ -4029,25 +4067,49 @@ class ReceiptMerchantDataMerchantProfile(pydantic.BaseModel):
     """
 
     address: ReceiptMerchantDataMerchantProfileAddress | None = None
+    """
+	Business address of the merchant.
+	"""
 
     business_name: str | None = None
+    """
+	Business name of the merchant.
+	"""
 
     company_registration_number: str | None = None
+    """
+	Company registration number of the merchant.
+	"""
 
     email: str | None = None
+    """
+	Email address of the merchant.
+	"""
 
     language: str | None = None
+    """
+	Language configured for the merchant profile.
+	"""
 
     merchant_code: str | None = None
+    """
+	Short unique identifier for the merchant.
+	"""
 
     vat_id: str | None = None
+    """
+	VAT identification number of the merchant.
+	"""
 
     website: str | None = None
+    """
+	Website of the merchant.
+	"""
 
 
 class ReceiptMerchantData(pydantic.BaseModel):
     """
-    Receipt merchant data
+    Merchant details displayed on a transaction receipt.
     """
 
     locale: str | None = None
@@ -4068,12 +4130,12 @@ class ReceiptReader(pydantic.BaseModel):
 
     code: str | None = None
     """
-	Reader serial number.
+	Unique identifier of the physical card reader.
 	"""
 
     type: str | None = None
     """
-	Reader type.
+	Model of the physical card reader.
 	"""
 
 
@@ -4087,59 +4149,59 @@ class ReceiptTransactionProduct(pydantic.BaseModel):
 
     description: str | None = None
     """
-	Product description
+	Product description.
 	"""
 
     name: str | None = None
     """
-	Product name
+	Product name.
 	"""
 
     price: str | None = None
     """
-	Product price
+	Product price.
 	Format: double
 	"""
 
     price_with_vat: str | None = None
     """
-	Product price including VAT
+	Product price including VAT.
 	Format: double
 	"""
 
     quantity: int | None = None
     """
-	Product quantity
+	Product quantity.
 	Format: int64
 	"""
 
     single_vat_amount: str | None = None
     """
-	VAT amount for a single product
+	VAT amount for a single product.
 	Format: double
 	"""
 
     total_price: str | None = None
     """
-	Quantity x product price
+	Total price calculated as the product price multiplied by the quantity.
 	Format: double
 	"""
 
     total_with_vat: str | None = None
     """
-	Total price including VAT
+	Total product price including VAT.
 	Format: double
 	"""
 
     vat_amount: str | None = None
     """
-	VAT amount
+	Total VAT amount for the product quantity.
 	Format: double
 	"""
 
     vat_rate: str | None = None
     """
-	VAT rate
+	VAT rate.
 	Format: double
 	"""
 
@@ -4151,33 +4213,33 @@ class ReceiptTransactionVatRate(pydantic.BaseModel):
 
     gross: float | None = None
     """
-	Gross
+	Gross amount to which the VAT rate applies.
 	"""
 
     net: float | None = None
     """
-	Net
+	Net amount to which the VAT rate applies.
 	"""
 
     rate: float | None = None
     """
-	Rate
+	VAT rate applied to the transaction amount.
 	"""
 
     vat: float | None = None
     """
-	Vat
+	VAT amount included in the gross amount.
 	"""
 
 
 class ReceiptTransaction(pydantic.BaseModel):
     """
-    Transaction information.
+    Transaction details displayed on a receipt.
     """
 
     amount: str | None = None
     """
-	Transaction amount.
+	Total transaction amount, in major units.
 	"""
 
     card: ReceiptCard | None = None
@@ -4192,17 +4254,17 @@ class ReceiptTransaction(pydantic.BaseModel):
 
     currency: str | None = None
     """
-	Transaction currency.
+	Three-letter ISO 4217 currency code of the transaction.
 	"""
 
     entry_mode: str | None = None
     """
-	Transaction entry mode.
+	Entry mode of the payment details.
 	"""
 
     events: list[ReceiptEvent] | None = None
     """
-	Events
+	Transaction events displayed on the receipt.
 	"""
 
     installments_count: int | None = None
@@ -4212,62 +4274,62 @@ class ReceiptTransaction(pydantic.BaseModel):
 
     merchant_code: str | None = None
     """
-	Merchant code.
+	Short unique identifier for the merchant.
 	"""
 
     payment_type: str | None = None
     """
-	Transaction type.
+	Payment type used for the transaction.
 	"""
 
     process_as: ReceiptTransactionProcessA | None = None
     """
-	Debit/Credit.
+	Whether the transaction was processed as credit or debit.
 	"""
 
     products: list[ReceiptTransactionProduct] | None = None
     """
-	Products
+	Products associated with the transaction.
 	"""
 
     receipt_no: str | None = None
     """
-	Receipt number
+	Receipt number associated with the transaction.
 	"""
 
     status: str | None = None
     """
-	Transaction processing status.
+	Current processing status of the transaction.
 	"""
 
     timestamp: datetime.datetime | None = None
     """
-	Time created at.
+	The timestamp of when the transaction was created.
 	"""
 
     tip_amount: str | None = None
     """
-	Tip amount (included in transaction amount).
+	Tip included in the transaction amount, in major units.
 	"""
 
     transaction_code: str | None = None
     """
-	Transaction code.
+	Transaction code returned after processing the transaction.
 	"""
 
     transaction_id: TransactionId | None = None
     """
-	Unique ID of the transaction.
+	Unique identifier of the transaction.
 	"""
 
     vat_amount: str | None = None
     """
-	Transaction VAT amount.
+	VAT included in the transaction amount, in major units.
 	"""
 
     vat_rates: list[ReceiptTransactionVatRate] | None = None
     """
-	Vat rates.
+	VAT breakdown for the transaction.
 	"""
 
     verification_method: str | None = None
@@ -4288,12 +4350,24 @@ class ReceiptAcquirerData(pydantic.BaseModel):
     """
 
     authorization_code: str | None = None
+    """
+	Authorization code returned by the acquirer.
+	"""
 
     local_time: str | None = None
+    """
+	Local timestamp of the card authorization.
+	"""
 
     return_code: str | None = None
+    """
+	Return code reported by the acquirer.
+	"""
 
     tid: str | None = None
+    """
+	Identifier of the terminal used for the authorization.
+	"""
 
 
 class Receipt(pydantic.BaseModel):
@@ -4313,12 +4387,12 @@ class Receipt(pydantic.BaseModel):
 
     merchant_data: ReceiptMerchantData | None = None
     """
-	Receipt merchant data
+	Merchant details displayed on a transaction receipt.
 	"""
 
     transaction_data: ReceiptTransaction | None = None
     """
-	Transaction information.
+	Transaction details displayed on a receipt.
 	"""
 
 
@@ -4470,7 +4544,7 @@ class TransactionEvent(pydantic.BaseModel):
 
     id: TransactionEventId | None = None
     """
-	Unique ID of the transaction event.
+	Unique identifier of the transaction event.
 	Format: int64
 	"""
 
@@ -4661,12 +4735,12 @@ class TransactionFull(pydantic.BaseModel):
 
     client_transaction_id: str | None = None
     """
-	Client transaction id.
+	Client-supplied identifier of the transaction.
 	"""
 
     currency: Currency | None = None
     """
-	Three-letter [ISO4217](https://en.wikipedia.org/wiki/ISO_4217) code of the currency for the amount. Currently supportedcurrency values are enumerated above.
+	Three-letter [ISO 4217](https://en.wikipedia.org/wiki/ISO_4217) currency code of the amount.
 	"""
 
     device_info: Device | None = None
@@ -4697,7 +4771,7 @@ class TransactionFull(pydantic.BaseModel):
 
     foreign_transaction_id: str | None = None
     """
-	External/foreign transaction id (passed by clients).
+	External transaction identifier supplied by the client.
 	"""
 
     horizontal_accuracy: HorizontalAccuracy | None = None
@@ -4707,12 +4781,12 @@ class TransactionFull(pydantic.BaseModel):
 
     id: str | None = None
     """
-	Unique ID of the transaction.
+	Unique identifier of the transaction.
 	"""
 
     installments_count: int | None = None
     """
-	Current number of the installment for deferred payments.
+	Number of installments for a deferred payment.
 	Min: 1
 	"""
 
@@ -4730,7 +4804,7 @@ class TransactionFull(pydantic.BaseModel):
 
     local_time: datetime.datetime | None = None
     """
-	Local date and time of the creation of the transaction.
+	Local timestamp of when the transaction was created.
 	"""
 
     location: TransactionFullLocation | None = None
@@ -4752,7 +4826,7 @@ class TransactionFull(pydantic.BaseModel):
 
     merchant_id: int | None = None
     """
-	SumUp merchant internal Id.
+	Internal SumUp identifier of the merchant.
 	Format: int64
 	"""
 
@@ -4789,7 +4863,7 @@ class TransactionFull(pydantic.BaseModel):
 
     process_as: TransactionFullProcessA | None = None
     """
-	Debit/Credit.
+	Whether the transaction was processed as credit or debit.
 	"""
 
     product_summary: str | None = None
@@ -4841,7 +4915,7 @@ class TransactionFull(pydantic.BaseModel):
 
     timestamp: datetime.datetime | None = None
     """
-	Date and time of the creation of the transaction. Response format expressed according to [ISO8601](https://en.wikipedia.org/wiki/ISO_8601) code.
+	The timestamp of when the transaction was created.
 	"""
 
     tip_amount: float | None = None
@@ -4907,22 +4981,22 @@ class TransactionHistory(pydantic.BaseModel):
 
     client_transaction_id: str | None = None
     """
-	Client-specific ID of the transaction.
+	Client-supplied identifier of the transaction.
 	"""
 
     currency: Currency | None = None
     """
-	Three-letter [ISO4217](https://en.wikipedia.org/wiki/ISO_4217) code of the currency for the amount. Currently supportedcurrency values are enumerated above.
+	Three-letter [ISO 4217](https://en.wikipedia.org/wiki/ISO_4217) currency code of the amount.
 	"""
 
     id: str | None = None
     """
-	Unique ID of the transaction.
+	Unique identifier of the transaction.
 	"""
 
     installments_count: int | None = None
     """
-	Current number of the installment for deferred payments.
+	Number of installments for a deferred payment.
 	Min: 1
 	"""
 
@@ -4981,7 +5055,7 @@ class TransactionHistory(pydantic.BaseModel):
 
     timestamp: datetime.datetime | None = None
     """
-	Date and time of the creation of the transaction. Response format expressed according to [ISO8601](https://en.wikipedia.org/wiki/ISO_8601) code.
+	The timestamp of when the transaction was created.
 	"""
 
     transaction_code: str | None = None
@@ -4991,7 +5065,7 @@ class TransactionHistory(pydantic.BaseModel):
 
     transaction_id: TransactionId | None = None
     """
-	Unique ID of the transaction.
+	Unique identifier of the transaction.
 	"""
 
     type: TransactionHistoryType | None = None
