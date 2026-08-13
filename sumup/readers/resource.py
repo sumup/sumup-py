@@ -350,7 +350,6 @@ class ReadersResource(Resource):
                 401: Authentication failed or missing required scope.
                 404: The requested Reader resource does not exist.
                 422: The request could not be processed as it violates a business rule.
-                500: An unexpected error occurred while processing the request.
                 Unexpected response statuses also raise this exception.
         """
         body_data: dict[str, typing.Any] = {}
@@ -385,12 +384,6 @@ class ReadersResource(Resource):
         elif resp.status_code == 422:
             raise APIError(
                 "The request could not be processed as it violates a business rule.",
-                status=resp.status_code,
-                body=resp.text,
-            )
-        elif resp.status_code == 500:
-            raise APIError(
-                "An unexpected error occurred while processing the request.",
                 status=resp.status_code,
                 body=resp.text,
             )
@@ -856,7 +849,6 @@ class AsyncReadersResource(AsyncResource):
                 401: Authentication failed or missing required scope.
                 404: The requested Reader resource does not exist.
                 422: The request could not be processed as it violates a business rule.
-                500: An unexpected error occurred while processing the request.
                 Unexpected response statuses also raise this exception.
         """
         body_data: dict[str, typing.Any] = {}
@@ -891,12 +883,6 @@ class AsyncReadersResource(AsyncResource):
         elif resp.status_code == 422:
             raise APIError(
                 "The request could not be processed as it violates a business rule.",
-                status=resp.status_code,
-                body=resp.text,
-            )
-        elif resp.status_code == 500:
-            raise APIError(
-                "An unexpected error occurred while processing the request.",
                 status=resp.status_code,
                 body=resp.text,
             )
