@@ -108,8 +108,14 @@ class ListTransactionsV21200Response(pydantic.BaseModel):
     """
 
     items: list[TransactionHistory] | None = None
+    """
+	Transactions in the current result page.
+	"""
 
     links: list[TransactionsHistoryLink] | None = None
+    """
+	Pagination links for navigating the transaction history.
+	"""
 
 
 class TransactionsResource(Resource):

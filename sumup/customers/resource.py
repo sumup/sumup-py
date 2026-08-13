@@ -50,7 +50,9 @@ class CreateCustomerBodyInput(typing_extensions.TypedDict, total=False):
     """
 
     customer_id: typing_extensions.Required[
-        typing_extensions.Annotated[str, typing_extensions.Doc("Unique ID of the customer.")]
+        typing_extensions.Annotated[
+            str, typing_extensions.Doc("Unique identifier of the customer.")
+        ]
     ]
     personal_details: typing_extensions.NotRequired[
         typing_extensions.Annotated[
