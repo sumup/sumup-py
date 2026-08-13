@@ -50,6 +50,15 @@ func TestBuilderSamples(t *testing.T) {
 	if !strings.Contains(hostedCheckout.Source, "client.checkouts.create(") {
 		t.Fatalf("CreateCheckout sample does not call the generated SDK method:\n%s", hostedCheckout.Source)
 	}
+	if strings.Contains(hostedCheckout.Source, "def main()") ||
+		strings.Contains(hostedCheckout.Source, `if __name__ == "__main__":`) {
+		t.Fatalf("CreateCheckout sample contains an unnecessary main wrapper:\n%s", hostedCheckout.Source)
+	}
+	if !strings.Contains(hostedCheckout.Source, "\nclient = sumup.Sumup(") ||
+		!strings.Contains(hostedCheckout.Source, "\nresult = client.checkouts.create(") ||
+		!strings.Contains(hostedCheckout.Source, "\nprint(result)\n") {
+		t.Fatalf("CreateCheckout sample does not use the compact top-level form:\n%s", hostedCheckout.Source)
+	}
 	if !strings.Contains(hostedCheckout.Source, "hosted_checkout={") ||
 		!strings.Contains(hostedCheckout.Source, `"enabled": True`) {
 		t.Fatalf("CreateCheckout sample does not use the OpenAPI example:\n%s", hostedCheckout.Source)

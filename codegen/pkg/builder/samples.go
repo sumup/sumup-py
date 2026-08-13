@@ -271,13 +271,10 @@ func (b *Builder) renderSample(
 	resourceName := strcase.ToSnake(tagName)
 	var source strings.Builder
 	source.WriteString("import os\n\n")
-	source.WriteString("import sumup\n\n\n")
-	source.WriteString("def main() -> None:\n")
-	source.WriteString("    client = sumup.Sumup(api_key=os.environ[\"SUMUP_API_KEY\"])\n\n")
+	source.WriteString("import sumup\n\n")
+	source.WriteString("client = sumup.Sumup(api_key=os.environ[\"SUMUP_API_KEY\"])\n")
 	if method.ResponseType != nil {
-		source.WriteString("    result = ")
-	} else {
-		source.WriteString("    ")
+		source.WriteString("result = ")
 	}
 	fmt.Fprintf(&source, "client.%s.%s(", resourceName, method.FunctionName)
 	if len(arguments) == 0 {
@@ -286,21 +283,19 @@ func (b *Builder) renderSample(
 		source.WriteString("\n")
 	}
 	for _, argument := range arguments {
-		source.WriteString("        ")
+		source.WriteString("    ")
 		if argument.name != "" {
 			fmt.Fprintf(&source, "%s=", argument.name)
 		}
-		source.WriteString(renderPythonValue(argument.value, "        "))
+		source.WriteString(renderPythonValue(argument.value, "    "))
 		source.WriteString(",\n")
 	}
 	if len(arguments) > 0 {
-		source.WriteString("    )\n")
+		source.WriteString(")\n")
 	}
 	if method.ResponseType != nil {
-		source.WriteString("    print(result)\n")
+		source.WriteString("print(result)\n")
 	}
-	source.WriteString("\n\nif __name__ == \"__main__\":\n")
-	source.WriteString("    main()\n")
 
 	return source.String(), nil
 }
