@@ -11,6 +11,8 @@ import (
 	"testing"
 
 	"github.com/pb33f/libopenapi"
+	"github.com/pb33f/libopenapi/datamodel/high/base"
+	"go.yaml.in/yaml/v4"
 )
 
 func TestBuilderSamples(t *testing.T) {
@@ -92,6 +94,21 @@ func TestBuilderSamplesDeterministic(t *testing.T) {
 	}
 	if string(firstJSON) != string(secondJSON) {
 		t.Fatal("sample generation is not deterministic")
+	}
+}
+
+func TestSampleValueWithoutExamples(t *testing.T) {
+	t.Parallel()
+
+	schema := base.CreateSchemaProxy(&base.Schema{
+		Type:    []string{"string"},
+		Example: &yaml.Node{Kind: yaml.ScalarNode, Tag: "!!str", Value: "property-example"},
+	})
+	if value := sampleValueWithoutExamples(schema); value != "string" {
+		t.Fatalf("sampleValueWithoutExamples() = %q, want neutral fallback", value)
+	}
+	if value := sampleValue(schema, nil, false); value != "property-example" {
+		t.Fatalf("sampleValue() = %q, want property example when no request example exists", value)
 	}
 }
 

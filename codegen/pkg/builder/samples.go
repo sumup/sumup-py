@@ -238,11 +238,15 @@ func (b *Builder) renderSample(
 			}
 			key := field.WireName()
 			value, provided := values[key]
-			if !provided && (!example.provided || !field.Optional) {
+			if !provided && !example.provided {
 				value, provided = sampleSchemaExample(field.Schema)
 			}
 			if field.Optional && !provided {
 				continue
+			}
+			if !provided && example.provided {
+				value = sampleValueWithoutExamples(field.Schema)
+				provided = true
 			}
 			arguments = append(arguments, sampleArgument{
 				name:  field.FieldName(),
@@ -394,23 +398,29 @@ func decodeSampleNode(node *yaml.Node) (any, bool) {
 }
 
 func sampleValue(schema *base.SchemaProxy, raw any, provided bool) any {
-	return sampleValueAtDepth(schema, raw, provided, 0)
+	return sampleValueAtDepth(schema, raw, provided, 0, true)
 }
 
-func sampleValueAtDepth(schema *base.SchemaProxy, raw any, provided bool, depth int) any {
+func sampleValueWithoutExamples(schema *base.SchemaProxy) any {
+	return sampleValueAtDepth(schema, nil, false, 0, false)
+}
+
+func sampleValueAtDepth(schema *base.SchemaProxy, raw any, provided bool, depth int, allowSchemaExamples bool) any {
 	if provided {
 		return raw
 	}
-	if value, ok := sampleSchemaExample(schema); ok {
-		return value
+	if allowSchemaExamples {
+		if value, ok := sampleSchemaExample(schema); ok {
+			return value
+		}
 	}
 	if schema == nil || schema.Schema() == nil {
 		return "value"
 	}
-	return fallbackSampleValue(schema.Schema(), depth)
+	return fallbackSampleValue(schema.Schema(), depth, allowSchemaExamples)
 }
 
-func fallbackSampleValue(schema *base.Schema, depth int) any {
+func fallbackSampleValue(schema *base.Schema, depth int, allowSchemaExamples bool) any {
 	if schema == nil || depth > 8 {
 		return map[string]any{}
 	}
@@ -418,7 +428,7 @@ func fallbackSampleValue(schema *base.Schema, depth int) any {
 	if len(schema.AllOf) > 0 {
 		result := make(map[string]any)
 		for _, part := range schema.AllOf {
-			value := sampleValueAtDepth(part, nil, false, depth+1)
+			value := sampleValueAtDepth(part, nil, false, depth+1, allowSchemaExamples)
 			if fields, ok := value.(map[string]any); ok {
 				for key, field := range fields {
 					result[key] = field
@@ -428,10 +438,10 @@ func fallbackSampleValue(schema *base.Schema, depth int) any {
 		return result
 	}
 	if len(schema.OneOf) > 0 {
-		return sampleValueAtDepth(schema.OneOf[0], nil, false, depth+1)
+		return sampleValueAtDepth(schema.OneOf[0], nil, false, depth+1, allowSchemaExamples)
 	}
 	if len(schema.AnyOf) > 0 {
-		return sampleValueAtDepth(schema.AnyOf[0], nil, false, depth+1)
+		return sampleValueAtDepth(schema.AnyOf[0], nil, false, depth+1, allowSchemaExamples)
 	}
 
 	switch {
@@ -441,10 +451,10 @@ func fallbackSampleValue(schema *base.Schema, depth int) any {
 			for _, name := range schema.Required {
 				property, ok := schema.Properties.Get(name)
 				if ok && !sampleSchemaReadOnly(property) {
-					if example, provided := sampleSchemaExample(property); provided {
+					if example, provided := sampleSchemaExample(property); allowSchemaExamples && provided {
 						value[name] = example
 					} else if property != nil && property.Schema() != nil {
-						value[name] = fallbackSampleValue(property.Schema(), depth+1)
+						value[name] = fallbackSampleValue(property.Schema(), depth+1, allowSchemaExamples)
 					}
 				}
 			}
