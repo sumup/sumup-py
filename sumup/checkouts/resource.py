@@ -37,14 +37,7 @@ from .._service import (
     serialize_request_data,
 )
 from ..types import (
-    AddressLegacy,
-    AddressLegacyInput,
-    Card,
-    CardInput,
-    CardType,
-    CardTypeInput,
     Checkout,
-    CheckoutAccepted,
     CheckoutCreateRequest,
     CheckoutCreateRequestInput,
     CheckoutSuccess,
@@ -59,15 +52,9 @@ from ..types import (
     ErrorForbidden,
     HostedCheckout,
     HostedCheckoutInput,
-    MandatePayload,
-    MandatePayloadInput,
     MandateResponse,
     PaymentType,
-    PersonalDetails,
-    PersonalDetailsInput,
     Problem,
-    ProcessCheckout,
-    ProcessCheckoutInput,
     TransactionBase,
     TransactionCheckoutInfo,
     TransactionStatus,
@@ -224,97 +211,6 @@ class UpdateCheckoutBodyInput(typing_extensions.TypedDict, total=False):
     ]
 
 
-ProcessCheckoutBodyPaymentTypeInput = (
-    typing.Literal["apple_pay", "bancontact", "blik", "boleto", "card", "google_pay", "ideal"] | str
-)
-
-ProcessCheckoutBodyGooglePayInput = typing.Mapping[str, object]
-"""
-Raw `PaymentData` object received from Google Pay. Send the Google Pay response payload as-is.
-"""
-
-ProcessCheckoutBodyApplePayInput = typing.Mapping[str, object]
-"""
-Raw payment token object received from Apple Pay. Send the Apple Pay response payload as-is.
-"""
-
-
-class ProcessCheckoutBodyInput(typing_extensions.TypedDict, total=False):
-    """
-    Request body for attempting payment on an existing checkout. The required companion fields depend on theselected `payment_type`, for example card details, saved-card data, or payer information required by aspecific payment method.
-    """
-
-    payment_type: typing_extensions.Required[
-        typing_extensions.Annotated[
-            ProcessCheckoutBodyPaymentTypeInput,
-            typing_extensions.Doc(
-                "Payment method used for this processing attempt. It determines which additional request fields are required."
-            ),
-        ]
-    ]
-    apple_pay: typing_extensions.NotRequired[
-        typing_extensions.Annotated[
-            ProcessCheckoutBodyApplePayInput,
-            typing_extensions.Doc(
-                "Raw payment token object received from Apple Pay. Send the Apple Pay response payload as-is."
-            ),
-        ]
-    ]
-    card: typing_extensions.NotRequired[
-        typing_extensions.Annotated[
-            CardInput,
-            typing_extensions.Doc(
-                "__Required when payment type is `card`.__ Details of the payment card."
-            ),
-        ]
-    ]
-    customer_id: typing_extensions.NotRequired[
-        typing_extensions.Annotated[
-            str,
-            typing_extensions.Doc(
-                "Customer identifier associated with the saved payment instrument. Required when `token` is provided."
-            ),
-        ]
-    ]
-    google_pay: typing_extensions.NotRequired[
-        typing_extensions.Annotated[
-            ProcessCheckoutBodyGooglePayInput,
-            typing_extensions.Doc(
-                "Raw `PaymentData` object received from Google Pay. Send the Google Pay response payload as-is."
-            ),
-        ]
-    ]
-    installments: typing_extensions.NotRequired[
-        typing_extensions.Annotated[
-            int,
-            typing_extensions.Doc(
-                "Number of installments for deferred payments. Available only to merchant users in Brazil.\nMin: 1\nMax: 12"
-            ),
-        ]
-    ]
-    mandate: typing_extensions.NotRequired[
-        typing_extensions.Annotated[
-            MandatePayloadInput,
-            typing_extensions.Doc(
-                "Mandate details used when a checkout should create a reusable card token for future recurring or merchant-initiated payments."
-            ),
-        ]
-    ]
-    personal_details: typing_extensions.NotRequired[
-        typing_extensions.Annotated[
-            PersonalDetailsInput, typing_extensions.Doc("Personal details for the customer.")
-        ]
-    ]
-    token: typing_extensions.NotRequired[
-        typing_extensions.Annotated[
-            str,
-            typing_extensions.Doc(
-                "Saved-card token to use instead of raw card details when processing with a previously stored payment instrument."
-            ),
-        ]
-    ]
-
-
 class CreateApplePaySessionBodyInput(typing_extensions.TypedDict, total=False):
     """
     CreateApplePaySessionBody is a schema definition.
@@ -364,8 +260,6 @@ ListCheckouts200Response = list[CheckoutSuccess]
 """
 ListCheckouts200Response is a schema definition.
 """
-
-ProcessCheckoutResponse = CheckoutSuccess | CheckoutAccepted
 
 CreateApplePaySession200Response = dict[str, object]
 """
@@ -620,88 +514,6 @@ class CheckoutsResource(Resource):
         elif resp.status_code == 404:
             raise APIError(
                 "The requested resource does not exist.", status=resp.status_code, body=resp.text
-            )
-        else:
-            raise APIError(f"Unexpected response", status=resp.status_code, body=resp.text)
-
-    def process(
-        self,
-        checkout_id: str,
-        *,
-        payment_type: ProcessCheckoutBodyPaymentTypeInput,
-        installments: int | None | NotGivenType = NOT_GIVEN,
-        mandate: MandatePayloadInput | None | NotGivenType = NOT_GIVEN,
-        card: CardInput | None | NotGivenType = NOT_GIVEN,
-        google_pay: ProcessCheckoutBodyGooglePayInput | None | NotGivenType = NOT_GIVEN,
-        apple_pay: ProcessCheckoutBodyApplePayInput | None | NotGivenType = NOT_GIVEN,
-        token: str | None | NotGivenType = NOT_GIVEN,
-        customer_id: str | None | NotGivenType = NOT_GIVEN,
-        personal_details: PersonalDetailsInput | None | NotGivenType = NOT_GIVEN,
-        headers: HeaderTypes | None = None,
-    ) -> ProcessCheckoutResponse:
-        """
-        Process a checkout
-
-        Processing a checkout will attempt to charge the provided payment instrument for the amount of the specified checkout resourceinitiated in the `Create a checkout` endpoint.
-
-        Follow this request with `Retrieve a checkout` to confirm its status.
-
-
-        Raises:
-            APIError: Raised when the API returns one of the documented error responses:
-                400: The request body is invalid for processing the checkout.
-                401: The request is not authorized.
-                404: The requested resource does not exist.
-                409: The request conflicts with the current state of the resource.
-                Unexpected response statuses also raise this exception.
-        """
-        body_data: dict[str, typing.Any] = {}
-        body_data["payment_type"] = payment_type
-        if not isinstance(installments, NotGivenType):
-            body_data["installments"] = installments
-        if not isinstance(mandate, NotGivenType):
-            body_data["mandate"] = mandate
-        if not isinstance(card, NotGivenType):
-            body_data["card"] = card
-        if not isinstance(google_pay, NotGivenType):
-            body_data["google_pay"] = google_pay
-        if not isinstance(apple_pay, NotGivenType):
-            body_data["apple_pay"] = apple_pay
-        if not isinstance(token, NotGivenType):
-            body_data["token"] = token
-        if not isinstance(customer_id, NotGivenType):
-            body_data["customer_id"] = customer_id
-        if not isinstance(personal_details, NotGivenType):
-            body_data["personal_details"] = personal_details
-
-        resp = self._client.put(
-            f"/v0.1/checkouts/{checkout_id}",
-            json=serialize_request_data(body_data),
-            headers=headers,
-        )
-        if resp.status_code == 200:
-            return pydantic.TypeAdapter(CheckoutSuccess).validate_python(resp.json())
-        elif resp.status_code == 202:
-            return pydantic.TypeAdapter(CheckoutAccepted).validate_python(resp.json())
-        elif resp.status_code == 400:
-            raise APIError(
-                "The request body is invalid for processing the checkout.",
-                status=resp.status_code,
-                body=resp.text,
-            )
-        elif resp.status_code == 401:
-            raise APIError(
-                "The request is not authorized.", status=resp.status_code, body=resp.text
-            )
-        elif resp.status_code == 404:
-            raise APIError(
-                "The requested resource does not exist.", status=resp.status_code, body=resp.text
-            )
-        elif resp.status_code == 409:
-            raise APIError(
-                "The request conflicts with the current state of the resource.",
-                status=resp.status_code,
-                body=resp.text,
             )
         else:
             raise APIError(f"Unexpected response", status=resp.status_code, body=resp.text)
@@ -1034,88 +846,6 @@ class AsyncCheckoutsResource(AsyncResource):
         elif resp.status_code == 404:
             raise APIError(
                 "The requested resource does not exist.", status=resp.status_code, body=resp.text
-            )
-        else:
-            raise APIError(f"Unexpected response", status=resp.status_code, body=resp.text)
-
-    async def process(
-        self,
-        checkout_id: str,
-        *,
-        payment_type: ProcessCheckoutBodyPaymentTypeInput,
-        installments: int | None | NotGivenType = NOT_GIVEN,
-        mandate: MandatePayloadInput | None | NotGivenType = NOT_GIVEN,
-        card: CardInput | None | NotGivenType = NOT_GIVEN,
-        google_pay: ProcessCheckoutBodyGooglePayInput | None | NotGivenType = NOT_GIVEN,
-        apple_pay: ProcessCheckoutBodyApplePayInput | None | NotGivenType = NOT_GIVEN,
-        token: str | None | NotGivenType = NOT_GIVEN,
-        customer_id: str | None | NotGivenType = NOT_GIVEN,
-        personal_details: PersonalDetailsInput | None | NotGivenType = NOT_GIVEN,
-        headers: HeaderTypes | None = None,
-    ) -> ProcessCheckoutResponse:
-        """
-        Process a checkout
-
-        Processing a checkout will attempt to charge the provided payment instrument for the amount of the specified checkout resourceinitiated in the `Create a checkout` endpoint.
-
-        Follow this request with `Retrieve a checkout` to confirm its status.
-
-
-        Raises:
-            APIError: Raised when the API returns one of the documented error responses:
-                400: The request body is invalid for processing the checkout.
-                401: The request is not authorized.
-                404: The requested resource does not exist.
-                409: The request conflicts with the current state of the resource.
-                Unexpected response statuses also raise this exception.
-        """
-        body_data: dict[str, typing.Any] = {}
-        body_data["payment_type"] = payment_type
-        if not isinstance(installments, NotGivenType):
-            body_data["installments"] = installments
-        if not isinstance(mandate, NotGivenType):
-            body_data["mandate"] = mandate
-        if not isinstance(card, NotGivenType):
-            body_data["card"] = card
-        if not isinstance(google_pay, NotGivenType):
-            body_data["google_pay"] = google_pay
-        if not isinstance(apple_pay, NotGivenType):
-            body_data["apple_pay"] = apple_pay
-        if not isinstance(token, NotGivenType):
-            body_data["token"] = token
-        if not isinstance(customer_id, NotGivenType):
-            body_data["customer_id"] = customer_id
-        if not isinstance(personal_details, NotGivenType):
-            body_data["personal_details"] = personal_details
-
-        resp = await self._client.put(
-            f"/v0.1/checkouts/{checkout_id}",
-            json=serialize_request_data(body_data),
-            headers=headers,
-        )
-        if resp.status_code == 200:
-            return pydantic.TypeAdapter(CheckoutSuccess).validate_python(resp.json())
-        elif resp.status_code == 202:
-            return pydantic.TypeAdapter(CheckoutAccepted).validate_python(resp.json())
-        elif resp.status_code == 400:
-            raise APIError(
-                "The request body is invalid for processing the checkout.",
-                status=resp.status_code,
-                body=resp.text,
-            )
-        elif resp.status_code == 401:
-            raise APIError(
-                "The request is not authorized.", status=resp.status_code, body=resp.text
-            )
-        elif resp.status_code == 404:
-            raise APIError(
-                "The requested resource does not exist.", status=resp.status_code, body=resp.text
-            )
-        elif resp.status_code == 409:
-            raise APIError(
-                "The request conflicts with the current state of the resource.",
-                status=resp.status_code,
-                body=resp.text,
             )
         else:
             raise APIError(f"Unexpected response", status=resp.status_code, body=resp.text)
