@@ -148,7 +148,7 @@ class CreateCheckoutBodyInput(typing_extensions.TypedDict, total=False):
     ]
     valid_until: typing_extensions.NotRequired[
         typing_extensions.Annotated[
-            datetime.datetime,
+            datetime.datetime | None,
             typing_extensions.Doc(
                 "Optional expiration timestamp. The checkout must be processed before this moment, otherwise it becomes unusable.If omitted, the checkout does not have an explicit expiry time."
             ),
@@ -203,7 +203,7 @@ class UpdateCheckoutBodyInput(typing_extensions.TypedDict, total=False):
     ]
     valid_until: typing_extensions.NotRequired[
         typing_extensions.Annotated[
-            datetime.datetime,
+            datetime.datetime | None,
             typing_extensions.Doc(
                 "Updated expiration timestamp. The checkout must be processed before this moment, otherwise it becomes unusable."
             ),

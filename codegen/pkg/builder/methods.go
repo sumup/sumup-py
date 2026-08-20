@@ -277,6 +277,7 @@ func (b *Builder) buildQueryFields(o *v3.Operation) ([]Property, error) {
 			SerializedName: alias,
 			Type:           typeName,
 			Optional:       p.Required == nil || !*p.Required,
+			Nullable:       schemaIsNullable(p.Schema.Schema()),
 			Schema:         p.Schema,
 			Comment:        parameterPropertyDoc(p.Schema.Schema()),
 		})

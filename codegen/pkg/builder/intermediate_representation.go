@@ -43,8 +43,10 @@ type Property struct {
 	// Type of the field, either primitive type (e.g. string) or if the field
 	// is a schema reference then the type of the schema.
 	Type string
-	// Optional field.
+	// Optional field. The property may be omitted from the object.
 	Optional bool
+	// Nullable field. The property value may be JSON null.
+	Nullable bool
 	// Schema is the OpenAPI schema used to generate this property.
 	Schema *base.SchemaProxy
 

@@ -174,23 +174,31 @@ func (p *Property) String() string {
 
 	useAlias := alias != "" && alias != fieldName
 
+	typeName := p.pythonType()
 	if useAlias {
 		aliasChoices := fmt.Sprintf("pydantic.AliasChoices(%q, %q)", alias, fieldName)
 		if p.Optional {
-			fmt.Fprintf(buf, "%s: %s | None = pydantic.Field(default=None, serialization_alias=%q, validation_alias=%s)\n", fieldName, p.Type, alias, aliasChoices)
+			fmt.Fprintf(buf, "%s: %s = pydantic.Field(default=None, serialization_alias=%q, validation_alias=%s)\n", fieldName, typeName, alias, aliasChoices)
 		} else {
-			fmt.Fprintf(buf, "%s: %s = pydantic.Field(serialization_alias=%q, validation_alias=%s)\n", fieldName, p.Type, alias, aliasChoices)
+			fmt.Fprintf(buf, "%s: %s = pydantic.Field(serialization_alias=%q, validation_alias=%s)\n", fieldName, typeName, alias, aliasChoices)
 		}
 	} else if p.Optional {
-		fmt.Fprintf(buf, "%s: %s | None = None\n", fieldName, p.Type)
+		fmt.Fprintf(buf, "%s: %s = None\n", fieldName, typeName)
 	} else {
-		fmt.Fprintf(buf, "%s: %s\n", fieldName, p.Type)
+		fmt.Fprintf(buf, "%s: %s\n", fieldName, typeName)
 	}
 	if p.Comment != "" {
 		fmt.Fprintf(buf, "'''\n%s\n'''\n", p.Comment)
 	}
 
 	return buf.String()
+}
+
+func (p Property) pythonType() string {
+	if p.Optional || p.Nullable {
+		return p.Type + " | None"
+	}
+	return p.Type
 }
 
 func (p Property) FieldName() string {
@@ -212,6 +220,9 @@ func (p Property) MethodParameterString(allowNone bool) string {
 		}
 		return fmt.Sprintf("%s: %s | NotGivenType = NOT_GIVEN", p.FieldName(), typeName)
 	}
+	if p.Nullable {
+		return fmt.Sprintf("%s: %s | None", p.FieldName(), typeName)
+	}
 
 	return fmt.Sprintf("%s: %s", p.FieldName(), typeName)
 }
@@ -223,7 +234,7 @@ func (p Property) MethodParameterType() string {
 func (p Property) BodyArgumentExpr(allowNone bool) string {
 	name := p.FieldName()
 	if strings.HasPrefix(p.Type, "list[") {
-		if allowNone && p.Optional {
+		if (allowNone && p.Optional) || p.Nullable {
 			return fmt.Sprintf("(list(%s) if %s is not None else None)", name, name)
 		}
 		return fmt.Sprintf("list(%s)", name)
@@ -234,6 +245,9 @@ func (p Property) BodyArgumentExpr(allowNone bool) string {
 
 func (p Property) TypedDictFieldString() string {
 	typeName := inputTypeName(p.Type)
+	if p.Nullable {
+		typeName += " | None"
+	}
 	if p.Comment != "" {
 		typeName = fmt.Sprintf("typing_extensions.Annotated[%s, typing_extensions.Doc(%#v)]", typeName, p.Comment)
 	}

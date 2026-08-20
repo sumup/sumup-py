@@ -389,12 +389,23 @@ func (b *Builder) createFields(properties *orderedmap.Map[string, *base.SchemaPr
 			Type:     typeName,
 			Comment:  schemaPropertyGodoc(schema.Schema()),
 			Optional: optional,
+			Nullable: schemaIsNullable(schema.Schema()),
 			Schema:   schema,
 		})
 		types = append(types, moreTypes...)
 	}
 
 	return fields, types
+}
+
+func schemaIsNullable(schema *base.Schema) bool {
+	if schema == nil {
+		return false
+	}
+	if schema.Nullable != nil && *schema.Nullable {
+		return true
+	}
+	return slices.Contains(schema.Type, "null")
 }
 
 func createEnum(schema *base.Schema, name string) Writable {
