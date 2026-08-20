@@ -1,5 +1,30 @@
 # Changelog
 
+## [0.3.3](https://github.com/sumup/sumup-py/compare/v0.3.2...v0.3.3) (2026-08-20)
+
+
+### Features
+
+* improve code samples generation ([1377ea8](https://github.com/sumup/sumup-py/commit/1377ea827864bebd1732969c2960c98287c49bc4))
+
+
+### Bug Fixes
+
+* **codegen:** handling of nullable/optional fields ([#385](https://github.com/sumup/sumup-py/issues/385)) ([615a12d](https://github.com/sumup/sumup-py/commit/615a12d8813295d6234c92122154272fc31c611c))
+
+
+### Chores
+
+* **codegen:** make samples shorter ([216b90d](https://github.com/sumup/sumup-py/commit/216b90de8ebd4efdc7d31cdadd7e878ce972140c))
+* **deps-dev:** bump ruff from 0.16.2 to 0.16.3 ([#380](https://github.com/sumup/sumup-py/issues/380)) ([c840e58](https://github.com/sumup/sumup-py/commit/c840e5881a26d465d1c42e93acd3e52c0da0c7b1))
+* **deps-dev:** bump ty from 0.0.69 to 0.0.72 ([#383](https://github.com/sumup/sumup-py/issues/383)) ([59f5261](https://github.com/sumup/sumup-py/commit/59f526151a0c03f6aa63e3ac5bc656cb1108bb08))
+* **deps:** bump astral-sh/setup-uv from 9.0.0 to 10.0.1 ([#381](https://github.com/sumup/sumup-py/issues/381)) ([9f4ddda](https://github.com/sumup/sumup-py/commit/9f4dddaeb558251e149d4a8980c3585bfdeb44e1))
+* **deps:** bump reviewdog/action-actionlint from 1.73.1 to 1.73.2 ([#382](https://github.com/sumup/sumup-py/issues/382)) ([3c2138a](https://github.com/sumup/sumup-py/commit/3c2138a3f70a4b434219f34dddf65f943ddcb01b))
+* synced file(s) with sumup/apis ([#375](https://github.com/sumup/sumup-py/issues/375)) ([0575c85](https://github.com/sumup/sumup-py/commit/0575c85c5809ca8bf0e5d843d0bc6cbdb1147073))
+* synced file(s) with sumup/apis ([#377](https://github.com/sumup/sumup-py/issues/377)) ([78b1955](https://github.com/sumup/sumup-py/commit/78b19552d05c27c0f3c56f50210b3b459e456301))
+* synced file(s) with sumup/apis ([#378](https://github.com/sumup/sumup-py/issues/378)) ([227986c](https://github.com/sumup/sumup-py/commit/227986cd0032ae1b426a2ce76b43f8ea7c6202b8))
+* synced file(s) with sumup/apis ([#379](https://github.com/sumup/sumup-py/issues/379)) ([a8a3a72](https://github.com/sumup/sumup-py/commit/a8a3a72149ad95ca7f0bc9b886ab964e84bbc3aa))
+
 ## [0.3.2](https://github.com/sumup/sumup-py/compare/v0.3.1...v0.3.2) (2026-08-12)
 
 
