@@ -261,7 +261,7 @@ class CreateReaderCheckoutBodyInput(typing_extensions.TypedDict, total=False):
     ]
     affiliate: typing_extensions.NotRequired[
         typing_extensions.Annotated[
-            CreateReaderCheckoutBodyAffiliateInput,
+            CreateReaderCheckoutBodyAffiliateInput | None,
             typing_extensions.Doc(
                 "Affiliate metadata for the transaction.\nIt is a field that allow for integrators to track the source of the transaction."
             ),
@@ -283,7 +283,7 @@ class CreateReaderCheckoutBodyInput(typing_extensions.TypedDict, total=False):
     ]
     installments: typing_extensions.NotRequired[
         typing_extensions.Annotated[
-            int,
+            int | None,
             typing_extensions.Doc(
                 "Number of installments for the transaction.\nIt may vary according to the merchant country.\nFor example, in Brazil, the maximum number of installments is 12.\n\nOmit if the merchant country does support installments.\nOtherwise, the checkout will be rejected.\nMin: 1"
             ),

@@ -1143,7 +1143,7 @@ class CheckoutCreateRequestDict(typing_extensions.TypedDict, total=False):
     ]
     valid_until: typing_extensions.NotRequired[
         typing_extensions.Annotated[
-            datetime.datetime,
+            datetime.datetime | None,
             typing_extensions.Doc(
                 "Optional expiration timestamp. The checkout must be processed before this moment, otherwise it becomes unusable.If omitted, the checkout does not have an explicit expiry time."
             ),
@@ -1435,7 +1435,7 @@ class CheckoutUpdateRequestDict(typing_extensions.TypedDict, total=False):
     ]
     valid_until: typing_extensions.NotRequired[
         typing_extensions.Annotated[
-            datetime.datetime,
+            datetime.datetime | None,
             typing_extensions.Doc(
                 "Updated expiration timestamp. The checkout must be processed before this moment, otherwise it becomes unusable."
             ),
@@ -1852,7 +1852,7 @@ class CreateReaderCheckoutRequestDict(typing_extensions.TypedDict, total=False):
     ]
     affiliate: typing_extensions.NotRequired[
         typing_extensions.Annotated[
-            CreateReaderCheckoutRequestAffiliateInput,
+            CreateReaderCheckoutRequestAffiliateInput | None,
             typing_extensions.Doc(
                 "Affiliate metadata for the transaction.\nIt is a field that allow for integrators to track the source of the transaction."
             ),
@@ -1874,7 +1874,7 @@ class CreateReaderCheckoutRequestDict(typing_extensions.TypedDict, total=False):
     ]
     installments: typing_extensions.NotRequired[
         typing_extensions.Annotated[
-            int,
+            int | None,
             typing_extensions.Doc(
                 "Number of installments for the transaction.\nIt may vary according to the merchant country.\nFor example, in Brazil, the maximum number of installments is 12.\n\nOmit if the merchant country does support installments.\nOtherwise, the checkout will be rejected.\nMin: 1"
             ),
@@ -2461,7 +2461,7 @@ class GetReaderCheckoutResponseData(pydantic.BaseModel):
     GetReaderCheckoutResponseData is a schema definition.
     """
 
-    card_type: GetReaderCheckoutResponseDataCardType
+    card_type: GetReaderCheckoutResponseDataCardType | None
     """
 	Type of the card. Required for some countries
 	"""
@@ -2482,12 +2482,12 @@ class GetReaderCheckoutResponseData(pydantic.BaseModel):
 	Checkout creation timestamp
 	"""
 
-    installments: int
+    installments: int | None
     """
 	Number of installments for the transaction. Required for some countries.
 	"""
 
-    payment_status: str
+    payment_status: str | None
     """
 	Payment status from payments v2 event
 	"""
@@ -2526,7 +2526,7 @@ class GetReaderCheckoutResponseData(pydantic.BaseModel):
 	Checkout last update timestamp
 	"""
 
-    valid_until: datetime.datetime
+    valid_until: datetime.datetime | None
     """
 	Checkout expiration timestamp. After this time, the checkout will be automatically cancelled.
 	"""

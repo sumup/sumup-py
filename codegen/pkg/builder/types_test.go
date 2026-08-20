@@ -18,6 +18,51 @@ func TestGeneratedTypesUseModernUnionSyntax(t *testing.T) {
 			want: "expires_at: datetime.datetime | None = None\n",
 		},
 		{
+			name: "required property",
+			got: (&Property{
+				Name: "checkout_id",
+				Type: "str",
+			}).String(),
+			want: "checkout_id: str\n",
+		},
+		{
+			name: "required nullable property",
+			got: (&Property{
+				Name:     "card_type",
+				Type:     "GetReaderCheckoutResponseDataCardType",
+				Nullable: true,
+			}).String(),
+			want: "card_type: GetReaderCheckoutResponseDataCardType | None\n",
+		},
+		{
+			name: "required nullable aliased property",
+			got: (&Property{
+				Name:           "card_type",
+				SerializedName: "cardType",
+				Type:           "str",
+				Nullable:       true,
+			}).String(),
+			want: "card_type: str | None = pydantic.Field(serialization_alias=\"cardType\", validation_alias=pydantic.AliasChoices(\"cardType\", \"card_type\"))\n",
+		},
+		{
+			name: "required nullable typed dict field",
+			got: (&Property{
+				Name:     "installments",
+				Type:     "int",
+				Nullable: true,
+			}).TypedDictFieldString(),
+			want: "installments: typing_extensions.Required[int | None]",
+		},
+		{
+			name: "required nullable method parameter",
+			got: (&Property{
+				Name:     "card_type",
+				Type:     "str",
+				Nullable: true,
+			}).MethodParameterString(true),
+			want: "card_type: str | None",
+		},
+		{
 			name: "optional method parameter",
 			got: (&Property{
 				Name:     "status",
