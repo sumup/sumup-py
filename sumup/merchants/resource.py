@@ -56,13 +56,7 @@ class MerchantsResource(Resource):
     def __init__(self, client: httpx.Client) -> None:
         super().__init__(client)
 
-    def get(
-        self,
-        merchant_code: str,
-        *,
-        version: str | NotGivenType = NOT_GIVEN,
-        headers: HeaderTypes | None = None,
-    ) -> Merchant:
+    def get(self, merchant_code: str, headers: HeaderTypes | None = None) -> Merchant:
         """
         Get Merchant
 
@@ -76,13 +70,8 @@ class MerchantsResource(Resource):
                 404: The requested Merchant does not exist.
                 Unexpected response statuses also raise this exception.
         """
-        query_data: dict[str, typing.Any] = {}
-        if not isinstance(version, NotGivenType) and version is not None:
-            query_data["version"] = version
-
         resp = self._client.get(
             f"/v1/merchants/{merchant_code}",
-            params=serialize_query_params(query_data) if query_data else None,
             headers=headers,
         )
         if resp.status_code == 200:
@@ -95,11 +84,7 @@ class MerchantsResource(Resource):
             raise APIError(f"Unexpected response", status=resp.status_code, body=resp.text)
 
     def list_persons(
-        self,
-        merchant_code: str,
-        *,
-        version: str | NotGivenType = NOT_GIVEN,
-        headers: HeaderTypes | None = None,
+        self, merchant_code: str, headers: HeaderTypes | None = None
     ) -> ListPersonsResponseBody:
         """
         List Persons
@@ -114,13 +99,8 @@ class MerchantsResource(Resource):
                 404: The requested Merchant does not exist.
                 Unexpected response statuses also raise this exception.
         """
-        query_data: dict[str, typing.Any] = {}
-        if not isinstance(version, NotGivenType) and version is not None:
-            query_data["version"] = version
-
         resp = self._client.get(
             f"/v1/merchants/{merchant_code}/persons",
-            params=serialize_query_params(query_data) if query_data else None,
             headers=headers,
         )
         if resp.status_code == 200:
@@ -133,12 +113,7 @@ class MerchantsResource(Resource):
             raise APIError(f"Unexpected response", status=resp.status_code, body=resp.text)
 
     def get_person(
-        self,
-        merchant_code: str,
-        person_id: str,
-        *,
-        version: str | NotGivenType = NOT_GIVEN,
-        headers: HeaderTypes | None = None,
+        self, merchant_code: str, person_id: str, headers: HeaderTypes | None = None
     ) -> Person:
         """
         Get Person
@@ -153,13 +128,8 @@ class MerchantsResource(Resource):
                 404: The requested Person does not exist.
                 Unexpected response statuses also raise this exception.
         """
-        query_data: dict[str, typing.Any] = {}
-        if not isinstance(version, NotGivenType) and version is not None:
-            query_data["version"] = version
-
         resp = self._client.get(
             f"/v1/merchants/{merchant_code}/persons/{person_id}",
-            params=serialize_query_params(query_data) if query_data else None,
             headers=headers,
         )
         if resp.status_code == 200:
@@ -178,13 +148,7 @@ class AsyncMerchantsResource(AsyncResource):
     def __init__(self, client: httpx.AsyncClient) -> None:
         super().__init__(client)
 
-    async def get(
-        self,
-        merchant_code: str,
-        *,
-        version: str | NotGivenType = NOT_GIVEN,
-        headers: HeaderTypes | None = None,
-    ) -> Merchant:
+    async def get(self, merchant_code: str, headers: HeaderTypes | None = None) -> Merchant:
         """
         Get Merchant
 
@@ -198,13 +162,8 @@ class AsyncMerchantsResource(AsyncResource):
                 404: The requested Merchant does not exist.
                 Unexpected response statuses also raise this exception.
         """
-        query_data: dict[str, typing.Any] = {}
-        if not isinstance(version, NotGivenType) and version is not None:
-            query_data["version"] = version
-
         resp = await self._client.get(
             f"/v1/merchants/{merchant_code}",
-            params=serialize_query_params(query_data) if query_data else None,
             headers=headers,
         )
         if resp.status_code == 200:
@@ -217,11 +176,7 @@ class AsyncMerchantsResource(AsyncResource):
             raise APIError(f"Unexpected response", status=resp.status_code, body=resp.text)
 
     async def list_persons(
-        self,
-        merchant_code: str,
-        *,
-        version: str | NotGivenType = NOT_GIVEN,
-        headers: HeaderTypes | None = None,
+        self, merchant_code: str, headers: HeaderTypes | None = None
     ) -> ListPersonsResponseBody:
         """
         List Persons
@@ -236,13 +191,8 @@ class AsyncMerchantsResource(AsyncResource):
                 404: The requested Merchant does not exist.
                 Unexpected response statuses also raise this exception.
         """
-        query_data: dict[str, typing.Any] = {}
-        if not isinstance(version, NotGivenType) and version is not None:
-            query_data["version"] = version
-
         resp = await self._client.get(
             f"/v1/merchants/{merchant_code}/persons",
-            params=serialize_query_params(query_data) if query_data else None,
             headers=headers,
         )
         if resp.status_code == 200:
@@ -255,12 +205,7 @@ class AsyncMerchantsResource(AsyncResource):
             raise APIError(f"Unexpected response", status=resp.status_code, body=resp.text)
 
     async def get_person(
-        self,
-        merchant_code: str,
-        person_id: str,
-        *,
-        version: str | NotGivenType = NOT_GIVEN,
-        headers: HeaderTypes | None = None,
+        self, merchant_code: str, person_id: str, headers: HeaderTypes | None = None
     ) -> Person:
         """
         Get Person
@@ -275,13 +220,8 @@ class AsyncMerchantsResource(AsyncResource):
                 404: The requested Person does not exist.
                 Unexpected response statuses also raise this exception.
         """
-        query_data: dict[str, typing.Any] = {}
-        if not isinstance(version, NotGivenType) and version is not None:
-            query_data["version"] = version
-
         resp = await self._client.get(
             f"/v1/merchants/{merchant_code}/persons/{person_id}",
-            params=serialize_query_params(query_data) if query_data else None,
             headers=headers,
         )
         if resp.status_code == 200:
