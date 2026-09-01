@@ -403,19 +403,20 @@ class BasePerson(pydantic.BaseModel):
     country_of_residence: str | None = None
     """
 	An [ISO3166-1 alpha-2](https://en.wikipedia.org/wiki/ISO_3166-1_alpha-2) country code representing the countrywhere the Person resides.
-	Min length: 2
-	Max length: 2
+	Pattern: ^[A-Z]{2}$
 	"""
 
     family_name: str | None = None
     """
 	The last name(s) of the individual.
+	Min length: 1
 	Max length: 60
 	"""
 
     given_name: str | None = None
     """
 	The first name(s) of the individual.
+	Min length: 1
 	Max length: 60
 	"""
 
@@ -428,12 +429,14 @@ class BasePerson(pydantic.BaseModel):
     middle_name: str | None = None
     """
 	Middle name(s) of the End-User. Note that in some cultures, people can have multiple middle names; all canbe present, with the names being separated by space characters. Also note that in some cultures, middle namesare not used.
+	Min length: 1
 	Max length: 60
 	"""
 
     nationality: str | None = None
     """
 	The Person's nationality. May be an [ISO3166-1 alpha-2](https://en.wikipedia.org/wiki/ISO_3166-1_alpha-2) countrycode, but legacy data may not conform to this standard.
+	Pattern: ^[A-Z]{2}$
 	"""
 
     ownership: Ownership | None = None
@@ -541,12 +544,13 @@ class BusinessProfile(pydantic.BaseModel):
 	The more recognisable your descriptor is, the less risk you have of receiving disputes (e.g. chargebacks).
 	Min length: 1
 	Max length: 30
-	Pattern: ^[a-zA-Z0-9 \\-+\\'_.]{0,30}$
+	Pattern: ^[a-zA-Z0-9 +'_.-]+$
 	"""
 
     email: str | None = None
     """
 	A publicly available email address.
+	Min length: 1
 	Max length: 255
 	"""
 
@@ -566,6 +570,7 @@ class BusinessProfile(pydantic.BaseModel):
     website: str | None = None
     """
 	The business's publicly available website.
+	Min length: 1
 	Max length: 255
 	"""
 
@@ -599,6 +604,121 @@ CardType = (
     ]
     | str
 )
+CardTypeInput = CardType
+
+
+class Card(pydantic.BaseModel):
+    """
+    __Required when payment type is `card`.__ Details of the payment card.
+    """
+
+    cvv: str
+    """
+	Three or four-digit card verification value (security code) of the payment card.
+	Write only
+	Min length: 3
+	Max length: 4
+	"""
+
+    expiry_month: str
+    """
+	Two-digit expiration month, from `01` through `12`.
+	Write only
+	Min length: 2
+	Max length: 2
+	Pattern: ^(0[1-9]|1[0-2])$
+	"""
+
+    expiry_year: str
+    """
+	Two- or four-digit expiration year in `YY` or `YYYY` format.
+	Write only
+	Pattern: ^[0-9]{2}([0-9]{2})?$
+	"""
+
+    name: str
+    """
+	Name of the cardholder as it appears on the payment card.
+	Write only
+	"""
+
+    number: str
+    """
+	Number of the payment card (without spaces).
+	Write only
+	"""
+
+    type: CardType
+    """
+	Issuing card network of the payment card used for the transaction.
+	"""
+
+    zip_code: str | None = None
+    """
+	Required five-digit ZIP code. Applicable only to merchant users in the USA.
+	Write only
+	Min length: 5
+	Max length: 5
+	"""
+
+
+class CardDict(typing_extensions.TypedDict, total=False):
+    cvv: typing_extensions.Required[
+        typing_extensions.Annotated[
+            str,
+            typing_extensions.Doc(
+                "Three or four-digit card verification value (security code) of the payment card.\nWrite only\nMin length: 3\nMax length: 4"
+            ),
+        ]
+    ]
+    expiry_month: typing_extensions.Required[
+        typing_extensions.Annotated[
+            str,
+            typing_extensions.Doc(
+                "Two-digit expiration month, from `01` through `12`.\nWrite only\nMin length: 2\nMax length: 2\nPattern: ^(0[1-9]|1[0-2])$"
+            ),
+        ]
+    ]
+    expiry_year: typing_extensions.Required[
+        typing_extensions.Annotated[
+            str,
+            typing_extensions.Doc(
+                "Two- or four-digit expiration year in `YY` or `YYYY` format.\nWrite only\nPattern: ^[0-9]{2}([0-9]{2})?$"
+            ),
+        ]
+    ]
+    name: typing_extensions.Required[
+        typing_extensions.Annotated[
+            str,
+            typing_extensions.Doc(
+                "Name of the cardholder as it appears on the payment card.\nWrite only"
+            ),
+        ]
+    ]
+    number: typing_extensions.Required[
+        typing_extensions.Annotated[
+            str, typing_extensions.Doc("Number of the payment card (without spaces).\nWrite only")
+        ]
+    ]
+    type: typing_extensions.Required[
+        typing_extensions.Annotated[
+            CardTypeInput,
+            typing_extensions.Doc(
+                "Issuing card network of the payment card used for the transaction."
+            ),
+        ]
+    ]
+    zip_code: typing_extensions.NotRequired[
+        typing_extensions.Annotated[
+            str,
+            typing_extensions.Doc(
+                "Required five-digit ZIP code. Applicable only to merchant users in the USA.\nWrite only\nMin length: 5\nMax length: 5"
+            ),
+        ]
+    ]
+
+
+CardInput = CardDict
 
 
 class CardResponse(pydantic.BaseModel):
@@ -969,6 +1089,56 @@ class Checkout(pydantic.BaseModel):
 	"""
 
 
+CheckoutAcceptedNextStepMechanism = typing.Literal["browser", "iframe"] | str
+
+CheckoutAcceptedNextStepPayload = dict[str, str]
+"""
+Parameters required to complete the next step. The exact keys depend on the payment provider and flow type.
+"""
+
+
+class CheckoutAcceptedNextStep(pydantic.BaseModel):
+    """
+    Instructions for the next action the payer or client must take.
+    """
+
+    mechanism: list[CheckoutAcceptedNextStepMechanism] | None = None
+    """
+	Allowed presentation mechanisms for the next step. `iframe` means the flow can be embedded, while `browser` meansit can be completed through a full-page redirect.
+	"""
+
+    method: str | None = None
+    """
+	HTTP method to use when following the next step.
+	"""
+
+    payload: CheckoutAcceptedNextStepPayload | None = None
+    """
+	Parameters required to complete the next step. The exact keys depend on the payment provider and flow type.
+	"""
+
+    redirect_url: str | None = None
+    """
+	Merchant URL where the payer returns after the external flow finishes.
+	"""
+
+    url: str | None = None
+    """
+	URL to open or submit in order to continue processing.
+	"""
+
+
+class CheckoutAccepted(pydantic.BaseModel):
+    """
+    Response returned when checkout processing requires an additional payer action, such as a 3DS challenge ora redirect to an external payment method page.
+    """
+
+    next_step: CheckoutAcceptedNextStep | None = None
+    """
+	Instructions for the next action the payer or client must take.
+	"""
+
+
 class HostedCheckout(pydantic.BaseModel):
     """
     Hosted Checkout configuration. Enable it to receive a SumUp-hosted payment page URL in the checkout response.
@@ -1011,7 +1181,7 @@ class CheckoutCreateRequest(pydantic.BaseModel):
     checkout_reference: str
     """
 	Merchant-defined reference for the new checkout. It should be unique enough for you to identify the payment attemptin your own systems.
-	Max length: 90
+	Max length: 64
 	"""
 
     currency: Currency
@@ -1073,7 +1243,7 @@ class CheckoutCreateRequestDict(typing_extensions.TypedDict, total=False):
         typing_extensions.Annotated[
             str,
             typing_extensions.Doc(
-                "Merchant-defined reference for the new checkout. It should be unique enough for you to identify the payment attemptin your own systems.\nMax length: 90"
+                "Merchant-defined reference for the new checkout. It should be unique enough for you to identify the payment attemptin your own systems.\nMax length: 64"
             ),
         ]
     ]
@@ -1468,11 +1638,13 @@ class CompanyIdentifier(pydantic.BaseModel):
     ref: str
     """
 	The unique reference for the company identifier type as defined in the country SDK.
+	Pattern: ^[a-z]{2}\\.[a-z_]+$
 	"""
 
     value: str
     """
 	The company identifier value.
+	Min length: 1
 	Max length: 100
 	"""
 
@@ -1488,6 +1660,7 @@ The unique legal type reference as defined in the country SDK. We do not rely on
 
 Min length: 4
 Max length: 64
+Pattern: ^[a-z]{2}\\.[a-z_]+$
 The country SDK documentation for legal types.: https://developer.sumup.com/tools/glossary/merchant#legal-types
 """
 
@@ -1521,6 +1694,7 @@ class Company(pydantic.BaseModel):
 	The unique legal type reference as defined in the country SDK. We do not rely on IDs as used by other services.Consumers of this API are expected to use the country SDK to map to any other IDs, translation keys, ordescriptions.
 	Min length: 4
 	Max length: 64
+	Pattern: ^[a-z]{2}\\.[a-z_]+$
 	The country SDK documentation for legal types.: https://developer.sumup.com/tools/glossary/merchant#legal-types
 	"""
 
@@ -1553,6 +1727,7 @@ class Company(pydantic.BaseModel):
     website: str | None = None
     """
 	HTTP(S) URL of the company's website.
+	Min length: 1
 	Max length: 255
 	"""
 
@@ -2649,19 +2824,20 @@ class Person(pydantic.BaseModel):
     country_of_residence: str | None = None
     """
 	An [ISO3166-1 alpha-2](https://en.wikipedia.org/wiki/ISO_3166-1_alpha-2) country code representing the countrywhere the Person resides.
-	Min length: 2
-	Max length: 2
+	Pattern: ^[A-Z]{2}$
 	"""
 
     family_name: str | None = None
     """
 	The last name(s) of the individual.
+	Min length: 1
 	Max length: 60
 	"""
 
     given_name: str | None = None
     """
 	The first name(s) of the individual.
+	Min length: 1
 	Max length: 60
 	"""
 
@@ -2674,12 +2850,14 @@ class Person(pydantic.BaseModel):
     middle_name: str | None = None
     """
 	Middle name(s) of the End-User. Note that in some cultures, people can have multiple middle names; all canbe present, with the names being separated by space characters. Also note that in some cultures, middle namesare not used.
+	Min length: 1
 	Max length: 60
 	"""
 
     nationality: str | None = None
     """
 	The Person's nationality. May be an [ISO3166-1 alpha-2](https://en.wikipedia.org/wiki/ISO_3166-1_alpha-2) countrycode, but legacy data may not conform to this standard.
+	Pattern: ^[A-Z]{2}$
 	"""
 
     ownership: Ownership | None = None
@@ -2722,6 +2900,56 @@ Longitude value from the coordinates of the payment location (as received from t
 Min: 0
 Max: 180
 """
+
+MandatePayloadType = typing.Literal["recurrent"] | str
+MandatePayloadTypeInput = MandatePayloadType
+
+
+class MandatePayload(pydantic.BaseModel):
+    """
+    Mandate details used when a checkout should create a reusable card token for future recurring or merchant-initiated payments.
+    """
+
+    type: MandatePayloadType
+    """
+	Type of mandate to create for the saved payment instrument.
+	"""
+
+    user_agent: str
+    """
+	Browser or client user agent observed when consent was collected.
+	"""
+
+    user_ip: str | None = None
+    """
+	IP address of the payer when the mandate was accepted.
+	"""
+
+
+class MandatePayloadDict(typing_extensions.TypedDict, total=False):
+    type: typing_extensions.Required[
+        typing_extensions.Annotated[
+            MandatePayloadTypeInput,
+            typing_extensions.Doc("Type of mandate to create for the saved payment instrument."),
+        ]
+    ]
+    user_agent: typing_extensions.Required[
+        typing_extensions.Annotated[
+            str,
+            typing_extensions.Doc(
+                "Browser or client user agent observed when consent was collected."
+            ),
+        ]
+    ]
+    user_ip: typing_extensions.NotRequired[
+        typing_extensions.Annotated[
+            str, typing_extensions.Doc("IP address of the payer when the mandate was accepted.")
+        ]
+    ]
+
+
+MandatePayloadInput = MandatePayloadDict
+
 
 MembershipStatus = typing.Literal["accepted", "disabled", "expired", "pending", "unknown"] | str
 MembershipStatusInput = MembershipStatus
@@ -3279,6 +3507,152 @@ class Problem(pydantic.BaseModel):
     @additional_properties.setter
     def additional_properties(self, value: dict[str, object]) -> None:
         object.__setattr__(self, "__pydantic_extra__", dict(value))
+
+
+ProcessCheckoutPaymentType = (
+    typing.Literal["apple_pay", "bancontact", "blik", "boleto", "card", "google_pay", "ideal"] | str
+)
+ProcessCheckoutPaymentTypeInput = ProcessCheckoutPaymentType
+
+ProcessCheckoutGooglePay = dict[str, object]
+ProcessCheckoutGooglePayInput = typing.Mapping[str, object]
+"""
+Raw `PaymentData` object received from Google Pay. Send the Google Pay response payload as-is.
+"""
+
+ProcessCheckoutApplePay = dict[str, object]
+ProcessCheckoutApplePayInput = typing.Mapping[str, object]
+"""
+Raw payment token object received from Apple Pay. Send the Apple Pay response payload as-is.
+"""
+
+
+class ProcessCheckout(pydantic.BaseModel):
+    """
+    Request body for attempting payment on an existing checkout. The required companion fields depend on theselected `payment_type`, for example card details, saved-card data, or payer information required by aspecific payment method.
+    """
+
+    payment_type: ProcessCheckoutPaymentType
+    """
+	Payment method used for this processing attempt. It determines which additional request fields are required.
+	"""
+
+    apple_pay: ProcessCheckoutApplePay | None = None
+    """
+	Raw payment token object received from Apple Pay. Send the Apple Pay response payload as-is.
+	"""
+
+    card: Card | None = None
+    """
+	__Required when payment type is `card`.__ Details of the payment card.
+	"""
+
+    customer_id: str | None = None
+    """
+	Customer identifier associated with the saved payment instrument. Required when `token` is provided.
+	"""
+
+    google_pay: ProcessCheckoutGooglePay | None = None
+    """
+	Raw `PaymentData` object received from Google Pay. Send the Google Pay response payload as-is.
+	"""
+
+    installments: int | None = None
+    """
+	Number of installments for deferred payments. Available only to merchant users in Brazil.
+	Min: 1
+	Max: 12
+	"""
+
+    mandate: MandatePayload | None = None
+    """
+	Mandate details used when a checkout should create a reusable card token for future recurring or merchant-initiated payments.
+	"""
+
+    personal_details: PersonalDetails | None = None
+    """
+	Personal details for the customer.
+	"""
+
+    token: str | None = None
+    """
+	Saved-card token to use instead of raw card details when processing with a previously stored payment instrument.
+	"""
+
+
+class ProcessCheckoutDict(typing_extensions.TypedDict, total=False):
+    payment_type: typing_extensions.Required[
+        typing_extensions.Annotated[
+            ProcessCheckoutPaymentTypeInput,
+            typing_extensions.Doc(
+                "Payment method used for this processing attempt. It determines which additional request fields are required."
+            ),
+        ]
+    ]
+    apple_pay: typing_extensions.NotRequired[
+        typing_extensions.Annotated[
+            ProcessCheckoutApplePayInput,
+            typing_extensions.Doc(
+                "Raw payment token object received from Apple Pay. Send the Apple Pay response payload as-is."
+            ),
+        ]
+    ]
+    card: typing_extensions.NotRequired[
+        typing_extensions.Annotated[
+            CardInput,
+            typing_extensions.Doc(
+                "__Required when payment type is `card`.__ Details of the payment card."
+            ),
+        ]
+    ]
+    customer_id: typing_extensions.NotRequired[
+        typing_extensions.Annotated[
+            str,
+            typing_extensions.Doc(
+                "Customer identifier associated with the saved payment instrument. Required when `token` is provided."
+            ),
+        ]
+    ]
+    google_pay: typing_extensions.NotRequired[
+        typing_extensions.Annotated[
+            ProcessCheckoutGooglePayInput,
+            typing_extensions.Doc(
+                "Raw `PaymentData` object received from Google Pay. Send the Google Pay response payload as-is."
+            ),
+        ]
+    ]
+    installments: typing_extensions.NotRequired[
+        typing_extensions.Annotated[
+            int,
+            typing_extensions.Doc(
+                "Number of installments for deferred payments. Available only to merchant users in Brazil.\nMin: 1\nMax: 12"
+            ),
+        ]
+    ]
+    mandate: typing_extensions.NotRequired[
+        typing_extensions.Annotated[
+            MandatePayloadInput,
+            typing_extensions.Doc(
+                "Mandate details used when a checkout should create a reusable card token for future recurring or merchant-initiated payments."
+            ),
+        ]
+    ]
+    personal_details: typing_extensions.NotRequired[
+        typing_extensions.Annotated[
+            PersonalDetailsInput, typing_extensions.Doc("Personal details for the customer.")
+        ]
+    ]
+    token: typing_extensions.NotRequired[
+        typing_extensions.Annotated[
+            str,
+            typing_extensions.Doc(
+                "Saved-card token to use instead of raw card details when processing with a previously stored payment instrument."
+            ),
+        ]
+    ]
+
+
+ProcessCheckoutInput = ProcessCheckoutDict
 
 
 class Product(pydantic.BaseModel):
