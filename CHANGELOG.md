@@ -1,5 +1,18 @@
 # Changelog
 
+## [0.3.4](https://github.com/sumup/sumup-py/compare/v0.3.3...v0.3.4) (2026-09-04)
+
+
+### Chores
+
+* **deps-dev:** bump ruff from 0.16.3 to 0.16.4 ([#387](https://github.com/sumup/sumup-py/issues/387)) ([9a66041](https://github.com/sumup/sumup-py/commit/9a66041a6f8537fcc12791c01d3356e9e6e39f14))
+* **deps-dev:** bump ruff from 0.16.4 to 0.16.5 ([#391](https://github.com/sumup/sumup-py/issues/391)) ([17c35f0](https://github.com/sumup/sumup-py/commit/17c35f0d2462c46897ce97b62b729258fee16e02))
+* **deps-dev:** bump ty from 0.0.72 to 0.0.74 ([#386](https://github.com/sumup/sumup-py/issues/386)) ([42efb4c](https://github.com/sumup/sumup-py/commit/42efb4c482745f10c6c355bc89c5fd047018a903))
+* **deps-dev:** bump ty from 0.0.74 to 0.0.75 ([#392](https://github.com/sumup/sumup-py/issues/392)) ([705a0ce](https://github.com/sumup/sumup-py/commit/705a0ceed7bab13a3e945ead1f3f12cae3223c4a))
+* **deps:** bump pydantic from 2.13.4 to 2.13.5 ([#393](https://github.com/sumup/sumup-py/issues/393)) ([40e00c9](https://github.com/sumup/sumup-py/commit/40e00c9736e12db88aee9580713dce3d7d2d7555))
+* synced file(s) with sumup/apis ([#389](https://github.com/sumup/sumup-py/issues/389)) ([6e92342](https://github.com/sumup/sumup-py/commit/6e923426558213ef7a162ff2abb87c1972d60895))
+* synced file(s) with sumup/apis ([#390](https://github.com/sumup/sumup-py/issues/390)) ([8ba42eb](https://github.com/sumup/sumup-py/commit/8ba42eb294a5058fd57799f5f732f83335e5d943))
+
 ## [0.3.3](https://github.com/sumup/sumup-py/compare/v0.3.2...v0.3.3) (2026-08-20)
 
 
