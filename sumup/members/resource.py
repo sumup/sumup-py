@@ -37,6 +37,7 @@ from ..types import (
     MetadataInput,
     Problem,
     UserType,
+    UserTypeInput,
 )
 
 
@@ -181,6 +182,7 @@ class MembersResource(Resource):
         scroll: bool | NotGivenType = NOT_GIVEN,
         email: str | NotGivenType = NOT_GIVEN,
         user_id: str | NotGivenType = NOT_GIVEN,
+        user_type: typing.Sequence[UserTypeInput] | NotGivenType = NOT_GIVEN,
         status: MembershipStatusInput | NotGivenType = NOT_GIVEN,
         roles: typing.Sequence[str] | NotGivenType = NOT_GIVEN,
         headers: HeaderTypes | None = None,
@@ -207,6 +209,8 @@ class MembersResource(Resource):
             query_data["email"] = email
         if not isinstance(user_id, NotGivenType) and user_id is not None:
             query_data["user.id"] = user_id
+        if not isinstance(user_type, NotGivenType) and user_type is not None:
+            query_data["user.type"] = list(user_type)
         if not isinstance(status, NotGivenType) and status is not None:
             query_data["status"] = status
         if not isinstance(roles, NotGivenType) and roles is not None:
@@ -416,6 +420,7 @@ class AsyncMembersResource(AsyncResource):
         scroll: bool | NotGivenType = NOT_GIVEN,
         email: str | NotGivenType = NOT_GIVEN,
         user_id: str | NotGivenType = NOT_GIVEN,
+        user_type: typing.Sequence[UserTypeInput] | NotGivenType = NOT_GIVEN,
         status: MembershipStatusInput | NotGivenType = NOT_GIVEN,
         roles: typing.Sequence[str] | NotGivenType = NOT_GIVEN,
         headers: HeaderTypes | None = None,
@@ -442,6 +447,8 @@ class AsyncMembersResource(AsyncResource):
             query_data["email"] = email
         if not isinstance(user_id, NotGivenType) and user_id is not None:
             query_data["user.id"] = user_id
+        if not isinstance(user_type, NotGivenType) and user_type is not None:
+            query_data["user.type"] = list(user_type)
         if not isinstance(status, NotGivenType) and status is not None:
             query_data["status"] = status
         if not isinstance(roles, NotGivenType) and roles is not None:
