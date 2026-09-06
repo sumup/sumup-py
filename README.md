@@ -109,6 +109,45 @@ reader_checkout = client.readers.create_checkout(
 print(f"Reader checkout created: {reader_checkout}")
 ```
 
+### Handling Events
+
+Create a handler with your event signing secret and register typed callbacks:
+
+```python
+import os
+
+from sumup import Sumup
+from sumup.events import EventNotification, ReaderCreatedEvent
+
+client = Sumup(api_key=os.environ["SUMUP_API_KEY"])
+
+
+def fallback(event: EventNotification) -> None:
+    print(f"Received {event.type}")
+
+
+events = client.events_handler(os.environ["SUMUP_EVENT_SECRET"], fallback)
+
+
+@events.on_reader_created
+def reader_created(event: ReaderCreatedEvent) -> None:
+    reader = event.fetch_object()
+    print(f"Reader paired: {reader.id}")
+
+
+# In your HTTP route, pass the unchanged body and the complete
+# X-SumUp-Webhook-Signature header value:
+events.handle(raw_body, signature)
+```
+
+You can also register an existing function with `events.on_reader_created(callback)`.
+
+Send a 2xx response after handling succeeds. Reject `EventSignatureError` and `EventPayloadError` with 400; return 500 for `EventCallbackError` so processing can be retried. Make callbacks idempotent and configure body limits in your server.
+
+Use `AsyncSumup` with async callbacks, `await events.handle(...)`, and `await event.fetch_object_async()` for async servers. For parsing without callbacks, use `client.parse_event_notification(body, signature, secret)`.
+
+See the runnable [Flask](examples/events-flask/) and [FastAPI](examples/events-fastapi/) examples for complete HTTP routes and error handling.
+
 ## Version Support Policy
 
 `sumup-py` maintains compatibility with Python versions that have not passed end-of-life. As of June 8, 2026, that means Python 3.10 through 3.14. See [Status of Python versions](https://devguide.python.org/versions/).

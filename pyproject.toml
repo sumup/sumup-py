@@ -69,3 +69,7 @@ line-length = 100
 
 [tool.uv.workspace]
 exclude = ["codegen", "examples"]
+
+# Framework examples declare isolated dependencies in their script metadata.
+[tool.ty.src]
+exclude = ["examples/events-flask/", "examples/events-fastapi/"]

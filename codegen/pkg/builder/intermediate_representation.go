@@ -34,6 +34,17 @@ type OneOfDeclaration struct {
 	GenerateInput bool
 }
 
+// EventDefinition describes a typed event notification generated from an
+// OpenAPI webhook operation.
+type EventDefinition struct {
+	RegistrationMethod string
+	ObjectKind         string
+	ClassName          string
+	EventType          string
+	ObjectType         string
+	Description        string
+}
+
 // Property holds the information for Property of a type.
 type Property struct {
 	// Name of the field
