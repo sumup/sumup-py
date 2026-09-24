@@ -541,7 +541,9 @@ class ReadersResource(Resource):
         """
         Update a Reader
 
-        Update a Reader.
+        Updates a reader's name or metadata and returns the updated reader.
+
+        Providing `metadata` replaces the entire metadata object; include all entries that should be retained. Omitted fieldsremain unchanged.
 
 
         Raises:
@@ -1042,7 +1044,9 @@ class AsyncReadersResource(AsyncResource):
         """
         Update a Reader
 
-        Update a Reader.
+        Updates a reader's name or metadata and returns the updated reader.
+
+        Providing `metadata` replaces the entire metadata object; include all entries that should be retained. Omitted fieldsremain unchanged.
 
 
         Raises:

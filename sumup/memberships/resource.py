@@ -37,12 +37,6 @@ from ..types import (
 )
 
 
-class ListMembershipsParamsResourceParentTypeInput(typing_extensions.TypedDict, total=False):
-    """
-    ListMembershipsParamsResourceParentType is a schema definition.
-    """
-
-
 class ListMemberships200Response(pydantic.BaseModel):
     """
     ListMemberships200Response is a schema definition.
@@ -69,9 +63,9 @@ class MembershipsResource(Resource):
         resource_type: ResourceTypeInput | NotGivenType = NOT_GIVEN,
         resource_attributes_sandbox: bool | NotGivenType = NOT_GIVEN,
         resource_name: str | NotGivenType = NOT_GIVEN,
+        resource_id: str | NotGivenType = NOT_GIVEN,
         resource_parent_id: str | NotGivenType = NOT_GIVEN,
-        resource_parent_type: ListMembershipsParamsResourceParentTypeInput
-        | NotGivenType = NOT_GIVEN,
+        resource_parent_type: ResourceTypeInput | NotGivenType = NOT_GIVEN,
         roles: typing.Sequence[str] | NotGivenType = NOT_GIVEN,
         headers: HeaderTypes | None = None,
     ) -> ListMemberships200Response:
@@ -105,6 +99,8 @@ class MembershipsResource(Resource):
             query_data["resource.attributes.sandbox"] = resource_attributes_sandbox
         if not isinstance(resource_name, NotGivenType) and resource_name is not None:
             query_data["resource.name"] = resource_name
+        if not isinstance(resource_id, NotGivenType) and resource_id is not None:
+            query_data["resource.id"] = resource_id
         if not isinstance(resource_parent_id, NotGivenType) and resource_parent_id is not None:
             query_data["resource.parent.id"] = resource_parent_id
         if not isinstance(resource_parent_type, NotGivenType) and resource_parent_type is not None:
@@ -149,9 +145,9 @@ class AsyncMembershipsResource(AsyncResource):
         resource_type: ResourceTypeInput | NotGivenType = NOT_GIVEN,
         resource_attributes_sandbox: bool | NotGivenType = NOT_GIVEN,
         resource_name: str | NotGivenType = NOT_GIVEN,
+        resource_id: str | NotGivenType = NOT_GIVEN,
         resource_parent_id: str | NotGivenType = NOT_GIVEN,
-        resource_parent_type: ListMembershipsParamsResourceParentTypeInput
-        | NotGivenType = NOT_GIVEN,
+        resource_parent_type: ResourceTypeInput | NotGivenType = NOT_GIVEN,
         roles: typing.Sequence[str] | NotGivenType = NOT_GIVEN,
         headers: HeaderTypes | None = None,
     ) -> ListMemberships200Response:
@@ -185,6 +181,8 @@ class AsyncMembershipsResource(AsyncResource):
             query_data["resource.attributes.sandbox"] = resource_attributes_sandbox
         if not isinstance(resource_name, NotGivenType) and resource_name is not None:
             query_data["resource.name"] = resource_name
+        if not isinstance(resource_id, NotGivenType) and resource_id is not None:
+            query_data["resource.id"] = resource_id
         if not isinstance(resource_parent_id, NotGivenType) and resource_parent_id is not None:
             query_data["resource.parent.id"] = resource_parent_id
         if not isinstance(resource_parent_type, NotGivenType) and resource_parent_type is not None:
