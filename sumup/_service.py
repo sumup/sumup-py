@@ -12,7 +12,7 @@ from ._secret import Secret
 from ._version import __version__
 
 HeaderTypes = typing.Mapping[str, str]
-PrimitiveQueryValue = str | int | float | None
+PrimitiveQueryValue = str | int | float
 QueryValue = PrimitiveQueryValue | typing.Sequence[PrimitiveQueryValue]
 QueryParamTypes = typing.Mapping[str, QueryValue]
 
