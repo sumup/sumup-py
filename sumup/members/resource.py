@@ -37,7 +37,6 @@ from ..types import (
     MetadataInput,
     Problem,
     UserType,
-    UserTypeInput,
 )
 
 
@@ -57,7 +56,9 @@ class CreateMerchantMemberBodyInput(typing_extensions.TypedDict, total=False):
     roles: typing_extensions.Required[
         typing_extensions.Annotated[
             typing.Sequence[str],
-            typing_extensions.Doc("List of roles to assign to the new member.\nMax items: 124"),
+            typing_extensions.Doc(
+                "List of roles to assign to the new member.\nMin items: 1\nMax items: 124"
+            ),
         ]
     ]
     attributes: typing_extensions.NotRequired[
@@ -147,7 +148,9 @@ class UpdateMerchantMemberBodyInput(typing_extensions.TypedDict, total=False):
         ]
     ]
     roles: typing_extensions.NotRequired[
-        typing_extensions.Annotated[typing.Sequence[str], typing_extensions.Doc("Max items: 124")]
+        typing_extensions.Annotated[
+            typing.Sequence[str], typing_extensions.Doc("Min items: 1\nMax items: 124")
+        ]
     ]
     user: typing_extensions.NotRequired[
         typing_extensions.Annotated[
@@ -182,7 +185,6 @@ class MembersResource(Resource):
         scroll: bool | NotGivenType = NOT_GIVEN,
         email: str | NotGivenType = NOT_GIVEN,
         user_id: str | NotGivenType = NOT_GIVEN,
-        user_type: typing.Sequence[UserTypeInput] | NotGivenType = NOT_GIVEN,
         status: MembershipStatusInput | NotGivenType = NOT_GIVEN,
         roles: typing.Sequence[str] | NotGivenType = NOT_GIVEN,
         headers: HeaderTypes | None = None,
@@ -209,8 +211,6 @@ class MembersResource(Resource):
             query_data["email"] = email
         if not isinstance(user_id, NotGivenType) and user_id is not None:
             query_data["user.id"] = user_id
-        if not isinstance(user_type, NotGivenType) and user_type is not None:
-            query_data["user.type"] = list(user_type)
         if not isinstance(status, NotGivenType) and status is not None:
             query_data["status"] = status
         if not isinstance(roles, NotGivenType) and roles is not None:
@@ -244,7 +244,10 @@ class MembersResource(Resource):
         """
         Create a member
 
-        Create a merchant member.
+        Adds a member to the merchant account with the specified roles.
+
+        By default, sends an invitation email to the provided address. The recipient must accept the invitation tojoin the account.
+        When `is_managed_user` is `true`, creates a managed user with the provided password and optional nickname andassigns the roles directly, without sending an invitation.
 
 
         Raises:
@@ -325,7 +328,10 @@ class MembersResource(Resource):
         """
         Update a member
 
-        Update the merchant member.
+        Updates a merchant member and returns the updated member.
+
+        Providing `roles` replaces the member's assigned roles and can grant or revoke access. Providing `metadata` replaces theentire metadata object.
+        For managed users, `user.nickname` changes the display name and `user.password` replaces the password. Updating thepassword also enables the managed user account.
 
 
         Raises:
@@ -420,7 +426,6 @@ class AsyncMembersResource(AsyncResource):
         scroll: bool | NotGivenType = NOT_GIVEN,
         email: str | NotGivenType = NOT_GIVEN,
         user_id: str | NotGivenType = NOT_GIVEN,
-        user_type: typing.Sequence[UserTypeInput] | NotGivenType = NOT_GIVEN,
         status: MembershipStatusInput | NotGivenType = NOT_GIVEN,
         roles: typing.Sequence[str] | NotGivenType = NOT_GIVEN,
         headers: HeaderTypes | None = None,
@@ -447,8 +452,6 @@ class AsyncMembersResource(AsyncResource):
             query_data["email"] = email
         if not isinstance(user_id, NotGivenType) and user_id is not None:
             query_data["user.id"] = user_id
-        if not isinstance(user_type, NotGivenType) and user_type is not None:
-            query_data["user.type"] = list(user_type)
         if not isinstance(status, NotGivenType) and status is not None:
             query_data["status"] = status
         if not isinstance(roles, NotGivenType) and roles is not None:
@@ -482,7 +485,10 @@ class AsyncMembersResource(AsyncResource):
         """
         Create a member
 
-        Create a merchant member.
+        Adds a member to the merchant account with the specified roles.
+
+        By default, sends an invitation email to the provided address. The recipient must accept the invitation tojoin the account.
+        When `is_managed_user` is `true`, creates a managed user with the provided password and optional nickname andassigns the roles directly, without sending an invitation.
 
 
         Raises:
@@ -565,7 +571,10 @@ class AsyncMembersResource(AsyncResource):
         """
         Update a member
 
-        Update the merchant member.
+        Updates a merchant member and returns the updated member.
+
+        Providing `roles` replaces the member's assigned roles and can grant or revoke access. Providing `metadata` replaces theentire metadata object.
+        For managed users, `user.nickname` changes the display name and `user.password` replaces the password. Updating thepassword also enables the managed user account.
 
 
         Raises:

@@ -36,7 +36,8 @@ class CreateMerchantRoleBodyInput(typing_extensions.TypedDict, total=False):
     ]
     permissions: typing_extensions.Required[
         typing_extensions.Annotated[
-            typing.Sequence[str], typing_extensions.Doc("User's permissions.\nMax items: 100")
+            typing.Sequence[str],
+            typing_extensions.Doc("User's permissions.\nMin items: 1\nMax items: 100"),
         ]
     ]
     description: typing_extensions.NotRequired[
@@ -69,7 +70,8 @@ class UpdateMerchantRoleBodyInput(typing_extensions.TypedDict, total=False):
     ]
     permissions: typing_extensions.NotRequired[
         typing_extensions.Annotated[
-            typing.Sequence[str], typing_extensions.Doc("User's permissions.\nMax items: 100")
+            typing.Sequence[str],
+            typing_extensions.Doc("User's permissions.\nMin items: 1\nMax items: 100"),
         ]
     ]
 
@@ -219,7 +221,9 @@ class RolesResource(Resource):
         """
         Update a role
 
-        Update a custom role.
+        Updates a custom role's name, description, or permissions and returns the updated role.
+
+        Providing `permissions` replaces the role's permission list and changes the access granted to members assigned tothat role. Omitted fields remain unchanged.
 
 
         Raises:
@@ -390,7 +394,9 @@ class AsyncRolesResource(AsyncResource):
         """
         Update a role
 
-        Update a custom role.
+        Updates a custom role's name, description, or permissions and returns the updated role.
+
+        Providing `permissions` replaces the role's permission list and changes the access granted to members assigned tothat role. Omitted fields remain unchanged.
 
 
         Raises:

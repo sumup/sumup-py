@@ -642,12 +642,12 @@ class CheckoutsResource(Resource):
         """
         Create a checkout
 
-        Creates a new payment checkout resource. The unique `checkout_reference` created by this request, is used for furthermanipulation of the checkout.
+        Creates a payment checkout for the specified merchant, amount, and currency. Supply a `checkout_reference` to identifythe payment attempt in your own systems. Creating a checkout does not charge a payment instrument.
 
-        For 3DS checkouts, add the `redirect_url` parameter to your request body schema.
-        To use the [Hosted Checkout](https://developer.sumup.com/online-payments/checkouts/hosted-checkout/) page, setthe `hosted_checkout.enabled` to `true`.
+        Set `hosted_checkout.enabled` to `true` to receive a [Hosted Checkout](https://developer.sumup.com/online-payments/checkouts/hosted-checkout/) URLwhere the customer can complete the payment.
+        Use `redirect_url` for redirect-based payment and 3DS flows. If `return_url` is provided, SumUp sends processing updatesto that backend callback URL.
 
-        Follow by processing a checkout to charge the provided payment instrument.
+        Complete the payment through [Hosted Checkout](https://developer.sumup.com/online-payments/checkouts/hosted-checkout/) orthe [Payment Widget](https://developer.sumup.com/online-payments/checkouts/card-widget).
 
 
         Raises:
@@ -786,7 +786,9 @@ class CheckoutsResource(Resource):
         """
         Update a checkout
 
-        Updates an identified checkout resource.
+        Updates the amount, currency, description, reference, expiration, or customer associated with an existing checkout. Onlythe supplied fields are updated.
+
+        This request changes the checkout details; it does not charge a payment instrument. Process the checkout separately toattempt a payment.
 
 
         Raises:
@@ -1062,12 +1064,12 @@ class AsyncCheckoutsResource(AsyncResource):
         """
         Create a checkout
 
-        Creates a new payment checkout resource. The unique `checkout_reference` created by this request, is used for furthermanipulation of the checkout.
+        Creates a payment checkout for the specified merchant, amount, and currency. Supply a `checkout_reference` to identifythe payment attempt in your own systems. Creating a checkout does not charge a payment instrument.
 
-        For 3DS checkouts, add the `redirect_url` parameter to your request body schema.
-        To use the [Hosted Checkout](https://developer.sumup.com/online-payments/checkouts/hosted-checkout/) page, setthe `hosted_checkout.enabled` to `true`.
+        Set `hosted_checkout.enabled` to `true` to receive a [Hosted Checkout](https://developer.sumup.com/online-payments/checkouts/hosted-checkout/) URLwhere the customer can complete the payment.
+        Use `redirect_url` for redirect-based payment and 3DS flows. If `return_url` is provided, SumUp sends processing updatesto that backend callback URL.
 
-        Follow by processing a checkout to charge the provided payment instrument.
+        Complete the payment through [Hosted Checkout](https://developer.sumup.com/online-payments/checkouts/hosted-checkout/) orthe [Payment Widget](https://developer.sumup.com/online-payments/checkouts/card-widget).
 
 
         Raises:
@@ -1206,7 +1208,9 @@ class AsyncCheckoutsResource(AsyncResource):
         """
         Update a checkout
 
-        Updates an identified checkout resource.
+        Updates the amount, currency, description, reference, expiration, or customer associated with an existing checkout. Onlythe supplied fields are updated.
+
+        This request changes the checkout details; it does not charge a payment instrument. Process the checkout separately toattempt a payment.
 
 
         Raises:

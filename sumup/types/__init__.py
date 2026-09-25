@@ -2969,7 +2969,6 @@ class MembershipUserClassic(pydantic.BaseModel):
 
 
 UserType = typing.Literal["managed_user", "service_account", "system_account", "user"] | str
-UserTypeInput = UserType
 
 
 class MembershipUser(pydantic.BaseModel):
