@@ -1,11 +1,11 @@
 module github.com/sumup/sumup-py/codegen
 
-go 1.26
+go 1.26.0
 
 require (
 	github.com/iancoleman/strcase v0.3.0
 	github.com/lmittmann/tint v1.2.0
-	github.com/pb33f/libopenapi v0.38.7
+	github.com/pb33f/libopenapi v0.40.1
 	github.com/urfave/cli/v2 v2.27.7
 	go.yaml.in/yaml/v4 v4.0.0-rc.6
 )
@@ -14,9 +14,9 @@ require (
 	github.com/bahlo/generic-list-go v0.2.0 // indirect
 	github.com/buger/jsonparser v1.1.2 // indirect
 	github.com/cpuguy83/go-md2man/v2 v2.0.7 // indirect
-	github.com/pb33f/jsonpath v0.8.2 // indirect
+	github.com/pb33f/jsonpath v0.8.3 // indirect
 	github.com/pb33f/ordered-map/v2 v2.3.1 // indirect
 	github.com/russross/blackfriday/v2 v2.1.0 // indirect
 	github.com/xrash/smetrics v0.0.0-20250705151800-55b8f293f342 // indirect
-	golang.org/x/sync v0.22.0 // indirect
+	golang.org/x/sync v0.23.0 // indirect
 )
