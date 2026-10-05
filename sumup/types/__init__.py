@@ -734,6 +734,11 @@ class CardResponse(pydantic.BaseModel):
 	Max length: 4
 	"""
 
+    payment_account_reference: str | None = None
+    """
+	PAR (Payment account reference) if available for the card.
+	"""
+
     type: CardType | None = None
     """
 	Issuing card network of the payment card used for the transaction.
@@ -742,7 +747,6 @@ class CardResponse(pydantic.BaseModel):
 
 Currency = (
     typing.Literal[
-        "BGN",
         "BRL",
         "CHF",
         "CLP",
