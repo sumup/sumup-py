@@ -59,7 +59,14 @@ jobs:
       - name: Format
         run: uv run ruff format
 
+      - name: Check generated SDK for Dependabot
+        if: github.event.pull_request.user.login == 'dependabot[bot]'
+        run: |
+          git add --intent-to-add -- sumup/
+          git diff --exit-code -- sumup/
+
       - name: Create GitHub App token
+        if: github.event.pull_request.user.login != 'dependabot[bot]'
         id: app-token
         uses: actions/create-github-app-token@bcd2ba49218906704ab6c1aa796996da409d3eb1 # v3.2.0
         with:
@@ -67,17 +74,20 @@ jobs:
           private-key: ${{ secrets.SUMUP_BOT_PRIVATE_KEY }}
 
       - name: Get GitHub App User ID
+        if: github.event.pull_request.user.login != 'dependabot[bot]'
         id: get-user-id
         run: echo "user-id=$(gh api "/users/${{ steps.app-token.outputs.app-slug }}[bot]" --jq .id)" >> "$GITHUB_OUTPUT"
         env:
           GH_TOKEN: ${{ steps.app-token.outputs.token }}
 
       - name: Configure git
+        if: github.event.pull_request.user.login != 'dependabot[bot]'
         run: |
           git config --global user.name '${{ steps.app-token.outputs.app-slug }}[bot]'
           git config --global user.email '${{ steps.get-user-id.outputs.user-id }}+${{ steps.app-token.outputs.app-slug }}[bot]@users.noreply.github.com'
 
       - name: Commit changes
+        if: github.event.pull_request.user.login != 'dependabot[bot]'
         id: commit
         run: |
           git add .
