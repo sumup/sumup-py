@@ -91,7 +91,7 @@ class CreateCheckoutBodyInput(typing_extensions.TypedDict, total=False):
         typing_extensions.Annotated[
             str,
             typing_extensions.Doc(
-                "Merchant-defined reference for the new checkout. It should be unique enough for you to identify the payment attemptin your own systems.\nMax length: 64"
+                "Merchant-defined reference for the new checkout, up to 64 characters. Use it to correlate the checkout withan order or payment attempt in your own system. If a checkout already exists for the supplied unique parameters,creation returns `409` with `DUPLICATED_CHECKOUT`; see the conflict response.\nMax length: 64"
             ),
         ]
     ]
@@ -155,7 +155,7 @@ class CreateCheckoutBodyInput(typing_extensions.TypedDict, total=False):
         typing_extensions.Annotated[
             str,
             typing_extensions.Doc(
-                "Optional backend callback URL used by SumUp to notify your platform about processing updates for the checkout.\nFormat:uri"
+                "Optional backend callback URL for checkout status notifications. SumUp sends an HTTP POST with `event_type` andthe checkout `id`. Retrieve the checkout to verify its current status before updating your order. See the[webhook guide](https://developer.sumup.com/online-payments/webhooks/) for the payload and response requirements.\nFormat: uri"
             ),
         ]
     ]
@@ -186,7 +186,7 @@ class UpdateCheckoutBodyInput(typing_extensions.TypedDict, total=False):
         typing_extensions.Annotated[
             str,
             typing_extensions.Doc(
-                "Updated merchant-defined reference for the checkout.\nMax length: 90"
+                "Updated merchant-defined reference for the checkout.\nMax length: 64"
             ),
         ]
     ]
@@ -309,7 +309,7 @@ class ProcessCheckoutBodyInput(typing_extensions.TypedDict, total=False):
         typing_extensions.Annotated[
             str,
             typing_extensions.Doc(
-                "Saved-card token to use instead of raw card details when processing with a previously stored payment instrument."
+                "Token of a saved payment instrument returned by checkout processing or the customer's payment-instruments endpoint.To charge a saved card, set `payment_type` to `card` and provide both this `token` and the associated `customer_id`instead of raw card details."
             ),
         ]
     ]
@@ -324,14 +324,16 @@ class CreateApplePaySessionBodyInput(typing_extensions.TypedDict, total=False):
         typing_extensions.Annotated[
             str,
             typing_extensions.Doc(
-                "the context to create this apple pay session.\nFormat: hostname"
+                "Hostname of the website displaying the Apple Pay payment sheet, without a URL scheme or path. Use the domainregistered for Apple Pay.\nFormat: hostname"
             ),
         ]
     ]
     target: typing_extensions.Required[
         typing_extensions.Annotated[
             str,
-            typing_extensions.Doc("The target url to create this apple pay session.\nFormat: uri"),
+            typing_extensions.Doc(
+                "Apple Pay validation URL received as `validationURL` in the browser's `onvalidatemerchant` event.\nFormat: uri"
+            ),
         ]
     ]
 
@@ -377,7 +379,7 @@ class ProcessCheckoutCheckoutSuccessResponseTransaction(pydantic.BaseModel):
 
     amount: float | None = None
     """
-	Total amount of the transaction.
+	Total amount of the transaction in major units of `currency`, for example `10.1` for EUR 10.10.
 	"""
 
     auth_code: str | None = None
@@ -392,7 +394,7 @@ class ProcessCheckoutCheckoutSuccessResponseTransaction(pydantic.BaseModel):
 
     entry_mode: EntryMode | None = None
     """
-	Entry mode of the payment details.
+	How the payment details were captured, for example `CHIP` or `CONTACTLESS` for card-present payments and`CUSTOMER_ENTRY` for card details entered by the payer. For wallet and alternative payment methods, this canidentify the method, such as `APPLE_PAY` or `BLIK`.
 	"""
 
     id: str | None = None
@@ -413,7 +415,7 @@ class ProcessCheckoutCheckoutSuccessResponseTransaction(pydantic.BaseModel):
 
     payment_type: PaymentType | None = None
     """
-	Payment type used for the transaction.
+	Payment category recorded on a transaction, for example `POS` for a point-of-sale card payment, `ECOM` foran online card payment, or `RECURRING` for a recurring card payment. These reporting values are separate fromthe lowercase `payment_type` values used to process checkouts.
 	"""
 
     status: TransactionStatus | None = None
@@ -434,17 +436,17 @@ class ProcessCheckoutCheckoutSuccessResponseTransaction(pydantic.BaseModel):
 
     tip_amount: float | None = None
     """
-	Amount of the tip (out of the total transaction amount).
+	Tip included in the total transaction amount, in major units of the transaction's currency.
 	"""
 
     transaction_code: str | None = None
     """
-	Transaction code returned by the acquirer/processing entity after processing the transaction.
+	SumUp transaction code, for example `TEENSK4W2K`. Use it to look up the transaction with the `transaction_code` queryparameter. This is separate from the transaction's `id` and the card issuer's `auth_code`.
 	"""
 
     vat_amount: float | None = None
     """
-	Amount of the applicable VAT (out of the total transaction amount).
+	VAT included in the total transaction amount, in major units of the transaction's currency.
 	"""
 
 
@@ -472,7 +474,7 @@ class ProcessCheckoutCheckoutSuccessResponse(pydantic.BaseModel):
     checkout_reference: str | None = None
     """
 	Merchant-defined reference for the checkout. Use it to correlate the SumUp checkout with your own order, cart,subscription, or payment attempt in your systems.
-	Max length: 90
+	Max length: 64
 	"""
 
     currency: Currency | None = None
@@ -535,8 +537,8 @@ class ProcessCheckoutCheckoutSuccessResponse(pydantic.BaseModel):
 
     return_url: str | None = None
     """
-	Optional backend callback URL used by SumUp to notify your platform about processing updates for the checkout.
-	Format:uri
+	Optional backend callback URL for checkout status notifications. SumUp sends an HTTP POST with `event_type` andthe checkout `id`. Retrieve the checkout to verify its current status before updating your order. See the[webhook guide](https://developer.sumup.com/online-payments/webhooks/) for the payload and response requirements.
+	Format: uri
 	"""
 
     status: ProcessCheckoutCheckoutSuccessResponseStatus | None = None
@@ -593,7 +595,7 @@ class CheckoutsResource(Resource):
         """
         Get available payment methods
 
-        Get payment methods available for the given merchant to use with a checkout.
+        Lists the payment methods available to the merchant for checkout payments. Use the optional amount and currency filtersto check eligibility for a particular payment before presenting payment options to the payer.
 
 
         Raises:
@@ -745,7 +747,7 @@ class CheckoutsResource(Resource):
         """
         Retrieve a checkout
 
-        Retrieves an identified checkout resource. Use this request after processing a checkout to confirm its status and informthe end user respectively.
+        Retrieves a checkout by its SumUp `checkout_id`. After processing a payment, returning from a redirect, or receiving acheckout notification, retrieve the checkout to confirm its current `status` before updating your order ordisplaying the payment outcome to the payer.
 
 
         Raises:
@@ -853,7 +855,9 @@ class CheckoutsResource(Resource):
 
         Processing a checkout will attempt to charge the provided payment instrument for the amount of the specified checkout resourceinitiated in the `Create a checkout` endpoint.
 
-        Follow this request with `Retrieve a checkout` to confirm its status.
+        A processing response can require an additional payer action, such as a 3DS challenge or a payment-provider redirect.If `next_step` is returned, follow its instructions to continue the payment flow.
+
+        Retrieve the checkout afterwards to confirm its payment status. Acceptance of the processing request does not byitself mean the checkout is paid.
 
 
         Raises:
@@ -1015,7 +1019,7 @@ class AsyncCheckoutsResource(AsyncResource):
         """
         Get available payment methods
 
-        Get payment methods available for the given merchant to use with a checkout.
+        Lists the payment methods available to the merchant for checkout payments. Use the optional amount and currency filtersto check eligibility for a particular payment before presenting payment options to the payer.
 
 
         Raises:
@@ -1167,7 +1171,7 @@ class AsyncCheckoutsResource(AsyncResource):
         """
         Retrieve a checkout
 
-        Retrieves an identified checkout resource. Use this request after processing a checkout to confirm its status and informthe end user respectively.
+        Retrieves a checkout by its SumUp `checkout_id`. After processing a payment, returning from a redirect, or receiving acheckout notification, retrieve the checkout to confirm its current `status` before updating your order ordisplaying the payment outcome to the payer.
 
 
         Raises:
@@ -1275,7 +1279,9 @@ class AsyncCheckoutsResource(AsyncResource):
 
         Processing a checkout will attempt to charge the provided payment instrument for the amount of the specified checkout resourceinitiated in the `Create a checkout` endpoint.
 
-        Follow this request with `Retrieve a checkout` to confirm its status.
+        A processing response can require an additional payer action, such as a 3DS challenge or a payment-provider redirect.If `next_step` is returned, follow its instructions to continue the payment flow.
+
+        Retrieve the checkout afterwards to confirm its payment status. Acceptance of the processing request does not byitself mean the checkout is paid.
 
 
         Raises:

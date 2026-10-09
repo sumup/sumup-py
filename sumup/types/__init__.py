@@ -18,6 +18,12 @@ Pattern: ^[A-Z]{2}$
 """
 
 
+class AddressCountry(pydantic.BaseModel):
+    """
+    AddressCountry is a schema definition.
+    """
+
+
 class Address(pydantic.BaseModel):
     """
             An address somewhere in the world. The address fields used depend on the country conventions. For example, inGreat Britain, `city` is `post_town`. In the United States, the top-level administrative unit used in addressesis `state`, whereas in Chile it's `region`.
@@ -25,15 +31,7 @@ class Address(pydantic.BaseModel):
     Address documentation: https://developer.sumup.com/tools/glossary/address
     """
 
-    country: CountryCode
-    """
-	An [ISO3166-1 alpha-2](https://en.wikipedia.org/wiki/ISO_3166-1_alpha-2)
-	country code. This definition users `oneOf` with a two-character string
-	type to allow for support of future countries in client code.
-	Min length: 2
-	Max length: 2
-	Pattern: ^[A-Z]{2}$
-	"""
+    country: AddressCountry
 
     autonomous_community: str | None = None
     """
@@ -372,9 +370,7 @@ class BasePerson(pydantic.BaseModel):
 
     address: Address | None = None
     """
-	An address somewhere in the world. The address fields used depend on the country conventions. For example, inGreat Britain, `city` is `post_town`. In the United States, the top-level administrative unit used in addressesis `state`, whereas in Chile it's `region`.
-	Whether an address is valid or not depends on whether the locally required fields are present. Fields not supported ina country will be ignored.
-	Address documentation: https://developer.sumup.com/tools/glossary/address
+	The address of the individual.
 	"""
 
     birthdate: datetime.date | None = None
@@ -392,12 +388,7 @@ class BasePerson(pydantic.BaseModel):
 
     citizenship: CountryCode | None = None
     """
-	An [ISO3166-1 alpha-2](https://en.wikipedia.org/wiki/ISO_3166-1_alpha-2)
-	country code. This definition users `oneOf` with a two-character string
-	type to allow for support of future countries in client code.
-	Min length: 2
-	Max length: 2
-	Pattern: ^[A-Z]{2}$
+	The Alpha-2 ISO code of the country where the Person is a citizen.
 	"""
 
     country_of_residence: str | None = None
@@ -440,11 +431,13 @@ class BasePerson(pydantic.BaseModel):
 	"""
 
     ownership: Ownership | None = None
+    """
+	Details about the ownership relationship between the Person and the Merchant. This is only set if the Personhas a relationship of type `owner`.
+	"""
 
     phone_number: PhoneNumber | None = None
     """
-	A publicly available phone number in [E.164](https://en.wikipedia.org/wiki/E.164) format.
-	Max length: 16
+	The (mobile) phone number of the individual (used for verification) in [E.164](https://en.wikipedia.org/wiki/E.164) format.
 	"""
 
     relationships: list[str] | None = None
@@ -736,7 +729,9 @@ class CardResponse(pydantic.BaseModel):
 
     payment_account_reference: str | None = None
     """
-	PAR (Payment account reference) if available for the card.
+	Payment Account Reference (PAR) defined by [EMVCo](https://www.emvco.com/emv-technologies/payment-tokenisation/). Itlinks a card's primary account number (PAN) with its affiliated payment tokens, allowing transactions madewith the physical card and tokenized versions of that card, such as digital wallets, to be correlated whenPAR is available.
+	
+	This reference cannot be used to initiate a payment and is separate from the saved payment instrument `token` usedto process checkouts. Returned only when available for the card; integrations must handle its absence.
 	"""
 
     type: CardType | None = None
@@ -853,7 +848,7 @@ class TransactionBase(pydantic.BaseModel):
 
     amount: float | None = None
     """
-	Total amount of the transaction.
+	Total amount of the transaction in major units of `currency`, for example `10.1` for EUR 10.10.
 	"""
 
     currency: Currency | None = None
@@ -874,7 +869,7 @@ class TransactionBase(pydantic.BaseModel):
 
     payment_type: PaymentType | None = None
     """
-	Payment type used for the transaction.
+	Payment category recorded on a transaction, for example `POS` for a point-of-sale card payment, `ECOM` foran online card payment, or `RECURRING` for a recurring card payment. These reporting values are separate fromthe lowercase `payment_type` values used to process checkouts.
 	"""
 
     status: TransactionStatus | None = None
@@ -895,7 +890,7 @@ class TransactionBase(pydantic.BaseModel):
 
     transaction_code: str | None = None
     """
-	Transaction code returned by the acquirer/processing entity after processing the transaction.
+	SumUp transaction code, for example `TEENSK4W2K`. Use it to look up the transaction with the `transaction_code` queryparameter. This is separate from the transaction's `id` and the card issuer's `auth_code`.
 	"""
 
 
@@ -911,7 +906,7 @@ class TransactionCheckoutInfo(pydantic.BaseModel):
 
     entry_mode: EntryMode | None = None
     """
-	Entry mode of the payment details.
+	How the payment details were captured, for example `CHIP` or `CONTACTLESS` for card-present payments and`CUSTOMER_ENTRY` for card details entered by the payer. For wallet and alternative payment methods, this canidentify the method, such as `APPLE_PAY` or `BLIK`.
 	"""
 
     merchant_code: str | None = None
@@ -921,12 +916,12 @@ class TransactionCheckoutInfo(pydantic.BaseModel):
 
     tip_amount: float | None = None
     """
-	Amount of the tip (out of the total transaction amount).
+	Tip included in the total transaction amount, in major units of the transaction's currency.
 	"""
 
     vat_amount: float | None = None
     """
-	Amount of the applicable VAT (out of the total transaction amount).
+	VAT included in the total transaction amount, in major units of the transaction's currency.
 	"""
 
 
@@ -940,7 +935,7 @@ class CheckoutTransaction(pydantic.BaseModel):
 
     amount: float | None = None
     """
-	Total amount of the transaction.
+	Total amount of the transaction in major units of `currency`, for example `10.1` for EUR 10.10.
 	"""
 
     auth_code: str | None = None
@@ -955,7 +950,7 @@ class CheckoutTransaction(pydantic.BaseModel):
 
     entry_mode: EntryMode | None = None
     """
-	Entry mode of the payment details.
+	How the payment details were captured, for example `CHIP` or `CONTACTLESS` for card-present payments and`CUSTOMER_ENTRY` for card details entered by the payer. For wallet and alternative payment methods, this canidentify the method, such as `APPLE_PAY` or `BLIK`.
 	"""
 
     id: str | None = None
@@ -976,7 +971,7 @@ class CheckoutTransaction(pydantic.BaseModel):
 
     payment_type: PaymentType | None = None
     """
-	Payment type used for the transaction.
+	Payment category recorded on a transaction, for example `POS` for a point-of-sale card payment, `ECOM` foran online card payment, or `RECURRING` for a recurring card payment. These reporting values are separate fromthe lowercase `payment_type` values used to process checkouts.
 	"""
 
     status: TransactionStatus | None = None
@@ -997,17 +992,17 @@ class CheckoutTransaction(pydantic.BaseModel):
 
     tip_amount: float | None = None
     """
-	Amount of the tip (out of the total transaction amount).
+	Tip included in the total transaction amount, in major units of the transaction's currency.
 	"""
 
     transaction_code: str | None = None
     """
-	Transaction code returned by the acquirer/processing entity after processing the transaction.
+	SumUp transaction code, for example `TEENSK4W2K`. Use it to look up the transaction with the `transaction_code` queryparameter. This is separate from the transaction's `id` and the card issuer's `auth_code`.
 	"""
 
     vat_amount: float | None = None
     """
-	Amount of the applicable VAT (out of the total transaction amount).
+	VAT included in the total transaction amount, in major units of the transaction's currency.
 	"""
 
 
@@ -1024,7 +1019,7 @@ class Checkout(pydantic.BaseModel):
     checkout_reference: str | None = None
     """
 	Merchant-defined reference for the checkout. Use it to correlate the SumUp checkout with your own order, cart,subscription, or payment attempt in your systems.
-	Max length: 90
+	Max length: 64
 	"""
 
     currency: Currency | None = None
@@ -1072,8 +1067,8 @@ class Checkout(pydantic.BaseModel):
 
     return_url: str | None = None
     """
-	Optional backend callback URL used by SumUp to notify your platform about processing updates for the checkout.
-	Format:uri
+	Optional backend callback URL for checkout status notifications. SumUp sends an HTTP POST with `event_type` andthe checkout `id`. Retrieve the checkout to verify its current status before updating your order. See the[webhook guide](https://developer.sumup.com/online-payments/webhooks/) for the payload and response requirements.
+	Format: uri
 	"""
 
     status: CheckoutStatus | None = None
@@ -1184,7 +1179,7 @@ class CheckoutCreateRequest(pydantic.BaseModel):
 
     checkout_reference: str
     """
-	Merchant-defined reference for the new checkout. It should be unique enough for you to identify the payment attemptin your own systems.
+	Merchant-defined reference for the new checkout, up to 64 characters. Use it to correlate the checkout withan order or payment attempt in your own system. If a checkout already exists for the supplied unique parameters,creation returns `409` with `DUPLICATED_CHECKOUT`; see the conflict response.
 	Max length: 64
 	"""
 
@@ -1226,8 +1221,8 @@ class CheckoutCreateRequest(pydantic.BaseModel):
 
     return_url: str | None = None
     """
-	Optional backend callback URL used by SumUp to notify your platform about processing updates for the checkout.
-	Format:uri
+	Optional backend callback URL for checkout status notifications. SumUp sends an HTTP POST with `event_type` andthe checkout `id`. Retrieve the checkout to verify its current status before updating your order. See the[webhook guide](https://developer.sumup.com/online-payments/webhooks/) for the payload and response requirements.
+	Format: uri
 	"""
 
     valid_until: datetime.datetime | None = None
@@ -1247,7 +1242,7 @@ class CheckoutCreateRequestDict(typing_extensions.TypedDict, total=False):
         typing_extensions.Annotated[
             str,
             typing_extensions.Doc(
-                "Merchant-defined reference for the new checkout. It should be unique enough for you to identify the payment attemptin your own systems.\nMax length: 64"
+                "Merchant-defined reference for the new checkout, up to 64 characters. Use it to correlate the checkout withan order or payment attempt in your own system. If a checkout already exists for the supplied unique parameters,creation returns `409` with `DUPLICATED_CHECKOUT`; see the conflict response.\nMax length: 64"
             ),
         ]
     ]
@@ -1311,7 +1306,7 @@ class CheckoutCreateRequestDict(typing_extensions.TypedDict, total=False):
         typing_extensions.Annotated[
             str,
             typing_extensions.Doc(
-                "Optional backend callback URL used by SumUp to notify your platform about processing updates for the checkout.\nFormat:uri"
+                "Optional backend callback URL for checkout status notifications. SumUp sends an HTTP POST with `event_type` andthe checkout `id`. Retrieve the checkout to verify its current status before updating your order. See the[webhook guide](https://developer.sumup.com/online-payments/webhooks/) for the payload and response requirements.\nFormat: uri"
             ),
         ]
     ]
@@ -1338,7 +1333,7 @@ class CheckoutSuccessTransaction(pydantic.BaseModel):
 
     amount: float | None = None
     """
-	Total amount of the transaction.
+	Total amount of the transaction in major units of `currency`, for example `10.1` for EUR 10.10.
 	"""
 
     auth_code: str | None = None
@@ -1353,7 +1348,7 @@ class CheckoutSuccessTransaction(pydantic.BaseModel):
 
     entry_mode: EntryMode | None = None
     """
-	Entry mode of the payment details.
+	How the payment details were captured, for example `CHIP` or `CONTACTLESS` for card-present payments and`CUSTOMER_ENTRY` for card details entered by the payer. For wallet and alternative payment methods, this canidentify the method, such as `APPLE_PAY` or `BLIK`.
 	"""
 
     id: str | None = None
@@ -1374,7 +1369,7 @@ class CheckoutSuccessTransaction(pydantic.BaseModel):
 
     payment_type: PaymentType | None = None
     """
-	Payment type used for the transaction.
+	Payment category recorded on a transaction, for example `POS` for a point-of-sale card payment, `ECOM` foran online card payment, or `RECURRING` for a recurring card payment. These reporting values are separate fromthe lowercase `payment_type` values used to process checkouts.
 	"""
 
     status: TransactionStatus | None = None
@@ -1395,17 +1390,17 @@ class CheckoutSuccessTransaction(pydantic.BaseModel):
 
     tip_amount: float | None = None
     """
-	Amount of the tip (out of the total transaction amount).
+	Tip included in the total transaction amount, in major units of the transaction's currency.
 	"""
 
     transaction_code: str | None = None
     """
-	Transaction code returned by the acquirer/processing entity after processing the transaction.
+	SumUp transaction code, for example `TEENSK4W2K`. Use it to look up the transaction with the `transaction_code` queryparameter. This is separate from the transaction's `id` and the card issuer's `auth_code`.
 	"""
 
     vat_amount: float | None = None
     """
-	Amount of the applicable VAT (out of the total transaction amount).
+	VAT included in the total transaction amount, in major units of the transaction's currency.
 	"""
 
 
@@ -1433,7 +1428,7 @@ class CheckoutSuccess(pydantic.BaseModel):
     checkout_reference: str | None = None
     """
 	Merchant-defined reference for the checkout. Use it to correlate the SumUp checkout with your own order, cart,subscription, or payment attempt in your systems.
-	Max length: 90
+	Max length: 64
 	"""
 
     currency: Currency | None = None
@@ -1496,8 +1491,8 @@ class CheckoutSuccess(pydantic.BaseModel):
 
     return_url: str | None = None
     """
-	Optional backend callback URL used by SumUp to notify your platform about processing updates for the checkout.
-	Format:uri
+	Optional backend callback URL for checkout status notifications. SumUp sends an HTTP POST with `event_type` andthe checkout `id`. Retrieve the checkout to verify its current status before updating your order. See the[webhook guide](https://developer.sumup.com/online-payments/webhooks/) for the payload and response requirements.
+	Format: uri
 	"""
 
     status: CheckoutSuccessStatus | None = None
@@ -1542,7 +1537,7 @@ class CheckoutUpdateRequest(pydantic.BaseModel):
     checkout_reference: str | None = None
     """
 	Updated merchant-defined reference for the checkout.
-	Max length: 90
+	Max length: 64
 	"""
 
     currency: Currency | None = None
@@ -1579,7 +1574,7 @@ class CheckoutUpdateRequestDict(typing_extensions.TypedDict, total=False):
         typing_extensions.Annotated[
             str,
             typing_extensions.Doc(
-                "Updated merchant-defined reference for the checkout.\nMax length: 90"
+                "Updated merchant-defined reference for the checkout.\nMax length: 64"
             ),
         ]
     ]
@@ -1678,9 +1673,7 @@ class Company(pydantic.BaseModel):
 
     address: Address | None = None
     """
-	An address somewhere in the world. The address fields used depend on the country conventions. For example, inGreat Britain, `city` is `post_town`. In the United States, the top-level administrative unit used in addressesis `state`, whereas in Chile it's `region`.
-	Whether an address is valid or not depends on whether the locally required fields are present. Fields not supported ina country will be ignored.
-	Address documentation: https://developer.sumup.com/tools/glossary/address
+	The company's primary address.
 	"""
 
     attributes: Attributes | None = None
@@ -1695,11 +1688,7 @@ class Company(pydantic.BaseModel):
 
     legal_type: LegalType | None = None
     """
-	The unique legal type reference as defined in the country SDK. We do not rely on IDs as used by other services.Consumers of this API are expected to use the country SDK to map to any other IDs, translation keys, ordescriptions.
-	Min length: 4
-	Max length: 64
-	Pattern: ^[a-z]{2}\\.[a-z_]+$
-	The country SDK documentation for legal types.: https://developer.sumup.com/tools/glossary/merchant#legal-types
+	The category identifying the legal structure of the company or legal entity.
 	"""
 
     merchant_category_code: str | None = None
@@ -1717,15 +1706,12 @@ class Company(pydantic.BaseModel):
 
     phone_number: PhoneNumber | None = None
     """
-	A publicly available phone number in [E.164](https://en.wikipedia.org/wiki/E.164) format.
-	Max length: 16
+	The company's phone number (used for verification) in [E.164](https://en.wikipedia.org/wiki/E.164) format.
 	"""
 
     trading_address: Address | None = None
     """
-	An address somewhere in the world. The address fields used depend on the country conventions. For example, inGreat Britain, `city` is `post_town`. In the United States, the top-level administrative unit used in addressesis `state`, whereas in Chile it's `region`.
-	Whether an address is valid or not depends on whether the locally required fields are present. Fields not supported ina country will be ignored.
-	Address documentation: https://developer.sumup.com/tools/glossary/address
+	A trading address is where your suppliers, banks or customers send you correspondence to. Trading address canbe different to the company's registered address (`address`).
 	"""
 
     website: str | None = None
@@ -2178,7 +2164,7 @@ class PersonalDetails(pydantic.BaseModel):
 
     birth_date: datetime.date | None = None
     """
-	Date of birth of the customer.
+	Date of birth of the customer in `YYYY-MM-DD` format, without a time or timezone.
 	Format: date
 	"""
 
@@ -2217,7 +2203,10 @@ class PersonalDetailsDict(typing_extensions.TypedDict, total=False):
     ]
     birth_date: typing_extensions.NotRequired[
         typing_extensions.Annotated[
-            datetime.date, typing_extensions.Doc("Date of birth of the customer.\nFormat: date")
+            datetime.date,
+            typing_extensions.Doc(
+                "Date of birth of the customer in `YYYY-MM-DD` format, without a time or timezone.\nFormat: date"
+            ),
         ]
     ]
     email: typing_extensions.NotRequired[
@@ -2247,12 +2236,12 @@ PersonalDetailsInput = PersonalDetailsDict
 
 class Customer(pydantic.BaseModel):
     """
-    Saved customer details.
+    Saved payer details identified by the `customer_id` supplied by your integration. A customer can have savedpayment instruments for subsequent payments.
     """
 
     customer_id: str
     """
-	Unique identifier of the customer.
+	Identifier you supply when creating the customer. Use an ID from your own system and retain it for subsequent customer,checkout, and saved-payment-instrument requests.
 	"""
 
     personal_details: PersonalDetails | None = None
@@ -2264,7 +2253,10 @@ class Customer(pydantic.BaseModel):
 class CustomerDict(typing_extensions.TypedDict, total=False):
     customer_id: typing_extensions.Required[
         typing_extensions.Annotated[
-            str, typing_extensions.Doc("Unique identifier of the customer.")
+            str,
+            typing_extensions.Doc(
+                "Identifier you supply when creating the customer. Use an ID from your own system and retain it for subsequent customer,checkout, and saved-payment-instrument requests."
+            ),
         ]
     ]
     personal_details: typing_extensions.NotRequired[
@@ -2436,7 +2428,7 @@ class ErrorForbidden(pydantic.BaseModel):
 
 TransactionEventId = int
 """
-Unique identifier of the transaction event.
+Numeric identifier of a transaction event. Use it as `tx_event_id` when requesting receipt details for aspecific event. This is separate from the transaction ID and the transaction history pagination references.
 Format: int64
 """
 
@@ -2482,7 +2474,7 @@ class Event(pydantic.BaseModel):
 
     id: TransactionEventId | None = None
     """
-	Unique identifier of the transaction event.
+	Numeric identifier of a transaction event. Use it as `tx_event_id` when requesting receipt details for aspecific event. This is separate from the transaction ID and the transaction history pagination references.
 	Format: int64
 	"""
 
@@ -2518,7 +2510,12 @@ class Event(pydantic.BaseModel):
 
     type: TransactionEventType | None = None
     """
-	Type of the transaction event.
+	Financial event associated with a transaction.
+	
+	- `PAYOUT`: Funds from the transaction being prepared for or included in a merchant payout. Check the event statusto determine whether they have been paid out.
+	- `REFUND`: Money returned to the payer.
+	- `CHARGE_BACK`: A reversal of the payment following a chargeback.
+	- `PAYOUT_DEDUCTION`: An amount deducted from a merchant payout, for example to cover a refund or chargeback.
 	"""
 
 
@@ -2747,7 +2744,7 @@ class Invite(pydantic.BaseModel):
 Lat = float
 """
 Latitude value from the coordinates of the payment location (as received from the payment terminal reader).
-Min: 0
+Min: -90
 Max: 90
 """
 
@@ -2797,9 +2794,7 @@ class Person(pydantic.BaseModel):
 
     address: Address | None = None
     """
-	An address somewhere in the world. The address fields used depend on the country conventions. For example, inGreat Britain, `city` is `post_town`. In the United States, the top-level administrative unit used in addressesis `state`, whereas in Chile it's `region`.
-	Whether an address is valid or not depends on whether the locally required fields are present. Fields not supported ina country will be ignored.
-	Address documentation: https://developer.sumup.com/tools/glossary/address
+	The address of the individual.
 	"""
 
     birthdate: datetime.date | None = None
@@ -2817,12 +2812,7 @@ class Person(pydantic.BaseModel):
 
     citizenship: CountryCode | None = None
     """
-	An [ISO3166-1 alpha-2](https://en.wikipedia.org/wiki/ISO_3166-1_alpha-2)
-	country code. This definition users `oneOf` with a two-character string
-	type to allow for support of future countries in client code.
-	Min length: 2
-	Max length: 2
-	Pattern: ^[A-Z]{2}$
+	The Alpha-2 ISO code of the country where the Person is a citizen.
 	"""
 
     country_of_residence: str | None = None
@@ -2865,11 +2855,13 @@ class Person(pydantic.BaseModel):
 	"""
 
     ownership: Ownership | None = None
+    """
+	Details about the ownership relationship between the Person and the Merchant. This is only set if the Personhas a relationship of type `owner`.
+	"""
 
     phone_number: PhoneNumber | None = None
     """
-	A publicly available phone number in [E.164](https://en.wikipedia.org/wiki/E.164) format.
-	Max length: 16
+	The (mobile) phone number of the individual (used for verification) in [E.164](https://en.wikipedia.org/wiki/E.164) format.
 	"""
 
     relationships: list[str] | None = None
@@ -2901,7 +2893,7 @@ class ListPersonsResponseBody(pydantic.BaseModel):
 Lon = float
 """
 Longitude value from the coordinates of the payment location (as received from the payment terminal reader).
-Min: 0
+Min: -180
 Max: 180
 """
 
@@ -3438,7 +3430,7 @@ class PaymentInstrumentResponse(pydantic.BaseModel):
 
     token: str | None = None
     """
-	Unique token identifying the saved payment card for a customer.
+	Token identifying the customer's saved payment card. Pass it as `token`, together with the associated `customer_id`and `payment_type = card`, when processing a checkout with this instrument.
 	Read only
 	"""
 
@@ -3580,7 +3572,7 @@ class ProcessCheckout(pydantic.BaseModel):
 
     token: str | None = None
     """
-	Saved-card token to use instead of raw card details when processing with a previously stored payment instrument.
+	Token of a saved payment instrument returned by checkout processing or the customer's payment-instruments endpoint.To charge a saved card, set `payment_type` to `card` and provide both this `token` and the associated `customer_id`instead of raw card details.
 	"""
 
 
@@ -3650,7 +3642,7 @@ class ProcessCheckoutDict(typing_extensions.TypedDict, total=False):
         typing_extensions.Annotated[
             str,
             typing_extensions.Doc(
-                "Saved-card token to use instead of raw card details when processing with a previously stored payment instrument."
+                "Token of a saved payment instrument returned by checkout processing or the customer's payment-instruments endpoint.To charge a saved card, set `payment_type` to `card` and provide both this `token` and the associated `customer_id`instead of raw card details."
             ),
         ]
     ]
@@ -3717,7 +3709,7 @@ class Product(pydantic.BaseModel):
 
     vat_rate: float | None = None
     """
-	VAT rate applied to the product price.
+	VAT rate as a decimal fraction, for example `0.19` for 19%.
 	Format: decimal
 	"""
 
@@ -3887,6 +3879,54 @@ Max length: 9
 """
 
 
+class ReaderPaymentRequestParamsAffiliate(pydantic.BaseModel):
+    """
+    ReaderPaymentRequestParamsAffiliate is a schema definition.
+    """
+
+    app_id: str
+
+    key: str
+
+
+class ReaderPaymentRequestParamsAffiliateDict(typing_extensions.TypedDict, total=False):
+    app_id: typing_extensions.Required[str]
+    key: typing_extensions.Required[str]
+
+
+ReaderPaymentRequestParamsAffiliateInput = ReaderPaymentRequestParamsAffiliateDict
+
+
+class ReaderPaymentRequestParamsTotalAmount(pydantic.BaseModel):
+    """
+    ReaderPaymentRequestParamsTotalAmount is a schema definition.
+    """
+
+    currency: str
+    """
+	Currency ISO 4217 code
+	"""
+
+    value: int
+    """
+	Amount in minor units (e.g. cents).
+	"""
+
+
+class ReaderPaymentRequestParamsTotalAmountDict(typing_extensions.TypedDict, total=False):
+    currency: typing_extensions.Required[
+        typing_extensions.Annotated[str, typing_extensions.Doc("Currency ISO 4217 code")]
+    ]
+    value: typing_extensions.Required[
+        typing_extensions.Annotated[
+            int, typing_extensions.Doc("Amount in minor units (e.g. cents).")
+        ]
+    ]
+
+
+ReaderPaymentRequestParamsTotalAmountInput = ReaderPaymentRequestParamsTotalAmountDict
+
+
 class ReaderPaymentRequestParams(pydantic.BaseModel):
     """
     ReaderPaymentRequestParams is a schema definition.
@@ -3897,9 +3937,9 @@ class ReaderPaymentRequestParams(pydantic.BaseModel):
 	Caller-supplied correlation identifier, used as the idempotency key.
 	"""
 
-    total_amount: Amount
+    total_amount: ReaderPaymentRequestParamsTotalAmount
 
-    affiliate: Affiliate | None = None
+    affiliate: ReaderPaymentRequestParamsAffiliate | None = None
 
     tip_amount: int | None = None
     """
@@ -3916,8 +3956,8 @@ class ReaderPaymentRequestParamsDict(typing_extensions.TypedDict, total=False):
             ),
         ]
     ]
-    total_amount: typing_extensions.Required[AmountInput]
-    affiliate: typing_extensions.NotRequired[AffiliateInput]
+    total_amount: typing_extensions.Required[ReaderPaymentRequestParamsTotalAmountInput]
+    affiliate: typing_extensions.NotRequired[ReaderPaymentRequestParamsAffiliateInput]
     tip_amount: typing_extensions.NotRequired[
         typing_extensions.Annotated[
             int,
@@ -3984,7 +4024,7 @@ class ReceiptEvent(pydantic.BaseModel):
 
     id: TransactionEventId | None = None
     """
-	Unique identifier of the transaction event.
+	Numeric identifier of a transaction event. Use it as `tx_event_id` when requesting receipt details for aspecific event. This is separate from the transaction ID and the transaction history pagination references.
 	Format: int64
 	"""
 
@@ -4020,7 +4060,12 @@ class ReceiptEvent(pydantic.BaseModel):
 
     type: TransactionEventType | None = None
     """
-	Type of the transaction event.
+	Financial event associated with a transaction.
+	
+	- `PAYOUT`: Funds from the transaction being prepared for or included in a merchant payout. Check the event statusto determine whether they have been paid out.
+	- `REFUND`: Money returned to the payer.
+	- `CHARGE_BACK`: A reversal of the payment following a chargeback.
+	- `PAYOUT_DEDUCTION`: An amount deducted from a merchant payout, for example to cover a refund or chargeback.
 	"""
 
 
@@ -4386,7 +4431,7 @@ class ReceiptAcquirerData(pydantic.BaseModel):
 
 class Receipt(pydantic.BaseModel):
     """
-    Receipt details for a transaction.
+    Structured receipt details for a transaction. The transaction's `amount`, `vat_amount`, and `tip_amount`, aswell as event amounts, are returned as decimal strings in major currency units, for example `"10.10"` forEUR 10.10.
     """
 
     acquirer_data: ReceiptAcquirerData | None = None
@@ -4535,7 +4580,7 @@ class TransactionEvent(pydantic.BaseModel):
 
     amount: float | None = None
     """
-	Amount of the event.
+	Amount of the event in major units of the associated transaction's currency.
 	Format: decimal
 	"""
 
@@ -4553,18 +4598,23 @@ class TransactionEvent(pydantic.BaseModel):
 
     event_type: TransactionEventType | None = None
     """
-	Type of the transaction event.
+	Financial event associated with a transaction.
+	
+	- `PAYOUT`: Funds from the transaction being prepared for or included in a merchant payout. Check the event statusto determine whether they have been paid out.
+	- `REFUND`: Money returned to the payer.
+	- `CHARGE_BACK`: A reversal of the payment following a chargeback.
+	- `PAYOUT_DEDUCTION`: An amount deducted from a merchant payout, for example to cover a refund or chargeback.
 	"""
 
     id: TransactionEventId | None = None
     """
-	Unique identifier of the transaction event.
+	Numeric identifier of a transaction event. Use it as `tx_event_id` when requesting receipt details for aspecific event. This is separate from the transaction ID and the transaction history pagination references.
 	Format: int64
 	"""
 
     installment_number: int | None = None
     """
-	Consecutive number of the installment that is paid. Applicable only payout events, i.e. `event_type = PAYOUT`.
+	Consecutive number of the installment that is paid. Applicable only to payout events, i.e. `event_type =PAYOUT`.
 	"""
 
     status: TransactionEventStatus | None = None
@@ -4715,14 +4765,14 @@ class TransactionFullLocation(pydantic.BaseModel):
     lat: Lat | None = None
     """
 	Latitude value from the coordinates of the payment location (as received from the payment terminal reader).
-	Min: 0
+	Min: -90
 	Max: 90
 	"""
 
     lon: Lon | None = None
     """
 	Longitude value from the coordinates of the payment location (as received from the payment terminal reader).
-	Min: 0
+	Min: -180
 	Max: 180
 	"""
 
@@ -4734,7 +4784,7 @@ class TransactionFull(pydantic.BaseModel):
 
     amount: float | None = None
     """
-	Total amount of the transaction.
+	Total amount of the transaction in major units of `currency`, for example `10.1` for EUR 10.10.
 	"""
 
     auth_code: str | None = None
@@ -4769,7 +4819,7 @@ class TransactionFull(pydantic.BaseModel):
 
     entry_mode: EntryMode | None = None
     """
-	Entry mode of the payment details.
+	How the payment details were captured, for example `CHIP` or `CONTACTLESS` for card-present payments and`CUSTOMER_ENTRY` for card details entered by the payer. For wallet and alternative payment methods, this canidentify the method, such as `APPLE_PAY` or `BLIK`.
 	"""
 
     events: list[Event] | None = None
@@ -4779,7 +4829,7 @@ class TransactionFull(pydantic.BaseModel):
 
     fee_amount: float | None = None
     """
-	Transaction SumUp total fee amount.
+	Total SumUp transaction fee in major units of the transaction's currency.
 	Format: decimal
 	"""
 
@@ -4807,7 +4857,7 @@ class TransactionFull(pydantic.BaseModel):
     lat: Lat | None = None
     """
 	Latitude value from the coordinates of the payment location (as received from the payment terminal reader).
-	Min: 0
+	Min: -90
 	Max: 90
 	"""
 
@@ -4829,7 +4879,7 @@ class TransactionFull(pydantic.BaseModel):
     lon: Lon | None = None
     """
 	Longitude value from the coordinates of the payment location (as received from the payment terminal reader).
-	Min: 0
+	Min: -180
 	Max: 180
 	"""
 
@@ -4846,7 +4896,7 @@ class TransactionFull(pydantic.BaseModel):
 
     payment_type: PaymentType | None = None
     """
-	Payment type used for the transaction.
+	Payment category recorded on a transaction, for example `POS` for a point-of-sale card payment, `ECOM` foran online card payment, or `RECURRING` for a recurring card payment. These reporting values are separate fromthe lowercase `payment_type` values used to process checkouts.
 	"""
 
     payout_date: datetime.date | None = None
@@ -4934,12 +4984,12 @@ class TransactionFull(pydantic.BaseModel):
 
     tip_amount: float | None = None
     """
-	Amount of the tip (out of the total transaction amount).
+	Tip included in the total transaction amount, in major units of the transaction's currency.
 	"""
 
     transaction_code: str | None = None
     """
-	Transaction code returned by the acquirer/processing entity after processing the transaction.
+	SumUp transaction code, for example `TEENSK4W2K`. Use it to look up the transaction with the `transaction_code` queryparameter. This is separate from the transaction's `id` and the card issuer's `auth_code`.
 	"""
 
     transaction_events: list[TransactionEvent] | None = None
@@ -4955,7 +5005,7 @@ class TransactionFull(pydantic.BaseModel):
 
     vat_amount: float | None = None
     """
-	Amount of the applicable VAT (out of the total transaction amount).
+	VAT included in the total transaction amount, in major units of the transaction's currency.
 	"""
 
     vat_rates: list[TransactionFullVatRate] | None = None
@@ -4985,7 +5035,7 @@ class TransactionHistory(pydantic.BaseModel):
 
     amount: float | None = None
     """
-	Total amount of the transaction.
+	Total amount of the transaction in major units of `currency`, for example `10.1` for EUR 10.10.
 	"""
 
     card_type: CardType | None = None
@@ -5016,7 +5066,7 @@ class TransactionHistory(pydantic.BaseModel):
 
     payment_type: PaymentType | None = None
     """
-	Payment type used for the transaction.
+	Payment category recorded on a transaction, for example `POS` for a point-of-sale card payment, `ECOM` foran online card payment, or `RECURRING` for a recurring card payment. These reporting values are separate fromthe lowercase `payment_type` values used to process checkouts.
 	"""
 
     payout_date: datetime.date | None = None
@@ -5052,7 +5102,7 @@ class TransactionHistory(pydantic.BaseModel):
 
     refunded_amount: float | None = None
     """
-	Total refunded amount.
+	Total amount refunded for this transaction, in major units of the transaction's currency.
 	Format: decimal
 	"""
 
@@ -5074,7 +5124,7 @@ class TransactionHistory(pydantic.BaseModel):
 
     transaction_code: str | None = None
     """
-	Transaction code returned by the acquirer/processing entity after processing the transaction.
+	SumUp transaction code, for example `TEENSK4W2K`. Use it to look up the transaction with the `transaction_code` queryparameter. This is separate from the transaction's `id` and the card issuer's `auth_code`.
 	"""
 
     transaction_id: TransactionId | None = None
@@ -5101,12 +5151,12 @@ class TransactionsHistoryLink(pydantic.BaseModel):
 
     href: str
     """
-	Location.
+	Query string to use with the transaction history endpoint when requesting the linked page. Preserve the returnedpagination references and query parameters.
 	"""
 
     rel: str
     """
-	Relation.
+	Pagination relation indicating which page the link retrieves, for example `next`.
 	"""
 
 

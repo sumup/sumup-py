@@ -31,6 +31,7 @@ from ._events import (
 from .types import (
     Member,
     Reader,
+    Role,
 )
 
 
@@ -104,12 +105,57 @@ class ReaderDeletedEvent(FetchableEvent[Reader]):
     _response_model: typing.ClassVar[builtins.type[pydantic.BaseModel]] = Reader
 
 
+class RoleCreatedEvent(FetchableEvent[Role]):
+    """Sent when a role is created for a merchant account.
+
+    The notification type is "roles.created". Use fetch_object() with
+    Sumup or await fetch_object_async() with AsyncSumup to retrieve the latest
+    Role. The notification itself contains a resource reference.
+    """
+
+    EVENT_TYPE: typing.ClassVar[str] = "roles.created"
+    type: typing.Literal["roles.created"] = "roles.created"
+    _object_type: typing.ClassVar[str] = "role"
+    _response_model: typing.ClassVar[builtins.type[pydantic.BaseModel]] = Role
+
+
+class RoleDeletedEvent(FetchableEvent[Role]):
+    """Sent when a role is deleted for a merchant account.
+
+    The notification type is "roles.deleted". Use fetch_object() with
+    Sumup or await fetch_object_async() with AsyncSumup to retrieve the latest
+    Role. The notification itself contains a resource reference.
+    """
+
+    EVENT_TYPE: typing.ClassVar[str] = "roles.deleted"
+    type: typing.Literal["roles.deleted"] = "roles.deleted"
+    _object_type: typing.ClassVar[str] = "role"
+    _response_model: typing.ClassVar[builtins.type[pydantic.BaseModel]] = Role
+
+
+class RoleUpdatedEvent(FetchableEvent[Role]):
+    """Sent when a role is updated for a merchant account.
+
+    The notification type is "roles.updated". Use fetch_object() with
+    Sumup or await fetch_object_async() with AsyncSumup to retrieve the latest
+    Role. The notification itself contains a resource reference.
+    """
+
+    EVENT_TYPE: typing.ClassVar[str] = "roles.updated"
+    type: typing.Literal["roles.updated"] = "roles.updated"
+    _object_type: typing.ClassVar[str] = "role"
+    _response_model: typing.ClassVar[builtins.type[pydantic.BaseModel]] = Role
+
+
 KnownEventNotification = (
     MemberCreatedEvent
     | MemberDeletedEvent
     | MemberUpdatedEvent
     | ReaderCreatedEvent
     | ReaderDeletedEvent
+    | RoleCreatedEvent
+    | RoleDeletedEvent
+    | RoleUpdatedEvent
 )
 
 
@@ -119,6 +165,9 @@ _EVENT_MODELS: dict[str, type[EventNotification]] = {
     "members.updated": MemberUpdatedEvent,
     "readers.created": ReaderCreatedEvent,
     "readers.deleted": ReaderDeletedEvent,
+    "roles.created": RoleCreatedEvent,
+    "roles.deleted": RoleDeletedEvent,
+    "roles.updated": RoleUpdatedEvent,
 }
 
 
@@ -156,6 +205,27 @@ _ReaderDeletedEventCallback = typing.TypeVar(
 _AsyncReaderDeletedEventCallback = typing.TypeVar(
     "_AsyncReaderDeletedEventCallback",
     bound=typing.Callable[[ReaderDeletedEvent], typing.Awaitable[None]],
+)
+_RoleCreatedEventCallback = typing.TypeVar(
+    "_RoleCreatedEventCallback", bound=typing.Callable[[RoleCreatedEvent], None]
+)
+_AsyncRoleCreatedEventCallback = typing.TypeVar(
+    "_AsyncRoleCreatedEventCallback",
+    bound=typing.Callable[[RoleCreatedEvent], typing.Awaitable[None]],
+)
+_RoleDeletedEventCallback = typing.TypeVar(
+    "_RoleDeletedEventCallback", bound=typing.Callable[[RoleDeletedEvent], None]
+)
+_AsyncRoleDeletedEventCallback = typing.TypeVar(
+    "_AsyncRoleDeletedEventCallback",
+    bound=typing.Callable[[RoleDeletedEvent], typing.Awaitable[None]],
+)
+_RoleUpdatedEventCallback = typing.TypeVar(
+    "_RoleUpdatedEventCallback", bound=typing.Callable[[RoleUpdatedEvent], None]
+)
+_AsyncRoleUpdatedEventCallback = typing.TypeVar(
+    "_AsyncRoleUpdatedEventCallback",
+    bound=typing.Callable[[RoleUpdatedEvent], typing.Awaitable[None]],
 )
 
 
@@ -260,6 +330,48 @@ class EventsHandler(_SyncEventsHandler):
         self._register("readers.deleted", typing.cast(_ErasedCallback, callback))
         return callback
 
+    def on_role_created(self, callback: _RoleCreatedEventCallback) -> _RoleCreatedEventCallback:
+        """Register a callback for roles.created and return it unchanged.
+
+        Use @handler.on_role_created or handler.on_role_created(callback).
+        The callback receives one RoleCreatedEvent and returns None on success;
+        raise an exception to signal processing failure.
+
+        Raises:
+            EventHandlerRegistrationError: The callback is not callable, or this
+                event type already has a registered callback.
+        """
+        self._register("roles.created", typing.cast(_ErasedCallback, callback))
+        return callback
+
+    def on_role_deleted(self, callback: _RoleDeletedEventCallback) -> _RoleDeletedEventCallback:
+        """Register a callback for roles.deleted and return it unchanged.
+
+        Use @handler.on_role_deleted or handler.on_role_deleted(callback).
+        The callback receives one RoleDeletedEvent and returns None on success;
+        raise an exception to signal processing failure.
+
+        Raises:
+            EventHandlerRegistrationError: The callback is not callable, or this
+                event type already has a registered callback.
+        """
+        self._register("roles.deleted", typing.cast(_ErasedCallback, callback))
+        return callback
+
+    def on_role_updated(self, callback: _RoleUpdatedEventCallback) -> _RoleUpdatedEventCallback:
+        """Register a callback for roles.updated and return it unchanged.
+
+        Use @handler.on_role_updated or handler.on_role_updated(callback).
+        The callback receives one RoleUpdatedEvent and returns None on success;
+        raise an exception to signal processing failure.
+
+        Raises:
+            EventHandlerRegistrationError: The callback is not callable, or this
+                event type already has a registered callback.
+        """
+        self._register("roles.updated", typing.cast(_ErasedCallback, callback))
+        return callback
+
 
 class AsyncEventsHandler(_AsyncEventsHandler):
     """Verify incoming events and dispatch them to typed asynchronous callbacks.
@@ -362,6 +474,54 @@ class AsyncEventsHandler(_AsyncEventsHandler):
         self._register("readers.deleted", typing.cast(_ErasedCallback, callback))
         return callback
 
+    def on_role_created(
+        self, callback: _AsyncRoleCreatedEventCallback
+    ) -> _AsyncRoleCreatedEventCallback:
+        """Register an async callback for roles.created and return it unchanged.
+
+        Use @handler.on_role_created or handler.on_role_created(callback).
+        The callback receives one RoleCreatedEvent and is awaited by handle().
+        Return None on success or raise an exception to signal processing failure.
+
+        Raises:
+            EventHandlerRegistrationError: The callback is not callable, or this
+                event type already has a registered callback.
+        """
+        self._register("roles.created", typing.cast(_ErasedCallback, callback))
+        return callback
+
+    def on_role_deleted(
+        self, callback: _AsyncRoleDeletedEventCallback
+    ) -> _AsyncRoleDeletedEventCallback:
+        """Register an async callback for roles.deleted and return it unchanged.
+
+        Use @handler.on_role_deleted or handler.on_role_deleted(callback).
+        The callback receives one RoleDeletedEvent and is awaited by handle().
+        Return None on success or raise an exception to signal processing failure.
+
+        Raises:
+            EventHandlerRegistrationError: The callback is not callable, or this
+                event type already has a registered callback.
+        """
+        self._register("roles.deleted", typing.cast(_ErasedCallback, callback))
+        return callback
+
+    def on_role_updated(
+        self, callback: _AsyncRoleUpdatedEventCallback
+    ) -> _AsyncRoleUpdatedEventCallback:
+        """Register an async callback for roles.updated and return it unchanged.
+
+        Use @handler.on_role_updated or handler.on_role_updated(callback).
+        The callback receives one RoleUpdatedEvent and is awaited by handle().
+        Return None on success or raise an exception to signal processing failure.
+
+        Raises:
+            EventHandlerRegistrationError: The callback is not callable, or this
+                event type already has a registered callback.
+        """
+        self._register("roles.updated", typing.cast(_ErasedCallback, callback))
+        return callback
+
 
 __all__ = [
     "SIGNATURE_HEADER",
@@ -386,6 +546,9 @@ __all__ = [
     "MemberUpdatedEvent",
     "ReaderCreatedEvent",
     "ReaderDeletedEvent",
+    "RoleCreatedEvent",
+    "RoleDeletedEvent",
+    "RoleUpdatedEvent",
     "UnknownEvent",
     "verify_event_signature",
 ]
