@@ -59,6 +59,30 @@ from ..types import (
 )
 
 
+class CreateGoReaderCheckoutBodyAffiliateInput(typing_extensions.TypedDict, total=False):
+    """
+    CreateGoReaderCheckoutBodyAffiliate is a schema definition.
+    """
+
+    app_id: typing_extensions.Required[str]
+    key: typing_extensions.Required[str]
+
+
+class CreateGoReaderCheckoutBodyTotalAmountInput(typing_extensions.TypedDict, total=False):
+    """
+    CreateGoReaderCheckoutBodyTotalAmount is a schema definition.
+    """
+
+    currency: typing_extensions.Required[
+        typing_extensions.Annotated[str, typing_extensions.Doc("Currency ISO 4217 code")]
+    ]
+    value: typing_extensions.Required[
+        typing_extensions.Annotated[
+            int, typing_extensions.Doc("Amount in minor units (e.g. cents).")
+        ]
+    ]
+
+
 class CreateGoReaderCheckoutBodyInput(typing_extensions.TypedDict, total=False):
     """
     CreateGoReaderCheckoutBody is a schema definition.
@@ -72,8 +96,8 @@ class CreateGoReaderCheckoutBodyInput(typing_extensions.TypedDict, total=False):
             ),
         ]
     ]
-    total_amount: typing_extensions.Required[AmountInput]
-    affiliate: typing_extensions.NotRequired[AffiliateInput]
+    total_amount: typing_extensions.Required[CreateGoReaderCheckoutBodyTotalAmountInput]
+    affiliate: typing_extensions.NotRequired[CreateGoReaderCheckoutBodyAffiliateInput]
     tip_amount: typing_extensions.NotRequired[
         typing_extensions.Annotated[
             int,
@@ -334,10 +358,10 @@ class ReadersResource(Resource):
         merchant_code: str,
         reader_id: ReaderId,
         *,
-        affiliate: AffiliateInput | None | NotGivenType = NOT_GIVEN,
+        affiliate: CreateGoReaderCheckoutBodyAffiliateInput | None | NotGivenType = NOT_GIVEN,
         client_transaction_id: str,
         tip_amount: int | None | NotGivenType = NOT_GIVEN,
-        total_amount: AmountInput,
+        total_amount: CreateGoReaderCheckoutBodyTotalAmountInput,
         headers: HeaderTypes | None = None,
     ) -> ReaderPaymentResponse:
         """
@@ -835,10 +859,10 @@ class AsyncReadersResource(AsyncResource):
         merchant_code: str,
         reader_id: ReaderId,
         *,
-        affiliate: AffiliateInput | None | NotGivenType = NOT_GIVEN,
+        affiliate: CreateGoReaderCheckoutBodyAffiliateInput | None | NotGivenType = NOT_GIVEN,
         client_transaction_id: str,
         tip_amount: int | None | NotGivenType = NOT_GIVEN,
-        total_amount: AmountInput,
+        total_amount: CreateGoReaderCheckoutBodyTotalAmountInput,
         headers: HeaderTypes | None = None,
     ) -> ReaderPaymentResponse:
         """
