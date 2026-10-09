@@ -1,5 +1,25 @@
 # Changelog
 
+## [0.3.5](https://github.com/sumup/sumup-py/compare/v0.3.4...v0.3.5) (2026-10-09)
+
+
+### Chores
+
+* **deps-dev:** bump ruff from 0.16.6 to 0.16.8 ([#405](https://github.com/sumup/sumup-py/issues/405)) ([bbb8b92](https://github.com/sumup/sumup-py/commit/bbb8b928570c18857655fbb037b60ef51f4374b8))
+* **deps-dev:** bump ruff from 0.16.8 to 0.16.9 ([#411](https://github.com/sumup/sumup-py/issues/411)) ([ead8d7b](https://github.com/sumup/sumup-py/commit/ead8d7b35f4c7d01bde7c249cbe83d7a6f3495ff))
+* **deps-dev:** bump ruff from 0.16.9 to 0.16.10 ([#414](https://github.com/sumup/sumup-py/issues/414)) ([38fb831](https://github.com/sumup/sumup-py/commit/38fb8312dadf68d25a38953a09418b3842400aa6))
+* **deps-dev:** bump ty from 0.0.78 to 0.0.82 ([#404](https://github.com/sumup/sumup-py/issues/404)) ([b12f7bb](https://github.com/sumup/sumup-py/commit/b12f7bbfe35759d21cc8c07613f779964e858571))
+* **deps-dev:** bump ty from 0.0.82 to 0.0.84 ([#410](https://github.com/sumup/sumup-py/issues/410)) ([fa3b04b](https://github.com/sumup/sumup-py/commit/fa3b04bde46f636ad494d08973fc06e482f74c0a))
+* **deps:** bump anyio in the uv group across 1 directory ([#401](https://github.com/sumup/sumup-py/issues/401)) ([ccf799a](https://github.com/sumup/sumup-py/commit/ccf799ade177556be8b4ddf4859e9cd1078921fc))
+* **deps:** bump astral-sh/setup-uv from 10.0.1 to 10.1.0 ([#398](https://github.com/sumup/sumup-py/issues/398)) ([3ac5142](https://github.com/sumup/sumup-py/commit/3ac5142ae6561f563ed866e08126909afb316eaa))
+* **deps:** bump astral-sh/setup-uv from 10.1.0 to 10.2.0 ([#407](https://github.com/sumup/sumup-py/issues/407)) ([a74043b](https://github.com/sumup/sumup-py/commit/a74043b1cc847e0b559a0638146ecc3254c07fa7))
+* **deps:** bump reviewdog/action-actionlint from 1.73.4 to 1.76.0 ([#403](https://github.com/sumup/sumup-py/issues/403)) ([fef6a27](https://github.com/sumup/sumup-py/commit/fef6a2762c01cb5a6ba0ed737a5cf63b17b93cfa))
+* **deps:** bump reviewdog/action-actionlint from 1.76.0 to 1.77.0 ([#408](https://github.com/sumup/sumup-py/issues/408)) ([f43714d](https://github.com/sumup/sumup-py/commit/f43714d883888e6722686e8fa60769d03bc4f63a))
+* **deps:** bump reviewdog/action-actionlint from 1.77.0 to 1.79.1 ([#417](https://github.com/sumup/sumup-py/issues/417)) ([453479b](https://github.com/sumup/sumup-py/commit/453479b6e9069f1ad6fbacd63a5fc59db523433d))
+* synced file(s) with sumup/apis ([#402](https://github.com/sumup/sumup-py/issues/402)) ([8c24bda](https://github.com/sumup/sumup-py/commit/8c24bdabf79606a84631304fcf7da7f6a15ecdc8))
+* synced file(s) with sumup/apis ([#412](https://github.com/sumup/sumup-py/issues/412)) ([7ba5c33](https://github.com/sumup/sumup-py/commit/7ba5c336eb4f888e6b964a193c52a60cac29fd3e))
+* synced file(s) with sumup/apis ([#413](https://github.com/sumup/sumup-py/issues/413)) ([7c749b9](https://github.com/sumup/sumup-py/commit/7c749b91f705ca620c877d01087a75dc9c37b6ce))
+
 ## [0.3.4](https://github.com/sumup/sumup-py/compare/v0.3.3...v0.3.4) (2026-09-11)
 
 
