@@ -18,12 +18,6 @@ Pattern: ^[A-Z]{2}$
 """
 
 
-class AddressCountry(pydantic.BaseModel):
-    """
-    AddressCountry is a schema definition.
-    """
-
-
 class Address(pydantic.BaseModel):
     """
             An address somewhere in the world. The address fields used depend on the country conventions. For example, inGreat Britain, `city` is `post_town`. In the United States, the top-level administrative unit used in addressesis `state`, whereas in Chile it's `region`.
@@ -31,7 +25,13 @@ class Address(pydantic.BaseModel):
     Address documentation: https://developer.sumup.com/tools/glossary/address
     """
 
-    country: AddressCountry
+    country: CountryCode
+    """
+	The ISO3166-1 Alpha-2 code of the address country.
+	Min length: 2
+	Max length: 2
+	Pattern: ^[A-Z]{2}$
+	"""
 
     autonomous_community: str | None = None
     """
@@ -371,6 +371,7 @@ class BasePerson(pydantic.BaseModel):
     address: Address | None = None
     """
 	The address of the individual.
+	Address documentation: https://developer.sumup.com/tools/glossary/address
 	"""
 
     birthdate: datetime.date | None = None
@@ -389,6 +390,9 @@ class BasePerson(pydantic.BaseModel):
     citizenship: CountryCode | None = None
     """
 	The Alpha-2 ISO code of the country where the Person is a citizen.
+	Min length: 2
+	Max length: 2
+	Pattern: ^[A-Z]{2}$
 	"""
 
     country_of_residence: str | None = None
@@ -438,6 +442,7 @@ class BasePerson(pydantic.BaseModel):
     phone_number: PhoneNumber | None = None
     """
 	The (mobile) phone number of the individual (used for verification) in [E.164](https://en.wikipedia.org/wiki/E.164) format.
+	Maxlength: 16
 	"""
 
     relationships: list[str] | None = None
@@ -1674,6 +1679,7 @@ class Company(pydantic.BaseModel):
     address: Address | None = None
     """
 	The company's primary address.
+	Address documentation: https://developer.sumup.com/tools/glossary/address
 	"""
 
     attributes: Attributes | None = None
@@ -1689,6 +1695,10 @@ class Company(pydantic.BaseModel):
     legal_type: LegalType | None = None
     """
 	The category identifying the legal structure of the company or legal entity.
+	Min length: 4
+	Max length: 64
+	Pattern: ^[a-z]{2}\\.[a-z_]+$
+	The country SDK documentation for legal types.: https://developer.sumup.com/tools/glossary/merchant#legal-types
 	"""
 
     merchant_category_code: str | None = None
@@ -1707,11 +1717,13 @@ class Company(pydantic.BaseModel):
     phone_number: PhoneNumber | None = None
     """
 	The company's phone number (used for verification) in [E.164](https://en.wikipedia.org/wiki/E.164) format.
+	Max length: 16
 	"""
 
     trading_address: Address | None = None
     """
 	A trading address is where your suppliers, banks or customers send you correspondence to. Trading address canbe different to the company's registered address (`address`).
+	Address documentation: https://developer.sumup.com/tools/glossary/address
 	"""
 
     website: str | None = None
@@ -2795,6 +2807,7 @@ class Person(pydantic.BaseModel):
     address: Address | None = None
     """
 	The address of the individual.
+	Address documentation: https://developer.sumup.com/tools/glossary/address
 	"""
 
     birthdate: datetime.date | None = None
@@ -2813,6 +2826,9 @@ class Person(pydantic.BaseModel):
     citizenship: CountryCode | None = None
     """
 	The Alpha-2 ISO code of the country where the Person is a citizen.
+	Min length: 2
+	Max length: 2
+	Pattern: ^[A-Z]{2}$
 	"""
 
     country_of_residence: str | None = None
@@ -2862,6 +2878,7 @@ class Person(pydantic.BaseModel):
     phone_number: PhoneNumber | None = None
     """
 	The (mobile) phone number of the individual (used for verification) in [E.164](https://en.wikipedia.org/wiki/E.164) format.
+	Maxlength: 16
 	"""
 
     relationships: list[str] | None = None
