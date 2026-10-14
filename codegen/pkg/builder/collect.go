@@ -138,36 +138,41 @@ func (c *SchemaProxyCollection) collectSchemasInRequest(op *v3.Operation) {
 
 // Collect the schemas that are referenced by the given schemas
 func (c *SchemaProxyCollection) collectReferencedSchemas(schema *base.SchemaProxy) {
-	if schema == nil {
+	c.collectReferencedSchemasSeen(schema, make(map[*base.SchemaProxy]bool))
+}
+
+func (c *SchemaProxyCollection) collectReferencedSchemasSeen(schema *base.SchemaProxy, seen map[*base.SchemaProxy]bool) {
+	if schema == nil || seen[schema] {
 		return
 	}
 
+	seen[schema] = true
 	schemaDef := schema.Schema()
 
 	if slices.Contains(schemaDef.Type, "object") {
 		for _, prop := range schemaDef.Properties.FromOldest() {
-			c.collectReferencedSchemas(prop)
+			c.collectReferencedSchemasSeen(prop, seen)
 		}
 	}
 
 	if slices.Contains(schemaDef.Type, "array") && schemaDef.Items != nil {
-		c.collectReferencedSchemas(schemaDef.Items.A)
+		c.collectReferencedSchemasSeen(schemaDef.Items.A, seen)
 	}
 
 	if schemaDef.AdditionalProperties != nil && schemaDef.AdditionalProperties.IsA() {
-		c.collectReferencedSchemas(schemaDef.AdditionalProperties.A)
+		c.collectReferencedSchemasSeen(schemaDef.AdditionalProperties.A, seen)
 	}
 
 	for _, one := range schemaDef.AnyOf {
-		c.collectReferencedSchemas(one)
+		c.collectReferencedSchemasSeen(one, seen)
 	}
 
 	for _, one := range schemaDef.AllOf {
-		c.collectReferencedSchemas(one)
+		c.collectReferencedSchemasSeen(one, seen)
 	}
 
 	for _, one := range schemaDef.OneOf {
-		c.collectReferencedSchemas(one)
+		c.collectReferencedSchemasSeen(one, seen)
 	}
 
 	// append the schema itself last because we need schemas that it references
@@ -237,6 +242,9 @@ func collectSchemaReferences(schema *base.SchemaProxy, refs map[string]struct{})
 	if schema.GetReference() != "" {
 		if strings.HasPrefix(schema.GetReference(), "#/components/schemas/") {
 			ref := strings.TrimPrefix(schema.GetReference(), "#/components/schemas/")
+			if _, seen := refs[ref]; seen {
+				return
+			}
 			refs[ref] = struct{}{}
 		}
 	}

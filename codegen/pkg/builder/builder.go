@@ -81,6 +81,7 @@ func New(cfg Config, opts ...Option) *Builder {
 func (b *Builder) Load(spec *v3.Document) error {
 	b.start = time.Now()
 	b.spec = spec
+	normalizeSchemaAnnotations(spec)
 
 	b.collectPaths()
 	b.collectSchemas()
