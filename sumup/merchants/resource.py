@@ -24,6 +24,7 @@ from .._service import (
     serialize_request_data,
 )
 from ..types import (
+    Address,
     Attributes,
     BasePerson,
     Branding,
@@ -34,12 +35,15 @@ from ..types import (
     CompanyIdentifier,
     CompanyIdentifiers,
     CountryCode,
+    LegalType,
     ListPersonsResponseBody,
     Merchant,
     Meta,
+    Ownership,
     Person,
     PersonalIdentifier,
     PersonalIdentifiers,
+    PhoneNumber,
     Problem,
     Timestamps,
     Version,

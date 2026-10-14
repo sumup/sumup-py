@@ -457,7 +457,7 @@ func (b *Builder) convertToValidPyType(property string, r *base.SchemaProxy) str
 }
 
 func (b *Builder) getReferenceSchema(v *base.SchemaProxy) string {
-	if v.GoLow().IsReference() {
+	if v.IsReference() {
 		ref := strings.TrimPrefix(v.GetReference(), "#/components/schemas/")
 		if len(v.Schema().Enum) > 0 {
 			return strcase.ToCamel(stringx.MakeSingular(ref))
