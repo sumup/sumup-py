@@ -577,6 +577,7 @@ CardType = (
     typing.Literal[
         "ALELO",
         "AMEX",
+        "BANCOMAT",
         "CONECS",
         "CUP",
         "DINERS",
@@ -3960,7 +3961,7 @@ class ReaderPaymentRequestParams(pydantic.BaseModel):
 
     tip_amount: int | None = None
     """
-	Optional tip amount in minor units, added on top of total_amount.
+	Portion of total_amount that is a tip, in minor units.
 	"""
 
 
@@ -3977,10 +3978,7 @@ class ReaderPaymentRequestParamsDict(typing_extensions.TypedDict, total=False):
     affiliate: typing_extensions.NotRequired[ReaderPaymentRequestParamsAffiliateInput]
     tip_amount: typing_extensions.NotRequired[
         typing_extensions.Annotated[
-            int,
-            typing_extensions.Doc(
-                "Optional tip amount in minor units, added on top of total_amount."
-            ),
+            int, typing_extensions.Doc("Portion of total_amount that is a tip, in minor units.")
         ]
     ]
 

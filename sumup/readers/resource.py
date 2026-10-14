@@ -100,10 +100,7 @@ class CreateGoReaderCheckoutBodyInput(typing_extensions.TypedDict, total=False):
     affiliate: typing_extensions.NotRequired[CreateGoReaderCheckoutBodyAffiliateInput]
     tip_amount: typing_extensions.NotRequired[
         typing_extensions.Annotated[
-            int,
-            typing_extensions.Doc(
-                "Optional tip amount in minor units, added on top of total_amount."
-            ),
+            int, typing_extensions.Doc("Portion of total_amount that is a tip, in minor units.")
         ]
     ]
 
