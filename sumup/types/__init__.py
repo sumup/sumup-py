@@ -592,6 +592,7 @@ CardType = (
         "MAESTRO",
         "MASTERCARD",
         "PLUXEE",
+        "SUMUP",
         "SWILE",
         "TICKET",
         "UNKNOWN",
