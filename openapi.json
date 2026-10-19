@@ -11455,6 +11455,221 @@
     }
   },
   "webhooks": {
+    "checkouts.created": {
+      "post": {
+        "operationId": "CheckoutCreatedWebhook",
+        "tags": [
+          "Checkouts"
+        ],
+        "summary": "Checkout created",
+        "description": "Sent once when a checkout is first observed in the checkout snapshot stream, even if it is already paid, failed, or expired. The event timestamp is the original checkout creation time.",
+        "x-object": {
+          "$ref": "#/components/schemas/Checkout"
+        },
+        "x-object-type": "checkout",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/Event"
+              },
+              "examples": {
+                "created": {
+                  "value": {
+                    "id": "event_01ARZ3NDEKTSV4RRFFQ69G5FAV",
+                    "type": "checkouts.created",
+                    "created_at": "2026-10-15T12:00:00Z",
+                    "object": {
+                      "id": "e552de3b-1777-4c91-bdb8-756967678572",
+                      "type": "checkout",
+                      "url": "https://api.sumup.com/v0.1/checkouts/e552de3b-1777-4c91-bdb8-756967678572"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "2XX": {
+            "description": "Return any 2xx response to acknowledge successful delivery."
+          }
+        }
+      }
+    },
+    "checkouts.failed": {
+      "post": {
+        "operationId": "CheckoutFailedWebhook",
+        "tags": [
+          "Checkouts"
+        ],
+        "summary": "Checkout failed",
+        "description": "Sent once when a checkout is first observed with status FAILED. A failed checkout can subsequently be retried and paid. Later FAILED snapshots do not emit another failed event.",
+        "x-object": {
+          "$ref": "#/components/schemas/Checkout"
+        },
+        "x-object-type": "checkout",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/Event"
+              },
+              "examples": {
+                "failed": {
+                  "value": {
+                    "id": "event_01ARZ3NDEKTSV4RRFFQ69G5FAV",
+                    "type": "checkouts.failed",
+                    "created_at": "2026-10-15T12:00:00Z",
+                    "object": {
+                      "id": "e552de3b-1777-4c91-bdb8-756967678572",
+                      "type": "checkout",
+                      "url": "https://api.sumup.com/v0.1/checkouts/e552de3b-1777-4c91-bdb8-756967678572"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "2XX": {
+            "description": "Return any 2xx response to acknowledge successful delivery."
+          }
+        }
+      }
+    },
+    "checkouts.expired": {
+      "post": {
+        "operationId": "CheckoutExpiredWebhook",
+        "tags": [
+          "Checkouts"
+        ],
+        "summary": "Checkout expired",
+        "description": "Sent once when a checkout is first observed with status EXPIRED. Expiry or deactivation without an upstream snapshot cannot produce this event. Later EXPIRED snapshots do not emit another expired event.",
+        "x-object": {
+          "$ref": "#/components/schemas/Checkout"
+        },
+        "x-object-type": "checkout",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/Event"
+              },
+              "examples": {
+                "expired": {
+                  "value": {
+                    "id": "event_01ARZ3NDEKTSV4RRFFQ69G5FAV",
+                    "type": "checkouts.expired",
+                    "created_at": "2026-10-15T12:00:00Z",
+                    "object": {
+                      "id": "e552de3b-1777-4c91-bdb8-756967678572",
+                      "type": "checkout",
+                      "url": "https://api.sumup.com/v0.1/checkouts/e552de3b-1777-4c91-bdb8-756967678572"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "2XX": {
+            "description": "Return any 2xx response to acknowledge successful delivery."
+          }
+        }
+      }
+    },
+    "checkouts.updated": {
+      "post": {
+        "operationId": "CheckoutUpdatedWebhook",
+        "tags": [
+          "Checkouts"
+        ],
+        "summary": "Checkout updated",
+        "description": "Sent when a checkout snapshot is published, including creation and payment status updates. Fetch the checkout to inspect its current status. This is not a guarantee that every checkout mutation produces a notification.",
+        "x-object": {
+          "$ref": "#/components/schemas/Checkout"
+        },
+        "x-object-type": "checkout",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/Event"
+              },
+              "examples": {
+                "updated": {
+                  "value": {
+                    "id": "event_01ARZ3NDEKTSV4RRFFQ69G5FAV",
+                    "type": "checkouts.updated",
+                    "created_at": "2026-10-15T12:00:00Z",
+                    "object": {
+                      "id": "e552de3b-1777-4c91-bdb8-756967678572",
+                      "type": "checkout",
+                      "url": "https://api.sumup.com/v0.1/checkouts/e552de3b-1777-4c91-bdb8-756967678572"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "2XX": {
+            "description": "Return any 2xx response to acknowledge successful delivery."
+          }
+        }
+      }
+    },
+    "checkouts.paid": {
+      "post": {
+        "operationId": "CheckoutPaidWebhook",
+        "tags": [
+          "Checkouts"
+        ],
+        "summary": "Checkout paid",
+        "description": "Sent once when a checkout is first observed with status PAID. Later PAID snapshots do not emit another paid event. The timestamp is the snapshot update time, not necessarily the payment completion time.",
+        "x-object": {
+          "$ref": "#/components/schemas/Checkout"
+        },
+        "x-object-type": "checkout",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/Event"
+              },
+              "examples": {
+                "paid": {
+                  "value": {
+                    "id": "event_01ARZ3NDEKTSV4RRFFQ69G5FAV",
+                    "type": "checkouts.paid",
+                    "created_at": "2026-10-15T12:00:00Z",
+                    "object": {
+                      "id": "e552de3b-1777-4c91-bdb8-756967678572",
+                      "type": "checkout",
+                      "url": "https://api.sumup.com/v0.1/checkouts/e552de3b-1777-4c91-bdb8-756967678572"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "2XX": {
+            "description": "Return any 2xx response to acknowledge successful delivery."
+          }
+        }
+      }
+    },
     "readers.created": {
       "post": {
         "operationId": "ReaderCreatedWebhook",
