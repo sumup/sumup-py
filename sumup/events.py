@@ -29,10 +29,81 @@ from ._events import (
     verify_event_signature,
 )
 from .types import (
+    Checkout,
     Member,
     Reader,
     Role,
 )
+
+
+class CheckoutCreatedEvent(FetchableEvent[Checkout]):
+    """Sent once when a checkout is first observed in the checkout snapshot stream, even if it is already paid, failed, or expired. The event timestamp is the original checkout creation time.
+
+    The notification type is "checkouts.created". Use fetch_object() with
+    Sumup or await fetch_object_async() with AsyncSumup to retrieve the latest
+    Checkout. The notification itself contains a resource reference.
+    """
+
+    EVENT_TYPE: typing.ClassVar[str] = "checkouts.created"
+    type: typing.Literal["checkouts.created"] = "checkouts.created"
+    _object_type: typing.ClassVar[str] = "checkout"
+    _response_model: typing.ClassVar[builtins.type[pydantic.BaseModel]] = Checkout
+
+
+class CheckoutExpiredEvent(FetchableEvent[Checkout]):
+    """Sent once when a checkout is first observed with status EXPIRED. Expiry or deactivation without an upstream snapshot cannot produce this event. Later EXPIRED snapshots do not emit another expired event.
+
+    The notification type is "checkouts.expired". Use fetch_object() with
+    Sumup or await fetch_object_async() with AsyncSumup to retrieve the latest
+    Checkout. The notification itself contains a resource reference.
+    """
+
+    EVENT_TYPE: typing.ClassVar[str] = "checkouts.expired"
+    type: typing.Literal["checkouts.expired"] = "checkouts.expired"
+    _object_type: typing.ClassVar[str] = "checkout"
+    _response_model: typing.ClassVar[builtins.type[pydantic.BaseModel]] = Checkout
+
+
+class CheckoutFailedEvent(FetchableEvent[Checkout]):
+    """Sent once when a checkout is first observed with status FAILED. A failed checkout can subsequently be retried and paid. Later FAILED snapshots do not emit another failed event.
+
+    The notification type is "checkouts.failed". Use fetch_object() with
+    Sumup or await fetch_object_async() with AsyncSumup to retrieve the latest
+    Checkout. The notification itself contains a resource reference.
+    """
+
+    EVENT_TYPE: typing.ClassVar[str] = "checkouts.failed"
+    type: typing.Literal["checkouts.failed"] = "checkouts.failed"
+    _object_type: typing.ClassVar[str] = "checkout"
+    _response_model: typing.ClassVar[builtins.type[pydantic.BaseModel]] = Checkout
+
+
+class CheckoutPaidEvent(FetchableEvent[Checkout]):
+    """Sent once when a checkout is first observed with status PAID. Later PAID snapshots do not emit another paid event. The timestamp is the snapshot update time, not necessarily the payment completion time.
+
+    The notification type is "checkouts.paid". Use fetch_object() with
+    Sumup or await fetch_object_async() with AsyncSumup to retrieve the latest
+    Checkout. The notification itself contains a resource reference.
+    """
+
+    EVENT_TYPE: typing.ClassVar[str] = "checkouts.paid"
+    type: typing.Literal["checkouts.paid"] = "checkouts.paid"
+    _object_type: typing.ClassVar[str] = "checkout"
+    _response_model: typing.ClassVar[builtins.type[pydantic.BaseModel]] = Checkout
+
+
+class CheckoutUpdatedEvent(FetchableEvent[Checkout]):
+    """Sent when a checkout snapshot is published, including creation and payment status updates. Fetch the checkout to inspect its current status. This is not a guarantee that every checkout mutation produces a notification.
+
+    The notification type is "checkouts.updated". Use fetch_object() with
+    Sumup or await fetch_object_async() with AsyncSumup to retrieve the latest
+    Checkout. The notification itself contains a resource reference.
+    """
+
+    EVENT_TYPE: typing.ClassVar[str] = "checkouts.updated"
+    type: typing.Literal["checkouts.updated"] = "checkouts.updated"
+    _object_type: typing.ClassVar[str] = "checkout"
+    _response_model: typing.ClassVar[builtins.type[pydantic.BaseModel]] = Checkout
 
 
 class MemberCreatedEvent(FetchableEvent[Member]):
@@ -148,7 +219,12 @@ class RoleUpdatedEvent(FetchableEvent[Role]):
 
 
 KnownEventNotification = (
-    MemberCreatedEvent
+    CheckoutCreatedEvent
+    | CheckoutExpiredEvent
+    | CheckoutFailedEvent
+    | CheckoutPaidEvent
+    | CheckoutUpdatedEvent
+    | MemberCreatedEvent
     | MemberDeletedEvent
     | MemberUpdatedEvent
     | ReaderCreatedEvent
@@ -160,6 +236,11 @@ KnownEventNotification = (
 
 
 _EVENT_MODELS: dict[str, type[EventNotification]] = {
+    "checkouts.created": CheckoutCreatedEvent,
+    "checkouts.expired": CheckoutExpiredEvent,
+    "checkouts.failed": CheckoutFailedEvent,
+    "checkouts.paid": CheckoutPaidEvent,
+    "checkouts.updated": CheckoutUpdatedEvent,
     "members.created": MemberCreatedEvent,
     "members.deleted": MemberDeletedEvent,
     "members.updated": MemberUpdatedEvent,
@@ -171,6 +252,41 @@ _EVENT_MODELS: dict[str, type[EventNotification]] = {
 }
 
 
+_CheckoutCreatedEventCallback = typing.TypeVar(
+    "_CheckoutCreatedEventCallback", bound=typing.Callable[[CheckoutCreatedEvent], None]
+)
+_AsyncCheckoutCreatedEventCallback = typing.TypeVar(
+    "_AsyncCheckoutCreatedEventCallback",
+    bound=typing.Callable[[CheckoutCreatedEvent], typing.Awaitable[None]],
+)
+_CheckoutExpiredEventCallback = typing.TypeVar(
+    "_CheckoutExpiredEventCallback", bound=typing.Callable[[CheckoutExpiredEvent], None]
+)
+_AsyncCheckoutExpiredEventCallback = typing.TypeVar(
+    "_AsyncCheckoutExpiredEventCallback",
+    bound=typing.Callable[[CheckoutExpiredEvent], typing.Awaitable[None]],
+)
+_CheckoutFailedEventCallback = typing.TypeVar(
+    "_CheckoutFailedEventCallback", bound=typing.Callable[[CheckoutFailedEvent], None]
+)
+_AsyncCheckoutFailedEventCallback = typing.TypeVar(
+    "_AsyncCheckoutFailedEventCallback",
+    bound=typing.Callable[[CheckoutFailedEvent], typing.Awaitable[None]],
+)
+_CheckoutPaidEventCallback = typing.TypeVar(
+    "_CheckoutPaidEventCallback", bound=typing.Callable[[CheckoutPaidEvent], None]
+)
+_AsyncCheckoutPaidEventCallback = typing.TypeVar(
+    "_AsyncCheckoutPaidEventCallback",
+    bound=typing.Callable[[CheckoutPaidEvent], typing.Awaitable[None]],
+)
+_CheckoutUpdatedEventCallback = typing.TypeVar(
+    "_CheckoutUpdatedEventCallback", bound=typing.Callable[[CheckoutUpdatedEvent], None]
+)
+_AsyncCheckoutUpdatedEventCallback = typing.TypeVar(
+    "_AsyncCheckoutUpdatedEventCallback",
+    bound=typing.Callable[[CheckoutUpdatedEvent], typing.Awaitable[None]],
+)
 _MemberCreatedEventCallback = typing.TypeVar(
     "_MemberCreatedEventCallback", bound=typing.Callable[[MemberCreatedEvent], None]
 )
@@ -249,6 +365,84 @@ class EventsHandler(_SyncEventsHandler):
     may be repeated; make side effects idempotent and synchronize shared state if
     serving concurrent requests. The caller owns request-body limits.
     """
+
+    def on_checkout_created(
+        self, callback: _CheckoutCreatedEventCallback
+    ) -> _CheckoutCreatedEventCallback:
+        """Register a callback for checkouts.created and return it unchanged.
+
+        Use @handler.on_checkout_created or handler.on_checkout_created(callback).
+        The callback receives one CheckoutCreatedEvent and returns None on success;
+        raise an exception to signal processing failure.
+
+        Raises:
+            EventHandlerRegistrationError: The callback is not callable, or this
+                event type already has a registered callback.
+        """
+        self._register("checkouts.created", typing.cast(_ErasedCallback, callback))
+        return callback
+
+    def on_checkout_expired(
+        self, callback: _CheckoutExpiredEventCallback
+    ) -> _CheckoutExpiredEventCallback:
+        """Register a callback for checkouts.expired and return it unchanged.
+
+        Use @handler.on_checkout_expired or handler.on_checkout_expired(callback).
+        The callback receives one CheckoutExpiredEvent and returns None on success;
+        raise an exception to signal processing failure.
+
+        Raises:
+            EventHandlerRegistrationError: The callback is not callable, or this
+                event type already has a registered callback.
+        """
+        self._register("checkouts.expired", typing.cast(_ErasedCallback, callback))
+        return callback
+
+    def on_checkout_failed(
+        self, callback: _CheckoutFailedEventCallback
+    ) -> _CheckoutFailedEventCallback:
+        """Register a callback for checkouts.failed and return it unchanged.
+
+        Use @handler.on_checkout_failed or handler.on_checkout_failed(callback).
+        The callback receives one CheckoutFailedEvent and returns None on success;
+        raise an exception to signal processing failure.
+
+        Raises:
+            EventHandlerRegistrationError: The callback is not callable, or this
+                event type already has a registered callback.
+        """
+        self._register("checkouts.failed", typing.cast(_ErasedCallback, callback))
+        return callback
+
+    def on_checkout_paid(self, callback: _CheckoutPaidEventCallback) -> _CheckoutPaidEventCallback:
+        """Register a callback for checkouts.paid and return it unchanged.
+
+        Use @handler.on_checkout_paid or handler.on_checkout_paid(callback).
+        The callback receives one CheckoutPaidEvent and returns None on success;
+        raise an exception to signal processing failure.
+
+        Raises:
+            EventHandlerRegistrationError: The callback is not callable, or this
+                event type already has a registered callback.
+        """
+        self._register("checkouts.paid", typing.cast(_ErasedCallback, callback))
+        return callback
+
+    def on_checkout_updated(
+        self, callback: _CheckoutUpdatedEventCallback
+    ) -> _CheckoutUpdatedEventCallback:
+        """Register a callback for checkouts.updated and return it unchanged.
+
+        Use @handler.on_checkout_updated or handler.on_checkout_updated(callback).
+        The callback receives one CheckoutUpdatedEvent and returns None on success;
+        raise an exception to signal processing failure.
+
+        Raises:
+            EventHandlerRegistrationError: The callback is not callable, or this
+                event type already has a registered callback.
+        """
+        self._register("checkouts.updated", typing.cast(_ErasedCallback, callback))
+        return callback
 
     def on_member_created(
         self, callback: _MemberCreatedEventCallback
@@ -394,6 +588,86 @@ class AsyncEventsHandler(_AsyncEventsHandler):
     in your HTTP server.
     """
 
+    def on_checkout_created(
+        self, callback: _AsyncCheckoutCreatedEventCallback
+    ) -> _AsyncCheckoutCreatedEventCallback:
+        """Register an async callback for checkouts.created and return it unchanged.
+
+        Use @handler.on_checkout_created or handler.on_checkout_created(callback).
+        The callback receives one CheckoutCreatedEvent and is awaited by handle().
+        Return None on success or raise an exception to signal processing failure.
+
+        Raises:
+            EventHandlerRegistrationError: The callback is not callable, or this
+                event type already has a registered callback.
+        """
+        self._register("checkouts.created", typing.cast(_ErasedCallback, callback))
+        return callback
+
+    def on_checkout_expired(
+        self, callback: _AsyncCheckoutExpiredEventCallback
+    ) -> _AsyncCheckoutExpiredEventCallback:
+        """Register an async callback for checkouts.expired and return it unchanged.
+
+        Use @handler.on_checkout_expired or handler.on_checkout_expired(callback).
+        The callback receives one CheckoutExpiredEvent and is awaited by handle().
+        Return None on success or raise an exception to signal processing failure.
+
+        Raises:
+            EventHandlerRegistrationError: The callback is not callable, or this
+                event type already has a registered callback.
+        """
+        self._register("checkouts.expired", typing.cast(_ErasedCallback, callback))
+        return callback
+
+    def on_checkout_failed(
+        self, callback: _AsyncCheckoutFailedEventCallback
+    ) -> _AsyncCheckoutFailedEventCallback:
+        """Register an async callback for checkouts.failed and return it unchanged.
+
+        Use @handler.on_checkout_failed or handler.on_checkout_failed(callback).
+        The callback receives one CheckoutFailedEvent and is awaited by handle().
+        Return None on success or raise an exception to signal processing failure.
+
+        Raises:
+            EventHandlerRegistrationError: The callback is not callable, or this
+                event type already has a registered callback.
+        """
+        self._register("checkouts.failed", typing.cast(_ErasedCallback, callback))
+        return callback
+
+    def on_checkout_paid(
+        self, callback: _AsyncCheckoutPaidEventCallback
+    ) -> _AsyncCheckoutPaidEventCallback:
+        """Register an async callback for checkouts.paid and return it unchanged.
+
+        Use @handler.on_checkout_paid or handler.on_checkout_paid(callback).
+        The callback receives one CheckoutPaidEvent and is awaited by handle().
+        Return None on success or raise an exception to signal processing failure.
+
+        Raises:
+            EventHandlerRegistrationError: The callback is not callable, or this
+                event type already has a registered callback.
+        """
+        self._register("checkouts.paid", typing.cast(_ErasedCallback, callback))
+        return callback
+
+    def on_checkout_updated(
+        self, callback: _AsyncCheckoutUpdatedEventCallback
+    ) -> _AsyncCheckoutUpdatedEventCallback:
+        """Register an async callback for checkouts.updated and return it unchanged.
+
+        Use @handler.on_checkout_updated or handler.on_checkout_updated(callback).
+        The callback receives one CheckoutUpdatedEvent and is awaited by handle().
+        Return None on success or raise an exception to signal processing failure.
+
+        Raises:
+            EventHandlerRegistrationError: The callback is not callable, or this
+                event type already has a registered callback.
+        """
+        self._register("checkouts.updated", typing.cast(_ErasedCallback, callback))
+        return callback
+
     def on_member_created(
         self, callback: _AsyncMemberCreatedEventCallback
     ) -> _AsyncMemberCreatedEventCallback:
@@ -527,6 +801,11 @@ __all__ = [
     "SIGNATURE_HEADER",
     "AsyncEventCallback",
     "AsyncEventsHandler",
+    "CheckoutCreatedEvent",
+    "CheckoutExpiredEvent",
+    "CheckoutFailedEvent",
+    "CheckoutPaidEvent",
+    "CheckoutUpdatedEvent",
     "EventBody",
     "EventCallback",
     "EventCallbackError",
