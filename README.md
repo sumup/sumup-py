@@ -57,8 +57,13 @@ asyncio.run(main())
 ```
 
 Context managers close the client when the block exits, including when an exception occurs.
-For long-running applications, reuse a client and call `client.close()` or
-`await client.aclose()` during shutdown.
+For long-running applications, reuse a client across requests to benefit from connection
+pooling. During shutdown, wait for outstanding requests and event handlers to finish, then
+call `client.close()` or `await client.aclose()`.
+
+Closing a client is permanent: it cannot send more requests or be reopened. Resources and
+event handlers created from that client share its connections, so keep the client open
+while they are in use. Create a new client if you need to make requests after closing it.
 
 ### Creating a Checkout
 
