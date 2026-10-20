@@ -52,4 +52,4 @@ if __name__ == "__main__":
     try:
         app.run(port=8080)
     finally:
-        client._client.close()
+        client.close()

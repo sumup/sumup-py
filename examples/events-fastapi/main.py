@@ -27,8 +27,10 @@ client = AsyncSumup(api_key=os.environ["SUMUP_API_KEY"])
 
 @asynccontextmanager
 async def lifespan(_app: FastAPI):
-    yield
-    await client._client.aclose()
+    try:
+        yield
+    finally:
+        await client.aclose()
 
 
 app = FastAPI(lifespan=lifespan)

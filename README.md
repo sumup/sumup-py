@@ -34,8 +34,6 @@ import os
 from sumup import Sumup
 
 client = Sumup(api_key="sup_sk_MvxmLOl0...")
-
-# Get merchant profile
 merchant = client.merchants.get(merchant_code=os.environ["SUMUP_MERCHANT_CODE"])
 print(f"Merchant: {merchant.merchant_code}")
 ```
@@ -51,14 +49,34 @@ from sumup import AsyncSumup
 
 async def main():
     client = AsyncSumup(api_key="sup_sk_MvxmLOl0...")
-
-    # Get merchant profile
     merchant = await client.merchants.get(merchant_code=os.environ["SUMUP_MERCHANT_CODE"])
     print(f"Merchant: {merchant.merchant_code}")
 
 
 asyncio.run(main())
 ```
+
+### Client Cleanup
+
+Use clients directly as shown above, or use a context manager to close connections
+automatically when the block exits:
+
+```python
+with Sumup(api_key="sup_sk_MvxmLOl0...") as client:
+    merchant = client.merchants.get(merchant_code=os.environ["SUMUP_MERCHANT_CODE"])
+```
+
+For async code, use `async with`:
+
+```python
+async def main():
+    async with AsyncSumup(api_key="sup_sk_MvxmLOl0...") as client:
+        merchant = await client.merchants.get(merchant_code=os.environ["SUMUP_MERCHANT_CODE"])
+```
+
+For long-running applications, reuse a client across requests and call `client.close()`
+or `await client.aclose()` during shutdown, after outstanding work finishes.
+A closed client cannot be reused.
 
 ### Creating a Checkout
 
