@@ -33,9 +33,9 @@ import os
 
 from sumup import Sumup
 
-with Sumup(api_key="sup_sk_MvxmLOl0...") as client:
-    merchant = client.merchants.get(merchant_code=os.environ["SUMUP_MERCHANT_CODE"])
-    print(f"Merchant: {merchant.merchant_code}")
+client = Sumup(api_key="sup_sk_MvxmLOl0...")
+merchant = client.merchants.get(merchant_code=os.environ["SUMUP_MERCHANT_CODE"])
+print(f"Merchant: {merchant.merchant_code}")
 ```
 
 ### Async Client
@@ -48,22 +48,35 @@ from sumup import AsyncSumup
 
 
 async def main():
-    async with AsyncSumup(api_key="sup_sk_MvxmLOl0...") as client:
-        merchant = await client.merchants.get(merchant_code=os.environ["SUMUP_MERCHANT_CODE"])
-        print(f"Merchant: {merchant.merchant_code}")
+    client = AsyncSumup(api_key="sup_sk_MvxmLOl0...")
+    merchant = await client.merchants.get(merchant_code=os.environ["SUMUP_MERCHANT_CODE"])
+    print(f"Merchant: {merchant.merchant_code}")
 
 
 asyncio.run(main())
 ```
 
-Context managers close the client when the block exits, including when an exception occurs.
-For long-running applications, reuse a client across requests to benefit from connection
-pooling. During shutdown, wait for outstanding requests and event handlers to finish, then
-call `client.close()` or `await client.aclose()`.
+### Client Cleanup
 
-Closing a client is permanent: it cannot send more requests or be reopened. Resources and
-event handlers created from that client share its connections, so keep the client open
-while they are in use. Create a new client if you need to make requests after closing it.
+Use clients directly as shown above, or use a context manager to close connections
+automatically when the block exits:
+
+```python
+with Sumup(api_key="sup_sk_MvxmLOl0...") as client:
+    merchant = client.merchants.get(merchant_code=os.environ["SUMUP_MERCHANT_CODE"])
+```
+
+For async code, use `async with`:
+
+```python
+async def main():
+    async with AsyncSumup(api_key="sup_sk_MvxmLOl0...") as client:
+        merchant = await client.merchants.get(merchant_code=os.environ["SUMUP_MERCHANT_CODE"])
+```
+
+For long-running applications, reuse a client across requests and call `client.close()`
+or `await client.aclose()` during shutdown, after outstanding work finishes.
+A closed client cannot be reused.
 
 ### Creating a Checkout
 
