@@ -33,11 +33,9 @@ import os
 
 from sumup import Sumup
 
-client = Sumup(api_key="sup_sk_MvxmLOl0...")
-
-# Get merchant profile
-merchant = client.merchants.get(merchant_code=os.environ["SUMUP_MERCHANT_CODE"])
-print(f"Merchant: {merchant.merchant_code}")
+with Sumup(api_key="sup_sk_MvxmLOl0...") as client:
+    merchant = client.merchants.get(merchant_code=os.environ["SUMUP_MERCHANT_CODE"])
+    print(f"Merchant: {merchant.merchant_code}")
 ```
 
 ### Async Client
@@ -50,15 +48,17 @@ from sumup import AsyncSumup
 
 
 async def main():
-    client = AsyncSumup(api_key="sup_sk_MvxmLOl0...")
-
-    # Get merchant profile
-    merchant = await client.merchants.get(merchant_code=os.environ["SUMUP_MERCHANT_CODE"])
-    print(f"Merchant: {merchant.merchant_code}")
+    async with AsyncSumup(api_key="sup_sk_MvxmLOl0...") as client:
+        merchant = await client.merchants.get(merchant_code=os.environ["SUMUP_MERCHANT_CODE"])
+        print(f"Merchant: {merchant.merchant_code}")
 
 
 asyncio.run(main())
 ```
+
+Context managers close the client when the block exits, including when an exception occurs.
+For long-running applications, reuse a client and call `client.close()` or
+`await client.aclose()` during shutdown.
 
 ### Creating a Checkout
 
