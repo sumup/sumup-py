@@ -19,7 +19,7 @@ func TestMethodDocIncludesRaisesForDocumentedErrors(t *testing.T) {
 		{Code: 401, IsErr: true, ErrDescription: "The request is not authorized."},
 	})
 
-	if !strings.Contains(doc, "Raises:\n    APIError:") {
+	if !strings.Contains(doc, "    APIError:") {
 		t.Fatalf("expected Raises section in docstring, got %q", doc)
 	}
 
@@ -27,7 +27,7 @@ func TestMethodDocIncludesRaisesForDocumentedErrors(t *testing.T) {
 		t.Fatalf("expected 400 response in Raises section, got %q", doc)
 	}
 
-	if !strings.Contains(doc, "401: The request is not authorized.") {
+	if !strings.Contains(doc, "401: The request is not authorized. (raises AuthenticationError)") {
 		t.Fatalf("expected 401 response in Raises section, got %q", doc)
 	}
 
@@ -46,7 +46,7 @@ func TestMethodDocIncludesRaisesForUnexpectedResponsesOnly(t *testing.T) {
 		{Code: 204},
 	})
 
-	if !strings.Contains(doc, "Raises:\n    APIError: Raised when the API returns an unexpected response.") {
+	if !strings.Contains(doc, "    APIError: Raised when the API returns an unexpected response.") {
 		t.Fatalf("expected fallback Raises section in docstring, got %q", doc)
 	}
 }

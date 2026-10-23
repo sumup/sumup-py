@@ -31,6 +31,7 @@ from ..types import (
 from .resource import (
     AsyncTransactionsResource,
     ListTransactionsV21200Response,
+    RefundTransaction201Response,
     TransactionsResource,
 )
 
@@ -52,6 +53,7 @@ __all__ = [
     "PaymentType",
     "Problem",
     "Product",
+    "RefundTransaction201Response",
     "TransactionBase",
     "TransactionCheckoutInfo",
     "TransactionEvent",

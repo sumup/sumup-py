@@ -123,23 +123,25 @@ func parameterFieldName(name string) string {
 
 // pathsToResponseTypes generates response types for operations. This is responsible only for inlined
 // schemas that are specific to the operation itself and are not references.
-func (b *Builder) pathsToResponseTypes(paths *v3.Paths) []Writable {
+func (b *Builder) pathsToResponseTypes(paths *v3.Paths) (successTypes, errorTypes []Writable) {
 	if paths == nil {
-		return nil
+		return nil, nil
 	}
 
-	responseTypes := make([]Writable, 0)
 	for _, pathSpec := range paths.PathItems.FromOldest() {
 		for _, opSpec := range pathSpec.GetOperations().FromOldest() {
 			operationName := strcase.ToCamel(opSpec.OperationId)
 
 			var successResponses []string
 			for code, response := range opSpec.Responses.Codes.FromOldest() {
-				isSuccess := strings.HasPrefix(code, "2")
-				if !isSuccess {
+				if !strings.HasPrefix(code, "2") {
+					for _, format := range b.errorResponseFormats(operationName, response, code) {
+						if !format.content.Schema.IsReference() {
+							errorTypes = append(errorTypes, b.generateSchemaComponents(format.Type, format.content.Schema.Schema())...)
+						}
+					}
 					continue
 				}
-
 				if response.Content == nil {
 					continue
 				}
@@ -163,20 +165,17 @@ func (b *Builder) pathsToResponseTypes(paths *v3.Paths) []Writable {
 				name := b.getResponseName(operationName, code, content)
 
 				objects := b.generateSchemaComponents(name, content.Schema.Schema())
-				responseTypes = append(responseTypes, objects...)
-
-				if strings.HasPrefix(code, "2") {
-					if resp, ok := objects[len(objects)-1].(*ClassDeclaration); ok {
-						successResponses = append(successResponses, resp.Name)
-					} else if resp, ok := objects[len(objects)-1].(*TypeAlias); ok {
-						successResponses = append(successResponses, resp.Name)
-					}
+				successTypes = append(successTypes, objects...)
+				if resp, ok := objects[len(objects)-1].(*ClassDeclaration); ok {
+					successResponses = append(successResponses, resp.Name)
+				} else if resp, ok := objects[len(objects)-1].(*TypeAlias); ok {
+					successResponses = append(successResponses, resp.Name)
 				}
 			}
 
 			// if there are multiple success responses, we need to create a oneOf type
 			if len(successResponses) > 1 {
-				responseTypes = append(responseTypes, &OneOfDeclaration{
+				successTypes = append(successTypes, &OneOfDeclaration{
 					Name:    operationName + "Response",
 					Options: successResponses,
 				})
@@ -184,7 +183,7 @@ func (b *Builder) pathsToResponseTypes(paths *v3.Paths) []Writable {
 		}
 	}
 
-	return responseTypes
+	return successTypes, errorTypes
 }
 
 // generateSchemaComponents generates types from schema reference.

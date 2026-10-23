@@ -3,6 +3,7 @@ from ..types import (
     AddressLegacy,
     CardType,
     Customer,
+    CustomerValidationError,
     Error,
     ErrorExtended,
     ErrorForbidden,
@@ -13,18 +14,23 @@ from ..types import (
 )
 from .resource import (
     AsyncCustomersResource,
+    CreateCustomer400Response,
     CustomersResource,
+    ListPaymentInstruments200Response,
 )
 
 __all__ = [
     "AddressLegacy",
     "AsyncCustomersResource",
     "CardType",
+    "CreateCustomer400Response",
     "Customer",
+    "CustomerValidationError",
     "CustomersResource",
     "Error",
     "ErrorExtended",
     "ErrorForbidden",
+    "ListPaymentInstruments200Response",
     "MandateResponse",
     "PaymentInstrumentResponse",
     "PersonalDetails",

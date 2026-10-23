@@ -79,10 +79,12 @@ type EnumDeclaration[E cmp.Ordered] struct {
 }
 
 type Response struct {
-	IsErr          bool
-	IsDefault      bool
-	IsUnexpected   bool
-	Type           string
+	IsErr        bool
+	IsDefault    bool
+	IsUnexpected bool
+	Type         string
+	// Formats selects the parser by media type when a status has multiple formats.
+	Formats        []errorResponseFormat
 	Code           int
 	ErrDescription string
 }
@@ -97,6 +99,10 @@ type TypeAlias struct {
 	// RequestOnly marks request-only helper types that should only emit input aliases.
 	RequestOnly   bool
 	GenerateInput bool
+}
+
+func (ta *TypeAlias) TypeName() string {
+	return ta.Name
 }
 
 func (ta *TypeAlias) String() string {

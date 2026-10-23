@@ -78,6 +78,72 @@ For long-running applications, reuse a client across requests and call `client.c
 or `await client.aclose()` during shutdown, after outstanding work finishes.
 A closed client cannot be reused.
 
+### Handling errors
+
+Catch a specific error when you need to handle a particular failure, or catch
+`APIError` to handle any API response, connection, or timeout error.
+
+```python
+from sumup import APIError, Sumup
+from sumup.errors import APIConnectionError, AuthenticationError, RateLimitError
+
+with Sumup() as client:
+    try:
+        checkout = client.checkouts.get("your-checkout-id")
+    except AuthenticationError:
+        print("Check your API credentials.")
+    except RateLimitError:
+        print("Too many requests. Try again later.")
+    except APIConnectionError as error:
+        print("Connection problem:", error)
+    except APIError as error:
+        print(error)  # For example: HTTP 502: Unexpected response
+```
+
+Import exceptions from `sumup.errors`. HTTP errors inherit from `APIStatusError`
+and use the same exception types across endpoints, regardless of the response format.
+Printing an error shows the HTTP status and what went wrong.
+
+| HTTP status | Exception |
+| --- | --- |
+| 400 | `BadRequestError` |
+| 401 | `AuthenticationError` |
+| 403 | `PermissionDeniedError` |
+| 404 | `NotFoundError` |
+| 409 | `ConflictError` |
+| 422 | `UnprocessableEntityError` |
+| 429 | `RateLimitError` |
+| 500–599 | `InternalServerError` |
+| Other 4xx or 5xx | `APIStatusError` |
+
+For HTTP errors, `error.status` is the status code and `error.body` holds the error
+details. Documented responses use models from `sumup.types`, including lists of
+validation errors. Other bodies remain decoded JSON or text. For example:
+
+```python
+from sumup import Sumup
+from sumup.errors import APIStatusError
+from sumup.types import Problem
+
+with Sumup() as client:
+    try:
+        checkout = client.checkouts.get("your-checkout-id")
+    except APIStatusError as error:
+        if isinstance(error.body, Problem):
+            print(error.body.title, error.body.detail)
+        else:
+            print(error)
+```
+
+Use `error.response.headers` or `error.response.text` to inspect the original HTTP
+response. Unexpected responses outside the 4xx and 5xx ranges raise `APIError`.
+
+Connection failures raise `APIConnectionError`. Timeouts raise `APITimeoutError`,
+which also inherits from `APIConnectionError`. Both provide `error.request` and keep
+the original exception in `error.__cause__`; no HTTP response is available.
+
+Use the same `try`/`except` pattern with `AsyncSumup` and when fetching an event's object.
+
 ### Creating a Checkout
 
 ```python

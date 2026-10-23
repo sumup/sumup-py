@@ -13,7 +13,7 @@ import httpx
 import pydantic
 import typing_extensions
 
-from .._exceptions import APIError
+from .._exceptions import APIError, _wrap_request_errors
 from .._service import (
     NOT_GIVEN,
     AsyncResource,
@@ -76,9 +76,11 @@ class MembershipsResource(Resource):
 
 
         Raises:
+            APITimeoutError: The request timed out.
+            APIConnectionError: The request failed because of a connection error.
             APIError: Raised when the API returns one of the documented error responses:
-                400: Invalid query parameter combination.
-                401: Authentication failed or missing required scope.
+                400: Invalid query parameter combination. (raises BadRequestError)
+                401: Authentication failed or missing required scope. (raises AuthenticationError)
                 Unexpected response statuses also raise this exception.
         """
         query_data: dict[str, typing.Any] = {}
@@ -108,25 +110,24 @@ class MembershipsResource(Resource):
         if not isinstance(roles, NotGivenType) and roles is not None:
             query_data["roles"] = list(roles)
 
-        resp = self._client.get(
-            f"/v0.1/memberships",
-            params=serialize_query_params(query_data) if query_data else None,
-            headers=headers,
-        )
+        with _wrap_request_errors():
+            resp = self._client.get(
+                f"/v0.1/memberships",
+                params=serialize_query_params(query_data) if query_data else None,
+                headers=headers,
+            )
         if resp.status_code == 200:
             return pydantic.TypeAdapter(ListMemberships200Response).validate_python(resp.json())
         elif resp.status_code == 400:
-            raise APIError(
-                "Invalid query parameter combination.", status=resp.status_code, body=resp.text
+            raise APIError.from_response(
+                "Invalid query parameter combination.", resp, body_type=Problem
             )
         elif resp.status_code == 401:
-            raise APIError(
-                "Authentication failed or missing required scope.",
-                status=resp.status_code,
-                body=resp.text,
+            raise APIError.from_response(
+                "Authentication failed or missing required scope.", resp, body_type=Problem
             )
         else:
-            raise APIError(f"Unexpected response", status=resp.status_code, body=resp.text)
+            raise APIError.from_response("Unexpected response", resp)
 
 
 class AsyncMembershipsResource(AsyncResource):
@@ -158,9 +159,11 @@ class AsyncMembershipsResource(AsyncResource):
 
 
         Raises:
+            APITimeoutError: The request timed out.
+            APIConnectionError: The request failed because of a connection error.
             APIError: Raised when the API returns one of the documented error responses:
-                400: Invalid query parameter combination.
-                401: Authentication failed or missing required scope.
+                400: Invalid query parameter combination. (raises BadRequestError)
+                401: Authentication failed or missing required scope. (raises AuthenticationError)
                 Unexpected response statuses also raise this exception.
         """
         query_data: dict[str, typing.Any] = {}
@@ -190,22 +193,21 @@ class AsyncMembershipsResource(AsyncResource):
         if not isinstance(roles, NotGivenType) and roles is not None:
             query_data["roles"] = list(roles)
 
-        resp = await self._client.get(
-            f"/v0.1/memberships",
-            params=serialize_query_params(query_data) if query_data else None,
-            headers=headers,
-        )
+        with _wrap_request_errors():
+            resp = await self._client.get(
+                f"/v0.1/memberships",
+                params=serialize_query_params(query_data) if query_data else None,
+                headers=headers,
+            )
         if resp.status_code == 200:
             return pydantic.TypeAdapter(ListMemberships200Response).validate_python(resp.json())
         elif resp.status_code == 400:
-            raise APIError(
-                "Invalid query parameter combination.", status=resp.status_code, body=resp.text
+            raise APIError.from_response(
+                "Invalid query parameter combination.", resp, body_type=Problem
             )
         elif resp.status_code == 401:
-            raise APIError(
-                "Authentication failed or missing required scope.",
-                status=resp.status_code,
-                body=resp.text,
+            raise APIError.from_response(
+                "Authentication failed or missing required scope.", resp, body_type=Problem
             )
         else:
-            raise APIError(f"Unexpected response", status=resp.status_code, body=resp.text)
+            raise APIError.from_response("Unexpected response", resp)
