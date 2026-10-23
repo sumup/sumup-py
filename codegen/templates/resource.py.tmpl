@@ -7,7 +7,7 @@
 {{- end }}
 from __future__ import annotations
 from .._service import Resource, AsyncResource, HeaderTypes, NotGivenType, NOT_GIVEN, serialize_query_params, serialize_request_data
-from .._exceptions import APIError
+from .._exceptions import APIError, _wrap_request_errors
 {{- if .UsesSecret }}
 from .._secret import Secret
 {{- end }}
@@ -53,20 +53,21 @@ class {{.Service}}Resource(Resource):
 {{ indent 2 .QueryInitString }}
 
 {{- end }}
-		resp = self._client.{{.Method}}({{.Path}},
+		with _wrap_request_errors():
+			resp = self._client.{{.Method}}({{.Path}},
 {{- if .HasBody }}
-			json=serialize_request_data({{- if .HasFlattenedBody }}body_data{{- else }}body{{- end }}),
+				json=serialize_request_data({{- if .HasFlattenedBody }}body_data{{- else }}body{{- end }}),
 {{- end }}
 {{- if .QueryFields }}
-			params=serialize_query_params(query_data) if query_data else None,
+				params=serialize_query_params(query_data) if query_data else None,
 {{- end }}
-			headers=headers,
-		)
+				headers=headers,
+			)
 {{- range $i, $res := .Responses }}
 	{{- if eq $i 0 }}
 		if resp.status_code == {{ .Code }}:
 		{{- if .IsErr }}
-			raise APIError("{{ .ErrDescription }}", status=resp.status_code, body=resp.text)
+{{ indent 3 .ErrorStatement }}
 		{{- else if .Type }}
 			return pydantic.TypeAdapter({{ .Type }}).validate_python(resp.json())
 		{{- else }}
@@ -75,7 +76,7 @@ class {{.Service}}Resource(Resource):
 	{{- else }}
 		elif resp.status_code == {{ .Code }}:
 		{{- if .IsErr }}
-			raise APIError("{{ .ErrDescription }}", status=resp.status_code, body=resp.text)
+{{ indent 3 .ErrorStatement }}
 		{{- else if .Type }}
 			return pydantic.TypeAdapter({{ .Type }}).validate_python(resp.json())
 		{{- else }}
@@ -84,7 +85,7 @@ class {{.Service}}Resource(Resource):
 	{{- end }}
 {{- end }}
 		else:
-			raise APIError(f"Unexpected response", status=resp.status_code, body=resp.text)
+			raise APIError.from_response("Unexpected response", resp)
 {{end}}
 
 class Async{{.Service}}Resource(AsyncResource):
@@ -111,20 +112,21 @@ class Async{{.Service}}Resource(AsyncResource):
 {{ indent 2 .QueryInitString }}
 
 {{- end }}
-		resp = await self._client.{{.Method}}({{.Path}},
+		with _wrap_request_errors():
+			resp = await self._client.{{.Method}}({{.Path}},
 {{- if .HasBody }}
-			json=serialize_request_data({{- if .HasFlattenedBody }}body_data{{- else }}body{{- end }}),
+				json=serialize_request_data({{- if .HasFlattenedBody }}body_data{{- else }}body{{- end }}),
 {{- end }}
 {{- if .QueryFields }}
-			params=serialize_query_params(query_data) if query_data else None,
+				params=serialize_query_params(query_data) if query_data else None,
 {{- end }}
-			headers=headers,
-		)
+				headers=headers,
+			)
 {{- range $i, $res := .Responses }}
 	{{- if eq $i 0 }}
 		if resp.status_code == {{ .Code }}:
 		{{- if .IsErr }}
-			raise APIError("{{ .ErrDescription }}", status=resp.status_code, body=resp.text)
+{{ indent 3 .ErrorStatement }}
 		{{- else if .Type }}
 			return pydantic.TypeAdapter({{ .Type }}).validate_python(resp.json())
 		{{- else }}
@@ -133,7 +135,7 @@ class Async{{.Service}}Resource(AsyncResource):
 	{{- else }}
 		elif resp.status_code == {{ .Code }}:
 		{{- if .IsErr }}
-			raise APIError("{{ .ErrDescription }}", status=resp.status_code, body=resp.text)
+{{ indent 3 .ErrorStatement }}
 		{{- else if .Type }}
 			return pydantic.TypeAdapter({{ .Type }}).validate_python(resp.json())
 		{{- else }}
@@ -142,5 +144,5 @@ class Async{{.Service}}Resource(AsyncResource):
 	{{- end }}
 {{- end }}
 		else:
-			raise APIError(f"Unexpected response", status=resp.status_code, body=resp.text)
+			raise APIError.from_response("Unexpected response", resp)
 {{end}}

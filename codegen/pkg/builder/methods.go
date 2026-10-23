@@ -214,10 +214,19 @@ func (b *Builder) operationToMethod(method, path string, o *v3.Operation) (*Meth
 		}
 
 		statusCode, _ := strconv.Atoi(strings.ReplaceAll(code, "XX", "00"))
+		var formats []errorResponseFormat
+		if !strings.HasPrefix(code, "2") {
+			formats = b.errorResponseFormats(operationName, resp, code)
+			if len(formats) == 1 {
+				typ = formats[0].Type
+				formats = nil
+			}
+		}
 		responses = append(responses, Response{
 			IsErr:          !strings.HasPrefix(code, "2"),
 			IsDefault:      code == "default",
 			Type:           typ,
+			Formats:        formats,
 			Code:           statusCode,
 			ErrDescription: strings.TrimSpace(description),
 		})
@@ -343,16 +352,12 @@ func (b *Builder) getSuccessResponseType(o *v3.Operation) (*string, error) {
 }
 
 func (b *Builder) responseToType(operationName string, resp *v3.Response, code string) string {
-	if resp.GoLow().IsReference() {
-		return strcase.ToCamel(strings.TrimPrefix(resp.GoLow().GetReference(), "#/components/responses/")) + "Response"
-	}
-
 	if resp.Content == nil {
 		return ""
 	}
 
 	content, ok := preferredResponseContent(resp.Content)
-	if !ok {
+	if !ok || content.Schema == nil {
 		return ""
 	}
 

@@ -1602,29 +1602,7 @@
                       "$ref": "#/components/schemas/ErrorExtended"
                     },
                     {
-                      "type": "object",
-                      "required": [
-                        "instance",
-                        "error_code",
-                        "error_message"
-                      ],
-                      "properties": {
-                        "instance": {
-                          "type": "string",
-                          "description": "Unique identifier of this error occurrence.",
-                          "example": "32a44c6c-85d3-49e8-86bf-a5bba98c4621"
-                        },
-                        "error_code": {
-                          "type": "string",
-                          "description": "Platform code for the error.",
-                          "example": "INVALID"
-                        },
-                        "error_message": {
-                          "type": "string",
-                          "description": "Short description of the error.",
-                          "example": "customer_id"
-                        }
-                      }
+                      "$ref": "#/components/schemas/CustomerValidationError"
                     }
                   ]
                 },
@@ -6765,6 +6743,33 @@
           },
           "personal_details": {
             "$ref": "#/components/schemas/PersonalDetails"
+          }
+        }
+      },
+      "CustomerValidationError": {
+        "title": "Customer Validation Error",
+        "description": "Details of a customer validation error.",
+        "type": "object",
+        "required": [
+          "instance",
+          "error_code",
+          "error_message"
+        ],
+        "properties": {
+          "instance": {
+            "type": "string",
+            "description": "Unique identifier of this error occurrence.",
+            "example": "32a44c6c-85d3-49e8-86bf-a5bba98c4621"
+          },
+          "error_code": {
+            "type": "string",
+            "description": "Platform code for the error.",
+            "example": "INVALID"
+          },
+          "error_message": {
+            "type": "string",
+            "description": "Short description of the error.",
+            "example": "customer_id"
           }
         }
       },

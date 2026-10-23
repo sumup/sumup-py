@@ -34,7 +34,8 @@ type Builder struct {
 
 	pathsByTag map[string]*v3.Paths
 
-	events []EventDefinition
+	events         []EventDefinition
+	errorBodyTypes []Writable
 
 	templates *template.Template
 
@@ -85,6 +86,7 @@ func (b *Builder) Load(spec *v3.Document) error {
 
 	b.collectPaths()
 	b.collectSchemas()
+	_, b.errorBodyTypes = b.pathsToResponseTypes(b.spec.Paths)
 	if err := b.collectEvents(); err != nil {
 		return err
 	}

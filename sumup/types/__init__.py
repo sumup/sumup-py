@@ -2283,6 +2283,27 @@ class CustomerDict(typing_extensions.TypedDict, total=False):
 CustomerInput = CustomerDict
 
 
+class CustomerValidationError(pydantic.BaseModel):
+    """
+    Details of a customer validation error.
+    """
+
+    error_code: str
+    """
+	Platform code for the error.
+	"""
+
+    error_message: str
+    """
+	Short description of the error.
+	"""
+
+    instance: str
+    """
+	Unique identifier of this error occurrence.
+	"""
+
+
 class DetailsErrorFailedConstraint(pydantic.BaseModel):
     """
     DetailsErrorFailedConstraint is a schema definition.
@@ -5201,3 +5222,15 @@ class Unauthorized(pydantic.BaseModel):
     """
 
     errors: UnauthorizedErrors
+
+
+ProcessCheckout400Response = ErrorExtended | list[ErrorExtended]
+
+CreateApplePaySession400Response = Error | list[Error]
+
+CreateCustomer400Response = ErrorExtended | CustomerValidationError
+
+ListPayoutsV1400Response = list[ErrorExtended]
+"""
+ListPayoutsV1400Response is a schema definition.
+"""

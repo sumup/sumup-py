@@ -14,7 +14,7 @@ from typing import Annotated, ClassVar, Generic, TypeVar, cast
 import httpx
 import pydantic
 
-from ._exceptions import APIError, SumupError
+from ._exceptions import APIError, SumupError, _wrap_request_errors
 
 SIGNATURE_HEADER = "X-SumUp-Webhook-Signature"
 """Header containing the signing timestamp and signature. Pass its complete value."""
@@ -128,11 +128,7 @@ class FetchableEvent(EventNotification, Generic[_ObjectT]):
 
     def _parse_response(self, response: httpx.Response) -> _ObjectT:
         if not response.is_success:
-            try:
-                body = response.json()
-            except ValueError:
-                body = response.text
-            raise APIError("Unable to fetch event object", status=response.status_code, body=body)
+            raise APIError.from_response("Unable to fetch event object", response)
         return cast(_ObjectT, self._response_model.model_validate_json(response.content))
 
     def fetch_object(self) -> _ObjectT:
@@ -151,19 +147,23 @@ class FetchableEvent(EventNotification, Generic[_ObjectT]):
 
         Raises:
             EventObjectUrlError: The resource URL is invalid or uses another API origin.
-            APIError: The API returns a non-2xx response; status and body are available.
+            APITimeoutError: The request timed out.
+            APIConnectionError: The request failed because of a connection error.
+            APIStatusError: The API returns an HTTP 4xx or 5xx response.
+            APIError: The API returns another unexpected response.
             EventError: The event was not parsed with an API client.
             TypeError: The event belongs to AsyncSumup; use fetch_object_async().
 
-        HTTPX transport errors and Pydantic response-validation errors propagate.
+        Pydantic response-validation errors propagate.
         """
         if self._client is None:
             raise EventError("event notification is not bound to a SumUp client")
         if not isinstance(self._client, httpx.Client):
             raise TypeError("use fetch_object_async() with an AsyncSumup client")
-        response = self._client.get(
-            _validated_object_url(self._client, self.object.url), follow_redirects=False
-        )
+        with _wrap_request_errors():
+            response = self._client.get(
+                _validated_object_url(self._client, self.object.url), follow_redirects=False
+            )
         return self._parse_response(response)
 
     async def fetch_object_async(self) -> _ObjectT:
@@ -178,19 +178,23 @@ class FetchableEvent(EventNotification, Generic[_ObjectT]):
 
         Raises:
             EventObjectUrlError: The resource URL is invalid or uses another API origin.
-            APIError: The API returns a non-2xx response; status and body are available.
+            APITimeoutError: The request timed out.
+            APIConnectionError: The request failed because of a connection error.
+            APIStatusError: The API returns an HTTP 4xx or 5xx response.
+            APIError: The API returns another unexpected response.
             EventError: The event was not parsed with an API client.
             TypeError: The event belongs to Sumup; use fetch_object().
 
-        HTTPX transport errors and Pydantic response-validation errors propagate.
+        Pydantic response-validation errors propagate.
         """
         if self._client is None:
             raise EventError("event notification is not bound to a SumUp client")
         if not isinstance(self._client, httpx.AsyncClient):
             raise TypeError("use fetch_object() with a Sumup client")
-        response = await self._client.get(
-            _validated_object_url(self._client, self.object.url), follow_redirects=False
-        )
+        with _wrap_request_errors():
+            response = await self._client.get(
+                _validated_object_url(self._client, self.object.url), follow_redirects=False
+            )
         return self._parse_response(response)
 
 

@@ -17,7 +17,7 @@ import httpx
 import pydantic
 import typing_extensions
 
-from .._exceptions import APIError
+from .._exceptions import APIError, _wrap_request_errors
 from .._service import (
     NOT_GIVEN,
     AsyncResource,
@@ -31,8 +31,10 @@ from ..types import (
     AddressLegacy,
     AddressLegacyInput,
     CardType,
+    CreateCustomer400Response,
     Customer,
     CustomerInput,
+    CustomerValidationError,
     Error,
     ErrorExtended,
     ErrorForbidden,
@@ -102,11 +104,13 @@ class CustomersResource(Resource):
 
 
         Raises:
-           APIError: Raised when the API returns one of the documented error responses:
-                400: The request body is invalid.
-                401: The request is not authorized.
-                403: The request is authenticated but not permitted for this operation.
-                409: A customer with the provided identifier already exists.
+           APITimeoutError: The request timed out.
+            APIConnectionError: The request failed because of a connection error.
+            APIError: Raised when the API returns one of the documented error responses:
+                400: The request body is invalid. (raises BadRequestError)
+                401: The request is not authorized. (raises AuthenticationError)
+                403: The request is authenticated but not permitted for this operation. (raises PermissionDeniedError)
+                409: A customer with the provided identifier already exists. (raises ConflictError)
                 Unexpected response statuses also raise this exception.
         """
         body_data: dict[str, typing.Any] = {}
@@ -114,33 +118,32 @@ class CustomersResource(Resource):
         if not isinstance(personal_details, NotGivenType):
             body_data["personal_details"] = personal_details
 
-        resp = self._client.post(
-            f"/v0.1/customers",
-            json=serialize_request_data(body_data),
-            headers=headers,
-        )
+        with _wrap_request_errors():
+            resp = self._client.post(
+                f"/v0.1/customers",
+                json=serialize_request_data(body_data),
+                headers=headers,
+            )
         if resp.status_code == 201:
             return pydantic.TypeAdapter(Customer).validate_python(resp.json())
         elif resp.status_code == 400:
-            raise APIError("The request body is invalid.", status=resp.status_code, body=resp.text)
-        elif resp.status_code == 401:
-            raise APIError(
-                "The request is not authorized.", status=resp.status_code, body=resp.text
+            raise APIError.from_response(
+                "The request body is invalid.", resp, body_type=CreateCustomer400Response
             )
+        elif resp.status_code == 401:
+            raise APIError.from_response("The request is not authorized.", resp, body_type=Problem)
         elif resp.status_code == 403:
-            raise APIError(
+            raise APIError.from_response(
                 "The request is authenticated but not permitted for this operation.",
-                status=resp.status_code,
-                body=resp.text,
+                resp,
+                body_type=ErrorForbidden,
             )
         elif resp.status_code == 409:
-            raise APIError(
-                "A customer with the provided identifier already exists.",
-                status=resp.status_code,
-                body=resp.text,
+            raise APIError.from_response(
+                "A customer with the provided identifier already exists.", resp, body_type=Error
             )
         else:
-            raise APIError(f"Unexpected response", status=resp.status_code, body=resp.text)
+            raise APIError.from_response("Unexpected response", resp)
 
     def get(self, customer_id: str, headers: HeaderTypes | None = None) -> Customer:
         """
@@ -150,34 +153,35 @@ class CustomersResource(Resource):
 
 
         Raises:
+            APITimeoutError: The request timed out.
+            APIConnectionError: The request failed because of a connection error.
             APIError: Raised when the API returns one of the documented error responses:
-                401: The request is not authorized.
-                403: The request is authenticated but not permitted for this operation.
-                404: The requested resource does not exist.
+                401: The request is not authorized. (raises AuthenticationError)
+                403: The request is authenticated but not permitted for this operation. (raises PermissionDeniedError)
+                404: The requested resource does not exist. (raises NotFoundError)
                 Unexpected response statuses also raise this exception.
         """
-        resp = self._client.get(
-            f"/v0.1/customers/{customer_id}",
-            headers=headers,
-        )
+        with _wrap_request_errors():
+            resp = self._client.get(
+                f"/v0.1/customers/{customer_id}",
+                headers=headers,
+            )
         if resp.status_code == 200:
             return pydantic.TypeAdapter(Customer).validate_python(resp.json())
         elif resp.status_code == 401:
-            raise APIError(
-                "The request is not authorized.", status=resp.status_code, body=resp.text
-            )
+            raise APIError.from_response("The request is not authorized.", resp, body_type=Problem)
         elif resp.status_code == 403:
-            raise APIError(
+            raise APIError.from_response(
                 "The request is authenticated but not permitted for this operation.",
-                status=resp.status_code,
-                body=resp.text,
+                resp,
+                body_type=ErrorForbidden,
             )
         elif resp.status_code == 404:
-            raise APIError(
-                "The requested resource does not exist.", status=resp.status_code, body=resp.text
+            raise APIError.from_response(
+                "The requested resource does not exist.", resp, body_type=Error
             )
         else:
-            raise APIError(f"Unexpected response", status=resp.status_code, body=resp.text)
+            raise APIError.from_response("Unexpected response", resp)
 
     def update(
         self,
@@ -195,39 +199,40 @@ class CustomersResource(Resource):
 
 
         Raises:
+            APITimeoutError: The request timed out.
+            APIConnectionError: The request failed because of a connection error.
             APIError: Raised when the API returns one of the documented error responses:
-                401: The request is not authorized.
-                403: The request is authenticated but not permitted for this operation.
-                404: The requested resource does not exist.
+                401: The request is not authorized. (raises AuthenticationError)
+                403: The request is authenticated but not permitted for this operation. (raises PermissionDeniedError)
+                404: The requested resource does not exist. (raises NotFoundError)
                 Unexpected response statuses also raise this exception.
         """
         body_data: dict[str, typing.Any] = {}
         if not isinstance(personal_details, NotGivenType):
             body_data["personal_details"] = personal_details
 
-        resp = self._client.put(
-            f"/v0.1/customers/{customer_id}",
-            json=serialize_request_data(body_data),
-            headers=headers,
-        )
+        with _wrap_request_errors():
+            resp = self._client.put(
+                f"/v0.1/customers/{customer_id}",
+                json=serialize_request_data(body_data),
+                headers=headers,
+            )
         if resp.status_code == 200:
             return pydantic.TypeAdapter(Customer).validate_python(resp.json())
         elif resp.status_code == 401:
-            raise APIError(
-                "The request is not authorized.", status=resp.status_code, body=resp.text
-            )
+            raise APIError.from_response("The request is not authorized.", resp, body_type=Problem)
         elif resp.status_code == 403:
-            raise APIError(
+            raise APIError.from_response(
                 "The request is authenticated but not permitted for this operation.",
-                status=resp.status_code,
-                body=resp.text,
+                resp,
+                body_type=ErrorForbidden,
             )
         elif resp.status_code == 404:
-            raise APIError(
-                "The requested resource does not exist.", status=resp.status_code, body=resp.text
+            raise APIError.from_response(
+                "The requested resource does not exist.", resp, body_type=Error
             )
         else:
-            raise APIError(f"Unexpected response", status=resp.status_code, body=resp.text)
+            raise APIError.from_response("Unexpected response", resp)
 
     def list_payment_instruments(
         self, customer_id: str, headers: HeaderTypes | None = None
@@ -239,36 +244,37 @@ class CustomersResource(Resource):
 
 
         Raises:
+            APITimeoutError: The request timed out.
+            APIConnectionError: The request failed because of a connection error.
             APIError: Raised when the API returns one of the documented error responses:
-                401: The request is not authorized.
-                403: The request is authenticated but not permitted for this operation.
-                404: The requested resource does not exist.
+                401: The request is not authorized. (raises AuthenticationError)
+                403: The request is authenticated but not permitted for this operation. (raises PermissionDeniedError)
+                404: The requested resource does not exist. (raises NotFoundError)
                 Unexpected response statuses also raise this exception.
         """
-        resp = self._client.get(
-            f"/v0.1/customers/{customer_id}/payment-instruments",
-            headers=headers,
-        )
+        with _wrap_request_errors():
+            resp = self._client.get(
+                f"/v0.1/customers/{customer_id}/payment-instruments",
+                headers=headers,
+            )
         if resp.status_code == 200:
             return pydantic.TypeAdapter(ListPaymentInstruments200Response).validate_python(
                 resp.json()
             )
         elif resp.status_code == 401:
-            raise APIError(
-                "The request is not authorized.", status=resp.status_code, body=resp.text
-            )
+            raise APIError.from_response("The request is not authorized.", resp, body_type=Problem)
         elif resp.status_code == 403:
-            raise APIError(
+            raise APIError.from_response(
                 "The request is authenticated but not permitted for this operation.",
-                status=resp.status_code,
-                body=resp.text,
+                resp,
+                body_type=ErrorForbidden,
             )
         elif resp.status_code == 404:
-            raise APIError(
-                "The requested resource does not exist.", status=resp.status_code, body=resp.text
+            raise APIError.from_response(
+                "The requested resource does not exist.", resp, body_type=Error
             )
         else:
-            raise APIError(f"Unexpected response", status=resp.status_code, body=resp.text)
+            raise APIError.from_response("Unexpected response", resp)
 
     def deactivate_payment_instrument(
         self, customer_id: str, token: str, headers: HeaderTypes | None = None
@@ -280,37 +286,38 @@ class CustomersResource(Resource):
 
 
         Raises:
+            APITimeoutError: The request timed out.
+            APIConnectionError: The request failed because of a connection error.
             APIError: Raised when the API returns one of the documented error responses:
-                400: The request is invalid.
-                401: The request is not authorized.
-                403: The request is authenticated but not permitted for this operation.
-                404: The requested resource does not exist.
+                400: The request is invalid. (raises BadRequestError)
+                401: The request is not authorized. (raises AuthenticationError)
+                403: The request is authenticated but not permitted for this operation. (raises PermissionDeniedError)
+                404: The requested resource does not exist. (raises NotFoundError)
                 Unexpected response statuses also raise this exception.
         """
-        resp = self._client.delete(
-            f"/v0.1/customers/{customer_id}/payment-instruments/{token}",
-            headers=headers,
-        )
+        with _wrap_request_errors():
+            resp = self._client.delete(
+                f"/v0.1/customers/{customer_id}/payment-instruments/{token}",
+                headers=headers,
+            )
         if resp.status_code == 204:
             return
         elif resp.status_code == 400:
-            raise APIError("The request is invalid.", status=resp.status_code, body=resp.text)
+            raise APIError.from_response("The request is invalid.", resp, body_type=Error)
         elif resp.status_code == 401:
-            raise APIError(
-                "The request is not authorized.", status=resp.status_code, body=resp.text
-            )
+            raise APIError.from_response("The request is not authorized.", resp, body_type=Problem)
         elif resp.status_code == 403:
-            raise APIError(
+            raise APIError.from_response(
                 "The request is authenticated but not permitted for this operation.",
-                status=resp.status_code,
-                body=resp.text,
+                resp,
+                body_type=ErrorForbidden,
             )
         elif resp.status_code == 404:
-            raise APIError(
-                "The requested resource does not exist.", status=resp.status_code, body=resp.text
+            raise APIError.from_response(
+                "The requested resource does not exist.", resp, body_type=Error
             )
         else:
-            raise APIError(f"Unexpected response", status=resp.status_code, body=resp.text)
+            raise APIError.from_response("Unexpected response", resp)
 
 
 class AsyncCustomersResource(AsyncResource):
@@ -333,11 +340,13 @@ class AsyncCustomersResource(AsyncResource):
 
 
         Raises:
-           APIError: Raised when the API returns one of the documented error responses:
-                400: The request body is invalid.
-                401: The request is not authorized.
-                403: The request is authenticated but not permitted for this operation.
-                409: A customer with the provided identifier already exists.
+           APITimeoutError: The request timed out.
+            APIConnectionError: The request failed because of a connection error.
+            APIError: Raised when the API returns one of the documented error responses:
+                400: The request body is invalid. (raises BadRequestError)
+                401: The request is not authorized. (raises AuthenticationError)
+                403: The request is authenticated but not permitted for this operation. (raises PermissionDeniedError)
+                409: A customer with the provided identifier already exists. (raises ConflictError)
                 Unexpected response statuses also raise this exception.
         """
         body_data: dict[str, typing.Any] = {}
@@ -345,33 +354,32 @@ class AsyncCustomersResource(AsyncResource):
         if not isinstance(personal_details, NotGivenType):
             body_data["personal_details"] = personal_details
 
-        resp = await self._client.post(
-            f"/v0.1/customers",
-            json=serialize_request_data(body_data),
-            headers=headers,
-        )
+        with _wrap_request_errors():
+            resp = await self._client.post(
+                f"/v0.1/customers",
+                json=serialize_request_data(body_data),
+                headers=headers,
+            )
         if resp.status_code == 201:
             return pydantic.TypeAdapter(Customer).validate_python(resp.json())
         elif resp.status_code == 400:
-            raise APIError("The request body is invalid.", status=resp.status_code, body=resp.text)
-        elif resp.status_code == 401:
-            raise APIError(
-                "The request is not authorized.", status=resp.status_code, body=resp.text
+            raise APIError.from_response(
+                "The request body is invalid.", resp, body_type=CreateCustomer400Response
             )
+        elif resp.status_code == 401:
+            raise APIError.from_response("The request is not authorized.", resp, body_type=Problem)
         elif resp.status_code == 403:
-            raise APIError(
+            raise APIError.from_response(
                 "The request is authenticated but not permitted for this operation.",
-                status=resp.status_code,
-                body=resp.text,
+                resp,
+                body_type=ErrorForbidden,
             )
         elif resp.status_code == 409:
-            raise APIError(
-                "A customer with the provided identifier already exists.",
-                status=resp.status_code,
-                body=resp.text,
+            raise APIError.from_response(
+                "A customer with the provided identifier already exists.", resp, body_type=Error
             )
         else:
-            raise APIError(f"Unexpected response", status=resp.status_code, body=resp.text)
+            raise APIError.from_response("Unexpected response", resp)
 
     async def get(self, customer_id: str, headers: HeaderTypes | None = None) -> Customer:
         """
@@ -381,34 +389,35 @@ class AsyncCustomersResource(AsyncResource):
 
 
         Raises:
+            APITimeoutError: The request timed out.
+            APIConnectionError: The request failed because of a connection error.
             APIError: Raised when the API returns one of the documented error responses:
-                401: The request is not authorized.
-                403: The request is authenticated but not permitted for this operation.
-                404: The requested resource does not exist.
+                401: The request is not authorized. (raises AuthenticationError)
+                403: The request is authenticated but not permitted for this operation. (raises PermissionDeniedError)
+                404: The requested resource does not exist. (raises NotFoundError)
                 Unexpected response statuses also raise this exception.
         """
-        resp = await self._client.get(
-            f"/v0.1/customers/{customer_id}",
-            headers=headers,
-        )
+        with _wrap_request_errors():
+            resp = await self._client.get(
+                f"/v0.1/customers/{customer_id}",
+                headers=headers,
+            )
         if resp.status_code == 200:
             return pydantic.TypeAdapter(Customer).validate_python(resp.json())
         elif resp.status_code == 401:
-            raise APIError(
-                "The request is not authorized.", status=resp.status_code, body=resp.text
-            )
+            raise APIError.from_response("The request is not authorized.", resp, body_type=Problem)
         elif resp.status_code == 403:
-            raise APIError(
+            raise APIError.from_response(
                 "The request is authenticated but not permitted for this operation.",
-                status=resp.status_code,
-                body=resp.text,
+                resp,
+                body_type=ErrorForbidden,
             )
         elif resp.status_code == 404:
-            raise APIError(
-                "The requested resource does not exist.", status=resp.status_code, body=resp.text
+            raise APIError.from_response(
+                "The requested resource does not exist.", resp, body_type=Error
             )
         else:
-            raise APIError(f"Unexpected response", status=resp.status_code, body=resp.text)
+            raise APIError.from_response("Unexpected response", resp)
 
     async def update(
         self,
@@ -426,39 +435,40 @@ class AsyncCustomersResource(AsyncResource):
 
 
         Raises:
+            APITimeoutError: The request timed out.
+            APIConnectionError: The request failed because of a connection error.
             APIError: Raised when the API returns one of the documented error responses:
-                401: The request is not authorized.
-                403: The request is authenticated but not permitted for this operation.
-                404: The requested resource does not exist.
+                401: The request is not authorized. (raises AuthenticationError)
+                403: The request is authenticated but not permitted for this operation. (raises PermissionDeniedError)
+                404: The requested resource does not exist. (raises NotFoundError)
                 Unexpected response statuses also raise this exception.
         """
         body_data: dict[str, typing.Any] = {}
         if not isinstance(personal_details, NotGivenType):
             body_data["personal_details"] = personal_details
 
-        resp = await self._client.put(
-            f"/v0.1/customers/{customer_id}",
-            json=serialize_request_data(body_data),
-            headers=headers,
-        )
+        with _wrap_request_errors():
+            resp = await self._client.put(
+                f"/v0.1/customers/{customer_id}",
+                json=serialize_request_data(body_data),
+                headers=headers,
+            )
         if resp.status_code == 200:
             return pydantic.TypeAdapter(Customer).validate_python(resp.json())
         elif resp.status_code == 401:
-            raise APIError(
-                "The request is not authorized.", status=resp.status_code, body=resp.text
-            )
+            raise APIError.from_response("The request is not authorized.", resp, body_type=Problem)
         elif resp.status_code == 403:
-            raise APIError(
+            raise APIError.from_response(
                 "The request is authenticated but not permitted for this operation.",
-                status=resp.status_code,
-                body=resp.text,
+                resp,
+                body_type=ErrorForbidden,
             )
         elif resp.status_code == 404:
-            raise APIError(
-                "The requested resource does not exist.", status=resp.status_code, body=resp.text
+            raise APIError.from_response(
+                "The requested resource does not exist.", resp, body_type=Error
             )
         else:
-            raise APIError(f"Unexpected response", status=resp.status_code, body=resp.text)
+            raise APIError.from_response("Unexpected response", resp)
 
     async def list_payment_instruments(
         self, customer_id: str, headers: HeaderTypes | None = None
@@ -470,36 +480,37 @@ class AsyncCustomersResource(AsyncResource):
 
 
         Raises:
+            APITimeoutError: The request timed out.
+            APIConnectionError: The request failed because of a connection error.
             APIError: Raised when the API returns one of the documented error responses:
-                401: The request is not authorized.
-                403: The request is authenticated but not permitted for this operation.
-                404: The requested resource does not exist.
+                401: The request is not authorized. (raises AuthenticationError)
+                403: The request is authenticated but not permitted for this operation. (raises PermissionDeniedError)
+                404: The requested resource does not exist. (raises NotFoundError)
                 Unexpected response statuses also raise this exception.
         """
-        resp = await self._client.get(
-            f"/v0.1/customers/{customer_id}/payment-instruments",
-            headers=headers,
-        )
+        with _wrap_request_errors():
+            resp = await self._client.get(
+                f"/v0.1/customers/{customer_id}/payment-instruments",
+                headers=headers,
+            )
         if resp.status_code == 200:
             return pydantic.TypeAdapter(ListPaymentInstruments200Response).validate_python(
                 resp.json()
             )
         elif resp.status_code == 401:
-            raise APIError(
-                "The request is not authorized.", status=resp.status_code, body=resp.text
-            )
+            raise APIError.from_response("The request is not authorized.", resp, body_type=Problem)
         elif resp.status_code == 403:
-            raise APIError(
+            raise APIError.from_response(
                 "The request is authenticated but not permitted for this operation.",
-                status=resp.status_code,
-                body=resp.text,
+                resp,
+                body_type=ErrorForbidden,
             )
         elif resp.status_code == 404:
-            raise APIError(
-                "The requested resource does not exist.", status=resp.status_code, body=resp.text
+            raise APIError.from_response(
+                "The requested resource does not exist.", resp, body_type=Error
             )
         else:
-            raise APIError(f"Unexpected response", status=resp.status_code, body=resp.text)
+            raise APIError.from_response("Unexpected response", resp)
 
     async def deactivate_payment_instrument(
         self, customer_id: str, token: str, headers: HeaderTypes | None = None
@@ -511,34 +522,35 @@ class AsyncCustomersResource(AsyncResource):
 
 
         Raises:
+            APITimeoutError: The request timed out.
+            APIConnectionError: The request failed because of a connection error.
             APIError: Raised when the API returns one of the documented error responses:
-                400: The request is invalid.
-                401: The request is not authorized.
-                403: The request is authenticated but not permitted for this operation.
-                404: The requested resource does not exist.
+                400: The request is invalid. (raises BadRequestError)
+                401: The request is not authorized. (raises AuthenticationError)
+                403: The request is authenticated but not permitted for this operation. (raises PermissionDeniedError)
+                404: The requested resource does not exist. (raises NotFoundError)
                 Unexpected response statuses also raise this exception.
         """
-        resp = await self._client.delete(
-            f"/v0.1/customers/{customer_id}/payment-instruments/{token}",
-            headers=headers,
-        )
+        with _wrap_request_errors():
+            resp = await self._client.delete(
+                f"/v0.1/customers/{customer_id}/payment-instruments/{token}",
+                headers=headers,
+            )
         if resp.status_code == 204:
             return
         elif resp.status_code == 400:
-            raise APIError("The request is invalid.", status=resp.status_code, body=resp.text)
+            raise APIError.from_response("The request is invalid.", resp, body_type=Error)
         elif resp.status_code == 401:
-            raise APIError(
-                "The request is not authorized.", status=resp.status_code, body=resp.text
-            )
+            raise APIError.from_response("The request is not authorized.", resp, body_type=Problem)
         elif resp.status_code == 403:
-            raise APIError(
+            raise APIError.from_response(
                 "The request is authenticated but not permitted for this operation.",
-                status=resp.status_code,
-                body=resp.text,
+                resp,
+                body_type=ErrorForbidden,
             )
         elif resp.status_code == 404:
-            raise APIError(
-                "The requested resource does not exist.", status=resp.status_code, body=resp.text
+            raise APIError.from_response(
+                "The requested resource does not exist.", resp, body_type=Error
             )
         else:
-            raise APIError(f"Unexpected response", status=resp.status_code, body=resp.text)
+            raise APIError.from_response("Unexpected response", resp)

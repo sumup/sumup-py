@@ -63,6 +63,7 @@ func methodRaisesDoc(responses []Response) string {
 		if description == "" {
 			description = "the API returns an error response"
 		}
+		description += fmt.Sprintf(" (raises %s)", response.ErrorType())
 
 		if response.IsDefault {
 			errorDescriptions = append(errorDescriptions, description)
@@ -73,7 +74,7 @@ func methodRaisesDoc(responses []Response) string {
 	}
 
 	out := new(strings.Builder)
-	out.WriteString("Raises:\n")
+	out.WriteString("Raises:\n    APITimeoutError: The request timed out.\n    APIConnectionError: The request failed because of a connection error.\n")
 	if len(errorDescriptions) == 0 {
 		out.WriteString("    APIError: Raised when the API returns an unexpected response.")
 		return out.String()
