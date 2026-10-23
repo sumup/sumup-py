@@ -26,7 +26,7 @@ import httpx
 import pydantic
 import typing_extensions
 
-from .._exceptions import APIError
+from .._exceptions import APIError, _wrap_request_errors
 from .._service import (
     NOT_GIVEN,
     AsyncResource,
@@ -50,6 +50,7 @@ from ..types import (
     CheckoutSuccess,
     CheckoutUpdateRequest,
     CheckoutUpdateRequestInput,
+    CreateApplePaySession400Response,
     Currency,
     CurrencyInput,
     DetailsError,
@@ -67,6 +68,7 @@ from ..types import (
     PersonalDetailsInput,
     Problem,
     ProcessCheckout,
+    ProcessCheckout400Response,
     ProcessCheckoutInput,
     TransactionBase,
     TransactionCheckoutInfo,
@@ -599,8 +601,10 @@ class CheckoutsResource(Resource):
 
 
         Raises:
+            APITimeoutError: The request timed out.
+            APIConnectionError: The request failed because of a connection error.
             APIError: Raised when the API returns one of the documented error responses:
-                400: The request is invalid for the submitted query parameters.
+                400: The request is invalid for the submitted query parameters. (raises BadRequestError)
                 Unexpected response statuses also raise this exception.
         """
         query_data: dict[str, typing.Any] = {}
@@ -609,21 +613,22 @@ class CheckoutsResource(Resource):
         if not isinstance(currency, NotGivenType) and currency is not None:
             query_data["currency"] = currency
 
-        resp = self._client.get(
-            f"/v0.1/merchants/{merchant_code}/payment-methods",
-            params=serialize_query_params(query_data) if query_data else None,
-            headers=headers,
-        )
+        with _wrap_request_errors():
+            resp = self._client.get(
+                f"/v0.1/merchants/{merchant_code}/payment-methods",
+                params=serialize_query_params(query_data) if query_data else None,
+                headers=headers,
+            )
         if resp.status_code == 200:
             return pydantic.TypeAdapter(GetPaymentMethods200Response).validate_python(resp.json())
         elif resp.status_code == 400:
-            raise APIError(
+            raise APIError.from_response(
                 "The request is invalid for the submitted query parameters.",
-                status=resp.status_code,
-                body=resp.text,
+                resp,
+                body_type=DetailsError,
             )
         else:
-            raise APIError(f"Unexpected response", status=resp.status_code, body=resp.text)
+            raise APIError.from_response("Unexpected response", resp)
 
     def create(
         self,
@@ -653,11 +658,13 @@ class CheckoutsResource(Resource):
 
 
         Raises:
+            APITimeoutError: The request timed out.
+            APIConnectionError: The request failed because of a connection error.
             APIError: Raised when the API returns one of the documented error responses:
-                400: The request body is invalid.
-                401: The request is not authorized.
-                403: The request isn't sufficiently authorized to create a checkout.
-                409: A checkout already exists for the provided unique parameters.
+                400: The request body is invalid. (raises BadRequestError)
+                401: The request is not authorized. (raises AuthenticationError)
+                403: The request isn't sufficiently authorized to create a checkout. (raises PermissionDeniedError)
+                409: A checkout already exists for the provided unique parameters. (raises ConflictError)
                 Unexpected response statuses also raise this exception.
         """
         body_data: dict[str, typing.Any] = {}
@@ -680,33 +687,34 @@ class CheckoutsResource(Resource):
         if not isinstance(hosted_checkout, NotGivenType):
             body_data["hosted_checkout"] = hosted_checkout
 
-        resp = self._client.post(
-            f"/v0.1/checkouts",
-            json=serialize_request_data(body_data),
-            headers=headers,
-        )
+        with _wrap_request_errors():
+            resp = self._client.post(
+                f"/v0.1/checkouts",
+                json=serialize_request_data(body_data),
+                headers=headers,
+            )
         if resp.status_code == 201:
             return pydantic.TypeAdapter(Checkout).validate_python(resp.json())
         elif resp.status_code == 400:
-            raise APIError("The request body is invalid.", status=resp.status_code, body=resp.text)
-        elif resp.status_code == 401:
-            raise APIError(
-                "The request is not authorized.", status=resp.status_code, body=resp.text
+            raise APIError.from_response(
+                "The request body is invalid.", resp, body_type=ErrorExtended
             )
+        elif resp.status_code == 401:
+            raise APIError.from_response("The request is not authorized.", resp, body_type=Problem)
         elif resp.status_code == 403:
-            raise APIError(
+            raise APIError.from_response(
                 "The request isn't sufficiently authorized to create a checkout.",
-                status=resp.status_code,
-                body=resp.text,
+                resp,
+                body_type=ErrorForbidden,
             )
         elif resp.status_code == 409:
-            raise APIError(
+            raise APIError.from_response(
                 "A checkout already exists for the provided unique parameters.",
-                status=resp.status_code,
-                body=resp.text,
+                resp,
+                body_type=Error,
             )
         else:
-            raise APIError(f"Unexpected response", status=resp.status_code, body=resp.text)
+            raise APIError.from_response("Unexpected response", resp)
 
     def list(
         self,
@@ -721,27 +729,28 @@ class CheckoutsResource(Resource):
 
 
         Raises:
+            APITimeoutError: The request timed out.
+            APIConnectionError: The request failed because of a connection error.
             APIError: Raised when the API returns one of the documented error responses:
-                401: The request is not authorized.
+                401: The request is not authorized. (raises AuthenticationError)
                 Unexpected response statuses also raise this exception.
         """
         query_data: dict[str, typing.Any] = {}
         if not isinstance(checkout_reference, NotGivenType) and checkout_reference is not None:
             query_data["checkout_reference"] = checkout_reference
 
-        resp = self._client.get(
-            f"/v0.1/checkouts",
-            params=serialize_query_params(query_data) if query_data else None,
-            headers=headers,
-        )
+        with _wrap_request_errors():
+            resp = self._client.get(
+                f"/v0.1/checkouts",
+                params=serialize_query_params(query_data) if query_data else None,
+                headers=headers,
+            )
         if resp.status_code == 200:
             return pydantic.TypeAdapter(ListCheckouts200Response).validate_python(resp.json())
         elif resp.status_code == 401:
-            raise APIError(
-                "The request is not authorized.", status=resp.status_code, body=resp.text
-            )
+            raise APIError.from_response("The request is not authorized.", resp, body_type=Problem)
         else:
-            raise APIError(f"Unexpected response", status=resp.status_code, body=resp.text)
+            raise APIError.from_response("Unexpected response", resp)
 
     def get(self, checkout_id: str, headers: HeaderTypes | None = None) -> CheckoutSuccess:
         """
@@ -751,27 +760,28 @@ class CheckoutsResource(Resource):
 
 
         Raises:
+            APITimeoutError: The request timed out.
+            APIConnectionError: The request failed because of a connection error.
             APIError: Raised when the API returns one of the documented error responses:
-                401: The request is not authorized.
-                404: The requested resource does not exist.
+                401: The request is not authorized. (raises AuthenticationError)
+                404: The requested resource does not exist. (raises NotFoundError)
                 Unexpected response statuses also raise this exception.
         """
-        resp = self._client.get(
-            f"/v0.1/checkouts/{checkout_id}",
-            headers=headers,
-        )
+        with _wrap_request_errors():
+            resp = self._client.get(
+                f"/v0.1/checkouts/{checkout_id}",
+                headers=headers,
+            )
         if resp.status_code == 200:
             return pydantic.TypeAdapter(CheckoutSuccess).validate_python(resp.json())
         elif resp.status_code == 401:
-            raise APIError(
-                "The request is not authorized.", status=resp.status_code, body=resp.text
-            )
+            raise APIError.from_response("The request is not authorized.", resp, body_type=Problem)
         elif resp.status_code == 404:
-            raise APIError(
-                "The requested resource does not exist.", status=resp.status_code, body=resp.text
+            raise APIError.from_response(
+                "The requested resource does not exist.", resp, body_type=Error
             )
         else:
-            raise APIError(f"Unexpected response", status=resp.status_code, body=resp.text)
+            raise APIError.from_response("Unexpected response", resp)
 
     def update(
         self,
@@ -794,9 +804,11 @@ class CheckoutsResource(Resource):
 
 
         Raises:
+            APITimeoutError: The request timed out.
+            APIConnectionError: The request failed because of a connection error.
             APIError: Raised when the API returns one of the documented error responses:
-                401: The request is not authorized.
-                404: The requested resource does not exist.
+                401: The request is not authorized. (raises AuthenticationError)
+                404: The requested resource does not exist. (raises NotFoundError)
                 Unexpected response statuses also raise this exception.
         """
         body_data: dict[str, typing.Any] = {}
@@ -813,23 +825,22 @@ class CheckoutsResource(Resource):
         if not isinstance(customer_id, NotGivenType):
             body_data["customer_id"] = customer_id
 
-        resp = self._client.patch(
-            f"/v0.1/checkouts/{checkout_id}",
-            json=serialize_request_data(body_data),
-            headers=headers,
-        )
+        with _wrap_request_errors():
+            resp = self._client.patch(
+                f"/v0.1/checkouts/{checkout_id}",
+                json=serialize_request_data(body_data),
+                headers=headers,
+            )
         if resp.status_code == 200:
             return pydantic.TypeAdapter(Checkout).validate_python(resp.json())
         elif resp.status_code == 401:
-            raise APIError(
-                "The request is not authorized.", status=resp.status_code, body=resp.text
-            )
+            raise APIError.from_response("The request is not authorized.", resp, body_type=Problem)
         elif resp.status_code == 404:
-            raise APIError(
-                "The requested resource does not exist.", status=resp.status_code, body=resp.text
+            raise APIError.from_response(
+                "The requested resource does not exist.", resp, body_type=Error
             )
         else:
-            raise APIError(f"Unexpected response", status=resp.status_code, body=resp.text)
+            raise APIError.from_response("Unexpected response", resp)
 
     def process(
         self,
@@ -861,11 +872,13 @@ class CheckoutsResource(Resource):
 
 
         Raises:
+            APITimeoutError: The request timed out.
+            APIConnectionError: The request failed because of a connection error.
             APIError: Raised when the API returns one of the documented error responses:
-                400: The request body is invalid for processing the checkout.
-                401: The request is not authorized.
-                404: The requested resource does not exist.
-                409: The request conflicts with the current state of the resource.
+                400: The request body is invalid for processing the checkout. (raises BadRequestError)
+                401: The request is not authorized. (raises AuthenticationError)
+                404: The requested resource does not exist. (raises NotFoundError)
+                409: The request conflicts with the current state of the resource. (raises ConflictError)
                 Unexpected response statuses also raise this exception.
         """
         body_data: dict[str, typing.Any] = {}
@@ -887,11 +900,12 @@ class CheckoutsResource(Resource):
         if not isinstance(personal_details, NotGivenType):
             body_data["personal_details"] = personal_details
 
-        resp = self._client.put(
-            f"/v0.1/checkouts/{checkout_id}",
-            json=serialize_request_data(body_data),
-            headers=headers,
-        )
+        with _wrap_request_errors():
+            resp = self._client.put(
+                f"/v0.1/checkouts/{checkout_id}",
+                json=serialize_request_data(body_data),
+                headers=headers,
+            )
         if resp.status_code == 200:
             return pydantic.TypeAdapter(ProcessCheckoutCheckoutSuccessResponse).validate_python(
                 resp.json()
@@ -899,27 +913,25 @@ class CheckoutsResource(Resource):
         elif resp.status_code == 202:
             return pydantic.TypeAdapter(CheckoutAccepted).validate_python(resp.json())
         elif resp.status_code == 400:
-            raise APIError(
+            raise APIError.from_response(
                 "The request body is invalid for processing the checkout.",
-                status=resp.status_code,
-                body=resp.text,
+                resp,
+                body_type=ProcessCheckout400Response,
             )
         elif resp.status_code == 401:
-            raise APIError(
-                "The request is not authorized.", status=resp.status_code, body=resp.text
-            )
+            raise APIError.from_response("The request is not authorized.", resp, body_type=Problem)
         elif resp.status_code == 404:
-            raise APIError(
-                "The requested resource does not exist.", status=resp.status_code, body=resp.text
+            raise APIError.from_response(
+                "The requested resource does not exist.", resp, body_type=Error
             )
         elif resp.status_code == 409:
-            raise APIError(
+            raise APIError.from_response(
                 "The request conflicts with the current state of the resource.",
-                status=resp.status_code,
-                body=resp.text,
+                resp,
+                body_type=Error,
             )
         else:
-            raise APIError(f"Unexpected response", status=resp.status_code, body=resp.text)
+            raise APIError.from_response("Unexpected response", resp)
 
     def deactivate(self, checkout_id: str, headers: HeaderTypes | None = None) -> Checkout:
         """
@@ -929,34 +941,35 @@ class CheckoutsResource(Resource):
 
 
         Raises:
+            APITimeoutError: The request timed out.
+            APIConnectionError: The request failed because of a connection error.
             APIError: Raised when the API returns one of the documented error responses:
-                401: The request is not authorized.
-                404: The requested resource does not exist.
-                409: The request conflicts with the current state of the resource.
+                401: The request is not authorized. (raises AuthenticationError)
+                404: The requested resource does not exist. (raises NotFoundError)
+                409: The request conflicts with the current state of the resource. (raises ConflictError)
                 Unexpected response statuses also raise this exception.
         """
-        resp = self._client.delete(
-            f"/v0.1/checkouts/{checkout_id}",
-            headers=headers,
-        )
+        with _wrap_request_errors():
+            resp = self._client.delete(
+                f"/v0.1/checkouts/{checkout_id}",
+                headers=headers,
+            )
         if resp.status_code == 200:
             return pydantic.TypeAdapter(Checkout).validate_python(resp.json())
         elif resp.status_code == 401:
-            raise APIError(
-                "The request is not authorized.", status=resp.status_code, body=resp.text
-            )
+            raise APIError.from_response("The request is not authorized.", resp, body_type=Problem)
         elif resp.status_code == 404:
-            raise APIError(
-                "The requested resource does not exist.", status=resp.status_code, body=resp.text
+            raise APIError.from_response(
+                "The requested resource does not exist.", resp, body_type=Error
             )
         elif resp.status_code == 409:
-            raise APIError(
+            raise APIError.from_response(
                 "The request conflicts with the current state of the resource.",
-                status=resp.status_code,
-                body=resp.text,
+                resp,
+                body_type=Error,
             )
         else:
-            raise APIError(f"Unexpected response", status=resp.status_code, body=resp.text)
+            raise APIError.from_response("Unexpected response", resp)
 
     def create_apple_pay_session(
         self, checkout_id: str, *, context: str, target: str, headers: HeaderTypes | None = None
@@ -974,32 +987,37 @@ class CheckoutsResource(Resource):
 
 
         Raises:
+            APITimeoutError: The request timed out.
+            APIConnectionError: The request failed because of a connection error.
             APIError: Raised when the API returns one of the documented error responses:
-                400: Bad Request
-                404: The requested resource does not exist.
+                400: Bad Request (raises BadRequestError)
+                404: The requested resource does not exist. (raises NotFoundError)
                 Unexpected response statuses also raise this exception.
         """
         body_data: dict[str, typing.Any] = {}
         body_data["context"] = context
         body_data["target"] = target
 
-        resp = self._client.put(
-            f"/v0.2/checkouts/{checkout_id}/apple-pay-session",
-            json=serialize_request_data(body_data),
-            headers=headers,
-        )
+        with _wrap_request_errors():
+            resp = self._client.put(
+                f"/v0.2/checkouts/{checkout_id}/apple-pay-session",
+                json=serialize_request_data(body_data),
+                headers=headers,
+            )
         if resp.status_code == 200:
             return pydantic.TypeAdapter(CreateApplePaySession200Response).validate_python(
                 resp.json()
             )
         elif resp.status_code == 400:
-            raise APIError("Bad Request", status=resp.status_code, body=resp.text)
+            raise APIError.from_response(
+                "Bad Request", resp, body_type=CreateApplePaySession400Response
+            )
         elif resp.status_code == 404:
-            raise APIError(
-                "The requested resource does not exist.", status=resp.status_code, body=resp.text
+            raise APIError.from_response(
+                "The requested resource does not exist.", resp, body_type=Error
             )
         else:
-            raise APIError(f"Unexpected response", status=resp.status_code, body=resp.text)
+            raise APIError.from_response("Unexpected response", resp)
 
 
 class AsyncCheckoutsResource(AsyncResource):
@@ -1023,8 +1041,10 @@ class AsyncCheckoutsResource(AsyncResource):
 
 
         Raises:
+            APITimeoutError: The request timed out.
+            APIConnectionError: The request failed because of a connection error.
             APIError: Raised when the API returns one of the documented error responses:
-                400: The request is invalid for the submitted query parameters.
+                400: The request is invalid for the submitted query parameters. (raises BadRequestError)
                 Unexpected response statuses also raise this exception.
         """
         query_data: dict[str, typing.Any] = {}
@@ -1033,21 +1053,22 @@ class AsyncCheckoutsResource(AsyncResource):
         if not isinstance(currency, NotGivenType) and currency is not None:
             query_data["currency"] = currency
 
-        resp = await self._client.get(
-            f"/v0.1/merchants/{merchant_code}/payment-methods",
-            params=serialize_query_params(query_data) if query_data else None,
-            headers=headers,
-        )
+        with _wrap_request_errors():
+            resp = await self._client.get(
+                f"/v0.1/merchants/{merchant_code}/payment-methods",
+                params=serialize_query_params(query_data) if query_data else None,
+                headers=headers,
+            )
         if resp.status_code == 200:
             return pydantic.TypeAdapter(GetPaymentMethods200Response).validate_python(resp.json())
         elif resp.status_code == 400:
-            raise APIError(
+            raise APIError.from_response(
                 "The request is invalid for the submitted query parameters.",
-                status=resp.status_code,
-                body=resp.text,
+                resp,
+                body_type=DetailsError,
             )
         else:
-            raise APIError(f"Unexpected response", status=resp.status_code, body=resp.text)
+            raise APIError.from_response("Unexpected response", resp)
 
     async def create(
         self,
@@ -1077,11 +1098,13 @@ class AsyncCheckoutsResource(AsyncResource):
 
 
         Raises:
+            APITimeoutError: The request timed out.
+            APIConnectionError: The request failed because of a connection error.
             APIError: Raised when the API returns one of the documented error responses:
-                400: The request body is invalid.
-                401: The request is not authorized.
-                403: The request isn't sufficiently authorized to create a checkout.
-                409: A checkout already exists for the provided unique parameters.
+                400: The request body is invalid. (raises BadRequestError)
+                401: The request is not authorized. (raises AuthenticationError)
+                403: The request isn't sufficiently authorized to create a checkout. (raises PermissionDeniedError)
+                409: A checkout already exists for the provided unique parameters. (raises ConflictError)
                 Unexpected response statuses also raise this exception.
         """
         body_data: dict[str, typing.Any] = {}
@@ -1104,33 +1127,34 @@ class AsyncCheckoutsResource(AsyncResource):
         if not isinstance(hosted_checkout, NotGivenType):
             body_data["hosted_checkout"] = hosted_checkout
 
-        resp = await self._client.post(
-            f"/v0.1/checkouts",
-            json=serialize_request_data(body_data),
-            headers=headers,
-        )
+        with _wrap_request_errors():
+            resp = await self._client.post(
+                f"/v0.1/checkouts",
+                json=serialize_request_data(body_data),
+                headers=headers,
+            )
         if resp.status_code == 201:
             return pydantic.TypeAdapter(Checkout).validate_python(resp.json())
         elif resp.status_code == 400:
-            raise APIError("The request body is invalid.", status=resp.status_code, body=resp.text)
-        elif resp.status_code == 401:
-            raise APIError(
-                "The request is not authorized.", status=resp.status_code, body=resp.text
+            raise APIError.from_response(
+                "The request body is invalid.", resp, body_type=ErrorExtended
             )
+        elif resp.status_code == 401:
+            raise APIError.from_response("The request is not authorized.", resp, body_type=Problem)
         elif resp.status_code == 403:
-            raise APIError(
+            raise APIError.from_response(
                 "The request isn't sufficiently authorized to create a checkout.",
-                status=resp.status_code,
-                body=resp.text,
+                resp,
+                body_type=ErrorForbidden,
             )
         elif resp.status_code == 409:
-            raise APIError(
+            raise APIError.from_response(
                 "A checkout already exists for the provided unique parameters.",
-                status=resp.status_code,
-                body=resp.text,
+                resp,
+                body_type=Error,
             )
         else:
-            raise APIError(f"Unexpected response", status=resp.status_code, body=resp.text)
+            raise APIError.from_response("Unexpected response", resp)
 
     async def list(
         self,
@@ -1145,27 +1169,28 @@ class AsyncCheckoutsResource(AsyncResource):
 
 
         Raises:
+            APITimeoutError: The request timed out.
+            APIConnectionError: The request failed because of a connection error.
             APIError: Raised when the API returns one of the documented error responses:
-                401: The request is not authorized.
+                401: The request is not authorized. (raises AuthenticationError)
                 Unexpected response statuses also raise this exception.
         """
         query_data: dict[str, typing.Any] = {}
         if not isinstance(checkout_reference, NotGivenType) and checkout_reference is not None:
             query_data["checkout_reference"] = checkout_reference
 
-        resp = await self._client.get(
-            f"/v0.1/checkouts",
-            params=serialize_query_params(query_data) if query_data else None,
-            headers=headers,
-        )
+        with _wrap_request_errors():
+            resp = await self._client.get(
+                f"/v0.1/checkouts",
+                params=serialize_query_params(query_data) if query_data else None,
+                headers=headers,
+            )
         if resp.status_code == 200:
             return pydantic.TypeAdapter(ListCheckouts200Response).validate_python(resp.json())
         elif resp.status_code == 401:
-            raise APIError(
-                "The request is not authorized.", status=resp.status_code, body=resp.text
-            )
+            raise APIError.from_response("The request is not authorized.", resp, body_type=Problem)
         else:
-            raise APIError(f"Unexpected response", status=resp.status_code, body=resp.text)
+            raise APIError.from_response("Unexpected response", resp)
 
     async def get(self, checkout_id: str, headers: HeaderTypes | None = None) -> CheckoutSuccess:
         """
@@ -1175,27 +1200,28 @@ class AsyncCheckoutsResource(AsyncResource):
 
 
         Raises:
+            APITimeoutError: The request timed out.
+            APIConnectionError: The request failed because of a connection error.
             APIError: Raised when the API returns one of the documented error responses:
-                401: The request is not authorized.
-                404: The requested resource does not exist.
+                401: The request is not authorized. (raises AuthenticationError)
+                404: The requested resource does not exist. (raises NotFoundError)
                 Unexpected response statuses also raise this exception.
         """
-        resp = await self._client.get(
-            f"/v0.1/checkouts/{checkout_id}",
-            headers=headers,
-        )
+        with _wrap_request_errors():
+            resp = await self._client.get(
+                f"/v0.1/checkouts/{checkout_id}",
+                headers=headers,
+            )
         if resp.status_code == 200:
             return pydantic.TypeAdapter(CheckoutSuccess).validate_python(resp.json())
         elif resp.status_code == 401:
-            raise APIError(
-                "The request is not authorized.", status=resp.status_code, body=resp.text
-            )
+            raise APIError.from_response("The request is not authorized.", resp, body_type=Problem)
         elif resp.status_code == 404:
-            raise APIError(
-                "The requested resource does not exist.", status=resp.status_code, body=resp.text
+            raise APIError.from_response(
+                "The requested resource does not exist.", resp, body_type=Error
             )
         else:
-            raise APIError(f"Unexpected response", status=resp.status_code, body=resp.text)
+            raise APIError.from_response("Unexpected response", resp)
 
     async def update(
         self,
@@ -1218,9 +1244,11 @@ class AsyncCheckoutsResource(AsyncResource):
 
 
         Raises:
+            APITimeoutError: The request timed out.
+            APIConnectionError: The request failed because of a connection error.
             APIError: Raised when the API returns one of the documented error responses:
-                401: The request is not authorized.
-                404: The requested resource does not exist.
+                401: The request is not authorized. (raises AuthenticationError)
+                404: The requested resource does not exist. (raises NotFoundError)
                 Unexpected response statuses also raise this exception.
         """
         body_data: dict[str, typing.Any] = {}
@@ -1237,23 +1265,22 @@ class AsyncCheckoutsResource(AsyncResource):
         if not isinstance(customer_id, NotGivenType):
             body_data["customer_id"] = customer_id
 
-        resp = await self._client.patch(
-            f"/v0.1/checkouts/{checkout_id}",
-            json=serialize_request_data(body_data),
-            headers=headers,
-        )
+        with _wrap_request_errors():
+            resp = await self._client.patch(
+                f"/v0.1/checkouts/{checkout_id}",
+                json=serialize_request_data(body_data),
+                headers=headers,
+            )
         if resp.status_code == 200:
             return pydantic.TypeAdapter(Checkout).validate_python(resp.json())
         elif resp.status_code == 401:
-            raise APIError(
-                "The request is not authorized.", status=resp.status_code, body=resp.text
-            )
+            raise APIError.from_response("The request is not authorized.", resp, body_type=Problem)
         elif resp.status_code == 404:
-            raise APIError(
-                "The requested resource does not exist.", status=resp.status_code, body=resp.text
+            raise APIError.from_response(
+                "The requested resource does not exist.", resp, body_type=Error
             )
         else:
-            raise APIError(f"Unexpected response", status=resp.status_code, body=resp.text)
+            raise APIError.from_response("Unexpected response", resp)
 
     async def process(
         self,
@@ -1285,11 +1312,13 @@ class AsyncCheckoutsResource(AsyncResource):
 
 
         Raises:
+            APITimeoutError: The request timed out.
+            APIConnectionError: The request failed because of a connection error.
             APIError: Raised when the API returns one of the documented error responses:
-                400: The request body is invalid for processing the checkout.
-                401: The request is not authorized.
-                404: The requested resource does not exist.
-                409: The request conflicts with the current state of the resource.
+                400: The request body is invalid for processing the checkout. (raises BadRequestError)
+                401: The request is not authorized. (raises AuthenticationError)
+                404: The requested resource does not exist. (raises NotFoundError)
+                409: The request conflicts with the current state of the resource. (raises ConflictError)
                 Unexpected response statuses also raise this exception.
         """
         body_data: dict[str, typing.Any] = {}
@@ -1311,11 +1340,12 @@ class AsyncCheckoutsResource(AsyncResource):
         if not isinstance(personal_details, NotGivenType):
             body_data["personal_details"] = personal_details
 
-        resp = await self._client.put(
-            f"/v0.1/checkouts/{checkout_id}",
-            json=serialize_request_data(body_data),
-            headers=headers,
-        )
+        with _wrap_request_errors():
+            resp = await self._client.put(
+                f"/v0.1/checkouts/{checkout_id}",
+                json=serialize_request_data(body_data),
+                headers=headers,
+            )
         if resp.status_code == 200:
             return pydantic.TypeAdapter(ProcessCheckoutCheckoutSuccessResponse).validate_python(
                 resp.json()
@@ -1323,27 +1353,25 @@ class AsyncCheckoutsResource(AsyncResource):
         elif resp.status_code == 202:
             return pydantic.TypeAdapter(CheckoutAccepted).validate_python(resp.json())
         elif resp.status_code == 400:
-            raise APIError(
+            raise APIError.from_response(
                 "The request body is invalid for processing the checkout.",
-                status=resp.status_code,
-                body=resp.text,
+                resp,
+                body_type=ProcessCheckout400Response,
             )
         elif resp.status_code == 401:
-            raise APIError(
-                "The request is not authorized.", status=resp.status_code, body=resp.text
-            )
+            raise APIError.from_response("The request is not authorized.", resp, body_type=Problem)
         elif resp.status_code == 404:
-            raise APIError(
-                "The requested resource does not exist.", status=resp.status_code, body=resp.text
+            raise APIError.from_response(
+                "The requested resource does not exist.", resp, body_type=Error
             )
         elif resp.status_code == 409:
-            raise APIError(
+            raise APIError.from_response(
                 "The request conflicts with the current state of the resource.",
-                status=resp.status_code,
-                body=resp.text,
+                resp,
+                body_type=Error,
             )
         else:
-            raise APIError(f"Unexpected response", status=resp.status_code, body=resp.text)
+            raise APIError.from_response("Unexpected response", resp)
 
     async def deactivate(self, checkout_id: str, headers: HeaderTypes | None = None) -> Checkout:
         """
@@ -1353,34 +1381,35 @@ class AsyncCheckoutsResource(AsyncResource):
 
 
         Raises:
+            APITimeoutError: The request timed out.
+            APIConnectionError: The request failed because of a connection error.
             APIError: Raised when the API returns one of the documented error responses:
-                401: The request is not authorized.
-                404: The requested resource does not exist.
-                409: The request conflicts with the current state of the resource.
+                401: The request is not authorized. (raises AuthenticationError)
+                404: The requested resource does not exist. (raises NotFoundError)
+                409: The request conflicts with the current state of the resource. (raises ConflictError)
                 Unexpected response statuses also raise this exception.
         """
-        resp = await self._client.delete(
-            f"/v0.1/checkouts/{checkout_id}",
-            headers=headers,
-        )
+        with _wrap_request_errors():
+            resp = await self._client.delete(
+                f"/v0.1/checkouts/{checkout_id}",
+                headers=headers,
+            )
         if resp.status_code == 200:
             return pydantic.TypeAdapter(Checkout).validate_python(resp.json())
         elif resp.status_code == 401:
-            raise APIError(
-                "The request is not authorized.", status=resp.status_code, body=resp.text
-            )
+            raise APIError.from_response("The request is not authorized.", resp, body_type=Problem)
         elif resp.status_code == 404:
-            raise APIError(
-                "The requested resource does not exist.", status=resp.status_code, body=resp.text
+            raise APIError.from_response(
+                "The requested resource does not exist.", resp, body_type=Error
             )
         elif resp.status_code == 409:
-            raise APIError(
+            raise APIError.from_response(
                 "The request conflicts with the current state of the resource.",
-                status=resp.status_code,
-                body=resp.text,
+                resp,
+                body_type=Error,
             )
         else:
-            raise APIError(f"Unexpected response", status=resp.status_code, body=resp.text)
+            raise APIError.from_response("Unexpected response", resp)
 
     async def create_apple_pay_session(
         self, checkout_id: str, *, context: str, target: str, headers: HeaderTypes | None = None
@@ -1398,29 +1427,34 @@ class AsyncCheckoutsResource(AsyncResource):
 
 
         Raises:
+            APITimeoutError: The request timed out.
+            APIConnectionError: The request failed because of a connection error.
             APIError: Raised when the API returns one of the documented error responses:
-                400: Bad Request
-                404: The requested resource does not exist.
+                400: Bad Request (raises BadRequestError)
+                404: The requested resource does not exist. (raises NotFoundError)
                 Unexpected response statuses also raise this exception.
         """
         body_data: dict[str, typing.Any] = {}
         body_data["context"] = context
         body_data["target"] = target
 
-        resp = await self._client.put(
-            f"/v0.2/checkouts/{checkout_id}/apple-pay-session",
-            json=serialize_request_data(body_data),
-            headers=headers,
-        )
+        with _wrap_request_errors():
+            resp = await self._client.put(
+                f"/v0.2/checkouts/{checkout_id}/apple-pay-session",
+                json=serialize_request_data(body_data),
+                headers=headers,
+            )
         if resp.status_code == 200:
             return pydantic.TypeAdapter(CreateApplePaySession200Response).validate_python(
                 resp.json()
             )
         elif resp.status_code == 400:
-            raise APIError("Bad Request", status=resp.status_code, body=resp.text)
+            raise APIError.from_response(
+                "Bad Request", resp, body_type=CreateApplePaySession400Response
+            )
         elif resp.status_code == 404:
-            raise APIError(
-                "The requested resource does not exist.", status=resp.status_code, body=resp.text
+            raise APIError.from_response(
+                "The requested resource does not exist.", resp, body_type=Error
             )
         else:
-            raise APIError(f"Unexpected response", status=resp.status_code, body=resp.text)
+            raise APIError.from_response("Unexpected response", resp)

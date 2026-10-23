@@ -36,6 +36,7 @@ func (b *Builder) generateSharedTypes() error {
 			types = append(types, generated...)
 		}
 	}
+	types = append(types, b.errorBodyTypes...)
 	usesSecret := usesSecretType(types)
 
 	typesBuf := bytes.NewBuffer(nil)
@@ -125,8 +126,13 @@ func (b *Builder) generateResourceFile(tagName string, paths *v3.Paths) ([]strin
 	paramTypes := b.pathsToParamTypes(paths)
 	innerTypes = append(innerTypes, paramTypes...)
 
-	responseTypes := b.pathsToResponseTypes(paths)
+	responseTypes, errorTypes := b.pathsToResponseTypes(paths)
 	innerTypes = append(innerTypes, responseTypes...)
+	for _, typ := range errorTypes {
+		if named, ok := typ.(Type); ok {
+			typeNames = append(typeNames, named.TypeName())
+		}
+	}
 
 	methods, err := b.pathsToMethods(paths)
 	if err != nil {
@@ -173,7 +179,7 @@ func (b *Builder) generateResourceFile(tagName string, paths *v3.Paths) ([]strin
 	}
 
 	resourceTypes := make([]string, 0, len(innerTypes))
-	for _, t := range innerTypes {
+	for _, t := range append(innerTypes, errorTypes...) {
 		if typ, ok := t.(Type); ok {
 			if writableRequestOnly(t) {
 				continue

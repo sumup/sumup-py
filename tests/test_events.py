@@ -7,7 +7,7 @@ import httpx
 import pydantic
 import pytest
 
-from sumup import APIError, AsyncSumup
+from sumup import APIError, AsyncSumup, errors
 from sumup.events import (
     EventCallbackError,
     EventHandlerRegistrationError,
@@ -25,7 +25,7 @@ from sumup.events import (
     UnknownEvent,
     verify_event_signature,
 )
-from sumup.types import Reader
+from sumup.types import Problem, Reader
 
 _NOW = 1788696000
 _SECRET = "event_secret_test"
@@ -347,18 +347,55 @@ def test_fetch_object_normalizes_url_and_uses_client_options(sdk_factory, url, p
     assert request.headers["X-Custom"] == "value"
 
 
-@pytest.mark.parametrize("status,body", [(404, {"title": "Not Found"}), (500, "unavailable")])
-def test_fetch_object_preserves_api_errors(sdk_factory, status, body):
-    sdk = sdk_factory(
-        lambda _: httpx.Response(
-            status, **({"json": body} if isinstance(body, dict) else {"text": body})
-        )
+@pytest.mark.parametrize(
+    "status,body",
+    [
+        (404, {"title": "Not Found"}),
+        (500, "unavailable"),
+        (
+            404,
+            Problem(type="https://developer.sumup.com/problem/not-found", detail="Reader missing"),
+        ),
+    ],
+)
+@pytest.mark.parametrize("use_async", [False, True], ids=["sync", "async"])
+def test_fetch_object_preserves_api_errors(sdk_factory, status, body, use_async):
+    payload = body.model_dump() if isinstance(body, Problem) else body
+    response = httpx.Response(
+        status,
+        headers={"X-Request-ID": "request-123"},
+        **({"json": payload} if isinstance(payload, dict) else {"text": payload}),
     )
-    event = sdk.parse_event_notification_without_verification(_body())
+    if isinstance(body, Problem):
+        response.headers["Content-Type"] = "application/problem+json"
     with pytest.raises(APIError) as raised:
-        event.fetch_object()
+        if use_async:
+
+            async def run():
+                sdk = AsyncSumup(api_key="test", base_url="https://api.sumup.test")
+                await sdk.aclose()
+                async with httpx.AsyncClient(
+                    base_url="https://api.sumup.test",
+                    transport=httpx.MockTransport(lambda _: response),
+                ) as client:
+                    sdk._client = client
+                    event = sdk.parse_event_notification_without_verification(_body())
+                    assert isinstance(event, ReaderCreatedEvent)
+                    await event.fetch_object_async()
+
+            asyncio.run(run())
+        else:
+            sdk = sdk_factory(lambda _: response)
+            event = sdk.parse_event_notification_without_verification(_body())
+            event.fetch_object()
     assert raised.value.status == status
     assert raised.value.body == body
+    if isinstance(body, Problem):
+        assert isinstance(raised.value, errors.NotFoundError)
+        assert isinstance(raised.value.body, Problem)
+        assert raised.value.body.detail == body.detail
+    assert raised.value.response is response
+    assert raised.value.response.headers["X-Request-ID"] == "request-123"
 
 
 def test_fetch_object_does_not_follow_redirects(sdk_factory):
@@ -535,3 +572,36 @@ def test_decorated_callback_remains_directly_callable(sdk):
     # Keeping the parameter name also checks that the decorator preserves typing.
     callback(notification=event)
     assert calls == [event.id]
+
+
+@pytest.mark.parametrize("use_async", [False, True], ids=["sync", "async"])
+def test_fetch_object_wraps_transport_errors(sdk_factory, use_async):
+    requests = []
+
+    def handler(request):
+        requests.append(request)
+        raise httpx.ReadTimeout("Transport failed", request=request)
+
+    with pytest.raises(errors.APITimeoutError) as raised:
+        if use_async:
+
+            async def run():
+                sdk = AsyncSumup(api_key="test", base_url="https://api.sumup.test")
+                await sdk.aclose()
+                async with httpx.AsyncClient(
+                    base_url="https://api.sumup.test", transport=httpx.MockTransport(handler)
+                ) as client:
+                    sdk._client = client
+                    event = sdk.parse_event_notification_without_verification(_body())
+                    assert isinstance(event, ReaderCreatedEvent)
+                    await event.fetch_object_async()
+
+            asyncio.run(run())
+        else:
+            sdk = sdk_factory(handler)
+            event = sdk.parse_event_notification_without_verification(_body())
+            event.fetch_object()
+
+    assert isinstance(raised.value.__cause__, httpx.ReadTimeout)
+    assert raised.value.request is requests[0]
+    assert raised.value.response is None

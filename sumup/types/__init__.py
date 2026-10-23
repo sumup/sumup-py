@@ -5450,3 +5450,15 @@ class UpdateReaderSettingsUnprocessableEntity(pydantic.BaseModel):
     """
 
     errors: UpdateReaderSettingsUnprocessableEntityErrors
+
+
+ProcessCheckout400Response = ErrorExtended | list[ErrorExtended]
+
+CreateApplePaySession400Response = Error | list[Error]
+
+CreateCustomer400Response = ErrorExtended | CustomerValidationError
+
+ListPayoutsV1400Response = list[ErrorExtended]
+"""
+ListPayoutsV1400Response is a schema definition.
+"""

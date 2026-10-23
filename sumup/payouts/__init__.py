@@ -8,6 +8,7 @@ from ..types import (
 )
 from .resource import (
     AsyncPayoutsResource,
+    ListPayoutsV1400Response,
     PayoutsResource,
 )
 
@@ -17,6 +18,7 @@ __all__ = [
     "ErrorExtended",
     "FinancialPayout",
     "FinancialPayouts",
+    "ListPayoutsV1400Response",
     "PayoutsResource",
     "Problem",
 ]
