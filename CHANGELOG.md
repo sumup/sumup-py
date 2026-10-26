@@ -1,5 +1,16 @@
 # Changelog
 
+## [0.3.6](https://github.com/sumup/sumup-py/compare/v0.3.5...v0.3.6) (2026-10-26)
+
+
+### Chores
+
+* **deps-dev:** bump ruff from 0.17.0 to 0.17.1 ([#431](https://github.com/sumup/sumup-py/issues/431)) ([0f51dba](https://github.com/sumup/sumup-py/commit/0f51dba7482a6c6bab4d9d1089ad8e6f4a2350ad))
+* **deps-dev:** bump ty from 0.0.86 to 0.0.91 ([#433](https://github.com/sumup/sumup-py/issues/433)) ([4179927](https://github.com/sumup/sumup-py/commit/4179927bf56fc287296310aad7abb003ee72e108))
+* **deps:** bump actions/create-github-app-token from 3.2.0 to 3.3.0 ([#432](https://github.com/sumup/sumup-py/issues/432)) ([46c5509](https://github.com/sumup/sumup-py/commit/46c5509f5b2092cdfa6bdbc066518ec733903c26))
+* **deps:** bump reviewdog/action-actionlint from 1.80.0 to 1.80.4 ([#430](https://github.com/sumup/sumup-py/issues/430)) ([003c345](https://github.com/sumup/sumup-py/commit/003c3457e1f90f01ac492796a1d837c6b39c82dd))
+* synced file(s) with sumup/apis ([#435](https://github.com/sumup/sumup-py/issues/435)) ([d465351](https://github.com/sumup/sumup-py/commit/d46535121ba0638d0c49c8ff490c84312051b9cb))
+
 ## [0.3.5](https://github.com/sumup/sumup-py/compare/v0.3.4...v0.3.5) (2026-10-20)
 
 
