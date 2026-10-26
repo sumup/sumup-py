@@ -78,6 +78,38 @@ For long-running applications, reuse a client across requests and call `client.c
 or `await client.aclose()` during shutdown, after outstanding work finishes.
 A closed client cannot be reused.
 
+### Handling errors
+
+Catch `APIError` to handle failed requests, or use a specific exception such as
+`RateLimitError` when your application needs to handle a failure differently.
+
+When the API returns a Problem response, `error.problem` gives you typed fields
+such as `type`, `title`, and `detail`. It is `None` for other error responses.
+
+```python
+from sumup import APIError, Sumup
+from sumup.errors import APIStatusError, RateLimitError
+
+with Sumup() as client:
+    try:
+        checkout = client.checkouts.get("your-checkout-id")
+    except RateLimitError:
+        print("Too many requests. Try again later.")
+    except APIStatusError as error:
+        if (problem := error.problem) is not None:
+            print(problem.type, problem.detail)
+        else:
+            print(error)
+    except APIError as error:
+        print(error)
+```
+
+For errors returned by the API, `error.status` gives you the HTTP status,
+`error.body` holds the full error details, and `error.response` provides the
+original response, including its headers and text.
+
+Use the same `try`/`except` pattern with `AsyncSumup`.
+
 ### Creating a Checkout
 
 ```python
