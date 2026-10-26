@@ -10,6 +10,7 @@ from ..types import (
     CreateReaderTerminateError,
     CreateReaderTerminateUnprocessableEntity,
     GetReaderCheckoutResponse,
+    GetReaderSettingsResponse,
     Metadata,
     NotFound,
     Problem,
@@ -24,6 +25,10 @@ from ..types import (
     ReaderStatus,
     StatusResponse,
     Unauthorized,
+    UpdateReaderSettingsError,
+    UpdateReaderSettingsRequest,
+    UpdateReaderSettingsResponse,
+    UpdateReaderSettingsUnprocessableEntity,
 )
 from .resource import (
     AsyncReadersResource,
@@ -43,6 +48,7 @@ __all__ = [
     "CreateReaderTerminateError",
     "CreateReaderTerminateUnprocessableEntity",
     "GetReaderCheckoutResponse",
+    "GetReaderSettingsResponse",
     "ListReaders200Response",
     "Metadata",
     "NotFound",
@@ -59,4 +65,8 @@ __all__ = [
     "ReadersResource",
     "StatusResponse",
     "Unauthorized",
+    "UpdateReaderSettingsError",
+    "UpdateReaderSettingsRequest",
+    "UpdateReaderSettingsResponse",
+    "UpdateReaderSettingsUnprocessableEntity",
 ]

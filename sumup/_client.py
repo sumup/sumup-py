@@ -26,6 +26,7 @@ from .payouts import AsyncPayoutsResource, PayoutsResource
 from .readers import AsyncReadersResource, ReadersResource
 from .receipts import AsyncReceiptsResource, ReceiptsResource
 from .roles import AsyncRolesResource, RolesResource
+from .tokens import AsyncTokensResource, TokensResource
 from .transactions import AsyncTransactionsResource, TransactionsResource
 
 BASE_URL = "https://api.sumup.com"
@@ -224,6 +225,13 @@ class Sumup(Resource):
         return RolesResource(self._client)
 
     @property
+    def tokens(self) -> TokensResource:
+        """Access the Tokens API endpoints."""
+        from .tokens.resource import TokensResource
+
+        return TokensResource(self._client)
+
+    @property
     def transactions(self) -> TransactionsResource:
         """Access the Transactions API endpoints."""
         from .transactions.resource import TransactionsResource
@@ -412,6 +420,13 @@ class AsyncSumup(AsyncResource):
         from .roles.resource import AsyncRolesResource
 
         return AsyncRolesResource(self._client)
+
+    @property
+    def tokens(self) -> AsyncTokensResource:
+        """Access the Tokens API endpoints."""
+        from .tokens.resource import AsyncTokensResource
+
+        return AsyncTokensResource(self._client)
 
     @property
     def transactions(self) -> AsyncTransactionsResource:

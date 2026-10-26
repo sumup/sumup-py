@@ -17,6 +17,7 @@ def test_get_reader_checkout_accepts_pending_null_fields(sdk_factory):
                     "client_transaction_id": "00e33a36-c99b-4cb2-b635-b90c1455c9c8",
                     "created_at": "2026-07-07T20:41:16.315434Z",
                     "installments": None,
+                    "payment_failure_reason": None,
                     "payment_status": None,
                     "payment_type": "card",
                     "reader_firmware_version": "3.3.3.21",
@@ -40,6 +41,7 @@ def test_get_reader_checkout_accepts_pending_null_fields(sdk_factory):
     assert checkout.data.status == "pending"
     assert checkout.data.card_type is None
     assert checkout.data.installments is None
+    assert checkout.data.payment_failure_reason is None
     assert checkout.data.payment_status is None
     assert checkout.data.valid_until is None
     assert checkout.data.total_amount.value == 1000
