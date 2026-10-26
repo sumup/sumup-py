@@ -33,6 +33,7 @@ from ..types import (
     CardType,
     Customer,
     CustomerInput,
+    CustomerValidationError,
     Error,
     ErrorExtended,
     ErrorForbidden,
