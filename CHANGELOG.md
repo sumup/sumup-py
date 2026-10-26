@@ -1,5 +1,16 @@
 # Changelog
 
+## [0.4.0](https://github.com/sumup/sumup-py/compare/v0.3.6...v0.4.0) (2026-10-26)
+
+
+### ⚠ BREAKING CHANGES
+
+* Documented error bodies now contain typed models or collections instead of response text. Inspect error.body directly or use error.response.text for the original text. Connection failures and timeouts now raise SDK exceptions; the original transport exception is available through error.__cause__.
+
+### Features
+
+* add consistent API error handling ([#436](https://github.com/sumup/sumup-py/issues/436)) ([ea7023e](https://github.com/sumup/sumup-py/commit/ea7023ec9c9a20d93fbc0289f94ae2fe5154177a))
+
 ## [0.3.6](https://github.com/sumup/sumup-py/compare/v0.3.5...v0.3.6) (2026-10-26)
 
 
