@@ -45,8 +45,10 @@ class CheckoutCreatedEvent(FetchableEvent[Checkout]):
     """
 
     EVENT_TYPE: typing.ClassVar[str] = "checkouts.created"
-    type: typing.Literal["checkouts.created"] = "checkouts.created"
-    _object_type: typing.ClassVar[str] = "checkout"
+    type: typing.Literal["checkouts.created"] = pydantic.Field(
+        default="checkouts.created", frozen=True
+    )
+    _object_type: typing.ClassVar[str | None] = "checkout"
     _response_model: typing.ClassVar[builtins.type[pydantic.BaseModel]] = Checkout
 
 
@@ -59,8 +61,10 @@ class CheckoutExpiredEvent(FetchableEvent[Checkout]):
     """
 
     EVENT_TYPE: typing.ClassVar[str] = "checkouts.expired"
-    type: typing.Literal["checkouts.expired"] = "checkouts.expired"
-    _object_type: typing.ClassVar[str] = "checkout"
+    type: typing.Literal["checkouts.expired"] = pydantic.Field(
+        default="checkouts.expired", frozen=True
+    )
+    _object_type: typing.ClassVar[str | None] = "checkout"
     _response_model: typing.ClassVar[builtins.type[pydantic.BaseModel]] = Checkout
 
 
@@ -73,8 +77,10 @@ class CheckoutFailedEvent(FetchableEvent[Checkout]):
     """
 
     EVENT_TYPE: typing.ClassVar[str] = "checkouts.failed"
-    type: typing.Literal["checkouts.failed"] = "checkouts.failed"
-    _object_type: typing.ClassVar[str] = "checkout"
+    type: typing.Literal["checkouts.failed"] = pydantic.Field(
+        default="checkouts.failed", frozen=True
+    )
+    _object_type: typing.ClassVar[str | None] = "checkout"
     _response_model: typing.ClassVar[builtins.type[pydantic.BaseModel]] = Checkout
 
 
@@ -87,8 +93,8 @@ class CheckoutPaidEvent(FetchableEvent[Checkout]):
     """
 
     EVENT_TYPE: typing.ClassVar[str] = "checkouts.paid"
-    type: typing.Literal["checkouts.paid"] = "checkouts.paid"
-    _object_type: typing.ClassVar[str] = "checkout"
+    type: typing.Literal["checkouts.paid"] = pydantic.Field(default="checkouts.paid", frozen=True)
+    _object_type: typing.ClassVar[str | None] = "checkout"
     _response_model: typing.ClassVar[builtins.type[pydantic.BaseModel]] = Checkout
 
 
@@ -101,8 +107,10 @@ class CheckoutUpdatedEvent(FetchableEvent[Checkout]):
     """
 
     EVENT_TYPE: typing.ClassVar[str] = "checkouts.updated"
-    type: typing.Literal["checkouts.updated"] = "checkouts.updated"
-    _object_type: typing.ClassVar[str] = "checkout"
+    type: typing.Literal["checkouts.updated"] = pydantic.Field(
+        default="checkouts.updated", frozen=True
+    )
+    _object_type: typing.ClassVar[str | None] = "checkout"
     _response_model: typing.ClassVar[builtins.type[pydantic.BaseModel]] = Checkout
 
 
@@ -115,8 +123,8 @@ class MemberCreatedEvent(FetchableEvent[Member]):
     """
 
     EVENT_TYPE: typing.ClassVar[str] = "members.created"
-    type: typing.Literal["members.created"] = "members.created"
-    _object_type: typing.ClassVar[str] = "member"
+    type: typing.Literal["members.created"] = pydantic.Field(default="members.created", frozen=True)
+    _object_type: typing.ClassVar[str | None] = "member"
     _response_model: typing.ClassVar[builtins.type[pydantic.BaseModel]] = Member
 
 
@@ -129,8 +137,8 @@ class MemberDeletedEvent(FetchableEvent[Member]):
     """
 
     EVENT_TYPE: typing.ClassVar[str] = "members.deleted"
-    type: typing.Literal["members.deleted"] = "members.deleted"
-    _object_type: typing.ClassVar[str] = "member"
+    type: typing.Literal["members.deleted"] = pydantic.Field(default="members.deleted", frozen=True)
+    _object_type: typing.ClassVar[str | None] = "member"
     _response_model: typing.ClassVar[builtins.type[pydantic.BaseModel]] = Member
 
 
@@ -143,8 +151,8 @@ class MemberUpdatedEvent(FetchableEvent[Member]):
     """
 
     EVENT_TYPE: typing.ClassVar[str] = "members.updated"
-    type: typing.Literal["members.updated"] = "members.updated"
-    _object_type: typing.ClassVar[str] = "member"
+    type: typing.Literal["members.updated"] = pydantic.Field(default="members.updated", frozen=True)
+    _object_type: typing.ClassVar[str | None] = "member"
     _response_model: typing.ClassVar[builtins.type[pydantic.BaseModel]] = Member
 
 
@@ -157,8 +165,8 @@ class ReaderCreatedEvent(FetchableEvent[Reader]):
     """
 
     EVENT_TYPE: typing.ClassVar[str] = "readers.created"
-    type: typing.Literal["readers.created"] = "readers.created"
-    _object_type: typing.ClassVar[str] = "reader"
+    type: typing.Literal["readers.created"] = pydantic.Field(default="readers.created", frozen=True)
+    _object_type: typing.ClassVar[str | None] = "reader"
     _response_model: typing.ClassVar[builtins.type[pydantic.BaseModel]] = Reader
 
 
@@ -171,8 +179,8 @@ class ReaderDeletedEvent(FetchableEvent[Reader]):
     """
 
     EVENT_TYPE: typing.ClassVar[str] = "readers.deleted"
-    type: typing.Literal["readers.deleted"] = "readers.deleted"
-    _object_type: typing.ClassVar[str] = "reader"
+    type: typing.Literal["readers.deleted"] = pydantic.Field(default="readers.deleted", frozen=True)
+    _object_type: typing.ClassVar[str | None] = "reader"
     _response_model: typing.ClassVar[builtins.type[pydantic.BaseModel]] = Reader
 
 
@@ -185,8 +193,8 @@ class RoleCreatedEvent(FetchableEvent[Role]):
     """
 
     EVENT_TYPE: typing.ClassVar[str] = "roles.created"
-    type: typing.Literal["roles.created"] = "roles.created"
-    _object_type: typing.ClassVar[str] = "role"
+    type: typing.Literal["roles.created"] = pydantic.Field(default="roles.created", frozen=True)
+    _object_type: typing.ClassVar[str | None] = "role"
     _response_model: typing.ClassVar[builtins.type[pydantic.BaseModel]] = Role
 
 
@@ -199,8 +207,8 @@ class RoleDeletedEvent(FetchableEvent[Role]):
     """
 
     EVENT_TYPE: typing.ClassVar[str] = "roles.deleted"
-    type: typing.Literal["roles.deleted"] = "roles.deleted"
-    _object_type: typing.ClassVar[str] = "role"
+    type: typing.Literal["roles.deleted"] = pydantic.Field(default="roles.deleted", frozen=True)
+    _object_type: typing.ClassVar[str | None] = "role"
     _response_model: typing.ClassVar[builtins.type[pydantic.BaseModel]] = Role
 
 
@@ -213,8 +221,8 @@ class RoleUpdatedEvent(FetchableEvent[Role]):
     """
 
     EVENT_TYPE: typing.ClassVar[str] = "roles.updated"
-    type: typing.Literal["roles.updated"] = "roles.updated"
-    _object_type: typing.ClassVar[str] = "role"
+    type: typing.Literal["roles.updated"] = pydantic.Field(default="roles.updated", frozen=True)
+    _object_type: typing.ClassVar[str | None] = "role"
     _response_model: typing.ClassVar[builtins.type[pydantic.BaseModel]] = Role
 
 

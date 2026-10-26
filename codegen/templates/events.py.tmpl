@@ -46,8 +46,8 @@ class {{ .ClassName }}(FetchableEvent[{{ .ObjectType }}]):
     """
 
     EVENT_TYPE: typing.ClassVar[str] = {{ printf "%q" .EventType }}
-    type: typing.Literal[{{ printf "%q" .EventType }}] = {{ printf "%q" .EventType }}
-    _object_type: typing.ClassVar[str] = {{ printf "%q" .ObjectKind }}
+    type: typing.Literal[{{ printf "%q" .EventType }}] = pydantic.Field(default={{ printf "%q" .EventType }}, frozen=True)
+    _object_type: typing.ClassVar[str | None] = {{ printf "%q" .ObjectKind }}
     _response_model: typing.ClassVar[typing.Type[pydantic.BaseModel]] = {{ .ObjectType }}
 
 
