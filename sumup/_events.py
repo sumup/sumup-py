@@ -90,14 +90,14 @@ class EventNotification(pydantic.BaseModel):
 
     Attributes:
         id: Event identifier. Use it to recognize repeated deliveries.
-        type: Event name, such as "members.updated".
+        type: Read-only event name, such as "members.updated".
         created_at: Time the event was created, as a timezone-aware datetime.
             Signature verification checks the header's signing timestamp instead.
         object: Reference to the associated API resource.
     """
 
     id: _NonemptyString
-    type: _NonemptyString
+    type: _NonemptyString = pydantic.Field(frozen=True)
     created_at: pydantic.AwareDatetime
     object: EventObject
 

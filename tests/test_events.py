@@ -4,6 +4,7 @@ import hmac
 import json
 
 import httpx
+import pydantic
 import pytest
 
 from sumup import APIError, AsyncSumup
@@ -96,6 +97,25 @@ def test_parse_event_notification(sdk, event_type, model):
         assert event.created_at.isoformat() == "2026-04-11T10:00:00+00:00"
         assert "_client" not in event.model_dump()
         assert "Bearer" not in repr(event)
+
+
+@pytest.mark.parametrize("model", [EventNotification, ReaderCreatedEvent, UnknownEvent])
+def test_event_type_is_read_only(model):
+    event = model.model_validate_json(_body())
+    with pytest.raises(pydantic.ValidationError) as raised:
+        event.type = "other.event"
+    assert raised.value.errors()[0]["type"] == "frozen_field"
+    assert event.model_dump()["type"] == "readers.created"
+
+
+def test_known_event_type_default_and_validation():
+    payload = json.loads(_body())
+    del payload["type"]
+    assert ReaderCreatedEvent.model_validate(payload).type == "readers.created"
+    payload["type"] = "readers.deleted"
+    with pytest.raises(pydantic.ValidationError) as raised:
+        ReaderCreatedEvent.model_validate(payload)
+    assert raised.value.errors()[0]["type"] == "literal_error"
 
 
 @pytest.mark.parametrize(
