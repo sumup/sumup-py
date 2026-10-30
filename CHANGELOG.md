@@ -1,5 +1,21 @@
 # Changelog
 
+## [0.4.1](https://github.com/sumup/sumup-py/compare/v0.4.0...v0.4.1) (2026-10-30)
+
+
+### Bug Fixes
+
+* update certifi certificate bundle ([#437](https://github.com/sumup/sumup-py/issues/437)) ([76be6a1](https://github.com/sumup/sumup-py/commit/76be6a1d46cbcf1400003dd9e01b98a2a233e942))
+
+
+### Chores
+
+* **deps-dev:** bump ruff from 0.17.1 to 0.17.2 ([#443](https://github.com/sumup/sumup-py/issues/443)) ([32861a8](https://github.com/sumup/sumup-py/commit/32861a84bdf00d2e534cb20c4682e2b9fb2d3115))
+* **deps:** bump astral-sh/setup-uv from 10.3.0 to 10.3.2 ([#442](https://github.com/sumup/sumup-py/issues/442)) ([e735781](https://github.com/sumup/sumup-py/commit/e735781b496ef7c030f8f6202929062e1c54aabe))
+* **deps:** bump github.com/pb33f/libopenapi in /codegen ([#441](https://github.com/sumup/sumup-py/issues/441)) ([a2981ad](https://github.com/sumup/sumup-py/commit/a2981ad89af4c1dbab08419141c47a11f1e0266f))
+* **deps:** bump reviewdog/action-actionlint from 1.80.4 to 1.80.6 ([#440](https://github.com/sumup/sumup-py/issues/440)) ([8e928e2](https://github.com/sumup/sumup-py/commit/8e928e2cbad91a352af084b073f941077c264025))
+* synced local 'openapi.json' with remote 'specs/openapi31.json' ([#445](https://github.com/sumup/sumup-py/issues/445)) ([3a99117](https://github.com/sumup/sumup-py/commit/3a99117f34660a34d5705319727c9db4035098bd))
+
 ## [0.4.0](https://github.com/sumup/sumup-py/compare/v0.3.6...v0.4.0) (2026-10-26)
 
 
