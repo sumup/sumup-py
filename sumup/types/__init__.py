@@ -374,7 +374,8 @@ class BasePerson(pydantic.BaseModel):
 
     address: Address | None = None
     """
-	The address of the individual.
+	An address somewhere in the world. The address fields used depend on the country conventions. For example, inGreat Britain, `city` is `post_town`. In the United States, the top-level administrative unit used in addressesis `state`, whereas in Chile it's `region`.
+	Whether an address is valid or not depends on whether the locally required fields are present. Fields not supported ina country will be ignored.
 	Address documentation: https://developer.sumup.com/tools/glossary/address
 	"""
 
@@ -393,7 +394,9 @@ class BasePerson(pydantic.BaseModel):
 
     citizenship: CountryCode | None = None
     """
-	The Alpha-2 ISO code of the country where the Person is a citizen.
+	An [ISO3166-1 alpha-2](https://en.wikipedia.org/wiki/ISO_3166-1_alpha-2)
+	country code. This definition users `oneOf` with a two-character string
+	type to allow for support of future countries in client code.
 	Min length: 2
 	Max length: 2
 	Pattern: ^[A-Z]{2}$
@@ -432,14 +435,11 @@ class BasePerson(pydantic.BaseModel):
 	"""
 
     ownership: Ownership | None = None
-    """
-	Details about the ownership relationship between the Person and the Merchant. This is only set if the Personhas a relationship of type `owner`.
-	"""
 
     phone_number: PhoneNumber | None = None
     """
-	The (mobile) phone number of the individual (used for verification) in [E.164](https://en.wikipedia.org/wiki/E.164) format.
-	Maxlength: 16
+	A publicly available phone number in [E.164](https://en.wikipedia.org/wiki/E.164) format.
+	Max length: 16
 	"""
 
     relationships: list[str] | None = None
@@ -458,6 +458,16 @@ class BasePerson(pydantic.BaseModel):
     """
 	The version of the resource. The version reflects a specific change submitted to the API via one of the `PATCH`endpoints.
 	"""
+
+
+Brand = str
+"""
+The brand of the card.
+Input is case-insensitive; the canonical form is lowercase snake_case.
+**VALUES**: [amex, cup, diners, discover, elo, elv, hipercard, jcb, maestro, mastercard, visa, visa_electron,
+visa_vpay, vr, eftpos, conecs, swile, girocard, interac, sumup, bancomat].
+Max length: 20
+"""
 
 
 class Branding(pydantic.BaseModel):
@@ -741,6 +751,24 @@ class CardResponse(pydantic.BaseModel):
     type: CardType | None = None
     """
 	Issuing card network of the payment card used for the transaction.
+	"""
+
+
+class CategoryV10(pydantic.BaseModel):
+    """
+    A category a line belongs to.
+    """
+
+    id: str
+    """
+	The category id. Usually a UUID, but not always (legacy cases).
+	Max length: 100
+	"""
+
+    name: str
+    """
+	The category name.
+	Max length: 30
 	"""
 
 
@@ -2391,6 +2419,354 @@ class Device(pydantic.BaseModel):
 	"""
 
 
+DiscountApplicationMode = typing.Literal["AUTOMATIC", "MANUAL"] | str
+
+DiscountClas = typing.Literal["BUNDLE", "BUY_X_GET_Y", "CATEGORY", "ITEM", "MEAL_DEAL"] | str
+
+DiscountLevel = str
+"""
+Specifies where discount was applied by user (either merchant or consumer):
+- CART: Applied to the whole cart (calculated and distributed per sale item)
+- ITEM: Applied to specific sale item
+
+*Accepted values:* ["ITEM", "CART"].
+Min length: 4
+Max length: 4
+"""
+
+
+class DiscountSourceAdHoc(pydantic.BaseModel):
+    """
+    Discount created ad-hoc on device during checkout.
+    """
+
+    description: str | None = None
+    """
+	The description of the ad-hoc discount.
+	Max length: 250
+	"""
+
+    id: str | None = None
+    """
+	The unique identifier of the ad-hoc discount.
+	Format: uuid
+	"""
+
+    name: str | None = None
+    """
+	The name of the ad-hoc discount.
+	Max length: 100
+	"""
+
+
+class DiscountSourceBasic(pydantic.BaseModel):
+    """
+    Preset discount applied manually on the POS.
+    """
+
+    application_mode: DiscountApplicationMode
+    """
+	Method of applying the discount to the items or cart.
+	"""
+
+    id: str
+    """
+	The unique identifier of the basic discount.
+	Format: uuid
+	"""
+
+    name: str
+    """
+	The name of the basic discount.
+	Max length: 100
+	"""
+
+    description: str | None = None
+    """
+	The description of the loyalty discount.
+	Max length: 250
+	"""
+
+
+class DiscountSourceCoupon(pydantic.BaseModel):
+    """
+    Discount applied manually when entering a coupon code at checkout.
+    """
+
+    application_mode: DiscountApplicationMode
+    """
+	Method of applying the discount to the items or cart.
+	"""
+
+    code: str
+    """
+	The coupon code.
+	Max length: 100
+	"""
+
+    id: str
+    """
+	The unique identifier of the coupon discount.
+	Format: uuid
+	"""
+
+    name: str
+    """
+	The name of the coupon discount.
+	Max length: 100
+	"""
+
+    description: str | None = None
+    """
+	The description of the coupon discount.
+	Max length: 250
+	"""
+
+    discount_class: DiscountClas | None = None
+    """
+	The method used to target items to discount.
+	Must be populated for ITEM level discounts, and must be null for CART level discounts (CART level targets all
+	items,therefore none of these categories apply).
+	"""
+
+
+DiscountSourceLoyaltySchemeType = typing.Literal["POINTS", "STAMPS"] | str
+
+DiscountSourceLoyaltyType = typing.Literal["PROMOTION", "REWARD"] | str
+
+
+class DiscountSourceLoyalty(pydantic.BaseModel):
+    """
+    Discount applied when redeeming a reward from the merchant's loyalty scheme.
+    """
+
+    application_mode: DiscountApplicationMode
+    """
+	Method of applying the discount to the items or cart.
+	"""
+
+    id: str
+    """
+	The unique identifier of the promotion or reward.
+	Format: uuid
+	"""
+
+    loyalty_type: DiscountSourceLoyaltyType
+    """
+	The type of loyalty discount, either a promotion (e.g. new customer discount) or a reward (free coffee aftercompleting stamp card).
+	"""
+
+    name: str
+    """
+	The name of the loyalty discount.
+	Max length: 100
+	"""
+
+    scheme_type: DiscountSourceLoyaltySchemeType
+    """
+	The scheme type of the loyalty program.
+	"""
+
+    description: str | None = None
+    """
+	The description of the loyalty discount.
+	Max length: 250
+	"""
+
+    discount_class: DiscountClas | None = None
+    """
+	The method used to target items to discount.
+	Must be populated for ITEM level discounts, and must be null for CART level discounts (CART level targets all
+	items,therefore none of these categories apply).
+	"""
+
+    points: int | None = None
+    """
+	The number of points used for this loyalty discount.
+	Must be a positive integer if the scheme type is POINTS.
+	Must not be populated if the scheme type is STAMPS.
+	Format: int64
+	Min: 1
+	"""
+
+
+class DiscountSourceOffer(pydantic.BaseModel):
+    """
+    Discount applied automatically when cart is updated based on preset promotions.
+    """
+
+    application_mode: DiscountApplicationMode
+    """
+	Method of applying the discount to the items or cart.
+	"""
+
+    id: str
+    """
+	The unique identifier of the offer discount.
+	Format: uuid
+	"""
+
+    name: str
+    """
+	The name of the offer discount.
+	Max length: 100
+	"""
+
+    description: str | None = None
+    """
+	The description of the offer discount.
+	Max length: 250
+	"""
+
+    discount_class: DiscountClas | None = None
+    """
+	The method used to target items to discount.
+	Must be populated for ITEM level discounts, and must be null for CART level discounts (CART level targets all
+	items,therefore none of these categories apply).
+	"""
+
+
+class DiscountSource(pydantic.BaseModel):
+    """
+    The source of discount. Exactly one property must be set.
+    """
+
+    ad_hoc: DiscountSourceAdHoc | None = None
+    """
+	Discount created ad-hoc on device during checkout.
+	"""
+
+    basic: DiscountSourceBasic | None = None
+    """
+	Preset discount applied manually on the POS.
+	"""
+
+    coupon: DiscountSourceCoupon | None = None
+    """
+	Discount applied manually when entering a coupon code at checkout.
+	"""
+
+    loyalty: DiscountSourceLoyalty | None = None
+    """
+	Discount applied when redeeming a reward from the merchant's loyalty scheme.
+	"""
+
+    offer: DiscountSourceOffer | None = None
+    """
+	Discount applied automatically when cart is updated based on preset promotions.
+	"""
+
+
+PositiveAmount = int
+"""
+The value of the amount in minor units of the currency according to the Sale.currency.scale. 
+`value` can get large for some currencies and applications. 
+Use Long type or a similar data type when parsing `value`.
+Format: int64
+Min: 0
+"""
+
+
+class DiscountValue(pydantic.BaseModel):
+    """
+            The value type of the discount, either a percentage based or absolute monetary value.
+
+    It is required that only one of the following is set:
+    - absolute
+    - percentage.
+    """
+
+    absolute: PositiveAmount | None = None
+    """
+	The absolute value in minor units of the currency according to the Sale.currency.scale.
+	Example: 10000 = 10.00
+	Format: int64
+	Min: 0
+	"""
+
+    percentage: int | None = None
+    """
+	The percentage in minor units (1/100000).
+	
+	Examples:
+	- 10% -> 0.10 (decimal) = 10000 (minor units)
+	- 15.5% -> 0.155 (decimal) = 15500 (minor units)
+	- 0.001% -> 0.00001 (decimal) = 1 (minor units)
+	Format: int64
+	Min: 0
+	"""
+
+
+class DiscountLine(pydantic.BaseModel):
+    """
+    Object representing information about single discount line.
+    """
+
+    gross_amount: PositiveAmount
+    """
+	The gross amount of the discount.
+	The value of the amount in minor units of the currency according to the Sale.currency.scale.
+	Format: int64
+	Min: 0
+	"""
+
+    level: DiscountLevel
+    """
+	Specifies where discount was applied by user (either merchant or consumer):
+	- CART: Applied to the whole cart (calculated and distributed per sale item)
+	- ITEM: Applied to specific sale item
+	
+	*Accepted values:* ["ITEM", "CART"].
+	Min length: 4
+	Max length: 4
+	"""
+
+    net_amount: PositiveAmount
+    """
+	The net amount of the discount.
+	The value of the amount in minor units of the currency according to the Sale.currency.scale.
+	Format: int64
+	Min: 0
+	"""
+
+    source: DiscountSource
+    """
+	The source of discount. Exactly one property must be set.
+	"""
+
+    tax_amount: PositiveAmount
+    """
+	The tax amount of the discount.
+	The value of the amount in minor units of the currency according to the Sale.currency.scale.
+	Format: int64
+	Min: 0
+	"""
+
+    value: DiscountValue
+    """
+	The value type of the discount, either a percentage based or absolute monetary value.
+	
+	It is required that only one of the following is set:
+	- absolute
+	- percentage.
+	"""
+
+    description: str | None = None
+    """
+	A description or reason of the discount.
+	Max length: 250
+	"""
+
+    id: str | None = None
+    """
+	An id used to associate a discount line with a specific discount.
+	Since we can apply multiple discounts (e.g. 2x 10% whole cart off) 
+	we need to be able to identify which discount line belongs to which cart discount.
+	Recommended to use UUID identifiers.
+	Max length: 100
+	"""
+
+
 class ElvCardAccount(pydantic.BaseModel):
     """
     Details of the ELV card account associated with the transaction.
@@ -2565,6 +2941,304 @@ class Event(pydantic.BaseModel):
 	- `REFUND`: Money returned to the payer.
 	- `CHARGE_BACK`: A reversal of the payment following a chargeback.
 	- `PAYOUT_DEDUCTION`: An amount deducted from a merchant payout, for example to cover a refund or chargeback.
+	"""
+
+
+FeatureValueTypeV10 = typing.Literal["BOOLEAN", "DATE", "DECIMAL", "INTEGER", "TEXT"] | str
+
+
+class FeatureV10(pydantic.BaseModel):
+    """
+            A named, typed characteristic of a line. New item types add data here instead of
+    a typed sub-object per type.
+
+    Examples by item type (illustrative, not exhaustive):
+      - DEPOSIT:   `operation_type` = "SALE", `linked_line_id` = "line-1"
+      - GIFT_CARD: `gift_card_reference` = "GCMINGXPC5"
+      - CATALOG:   `variant_name` = "Large", `item_id` / `variant_id` (TEXT),
+                   `reporting_category_id` = "cat-..."
+      - FEE:       `fee_type` = "SHIPPING" (required); optional `fee_id`,
+                   `value_absolute` or `value_percentage`, and per-type metadata
+                   features such as `delivery_name` / `tracking_reference` (shipping),
+                   `card_type` / `scheme` (surcharge), or `policy_id` (cancellation)
+      - (future) SUBSCRIPTION: `billing_period` = "P1M", `renews_at` = "2026-07-02"
+
+    Conventional `FEE` feature keys:
+      - `fee_type` (TEXT, required): `SHIPPING`, `SURCHARGE`, `SERVICE_CHARGE`, or
+        `CANCELLATION`
+      - `fee_id` (TEXT, optional): identifier of the fee definition
+      - `value_absolute` (INTEGER, optional): configured absolute value in minor units
+        of the sale currency (the charged amount is on `price`)
+      - `value_percentage` (INTEGER, optional): configured percentage in minor units
+        (1/100000; e.g. 10000 = 10%)
+      - Per-type metadata (optional, TEXT unless noted): `delivery_name`,
+        `tracking_reference` (shipping); `card_type`, `scheme` (surcharge);
+        `policy_id` (cancellation)
+    """
+
+    name: str
+    """
+	The feature name/key.
+	Max length: 100
+	"""
+
+    value: str
+    """
+	The feature value in canonical string form, to be parsed per `value_type`
+	(e.g. INTEGER -> "3", DECIMAL -> "1.50", DATE -> "2026-07-02",
+	BOOLEAN -> "true"). Carrying it as a string keeps the wire format stable as
+	new feature names and value types are introduced.
+	Max length: 1000
+	"""
+
+    value_type: FeatureValueTypeV10
+    """
+	The data type of a feature value. The wire `value` is always a string and is parsed
+	according to this type.
+	"""
+
+
+TaxRate = int
+"""
+The tax rate percentage in minor units (1/100000). For example 19000 = 19%.
+Format: int64
+Min: 0
+"""
+
+
+class TaxLineNetAmount(pydantic.BaseModel):
+    """
+            Net amount before applying the tax.
+    The value of the amount in minor units of the currency according to the Sale.currency.scale.
+    """
+
+    currency: str
+    """
+	Currency ISO 4217 code
+	"""
+
+    value: int
+    """
+	Amount in minor units (e.g. cents).
+	"""
+
+
+class TaxLineGrossAmount(pydantic.BaseModel):
+    """
+            Gross amount after applying the tax.
+    The value of the amount in minor units of the currency according to the Sale.currency.scale.
+    """
+
+    currency: str
+    """
+	Currency ISO 4217 code
+	"""
+
+    value: int
+    """
+	Amount in minor units (e.g. cents).
+	"""
+
+
+class TaxLineTaxAmount(pydantic.BaseModel):
+    """
+            Amount of tax.
+    The value of the amount in minor units of the currency according to the Sale.currency.scale.
+    """
+
+    currency: str
+    """
+	Currency ISO 4217 code
+	"""
+
+    value: int
+    """
+	Amount in minor units (e.g. cents).
+	"""
+
+
+class TaxLine(pydantic.BaseModel):
+    """
+           Information about tax together with amounts before and after its application such as:
+    - net amount: taxable net amount, scoped by this tax
+    - gross amount: amount after applying the tax.
+    """
+
+    gross_amount: TaxLineGrossAmount
+    """
+	Gross amount after applying the tax.
+	The value of the amount in minor units of the currency according to the Sale.currency.scale.
+	"""
+
+    id: str
+    """
+	Tax ID from the Tax Service (External Id)
+	Max length: 100
+	"""
+
+    net_amount: TaxLineNetAmount
+    """
+	Net amount before applying the tax. 
+	The value of the amount in minor units of the currency according to the Sale.currency.scale.
+	"""
+
+    tax_amount: TaxLineTaxAmount
+    """
+	Amount of tax.
+	The value of the amount in minor units of the currency according to the Sale.currency.scale.
+	"""
+
+    name: str | None = None
+    """
+	Tax name, e.g. "MwSt."
+	Max length: 255
+	"""
+
+    percentage: TaxRate | None = None
+    """
+	The tax rate percentage in minor units (1/100000). For example 19000 = 19%.
+	Format: int64
+	Min: 0
+	"""
+
+
+class PositiveTaxLineNetAmount(pydantic.BaseModel):
+    """
+            Net amount before applying the tax.
+    The value of the amount in minor units of the currency according to the Sale.currency.scale.
+    """
+
+    currency: str
+    """
+	Currency ISO 4217 code
+	"""
+
+    value: int
+    """
+	Amount in minor units (e.g. cents).
+	"""
+
+
+class PositiveTaxLineGrossAmount(pydantic.BaseModel):
+    """
+            Gross amount after applying the tax.
+    The value of the amount in minor units of the currency according to the Sale.currency.scale.
+    """
+
+    currency: str
+    """
+	Currency ISO 4217 code
+	"""
+
+    value: int
+    """
+	Amount in minor units (e.g. cents).
+	"""
+
+
+class PositiveTaxLineTaxAmount(pydantic.BaseModel):
+    """
+            Amount of tax.
+    The value of the amount in minor units of the currency according to the Sale.currency.scale.
+    """
+
+    currency: str
+    """
+	Currency ISO 4217 code
+	"""
+
+    value: int
+    """
+	Amount in minor units (e.g. cents).
+	"""
+
+
+class PositiveTaxLine(pydantic.BaseModel):
+    """
+            Tax line with positive amounts only.
+    Information about tax together with amounts before and after its application such as:
+     - net amount: taxable net amount, scoped by this tax
+     - gross amount: amount after applying the tax
+    The numbers here can't be negative.
+    """
+
+    gross_amount: PositiveTaxLineGrossAmount
+    """
+	Gross amount after applying the tax.
+	The value of the amount in minor units of the currency according to the Sale.currency.scale.
+	"""
+
+    id: str
+    """
+	Tax ID from the Tax Service (External Id)
+	Max length: 100
+	"""
+
+    net_amount: PositiveTaxLineNetAmount
+    """
+	Net amount before applying the tax. 
+	The value of the amount in minor units of the currency according to the Sale.currency.scale.
+	"""
+
+    tax_amount: PositiveTaxLineTaxAmount
+    """
+	Amount of tax.
+	The value of the amount in minor units of the currency according to the Sale.currency.scale.
+	"""
+
+    name: str | None = None
+    """
+	Tax name, e.g. "MwSt."
+	Max length: 255
+	"""
+
+    percentage: TaxRate | None = None
+    """
+	The tax rate percentage in minor units (1/100000). For example 19000 = 19%.
+	Format: int64
+	Min: 0
+	"""
+
+
+class FinalPriceAmounts(pydantic.BaseModel):
+    """
+    Final price amounts after all calculations and adjustments.
+    """
+
+    taxes_final: list[PositiveTaxLine]
+    """
+	Taxes applied on top of `total_net_amount_final` amount resulting in `total_gross_amount_final` amount.
+	If no discounts are applied, it should be equal to `taxes`.
+	Min items: 1
+	Max items: 1000
+	"""
+
+    total_gross_amount_final: PositiveAmount
+    """
+	The final gross amount includes discounts, modifiers, and taxes. If no discounts are applied, it should beequal to total_gross_amount.
+	Format: int64
+	Min: 0
+	"""
+
+    total_net_amount_final: PositiveAmount
+    """
+	The final net amount includes discounts and modifiers. It does NOT include taxes. If no discounts are applied,it should be equal to total_net_amount.
+	Format: int64
+	Min: 0
+	"""
+
+    discounts: list[DiscountLine] | None = None
+    """
+	Discounts applied.
+	
+	Important: 
+	Discount amounts shouldn't take effect on net and gross amounts.
+	
+	Discount money amounts depend on where discount was applied:
+	 - for item level discount: whole discount money amount is applied
+	 - for cart level discount: only part of the whole amount is applied 
+	    (discount money value is split on each line item)
+	Max items: 1000
 	"""
 
 
@@ -2827,12 +3501,193 @@ class Invite(pydantic.BaseModel):
     expires_at: datetime.datetime
 
 
+ItemReferencesV10CatalogSource = typing.Literal["EXTERNAL", "SUMUP"] | str
+
+
+class ItemReferencesV10(pydantic.BaseModel):
+    """
+            Outward identifiers and links for a line, kept in one place rather than scattered
+    per item type.
+    """
+
+    catalog_reference: str | None = None
+    """
+	Reference to the backing catalog entity (item variant, deposit, ...),
+	typically a URN such as
+	`urn:sumup:pos:variant:${MERCHANT_CODE}:${ITEM_ID}:${VARIANT_ID}` or
+	`urn:sumup:pos:deposit:${MERCHANT_CODE}:${DEPOSIT_ID}`.
+	Empty for ad-hoc / manual lines. Type-agnostic on purpose: a new item type
+	backed by a catalog entity reuses this field instead of adding its own.
+	Max length: 255
+	"""
+
+    catalog_source: ItemReferencesV10CatalogSource | None = None
+    """
+	The source of the catalog the line originates from.
+	Default: "SUMUP"
+	"""
+
+    external_id: str | None = None
+    """
+	An external reference id connecting this line to another system.
+	Max length: 250
+	"""
+
+    sku: str | None = None
+    """
+	Stock keeping unit, enriched from the Catalog when available.
+	Max length: 100
+	"""
+
+
+ItemTypeV10 = str
+"""
+Classifies a sale line. Not a schema subclass.
+
+Known values: `CATALOG`, `DEPOSIT`, `GIFT_CARD`, `CUSTOM`, `FEE`.
+
+`FEE` lines represent merchant-charged fees on the sale (e.g. shipping, service
+charge, surcharge, cancellation). They participate in sale totals like any other
+line; type-specific data is carried in `features` (see `Feature` for the
+conventional feature keys).
+
+This is intentionally an open string, NOT a closed enum: new values are added
+over time as pure data and consumers MUST tolerate unknown values, rendering the
+line from the generic envelope (name, quantity, price, taxes) and reading any
+extra information from `features`.
+"""
+
 Lat = float
 """
 Latitude value from the coordinates of the payment location (as received from the payment terminal reader).
 Min: -90
 Max: 90
 """
+
+
+class LineItemPriceV10TotalNetAmount(pydantic.BaseModel):
+    """
+    The net amount (including modifiers if applied). It does NOT include discounts.
+    """
+
+    currency: str
+    """
+	Currency ISO 4217 code
+	"""
+
+    value: int
+    """
+	Amount in minor units (e.g. cents).
+	"""
+
+
+class LineItemPriceV10TotalGrossAmount(pydantic.BaseModel):
+    """
+    The gross amount (including modifiers if applied). It does NOT include discounts.
+    """
+
+    currency: str
+    """
+	Currency ISO 4217 code
+	"""
+
+    value: int
+    """
+	Amount in minor units (e.g. cents).
+	"""
+
+
+class LineItemPriceV10TotalNetAmountFinal(pydantic.BaseModel):
+    """
+    The final net amount including discounts and modifiers. Equals `total_net_amount` if no discounts apply.
+    """
+
+    currency: str
+    """
+	Currency ISO 4217 code
+	"""
+
+    value: int
+    """
+	Amount in minor units (e.g. cents).
+	"""
+
+
+class LineItemPriceV10TotalGrossAmountFinal(pydantic.BaseModel):
+    """
+    The final gross amount including discounts, modifiers and taxes. Equals `total_gross_amount` if no discounts apply.
+    """
+
+    currency: str
+    """
+	Currency ISO 4217 code
+	"""
+
+    value: int
+    """
+	Amount in minor units (e.g. cents).
+	"""
+
+
+class LineItemPriceV10(pydantic.BaseModel):
+    """
+            Pricing for a single line, valid for every item type.
+
+    Merges the standard amounts (with tax breakdown) and the final amounts (after
+    discounts/modifiers).
+
+    Totals and tax amounts can be negative for return-like operations (for example
+    a deposit with `operation_type` = `RETURN`).
+    """
+
+    taxes: list[TaxLine]
+    """
+	Taxes applied on top of the net amount resulting in the gross amount.
+	Min items: 1
+	Max items: 1000
+	"""
+
+    taxes_final: list[TaxLine]
+    """
+	Taxes applied on top of `total_net_amount_final` resulting in `total_gross_amount_final`. Equals `taxes` ifno discounts apply.
+	Min items: 1
+	Max items: 1000
+	"""
+
+    total_gross_amount: LineItemPriceV10TotalGrossAmount
+    """
+	The gross amount (including modifiers if applied). It does NOT include discounts.
+	"""
+
+    total_gross_amount_final: LineItemPriceV10TotalGrossAmountFinal
+    """
+	The final gross amount including discounts, modifiers and taxes. Equals `total_gross_amount` if no discounts apply.
+	"""
+
+    total_net_amount: LineItemPriceV10TotalNetAmount
+    """
+	The net amount (including modifiers if applied). It does NOT include discounts.
+	"""
+
+    total_net_amount_final: LineItemPriceV10TotalNetAmountFinal
+    """
+	The final net amount including discounts and modifiers. Equals `total_net_amount` if no discounts apply.
+	"""
+
+    unit_amount: PositiveAmount
+    """
+	The price of a single unit. If the tax_mode is GROSS it includes taxes,
+	otherwise no tax is included. It does NOT include discounts.
+	Format: int64
+	Min: 0
+	"""
+
+    discounts: list[DiscountLine] | None = None
+    """
+	Discounts applied. Discount amounts do not affect `total_net_amount` /
+	`total_gross_amount`; they are reflected in the `*_final` amounts.
+	Max items: 1000
+	"""
 
 
 class Link(pydantic.BaseModel):
@@ -2880,7 +3735,8 @@ class Person(pydantic.BaseModel):
 
     address: Address | None = None
     """
-	The address of the individual.
+	An address somewhere in the world. The address fields used depend on the country conventions. For example, inGreat Britain, `city` is `post_town`. In the United States, the top-level administrative unit used in addressesis `state`, whereas in Chile it's `region`.
+	Whether an address is valid or not depends on whether the locally required fields are present. Fields not supported ina country will be ignored.
 	Address documentation: https://developer.sumup.com/tools/glossary/address
 	"""
 
@@ -2899,7 +3755,9 @@ class Person(pydantic.BaseModel):
 
     citizenship: CountryCode | None = None
     """
-	The Alpha-2 ISO code of the country where the Person is a citizen.
+	An [ISO3166-1 alpha-2](https://en.wikipedia.org/wiki/ISO_3166-1_alpha-2)
+	country code. This definition users `oneOf` with a two-character string
+	type to allow for support of future countries in client code.
 	Min length: 2
 	Max length: 2
 	Pattern: ^[A-Z]{2}$
@@ -2938,14 +3796,11 @@ class Person(pydantic.BaseModel):
 	"""
 
     ownership: Ownership | None = None
-    """
-	Details about the ownership relationship between the Person and the Merchant. This is only set if the Personhas a relationship of type `owner`.
-	"""
 
     phone_number: PhoneNumber | None = None
     """
-	The (mobile) phone number of the individual (used for verification) in [E.164](https://en.wikipedia.org/wiki/E.164) format.
-	Maxlength: 16
+	A publicly available phone number in [E.164](https://en.wikipedia.org/wiki/E.164) format.
+	Max length: 16
 	"""
 
     relationships: list[str] | None = None
@@ -3444,6 +4299,166 @@ class Merchant(pydantic.BaseModel):
 	"""
 
 
+class ModifierSet(pydantic.BaseModel):
+    """
+    Modifier set attached to an item.
+    """
+
+    id: str
+    """
+	The id of the modifier set that modifier belongs to.
+	Max length: 100
+	"""
+
+    name: str
+    """
+	The name of the modifier set that the modifier belongs to.
+	Min length: 1
+	Max length: 150
+	"""
+
+
+class PriceAmountsTotalNetAmount(pydantic.BaseModel):
+    """
+    The net amount (including modifiers if applied). It does NOT include discounts.
+    """
+
+    currency: str
+    """
+	Currency ISO 4217 code
+	"""
+
+    value: int
+    """
+	Amount in minor units (e.g. cents).
+	"""
+
+
+class PriceAmountsTotalGrossAmount(pydantic.BaseModel):
+    """
+    The gross amount (including modifiers if applied). It does NOT include discounts.
+    """
+
+    currency: str
+    """
+	Currency ISO 4217 code
+	"""
+
+    value: int
+    """
+	Amount in minor units (e.g. cents).
+	"""
+
+
+class PriceAmounts(pydantic.BaseModel):
+    """
+    Base price information for items including unit amount and totals.
+    """
+
+    total_gross_amount: PriceAmountsTotalGrossAmount
+    """
+	The gross amount (including modifiers if applied). It does NOT include discounts.
+	"""
+
+    total_net_amount: PriceAmountsTotalNetAmount
+    """
+	The net amount (including modifiers if applied). It does NOT include discounts.
+	"""
+
+    unit_amount: PositiveAmount
+    """
+	The price of a single unit.
+	If the tax_mode is GROSS, it includes taxes, otherwise no tax included.
+	It doesn't include discounts.
+	Format: int64
+	Min: 0
+	"""
+
+
+class PositivePriceAmountsTotalNetAmount(pydantic.BaseModel):
+    """
+    The net amount (including modifiers if applied). It does NOT include discounts.
+    """
+
+    currency: str
+    """
+	Currency ISO 4217 code
+	"""
+
+    value: int
+    """
+	Amount in minor units (e.g. cents).
+	"""
+
+
+class PositivePriceAmountsTotalGrossAmount(pydantic.BaseModel):
+    """
+    The gross amount (including modifiers if applied). It does NOT include discounts.
+    """
+
+    currency: str
+    """
+	Currency ISO 4217 code
+	"""
+
+    value: int
+    """
+	Amount in minor units (e.g. cents).
+	"""
+
+
+class PositivePriceAmounts(pydantic.BaseModel):
+    """
+    Price information for items with positive amounts only.
+    """
+
+    total_gross_amount: PositivePriceAmountsTotalGrossAmount
+    """
+	The gross amount (including modifiers if applied). It does NOT include discounts.
+	"""
+
+    total_net_amount: PositivePriceAmountsTotalNetAmount
+    """
+	The net amount (including modifiers if applied). It does NOT include discounts.
+	"""
+
+    unit_amount: PositiveAmount
+    """
+	The price of a single unit.
+	If the tax_mode is GROSS, it includes taxes, otherwise no tax included.
+	It doesn't include discounts.
+	Format: int64
+	Min: 0
+	"""
+
+
+class PositivePriceWithTaxes(pydantic.BaseModel):
+    """
+    Price information with positive amounts and detailed tax breakdown.
+    """
+
+    taxes: list[PositiveTaxLine]
+    """
+	Taxes applied on top of net amount resulting in gross amount.
+	Min items: 1
+	Max items: 1000
+	"""
+
+
+Quantity = float
+"""
+The numerical value representing the quantity in the specified unit.
+Format: double
+Min: 0
+"""
+
+ModifierItem = dict[str, object]
+"""
+Modifiers are reported under line items and can be build from Item Catalog objects.
+Modifiers has to be attached to an item and can't be sold and refunded alone.
+"""
+
+
 class NotFoundErrors(pydantic.BaseModel):
     """
     NotFoundErrors is a schema definition.
@@ -3524,7 +4539,76 @@ class PaymentInstrumentResponse(pydantic.BaseModel):
 	"""
 
 
+PaymentStatusFilterV10 = typing.Literal["CHARGED_BACK", "PAID"] | str
+PaymentStatusFilterV10Input = PaymentStatusFilterV10
+
+
 class Problem(pydantic.BaseModel):
+    """
+            A RFC 9457 problem details object.
+
+    Additional properties specific to the problem type may be present.
+    """
+
+    type: str
+    """
+	A URI reference that identifies the problem type.
+	Format: uri
+	"""
+
+    detail: str | None = None
+    """
+	A human-readable explanation specific to this occurrence of the problem.
+	"""
+
+    instance: str | None = None
+    """
+	A URI reference that identifies the specific occurrence of the problem.
+	Format: uri
+	"""
+
+    status: int | None = None
+    """
+	The HTTP status code generated by the origin server for this occurrence of the problem.
+	"""
+
+    title: str | None = None
+    """
+	A short, human-readable summary of the problem type.
+	"""
+
+    model_config = pydantic.ConfigDict(extra="allow")
+
+    @pydantic.model_validator(mode="before")
+    @classmethod
+    def _merge_additional_properties(cls, values: object) -> object:
+        if not isinstance(values, dict):
+            return values
+
+        values_dict = typing.cast(dict[str, object], values)
+        additional = values_dict.get("additional_properties")
+        if not isinstance(additional, dict):
+            return values
+
+        merged = dict(additional)
+        for key, value in values_dict.items():
+            if key != "additional_properties":
+                merged[key] = value
+
+        return merged
+
+    @property
+    def additional_properties(self) -> dict[str, object]:
+        if self.model_extra is None:
+            object.__setattr__(self, "__pydantic_extra__", {})
+        return typing.cast(dict[str, object], self.model_extra)
+
+    @additional_properties.setter
+    def additional_properties(self, value: dict[str, object]) -> None:
+        object.__setattr__(self, "__pydantic_extra__", dict(value))
+
+
+class ProblemV10(pydantic.BaseModel):
     """
             A RFC 9457 problem details object.
 
@@ -3795,6 +4879,157 @@ class Product(pydantic.BaseModel):
     """
 	VAT rate as a decimal fraction, for example `0.19` for 19%.
 	Format: decimal
+	"""
+
+
+PublicApmType = str
+"""
+Alternative payment method type when `method` is `apm`.
+Gift card is not an APM on this API.
+Input is case-insensitive; the canonical form is lowercase snake_case.
+**VALUES**: [qr_code_pix, sepa_dd, paypal, sumup_pay, twint, iris].
+Max length: 20
+"""
+
+PublicCardV10Type = typing.Literal["credit", "debit", "unknown"] | str
+
+
+class PublicCardV10(pydantic.BaseModel):
+    """
+    Card brand, credit/debit processing type, and last four digits.
+    """
+
+    brand: Brand
+    """
+	The brand of the card.
+	Input is case-insensitive; the canonical form is lowercase snake_case.
+	**VALUES**: [amex, cup, diners, discover, elo, elv, hipercard, jcb, maestro, mastercard, visa, visa_electron,
+	visa_vpay, vr, eftpos, conecs, swile, girocard, interac, sumup, bancomat].
+	Max length: 20
+	"""
+
+    last_4_digits: str
+    """
+	The last 4 digits of the card used for the payment.
+	Min length: 4
+	Max length: 4
+	Pattern: ^\\d{4}$
+	"""
+
+    type: PublicCardV10Type
+    """
+	Credit or debit processing choice, not brand or funding.
+	`unknown` when unavailable; prepaid/voucher are not processing types.
+	"""
+
+
+class PublicGiftCardPayment(pydantic.BaseModel):
+    """
+            Gift card used for this payment. Present when `method` is `gift_card` and the gift card
+    id is known.
+    Gift card IDs use the format "GC" followed by 9 alphanumeric characters
+    (e.g. GCZ3NTMB1V).
+    """
+
+    id: str
+    """
+	Gift card identifier. Format "GC" followed by 9 alphanumeric characters
+	(e.g. GCZ3NTMB1V).
+	"""
+
+
+PublicPaymentMethod = str
+"""
+Payment method on public sales read API v1.0.
+Digital wallets are first-class methods. Gift card payments use `gift_card`, not `apm`.
+Input is case-insensitive; the canonical form is lowercase snake_case.
+**VALUES**: [card, cash, apm, external, apple_pay, google_pay, whatsapp_pay, gift_card].
+Max length: 20
+"""
+
+Reference = str
+"""
+The reference to the actual payment used for this sale, e.g. the sumup transaction code.
+Max length: 50
+"""
+
+PublicPaymentV10Status = typing.Literal["CANCELED", "FAILED", "SUCCESSFUL"] | str
+
+
+class PublicPaymentV10(pydantic.BaseModel):
+    """
+            Payment on a closed sale, for bookkeeping and reconciliation.
+
+    Acquirer/processing cost is not on this object. Merchant-charged fees (shipping, service
+    charge, etc.) appear as `type: "FEE"` item lines in `Sale.items`.
+    """
+
+    amount: PositiveAmount
+    """
+	The amount of the payment including tips.
+	The value of the amount in minor units of `Sale.currency`.
+	Format: int64
+	Min: 0
+	"""
+
+    method: PublicPaymentMethod
+    """
+	Payment method on public sales read API v1.0.
+	Digital wallets are first-class methods. Gift card payments use `gift_card`, not `apm`.
+	Input is case-insensitive; the canonical form is lowercase snake_case.
+	**VALUES**: [card, cash, apm, external, apple_pay, google_pay, whatsapp_pay, gift_card].
+	Max length: 20
+	"""
+
+    processed_at: datetime.datetime
+    """
+	UTC date-time when SumUp recorded this payment’s exposed `status` (successful, failed,
+	or canceled). Server processed time when available; otherwise the payment provider’s
+	transaction time. Not the device clock.
+	"""
+
+    reference: Reference
+    """
+	The reference to the actual payment used for this sale, e.g. the sumup transaction code.
+	Max length: 50
+	"""
+
+    status: PublicPaymentV10Status
+    """
+	The status of the payment.
+	"""
+
+    type: str
+    """
+	Payment operation type.
+	This is distinct from the payment instrument in `method`.
+	Input is case-insensitive; the canonical form is lowercase snake_case.
+	**VALUES**: [purchase, unreferenced_refund]
+	Defaults to "purchase" if unspecified. Either a normal purchase or an unreferenced refund for negative
+	sales like deposit returns.
+	Default: "purchase"
+	"""
+
+    apm_type: PublicApmType | None = None
+    """
+	Alternative payment method type when `method` is `apm`.
+	Gift card is not an APM on this API.
+	Input is case-insensitive; the canonical form is lowercase snake_case.
+	**VALUES**: [qr_code_pix, sepa_dd, paypal, sumup_pay, twint, iris].
+	Max length: 20
+	"""
+
+    card: PublicCardV10 | None = None
+    """
+	Card brand, credit/debit processing type, and last four digits.
+	"""
+
+    gift_card: PublicGiftCardPayment | None = None
+    """
+	Gift card used for this payment. Present when `method` is `gift_card` and the gift card
+	id is known.
+	Gift card IDs use the format "GC" followed by 9 alphanumeric characters
+	(e.g. GCZ3NTMB1V).
 	"""
 
 
@@ -4581,6 +5816,594 @@ class Role(pydantic.BaseModel):
     """
 	Set of user-defined key-value pairs attached to the object. Partial updates are not supported. When updating, alwayssubmit whole metadata. Maximum of 64 parameters are allowed in the object.
 	Max properties: 64
+	"""
+
+
+class UnitOfMeasure(pydantic.BaseModel):
+    """
+    The unit of measure of the item.
+    """
+
+    group_id: str
+    """
+	The group of the unit of measure.
+	Max length: 100
+	"""
+
+    unit_id: str
+    """
+	The specific unit of measure within the group.
+	Max length: 100
+	"""
+
+    unit_ratio: float
+    """
+	The ratio of the specified unit to the base unit of the group.
+	Format: double
+	"""
+
+
+SaleLineItemV10ServiceType = typing.Literal["IN_HOUSE", "TAKE_AWAY"] | str
+
+
+class SaleLineItemV10(pydantic.BaseModel):
+    """
+            A single line of a sale.
+
+    The envelope (id, type, name, quantity, unit_of_measure, price) is stable and
+    type-agnostic: any consumer can render and total a line from these fields alone.
+    Type-specific data is in `features`. There is no per-type object and no discriminator,
+    so a new item type does not change this schema.
+    """
+
+    id: str
+    """
+	Stable identifier of the line within the sale. Used for linking (e.g. deposits).
+	Max length: 100
+	"""
+
+    name: str
+    """
+	Display name of the line.
+	Max length: 250
+	"""
+
+    price: LineItemPriceV10
+    """
+	Pricing for a single line, valid for every item type.
+	
+	Merges the standard amounts (with tax breakdown) and the final amounts (after
+	discounts/modifiers).
+	
+	Totals and tax amounts can be negative for return-like operations (for example
+	a deposit with `operation_type` = `RETURN`).
+	"""
+
+    quantity: Quantity
+    """
+	The numerical value representing the quantity in the specified unit.
+	Format: double
+	Min: 0
+	"""
+
+    type: ItemTypeV10
+    """
+	Classifies a sale line. Not a schema subclass.
+	
+	Known values: `CATALOG`, `DEPOSIT`, `GIFT_CARD`, `CUSTOM`, `FEE`.
+	
+	`FEE` lines represent merchant-charged fees on the sale (e.g. shipping, service
+	charge, surcharge, cancellation). They participate in sale totals like any other
+	line; type-specific data is carried in `features` (see `Feature` for the
+	conventional feature keys).
+	
+	This is intentionally an open string, NOT a closed enum: new values are added
+	over time as pure data and consumers MUST tolerate unknown values, rendering the
+	line from the generic envelope (name, quantity, price, taxes) and reading any
+	extra information from `features`.
+	"""
+
+    unit_of_measure: UnitOfMeasure
+    """
+	The unit of measure of the item.
+	"""
+
+    categories: list[CategoryV10] | None = None
+    """
+	Categories the line belongs to. A shared optional structure available to any
+	line; not a per-type field.
+	Max items: 1000
+	"""
+
+    features: list[FeatureV10] | None = None
+    """
+	Named, typed, type-specific data. New item types add their data here as
+	features instead of new schema variants. See `Feature` for per-type examples.
+	Max items: 100
+	"""
+
+    modifiers: list[ModifierItem] | None = None
+    """
+	Modifiers customise a line (e.g. "oat milk" on a cappuccino). A shared
+	optional structure available to any line; not a per-type field.
+	Max items: 50
+	"""
+
+    note: str | None = None
+    """
+	Optional free-text note attached to the line, visible on receipts.
+	Max length: 300
+	"""
+
+    references: ItemReferencesV10 | None = None
+    """
+	Outward identifiers and links for a line, kept in one place rather than scattered
+	per item type.
+	"""
+
+    service_type: SaleLineItemV10ServiceType | None = None
+    """
+	The type of service for this line.
+	"""
+
+
+class SalePriceV10NetAmount(pydantic.BaseModel):
+    """
+            Final net total for the sale: sum of `items[].price.total_net_amount_final`
+    after cart-level discounts (tips excluded).
+    In minor units according to `Sale.currency.scale`.
+    """
+
+    currency: str
+    """
+	Currency ISO 4217 code
+	"""
+
+    value: int
+    """
+	Amount in minor units (e.g. cents).
+	"""
+
+
+class SalePriceV10GrossAmount(pydantic.BaseModel):
+    """
+            Final gross total for the sale: sum of `items[].price.total_gross_amount_final`
+    after cart-level discounts (tips excluded).
+    Same value as search `total_amount`, in minor units according to `Sale.currency.scale`.
+    Payment amounts include tips and can therefore differ from this gross total.
+    """
+
+    currency: str
+    """
+	Currency ISO 4217 code
+	"""
+
+    value: int
+    """
+	Amount in minor units (e.g. cents).
+	"""
+
+
+class SalePriceV10(pydantic.BaseModel):
+    """
+            Sale-level pricing aggregate, parallel to `LineItemPrice` on each `SaleLineItem`.
+
+    Line-level breakdown (unit price, line discounts, per-line taxes) lives on
+    `items[].price`. This object holds the rolled-up totals and cart-level
+    adjustments that consumers use for receipts and payment reconciliation.
+    """
+
+    gross_amount: SalePriceV10GrossAmount
+    """
+	Final gross total for the sale: sum of `items[].price.total_gross_amount_final`
+	after cart-level discounts (tips excluded).
+	Same value as search `total_amount`, in minor units according to `Sale.currency.scale`.
+	Payment amounts include tips and can therefore differ from this gross total.
+	"""
+
+    net_amount: SalePriceV10NetAmount
+    """
+	Final net total for the sale: sum of `items[].price.total_net_amount_final`
+	after cart-level discounts (tips excluded).
+	In minor units according to `Sale.currency.scale`.
+	"""
+
+    taxes: list[TaxLine]
+    """
+	Tax lines aggregated across the sale (after cart-level discounts).
+	Per-line tax detail remains on `items[].price.taxes` / `taxes_final`.
+	Min items: 1
+	Max items: 1000
+	"""
+
+    cart_discounts: list[DiscountLine] | None = None
+    """
+	Discounts applied at cart level. Item-level discounts remain on
+	`items[].price.discounts`.
+	Max items: 1000
+	"""
+
+
+SalesChannel = str
+"""
+The sale_channel is field that indicates the channel through
+which the sale was made. For example, if the sale was made in the merchant app,
+the sale_channel could be POS. If the sale was made on a kiosk, the
+sale_channel is KIOSK.
+
+*Accepted values:* ["POS", "KIOSK", "ONLINE_STORE", "SOLO", "ORDER_AND_PAY", "INVOICE", "BOOKINGS", "ORDER_AGGREGATOR", "SUBSCRIPTIONS","UNKNOWN"].
+"""
+
+
+class SaleSource(pydantic.BaseModel):
+    """
+    Information about the source of the sale.
+    """
+
+    channel: SalesChannel
+    """
+	The sale_channel is field that indicates the channel through
+	which the sale was made. For example, if the sale was made in the merchant app,
+	the sale_channel could be POS. If the sale was made on a kiosk, the
+	sale_channel is KIOSK.
+	
+	*Accepted values:* ["POS", "KIOSK", "ONLINE_STORE", "SOLO", "ORDER_AND_PAY", "INVOICE", "BOOKINGS", "ORDER_AGGREGATOR", "SUBSCRIPTIONS","UNKNOWN"].
+	"""
+
+    external_id: str | None = None
+    """
+	An external reference ID for connecting orders/sales between products
+	Max length: 250
+	"""
+
+    external_sub_channel_id: str | None = None
+    """
+	An external reference ID for the sub-channel.
+	For example, when channel is BOOKINGS and sub_channel is POS,
+	this can hold the OMS order ID while external_id holds the appointment ID.
+	Max length: 250
+	"""
+
+    sub_channel: str | None = None
+    """
+	The sub_channel is an optional field that can be used to provide more
+	information about the sale_channel. For example, if the sale_channel is
+	ONLINE_PAYMENTS, the sub_channel could be "WIX" or "QR_CODE" or "WOOCOMMERCE".
+	Max length: 50
+	"""
+
+
+SaleStateV10 = typing.Literal["CLOSED"] | str
+SaleStateV10Input = SaleStateV10
+
+TaxMode = typing.Literal["GROSS", "NET", "NO_TAX"] | str
+
+
+class Sale(pydantic.BaseModel):
+    """
+            Core model of the Sales API. Returned by `GET /sales` and `GET /sales/{sale_id}`.
+
+    Non-finalised sales are never returned; only fully-paid sales.
+
+    Item lines are `SaleLineItem`. Merchant fees appear as `type: "FEE"` lines; extra fee data
+    is in `features`.
+    """
+
+    closed_at: datetime.datetime
+    """
+	Instant when the sale was closed. Always present: non-finalised sales are never returned.
+	"""
+
+    created_at: datetime.datetime
+    """
+	Instant when the sale was created.
+	"""
+
+    currency: Currency
+    """
+	Three-letter [ISO 4217](https://en.wikipedia.org/wiki/ISO_4217) currency code of the amount.
+	"""
+
+    id: str
+    """
+	The ID of the sale.
+	"""
+
+    items: list[SaleLineItemV10]
+    """
+	The lines sold in this sale, in the order they were added to the cart.
+	Includes merchant fees (`type: "FEE"`) when present; fee details are in `features`.
+	Min items: 1
+	Max items: 1000
+	"""
+
+    payments: list[PublicPaymentV10]
+    """
+	Payments on this sale, in the order they were recorded.
+	Max items: 1000
+	"""
+
+    price: SalePriceV10
+    """
+	Sale-level pricing aggregate, parallel to `LineItemPrice` on each `SaleLineItem`.
+	
+	Line-level breakdown (unit price, line discounts, per-line taxes) lives on
+	`items[].price`. This object holds the rolled-up totals and cart-level
+	adjustments that consumers use for receipts and payment reconciliation.
+	"""
+
+    source: SaleSource
+    """
+	Information about the source of the sale.
+	"""
+
+    state: SaleStateV10
+    """
+	Lifecycle state of the sale.
+	Non-finalised sales are never returned; only fully-paid sales.
+	"""
+
+    tax_mode: TaxMode
+    """
+	The tax mode used by merchant for displaying prices and calculating taxes:
+	- NO_TAX: The prices don't contain any taxes, merchant don't report taxes
+	- GROSS: The prices used by merchant already include taxes (common in EU), the tax is calculated from the grossprice
+	- NET: The prices used by merchant don't include taxes (common in US), the tax is calculated from the net price
+	Sincetax values can be different for the same net price depending if the tax
+	was calculated from gross or net price, this info is necessary to be able to reconcile tax calculations.
+	"""
+
+    name: str | None = None
+    """
+	Human-readable name of the sale (not unique, not the sale id).
+	Max length: 160
+	"""
+
+    note: str | None = None
+    """
+	Optional note attached to the sale, visible on receipts and the UI.
+	Max length: 300
+	"""
+
+    user_id: str | None = None
+    """
+	Identity UUID of the cashier who processed the sale. Omitted when the cashier
+	identity is unknown.
+	Format: uuid
+	"""
+
+
+class SalePage(pydantic.BaseModel):
+    """
+            Paginated list of `Sale` objects. Results are ordered **newest first** by the newest
+    activity recorded for each sale. See `ListSalesV10`.
+    """
+
+    items: list[Sale]
+
+    pagination_token: str | None = None
+    """
+	Pagination token for subsequent requests. Should only be set by clients if they have
+	received a token in the previous response, and this request is an immediate follow-up
+	request to that response to load the subsequent page. Clients should treat this as an
+	opaque token and should not attempt to parse it in any way.
+	"""
+
+
+class SaleSearchItemTotalAmount(pydantic.BaseModel):
+    """
+            Final sale gross total after discounts and taxes, excluding tips.
+    Same value as `Sale.price.gross_amount`, in minor units according to `currency.scale`.
+    Payment amounts include tips and can therefore differ from this total.
+    """
+
+    currency: str
+    """
+	Currency ISO 4217 code
+	"""
+
+    value: int
+    """
+	Amount in minor units (e.g. cents).
+	"""
+
+
+class SaleSearchItem(pydantic.BaseModel):
+    """
+    Summary row for a sale in search results. Use `GET /sales/{sale_id}` for the full `Sale`.
+    """
+
+    closed_at: datetime.datetime
+    """
+	Instant when the sale was closed. Always present: non-finalised sales are never returned.
+	"""
+
+    created_at: datetime.datetime
+    """
+	Instant when the sale was created.
+	"""
+
+    currency: Currency
+    """
+	Three-letter [ISO 4217](https://en.wikipedia.org/wiki/ISO_4217) currency code of the amount.
+	"""
+
+    id: str
+    """
+	Sale identifier.
+	"""
+
+    state: SaleStateV10
+    """
+	Lifecycle state of the sale.
+	Non-finalised sales are never returned; only fully-paid sales.
+	"""
+
+    tax_mode: TaxMode
+    """
+	Checkout tax mode for the sale. Same values as `Sale.tax_mode`.
+	"""
+
+    total_amount: SaleSearchItemTotalAmount
+    """
+	Final sale gross total after discounts and taxes, excluding tips.
+	Same value as `Sale.price.gross_amount`, in minor units according to `currency.scale`.
+	Payment amounts include tips and can therefore differ from this total.
+	"""
+
+    name: str | None = None
+    """
+	Display name of the sale when set; otherwise a concatenation of item names with
+	quantities. Omitted when neither is available.
+	"""
+
+    user_id: str | None = None
+    """
+	Identity UUID of the cashier who processed the sale. Omitted when the cashier
+	identity is unknown.
+	Format: uuid
+	"""
+
+
+SalesChannelFilterV10 = (
+    typing.Literal[
+        "BOOKINGS",
+        "INVOICE",
+        "KIOSK",
+        "ONLINE_PAYMENTS",
+        "ONLINE_STORE",
+        "ORDER_AGGREGATOR",
+        "ORDER_AND_PAY",
+        "POS",
+        "SOLO",
+        "SUBSCRIPTIONS",
+        "UNKNOWN",
+    ]
+    | str
+)
+SalesChannelFilterV10Input = SalesChannelFilterV10
+
+
+class SaleSearchRequest(pydantic.BaseModel):
+    """
+            Filter and pagination criteria for `POST /sales/search`. Filters from different categories
+    stack with **logical AND**; multiple values in one array field stack with **logical OR**.
+    Results cover the merchant’s **last two years** of sales (narrow further with `start_date` /
+    `end_date`). Results are sorted **newest first** by sale close date.
+    """
+
+    end_date: datetime.datetime | None = None
+    """
+	Sale created **on or before** this instant (inclusive).
+	"""
+
+    pagination_limit: int | None = None
+    """
+	Maximum number of results per page.
+	Default: 10
+	
+	Min: 1
+	Max: 25
+	"""
+
+    pagination_token: str | None = None
+    """
+	Opaque pagination token from a previous search response. Not interchangeable with tokens
+	from `GET /sales`.
+	"""
+
+    payment_statuses: list[PaymentStatusFilterV10] | None = None
+    """
+	Filters rows by payment outcome. Multiple values match any of them (**OR**). The search
+	row does not echo this value.
+	"""
+
+    sale_statuses: list[SaleStateV10] | None = None
+    """
+	Filters rows by sale lifecycle (`state`). Multiple values match any of them (**OR**).
+	Uses the same values as `Sale.state`. Non-finalised sales are never returned; only
+	fully-paid sales.
+	"""
+
+    sales_channels: list[SalesChannelFilterV10] | None = None
+    """
+	Sales channel filter. Multiple values match any of them (**OR**).
+	"""
+
+    start_date: datetime.datetime | None = None
+    """
+	Sale created **on or after** this instant (inclusive).
+	"""
+
+
+class SaleSearchRequestDict(typing_extensions.TypedDict, total=False):
+    end_date: typing_extensions.NotRequired[
+        typing_extensions.Annotated[
+            datetime.datetime,
+            typing_extensions.Doc("Sale created **on or before** this instant (inclusive)."),
+        ]
+    ]
+    pagination_limit: typing_extensions.NotRequired[
+        typing_extensions.Annotated[
+            int,
+            typing_extensions.Doc(
+                "Maximum number of results per page.\nDefault: 10\n\nMin: 1\nMax: 25"
+            ),
+        ]
+    ]
+    pagination_token: typing_extensions.NotRequired[
+        typing_extensions.Annotated[
+            str,
+            typing_extensions.Doc(
+                "Opaque pagination token from a previous search response. Not interchangeable with tokens\nfrom `GET /sales`."
+            ),
+        ]
+    ]
+    payment_statuses: typing_extensions.NotRequired[
+        typing_extensions.Annotated[
+            typing.Sequence[PaymentStatusFilterV10Input],
+            typing_extensions.Doc(
+                "Filters rows by payment outcome. Multiple values match any of them (**OR**). The search\nrow does not echo this value."
+            ),
+        ]
+    ]
+    sale_statuses: typing_extensions.NotRequired[
+        typing_extensions.Annotated[
+            typing.Sequence[SaleStateV10Input],
+            typing_extensions.Doc(
+                "Filters rows by sale lifecycle (`state`). Multiple values match any of them (**OR**).\nUses the same values as `Sale.state`. Non-finalised sales are never returned; only\nfully-paid sales."
+            ),
+        ]
+    ]
+    sales_channels: typing_extensions.NotRequired[
+        typing_extensions.Annotated[
+            typing.Sequence[SalesChannelFilterV10Input],
+            typing_extensions.Doc(
+                "Sales channel filter. Multiple values match any of them (**OR**)."
+            ),
+        ]
+    ]
+    start_date: typing_extensions.NotRequired[
+        typing_extensions.Annotated[
+            datetime.datetime,
+            typing_extensions.Doc("Sale created **on or after** this instant (inclusive)."),
+        ]
+    ]
+
+
+SaleSearchRequestInput = SaleSearchRequestDict
+
+
+class SaleSearchResponse(pydantic.BaseModel):
+    """
+    Search hits and an optional pagination token. Results are ordered **newest first** by sale close date.
+    """
+
+    items: list[SaleSearchItem]
+
+    pagination_token: str | None = None
+    """
+	Opaque token for the next page of search results.
 	"""
 
 
