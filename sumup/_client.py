@@ -26,6 +26,7 @@ from .payouts import AsyncPayoutsResource, PayoutsResource
 from .readers import AsyncReadersResource, ReadersResource
 from .receipts import AsyncReceiptsResource, ReceiptsResource
 from .roles import AsyncRolesResource, RolesResource
+from .sales import AsyncSalesResource, SalesResource
 from .tokens import AsyncTokensResource, TokensResource
 from .transactions import AsyncTransactionsResource, TransactionsResource
 
@@ -225,6 +226,13 @@ class Sumup(Resource):
         return RolesResource(self._client)
 
     @property
+    def sales(self) -> SalesResource:
+        """Access the Sales API endpoints."""
+        from .sales.resource import SalesResource
+
+        return SalesResource(self._client)
+
+    @property
     def tokens(self) -> TokensResource:
         """Access the Tokens API endpoints."""
         from .tokens.resource import TokensResource
@@ -420,6 +428,13 @@ class AsyncSumup(AsyncResource):
         from .roles.resource import AsyncRolesResource
 
         return AsyncRolesResource(self._client)
+
+    @property
+    def sales(self) -> AsyncSalesResource:
+        """Access the Sales API endpoints."""
+        from .sales.resource import AsyncSalesResource
+
+        return AsyncSalesResource(self._client)
 
     @property
     def tokens(self) -> AsyncTokensResource:
