@@ -425,13 +425,6 @@ class BasePerson(pydantic.BaseModel):
 	Max items: 32
 	"""
 
-    middle_name: str | None = None
-    """
-	Middle name(s) of the End-User. Note that in some cultures, people can have multiple middle names; all canbe present, with the names being separated by space characters. Also note that in some cultures, middle namesare not used.
-	Min length: 1
-	Max length: 60
-	"""
-
     nationality: str | None = None
     """
 	The Person's nationality. May be an [ISO3166-1 alpha-2](https://en.wikipedia.org/wiki/ISO_3166-1_alpha-2) countrycode, but legacy data may not conform to this standard.
@@ -2936,13 +2929,6 @@ class Person(pydantic.BaseModel):
     """
 	A list of country-specific personal identifiers.
 	Max items: 32
-	"""
-
-    middle_name: str | None = None
-    """
-	Middle name(s) of the End-User. Note that in some cultures, people can have multiple middle names; all canbe present, with the names being separated by space characters. Also note that in some cultures, middle namesare not used.
-	Min length: 1
-	Max length: 60
 	"""
 
     nationality: str | None = None
