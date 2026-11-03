@@ -904,7 +904,7 @@ class ReadersResource(Resource):
             APIError: Raised when the API returns one of the documented error responses:
                 401: Unauthorized (raises AuthenticationError)
                 404: The reader was not found, or it is offline and has no saved settings. (raises NotFoundError)
-                422: The reader model is not supported, or the reader could not return its settings. (raises UnprocessableEntityError)
+                422: The reader model is not supported, the firmware version is unsupported, or the reader could notreturn its settings. (raises UnprocessableEntityError)
                 Unexpected response statuses also raise this exception.
         """
         with _wrap_request_errors():
@@ -946,19 +946,19 @@ class ReadersResource(Resource):
             content_type = resp.headers.get("Content-Type", "").split(";", 1)[0].strip().lower()
             if content_type == "application/json":
                 raise APIError.from_response(
-                    "The reader model is not supported, or the reader could not return its settings.",
+                    "The reader model is not supported, the firmware version is unsupported, or the reader could not return its settings.",
                     resp,
                     body_type=UpdateReaderSettingsUnprocessableEntity,
                 )
             elif content_type == "application/problem+json":
                 raise APIError.from_response(
-                    "The reader model is not supported, or the reader could not return its settings.",
+                    "The reader model is not supported, the firmware version is unsupported, or the reader could not return its settings.",
                     resp,
                     body_type=Problem,
                 )
             else:
                 raise APIError.from_response(
-                    "The reader model is not supported, or the reader could not return its settings.",
+                    "The reader model is not supported, the firmware version is unsupported, or the reader could not return its settings.",
                     resp,
                 )
         else:
@@ -994,7 +994,7 @@ class ReadersResource(Resource):
                 400: The request body is malformed. (raises BadRequestError)
                 401: Unauthorized (raises AuthenticationError)
                 404: The reader was not found. (raises NotFoundError)
-                422: The settings are invalid, the reader is offline, the reader model is not supported, or the readercould not apply the update. (raises UnprocessableEntityError)
+                422: The settings are invalid, the reader is offline, the reader model is not supported, the firmware versionis unsupported, or the reader could not apply the update. (raises UnprocessableEntityError)
                 Unexpected response statuses also raise this exception.
         """
         body_data: dict[str, typing.Any] = {}
@@ -1042,19 +1042,19 @@ class ReadersResource(Resource):
             content_type = resp.headers.get("Content-Type", "").split(";", 1)[0].strip().lower()
             if content_type == "application/json":
                 raise APIError.from_response(
-                    "The settings are invalid, the reader is offline, the reader model is not supported, or the reader could not apply the update.",
+                    "The settings are invalid, the reader is offline, the reader model is not supported, the firmware version is unsupported, or the reader could not apply the update.",
                     resp,
                     body_type=UpdateReaderSettingsUnprocessableEntity,
                 )
             elif content_type == "application/problem+json":
                 raise APIError.from_response(
-                    "The settings are invalid, the reader is offline, the reader model is not supported, or the reader could not apply the update.",
+                    "The settings are invalid, the reader is offline, the reader model is not supported, the firmware version is unsupported, or the reader could not apply the update.",
                     resp,
                     body_type=Problem,
                 )
             else:
                 raise APIError.from_response(
-                    "The settings are invalid, the reader is offline, the reader model is not supported, or the reader could not apply the update.",
+                    "The settings are invalid, the reader is offline, the reader model is not supported, the firmware version is unsupported, or the reader could not apply the update.",
                     resp,
                 )
         else:
@@ -1732,7 +1732,7 @@ class AsyncReadersResource(AsyncResource):
             APIError: Raised when the API returns one of the documented error responses:
                 401: Unauthorized (raises AuthenticationError)
                 404: The reader was not found, or it is offline and has no saved settings. (raises NotFoundError)
-                422: The reader model is not supported, or the reader could not return its settings. (raises UnprocessableEntityError)
+                422: The reader model is not supported, the firmware version is unsupported, or the reader could notreturn its settings. (raises UnprocessableEntityError)
                 Unexpected response statuses also raise this exception.
         """
         with _wrap_request_errors():
@@ -1774,19 +1774,19 @@ class AsyncReadersResource(AsyncResource):
             content_type = resp.headers.get("Content-Type", "").split(";", 1)[0].strip().lower()
             if content_type == "application/json":
                 raise APIError.from_response(
-                    "The reader model is not supported, or the reader could not return its settings.",
+                    "The reader model is not supported, the firmware version is unsupported, or the reader could not return its settings.",
                     resp,
                     body_type=UpdateReaderSettingsUnprocessableEntity,
                 )
             elif content_type == "application/problem+json":
                 raise APIError.from_response(
-                    "The reader model is not supported, or the reader could not return its settings.",
+                    "The reader model is not supported, the firmware version is unsupported, or the reader could not return its settings.",
                     resp,
                     body_type=Problem,
                 )
             else:
                 raise APIError.from_response(
-                    "The reader model is not supported, or the reader could not return its settings.",
+                    "The reader model is not supported, the firmware version is unsupported, or the reader could not return its settings.",
                     resp,
                 )
         else:
@@ -1822,7 +1822,7 @@ class AsyncReadersResource(AsyncResource):
                 400: The request body is malformed. (raises BadRequestError)
                 401: Unauthorized (raises AuthenticationError)
                 404: The reader was not found. (raises NotFoundError)
-                422: The settings are invalid, the reader is offline, the reader model is not supported, or the readercould not apply the update. (raises UnprocessableEntityError)
+                422: The settings are invalid, the reader is offline, the reader model is not supported, the firmware versionis unsupported, or the reader could not apply the update. (raises UnprocessableEntityError)
                 Unexpected response statuses also raise this exception.
         """
         body_data: dict[str, typing.Any] = {}
@@ -1870,19 +1870,19 @@ class AsyncReadersResource(AsyncResource):
             content_type = resp.headers.get("Content-Type", "").split(";", 1)[0].strip().lower()
             if content_type == "application/json":
                 raise APIError.from_response(
-                    "The settings are invalid, the reader is offline, the reader model is not supported, or the reader could not apply the update.",
+                    "The settings are invalid, the reader is offline, the reader model is not supported, the firmware version is unsupported, or the reader could not apply the update.",
                     resp,
                     body_type=UpdateReaderSettingsUnprocessableEntity,
                 )
             elif content_type == "application/problem+json":
                 raise APIError.from_response(
-                    "The settings are invalid, the reader is offline, the reader model is not supported, or the reader could not apply the update.",
+                    "The settings are invalid, the reader is offline, the reader model is not supported, the firmware version is unsupported, or the reader could not apply the update.",
                     resp,
                     body_type=Problem,
                 )
             else:
                 raise APIError.from_response(
-                    "The settings are invalid, the reader is offline, the reader model is not supported, or the reader could not apply the update.",
+                    "The settings are invalid, the reader is offline, the reader model is not supported, the firmware version is unsupported, or the reader could not apply the update.",
                     resp,
                 )
         else:
