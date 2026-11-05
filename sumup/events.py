@@ -33,6 +33,7 @@ from .types import (
     Member,
     Reader,
     Role,
+    Sale,
 )
 
 
@@ -226,6 +227,34 @@ class RoleUpdatedEvent(FetchableEvent[Role]):
     _response_model: typing.ClassVar[builtins.type[pydantic.BaseModel]] = Role
 
 
+class SaleCompletedEvent(FetchableEvent[Sale]):
+    """Sent once per sale when its completion is observed: the sale is closed and has been fully paid. The event created_at is the sale's recorded completion time, rather than the time the notification is delivered. A delayed notification may arrive after subsequent updates, refunds, or chargebacks. Fetch the current sale using object.url with an access token that has the sales.read scope. The sale may briefly be unavailable while the Sales API catches up; retry fetching it after a 404 response. Automatic retries and manual redelivery may deliver the same event more than once; deduplicate by event id.
+
+    The notification type is "sales.completed". Use fetch_object() with
+    Sumup or await fetch_object_async() with AsyncSumup to retrieve the latest
+    Sale. The notification itself contains a resource reference.
+    """
+
+    EVENT_TYPE: typing.ClassVar[str] = "sales.completed"
+    type: typing.Literal["sales.completed"] = pydantic.Field(default="sales.completed", frozen=True)
+    _object_type: typing.ClassVar[str | None] = "sale"
+    _response_model: typing.ClassVar[builtins.type[pydantic.BaseModel]] = Sale
+
+
+class SaleUpdatedEvent(FetchableEvent[Sale]):
+    """Sent when a closed, fully paid sale is published or updated, including subsequent refunds and chargebacks. The first notification can occur when the sale becomes fully paid and closed. Fetch the current sale using object.url with an access token that has the sales.read scope. The sale may briefly be unavailable while the Sales API catches up; retry fetching it after a 404 response. Notifications contain the sale identity rather than a snapshot, and delivery order is not guaranteed.
+
+    The notification type is "sales.updated". Use fetch_object() with
+    Sumup or await fetch_object_async() with AsyncSumup to retrieve the latest
+    Sale. The notification itself contains a resource reference.
+    """
+
+    EVENT_TYPE: typing.ClassVar[str] = "sales.updated"
+    type: typing.Literal["sales.updated"] = pydantic.Field(default="sales.updated", frozen=True)
+    _object_type: typing.ClassVar[str | None] = "sale"
+    _response_model: typing.ClassVar[builtins.type[pydantic.BaseModel]] = Sale
+
+
 KnownEventNotification = (
     CheckoutCreatedEvent
     | CheckoutExpiredEvent
@@ -240,6 +269,8 @@ KnownEventNotification = (
     | RoleCreatedEvent
     | RoleDeletedEvent
     | RoleUpdatedEvent
+    | SaleCompletedEvent
+    | SaleUpdatedEvent
 )
 
 
@@ -257,6 +288,8 @@ _EVENT_MODELS: dict[str, type[EventNotification]] = {
     "roles.created": RoleCreatedEvent,
     "roles.deleted": RoleDeletedEvent,
     "roles.updated": RoleUpdatedEvent,
+    "sales.completed": SaleCompletedEvent,
+    "sales.updated": SaleUpdatedEvent,
 }
 
 
@@ -350,6 +383,20 @@ _RoleUpdatedEventCallback = typing.TypeVar(
 _AsyncRoleUpdatedEventCallback = typing.TypeVar(
     "_AsyncRoleUpdatedEventCallback",
     bound=typing.Callable[[RoleUpdatedEvent], typing.Awaitable[None]],
+)
+_SaleCompletedEventCallback = typing.TypeVar(
+    "_SaleCompletedEventCallback", bound=typing.Callable[[SaleCompletedEvent], None]
+)
+_AsyncSaleCompletedEventCallback = typing.TypeVar(
+    "_AsyncSaleCompletedEventCallback",
+    bound=typing.Callable[[SaleCompletedEvent], typing.Awaitable[None]],
+)
+_SaleUpdatedEventCallback = typing.TypeVar(
+    "_SaleUpdatedEventCallback", bound=typing.Callable[[SaleUpdatedEvent], None]
+)
+_AsyncSaleUpdatedEventCallback = typing.TypeVar(
+    "_AsyncSaleUpdatedEventCallback",
+    bound=typing.Callable[[SaleUpdatedEvent], typing.Awaitable[None]],
 )
 
 
@@ -572,6 +619,36 @@ class EventsHandler(_SyncEventsHandler):
                 event type already has a registered callback.
         """
         self._register("roles.updated", typing.cast(_ErasedCallback, callback))
+        return callback
+
+    def on_sale_completed(
+        self, callback: _SaleCompletedEventCallback
+    ) -> _SaleCompletedEventCallback:
+        """Register a callback for sales.completed and return it unchanged.
+
+        Use @handler.on_sale_completed or handler.on_sale_completed(callback).
+        The callback receives one SaleCompletedEvent and returns None on success;
+        raise an exception to signal processing failure.
+
+        Raises:
+            EventHandlerRegistrationError: The callback is not callable, or this
+                event type already has a registered callback.
+        """
+        self._register("sales.completed", typing.cast(_ErasedCallback, callback))
+        return callback
+
+    def on_sale_updated(self, callback: _SaleUpdatedEventCallback) -> _SaleUpdatedEventCallback:
+        """Register a callback for sales.updated and return it unchanged.
+
+        Use @handler.on_sale_updated or handler.on_sale_updated(callback).
+        The callback receives one SaleUpdatedEvent and returns None on success;
+        raise an exception to signal processing failure.
+
+        Raises:
+            EventHandlerRegistrationError: The callback is not callable, or this
+                event type already has a registered callback.
+        """
+        self._register("sales.updated", typing.cast(_ErasedCallback, callback))
         return callback
 
 
@@ -804,6 +881,38 @@ class AsyncEventsHandler(_AsyncEventsHandler):
         self._register("roles.updated", typing.cast(_ErasedCallback, callback))
         return callback
 
+    def on_sale_completed(
+        self, callback: _AsyncSaleCompletedEventCallback
+    ) -> _AsyncSaleCompletedEventCallback:
+        """Register an async callback for sales.completed and return it unchanged.
+
+        Use @handler.on_sale_completed or handler.on_sale_completed(callback).
+        The callback receives one SaleCompletedEvent and is awaited by handle().
+        Return None on success or raise an exception to signal processing failure.
+
+        Raises:
+            EventHandlerRegistrationError: The callback is not callable, or this
+                event type already has a registered callback.
+        """
+        self._register("sales.completed", typing.cast(_ErasedCallback, callback))
+        return callback
+
+    def on_sale_updated(
+        self, callback: _AsyncSaleUpdatedEventCallback
+    ) -> _AsyncSaleUpdatedEventCallback:
+        """Register an async callback for sales.updated and return it unchanged.
+
+        Use @handler.on_sale_updated or handler.on_sale_updated(callback).
+        The callback receives one SaleUpdatedEvent and is awaited by handle().
+        Return None on success or raise an exception to signal processing failure.
+
+        Raises:
+            EventHandlerRegistrationError: The callback is not callable, or this
+                event type already has a registered callback.
+        """
+        self._register("sales.updated", typing.cast(_ErasedCallback, callback))
+        return callback
+
 
 __all__ = [
     "SIGNATURE_HEADER",
@@ -836,6 +945,8 @@ __all__ = [
     "RoleCreatedEvent",
     "RoleDeletedEvent",
     "RoleUpdatedEvent",
+    "SaleCompletedEvent",
+    "SaleUpdatedEvent",
     "UnknownEvent",
     "verify_event_signature",
 ]
