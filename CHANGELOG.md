@@ -1,5 +1,19 @@
 # Changelog
 
+## [0.4.2](https://github.com/sumup/sumup-py/compare/v0.4.1...v0.4.2) (2026-11-05)
+
+
+### Chores
+
+* **deps-dev:** bump pytest from 9.1.1 to 9.2.0 ([#455](https://github.com/sumup/sumup-py/issues/455)) ([2f1b7b3](https://github.com/sumup/sumup-py/commit/2f1b7b376dff14b8cf25c7d1ded172d7deeb36f1))
+* **deps-dev:** bump ruff from 0.17.2 to 0.17.3 ([#454](https://github.com/sumup/sumup-py/issues/454)) ([1b37e69](https://github.com/sumup/sumup-py/commit/1b37e696fea5aa76060a3fb620a250a612736ad2))
+* **deps-dev:** bump ty from 0.0.91 to 0.0.95 ([#453](https://github.com/sumup/sumup-py/issues/453)) ([1b2905e](https://github.com/sumup/sumup-py/commit/1b2905e967d9d667e98a61dd627e53d4ada2f5a8))
+* **deps:** bump astral-sh/setup-uv from 10.3.2 to 10.3.3 ([#450](https://github.com/sumup/sumup-py/issues/450)) ([3281471](https://github.com/sumup/sumup-py/commit/3281471a55513f0b7b15d70c7ed518af2d2f6b6d))
+* **deps:** bump github.com/pb33f/libopenapi in /codegen ([#449](https://github.com/sumup/sumup-py/issues/449)) ([4856987](https://github.com/sumup/sumup-py/commit/4856987a412bfb4d8372ddf83ac60b89c3169b34))
+* **deps:** bump pydantic from 2.14.1 to 2.14.2 ([#452](https://github.com/sumup/sumup-py/issues/452)) ([8a9f8f4](https://github.com/sumup/sumup-py/commit/8a9f8f4389b5e1af037497ee82d8452064e9c137))
+* **deps:** bump reviewdog/action-actionlint from 1.80.6 to 1.81.1 ([#451](https://github.com/sumup/sumup-py/issues/451)) ([71f65f6](https://github.com/sumup/sumup-py/commit/71f65f69fff7095bc05f28d52d9c76f94839ca07))
+* synced file(s) with sumup/apis ([#457](https://github.com/sumup/sumup-py/issues/457)) ([fc61c4c](https://github.com/sumup/sumup-py/commit/fc61c4c5906fff9bec693f32a37d976f98031890))
+
 ## [0.4.1](https://github.com/sumup/sumup-py/compare/v0.4.0...v0.4.1) (2026-11-03)
 
 
