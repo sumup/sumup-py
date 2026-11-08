@@ -15,7 +15,7 @@ import httpx
 import pydantic
 
 from ._exceptions import APIError, SumupError, _wrap_request_errors
-from .types import EventObject, EventObjectType, EventType, WebhooksEvent
+from .types import Event, EventObject, EventObjectType, EventType
 
 SIGNATURE_HEADER = "X-SumUp-Webhook-Signature"
 """Header containing the signing timestamp and signature. Pass its complete value."""
@@ -68,7 +68,7 @@ class EventObjectUrlError(EventError):
     """
 
 
-class EventNotification(WebhooksEvent):
+class EventNotification(Event):
     """Metadata shared by known events and UnknownEvent.
 
     Notifications contain a resource reference. Known event classes provide
