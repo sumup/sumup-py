@@ -7,7 +7,6 @@ from ..types import (
     MembershipStatus,
     Metadata,
     Problem,
-    ResourceType,
 )
 from .resource import (
     AsyncMembershipsResource,
@@ -26,5 +25,4 @@ __all__ = [
     "MembershipsResource",
     "Metadata",
     "Problem",
-    "ResourceType",
 ]

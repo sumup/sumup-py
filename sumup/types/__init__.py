@@ -9,127 +9,6 @@ import typing_extensions
 
 from .._secret import Secret
 
-CountryCode = str
-"""
-An [ISO3166-1 alpha-2](https://en.wikipedia.org/wiki/ISO_3166-1_alpha-2)
-country code. This definition users `oneOf` with a two-character string
-type to allow for support of future countries in client code.
-Min length: 2
-Max length: 2
-Pattern: ^[A-Z]{2}$
-"""
-
-
-class Address(pydantic.BaseModel):
-    """
-            An address somewhere in the world. The address fields used depend on the country conventions. For example, inGreat Britain, `city` is `post_town`. In the United States, the top-level administrative unit used in addressesis `state`, whereas in Chile it's `region`.
-    Whether an address is valid or not depends on whether the locally required fields are present. Fields not supported ina country will be ignored.
-    Address documentation: https://developer.sumup.com/tools/glossary/address
-    """
-
-    country: CountryCode
-    """
-	The ISO3166-1 Alpha-2 code of the address country.
-	Min length: 2
-	Max length: 2
-	Pattern: ^[A-Z]{2}$
-	"""
-
-    autonomous_community: str | None = None
-    """
-	In Spain, an autonomous community is the first sub-national level of political and administrative division.
-	Max length: 60
-	"""
-
-    city: str | None = None
-    """
-	The city of the address.
-	Max length: 60
-	"""
-
-    commune: str | None = None
-    """
-	In many countries, terms cognate with "commune" are used, referring to the community living in the area andthe common interest. Used in countries such as Chile.
-	Max length: 60
-	"""
-
-    county: str | None = None
-    """
-	A county is a geographic region of a country used for administrative or other purposes in some nations. Usedin countries such as Ireland, Romania, etc.
-	Max length: 60
-	"""
-
-    department: str | None = None
-    """
-	A department (French: département, Spanish: departamento) is an administrative or political division inseveral countries. Used in countries such as Colombia.
-	Max length: 60
-	"""
-
-    district: str | None = None
-    """
-	A district is a type of administrative division that in some countries is managed by the local government. Usedin countries such as Portugal.
-	Max length: 60
-	"""
-
-    eircode: str | None = None
-    """
-	A postal address in Ireland.
-	Max length: 10
-	"""
-
-    municipality: str | None = None
-    """
-	A municipality is usually a single administrative division having corporate status and powers of self-government orjurisdiction as granted by national and regional laws to which it is subordinate. Used in countries such asColombia.
-	Max length: 60
-	"""
-
-    neighborhood: str | None = None
-    """
-	Locality level of the address. Used in countries such as Brazil or Chile.
-	Max length: 60
-	"""
-
-    post_code: str | None = None
-    """
-	The postal code (aka. zip code) of the address.
-	Max length: 10
-	"""
-
-    post_town: str | None = None
-    """
-	A post town is a required part of all postal addresses in the United Kingdom and Ireland, and a basic unitof the postal delivery system.
-	Max length: 60
-	"""
-
-    province: str | None = None
-    """
-	The province where the address is located. This may not be relevant in some countries.
-	Max length: 60
-	"""
-
-    region: str | None = None
-    """
-	The region where the address is located. This may not be relevant in some countries.
-	Max length: 60
-	"""
-
-    state: str | None = None
-    """
-	Most often, a country has a single state, with various administrative divisions. The term "state" is sometimesused to refer to the federated polities that make up the federation. Used in countries such as the United Statesand Brazil.
-	Max length: 60
-	"""
-
-    street_address: list[str] | None = None
-    """
-	Max items: 2
-	"""
-
-    zip_code: str | None = None
-    """
-	A US system of postal codes used by the United States Postal Service (USPS).
-	Max length: 10
-	"""
-
 
 class AddressLegacy(pydantic.BaseModel):
     """
@@ -299,12 +178,140 @@ class BadRequest(pydantic.BaseModel):
     errors: BadRequestErrors
 
 
-ChangeStatus = str
-"""
-Reflects the status of changes submitted through the `PATCH` endpoints for the Merchant or Persons. If somechanges have not been applied yet, the status will be `pending`. If all changes have been applied, the status`done`.
-The status is only returned after write operations or on read endpoints when the `version` query parameter isprovided.
+class MerchantsAddress(pydantic.BaseModel):
+    """
+            An address somewhere in the world. The address fields used depend on the country conventions. For example, inGreat Britain, `city` is `post_town`. In the United States, the top-level administrative unit used in addressesis `state`, whereas in Chile it's `region`.
+    Whether an address is valid or not depends on whether the locally required fields are present. Fields not supported ina country will be ignored.
+    Address documentation: https://developer.sumup.com/tools/glossary/merchant#addresses
+    """
 
-Read only
+    country: str
+    """
+	The ISO3166-1 Alpha-2 code of the address country.
+	Pattern: ^[A-Z]{2}$
+	"""
+
+    autonomous_community: str | None = None
+    """
+	In Spain, an autonomous community is the first sub-national level of political and administrative division.
+	Max length: 60
+	"""
+
+    city: str | None = None
+    """
+	The city of the address.
+	Max length: 60
+	"""
+
+    commune: str | None = None
+    """
+	In many countries, terms cognate with "commune" are used, referring to the community living in the area andthe common interest. Used in countries such as Chile.
+	Max length: 60
+	"""
+
+    county: str | None = None
+    """
+	A county is a geographic region of a country used for administrative or other purposes in some nations. Usedin countries such as Ireland, Romania, etc.
+	Max length: 60
+	"""
+
+    department: str | None = None
+    """
+	A department (French: département, Spanish: departamento) is an administrative or political division inseveral countries. Used in countries such as Colombia.
+	Max length: 60
+	"""
+
+    district: str | None = None
+    """
+	A district is a type of administrative division that in some countries is managed by the local government. Usedin countries such as Portugal.
+	Max length: 60
+	"""
+
+    eircode: str | None = None
+    """
+	A postal address in Ireland.
+	Max length: 10
+	"""
+
+    municipality: str | None = None
+    """
+	A municipality is usually a single administrative division having corporate status and powers of self-government orjurisdiction as granted by national and regional laws to which it is subordinate. Used in countries such asColombia.
+	Max length: 60
+	"""
+
+    neighborhood: str | None = None
+    """
+	Locality level of the address. Used in countries such as Brazil or Chile.
+	Max length: 60
+	"""
+
+    post_code: str | None = None
+    """
+	The postal code (aka. zip code) of the address.
+	Max length: 10
+	"""
+
+    post_town: str | None = None
+    """
+	A post town is a required part of all postal addresses in the United Kingdom and Ireland, and a basic unitof the postal delivery system.
+	Max length: 60
+	"""
+
+    province: str | None = None
+    """
+	The province where the address is located. This may not be relevant in some countries.
+	Max length: 60
+	"""
+
+    region: str | None = None
+    """
+	The region where the address is located. This may not be relevant in some countries.
+	Max length: 60
+	"""
+
+    state: str | None = None
+    """
+	Most often, a country has a single state, with various administrative divisions. The term "state" is sometimesused to refer to the federated polities that make up the federation. Used in countries such as the United Statesand Brazil.
+	Max length: 60
+	"""
+
+    street_address: list[str] | None = None
+    """
+	Min items: 1
+	Max items: 2
+	"""
+
+    zip_code: str | None = None
+    """
+	A US system of postal codes used by the United States Postal Service (USPS).
+	Max length: 10
+	"""
+
+
+class MerchantsPersonalIdentifier(pydantic.BaseModel):
+    """
+    MerchantsPersonalIdentifier is a schema definition.
+    """
+
+    ref: str
+    """
+	The unique reference for the personal identifier type as defined in the country SDK.
+	Pattern: ^[a-z]{2}\\.[a-z_]+$
+	"""
+
+    value: str
+    """
+	The value of the personal identifier.
+	Min length: 1
+	Max length: 30
+	"""
+
+
+MerchantsPersonalIdentifiers = list[MerchantsPersonalIdentifier]
+"""
+A list of country-specific personal identifiers.
+
+Max items: 5
 """
 
 
@@ -322,43 +329,6 @@ class Ownership(pydantic.BaseModel):
 	"""
 
 
-class PersonalIdentifier(pydantic.BaseModel):
-    """
-    PersonalIdentifier is a schema definition.
-    """
-
-    ref: str
-    """
-	The unique reference for the personal identifier type.
-	Max length: 32
-	"""
-
-    value: str
-    """
-	The personal identifier value.
-	Max length: 128
-	"""
-
-
-PersonalIdentifiers = list[PersonalIdentifier]
-"""
-A list of country-specific personal identifiers.
-Max items: 32
-"""
-
-PhoneNumber = str
-"""
-A publicly available phone number in [E.164](https://en.wikipedia.org/wiki/E.164) format.
-
-Max length: 16
-"""
-
-Version = str
-"""
-The version of the resource. The version reflects a specific change submitted to the API via one of the `PATCH`endpoints.
-"""
-
-
 class BasePerson(pydantic.BaseModel):
     """
             Base schema for a Person associated with a Merchant. This can be a legal representative, business owner (ultimatebeneficial owner), or an officer. A legal representative is the Person who registered the Merchant with SumUp.They should always have a `user_id`.
@@ -372,11 +342,11 @@ class BasePerson(pydantic.BaseModel):
 	Read only
 	"""
 
-    address: Address | None = None
+    address: MerchantsAddress | None = None
     """
 	An address somewhere in the world. The address fields used depend on the country conventions. For example, inGreat Britain, `city` is `post_town`. In the United States, the top-level administrative unit used in addressesis `state`, whereas in Chile it's `region`.
 	Whether an address is valid or not depends on whether the locally required fields are present. Fields not supported ina country will be ignored.
-	Address documentation: https://developer.sumup.com/tools/glossary/address
+	Address documentation: https://developer.sumup.com/tools/glossary/merchant#addresses
 	"""
 
     birthdate: datetime.date | None = None
@@ -385,20 +355,16 @@ class BasePerson(pydantic.BaseModel):
 	Format: date
 	"""
 
-    change_status: ChangeStatus | None = None
+    change_status: str | None = None
     """
 	Reflects the status of changes submitted through the `PATCH` endpoints for the Merchant or Persons. If somechanges have not been applied yet, the status will be `pending`. If all changes have been applied, the status`done`.
 	The status is only returned after write operations or on read endpoints when the `version` query parameter isprovided.
 	Read only
 	"""
 
-    citizenship: CountryCode | None = None
+    citizenship: str | None = None
     """
-	An [ISO3166-1 alpha-2](https://en.wikipedia.org/wiki/ISO_3166-1_alpha-2)
-	country code. This definition users `oneOf` with a two-character string
-	type to allow for support of future countries in client code.
-	Min length: 2
-	Max length: 2
+	The Alpha-2 ISO code of the country where the Person is a citizen.
 	Pattern: ^[A-Z]{2}$
 	"""
 
@@ -422,10 +388,10 @@ class BasePerson(pydantic.BaseModel):
 	Max length: 60
 	"""
 
-    identifiers: PersonalIdentifiers | None = None
+    identifiers: MerchantsPersonalIdentifiers | None = None
     """
 	A list of country-specific personal identifiers.
-	Max items: 32
+	Max items: 5
 	"""
 
     nationality: str | None = None
@@ -436,10 +402,10 @@ class BasePerson(pydantic.BaseModel):
 
     ownership: Ownership | None = None
 
-    phone_number: PhoneNumber | None = None
+    phone_number: str | None = None
     """
-	A publicly available phone number in [E.164](https://en.wikipedia.org/wiki/E.164) format.
-	Max length: 16
+	The (mobile) phone number of the individual (used for verification) in [E.164](https://en.wikipedia.org/wiki/E.164) format.
+	Maxlength: 16
 	"""
 
     relationships: list[str] | None = None
@@ -454,20 +420,10 @@ class BasePerson(pydantic.BaseModel):
 	A corresponding identity user ID for the Person, if they have a user account.
 	"""
 
-    version: Version | None = None
+    version: str | None = None
     """
 	The version of the resource. The version reflects a specific change submitted to the API via one of the `PATCH`endpoints.
 	"""
-
-
-Brand = str
-"""
-The brand of the card.
-Input is case-insensitive; the canonical form is lowercase snake_case.
-**VALUES**: [amex, cup, diners, discover, elo, elv, hipercard, jcb, maestro, mastercard, visa, visa_electron,
-visa_vpay, vr, eftpos, conecs, swile, girocard, interac, sumup, bancomat].
-Max length: 20
-"""
 
 
 class Branding(pydantic.BaseModel):
@@ -531,11 +487,11 @@ class BusinessProfile(pydantic.BaseModel):
     Business information about the merchant. This information will be visible to the merchant's customers.
     """
 
-    address: Address | None = None
+    address: MerchantsAddress | None = None
     """
 	An address somewhere in the world. The address fields used depend on the country conventions. For example, inGreat Britain, `city` is `post_town`. In the United States, the top-level administrative unit used in addressesis `state`, whereas in Chile it's `region`.
 	Whether an address is valid or not depends on whether the locally required fields are present. Fields not supported ina country will be ignored.
-	Address documentation: https://developer.sumup.com/tools/glossary/address
+	Address documentation: https://developer.sumup.com/tools/glossary/merchant#addresses
 	"""
 
     branding: Branding | None = None
@@ -566,9 +522,9 @@ class BusinessProfile(pydantic.BaseModel):
 	Max length: 150
 	"""
 
-    phone_number: PhoneNumber | None = None
+    phone_number: str | None = None
     """
-	A publicly available phone number in [E.164](https://en.wikipedia.org/wiki/E.164) format.
+	A public phone number that customers can call.
 	Max length: 16
 	"""
 
@@ -1685,14 +1641,10 @@ CompanyIdentifiers = list[CompanyIdentifier]
 A list of country-specific company identifiers.
 """
 
-LegalType = str
+MerchantsAttributes = dict[str, str]
 """
-The unique legal type reference as defined in the country SDK. We do not rely on IDs as used by other services.Consumers of this API are expected to use the country SDK to map to any other IDs, translation keys, ordescriptions.
-
-Min length: 4
-Max length: 64
-Pattern: ^[a-z]{2}\\.[a-z_]+$
-The country SDK documentation for legal types.: https://developer.sumup.com/tools/glossary/merchant#legal-types
+Object metadata which should only be writable for internal applications, and readable by all clients.
+**Warning**: Updating Attributes will overwrite the existing data. Make sure to always include the complete JSON object.
 """
 
 
@@ -1703,15 +1655,16 @@ class Company(pydantic.BaseModel):
     Company documentation: https://developer.sumup.com/tools/glossary/merchant#company
     """
 
-    address: Address | None = None
+    address: MerchantsAddress | None = None
     """
 	The company's primary address.
-	Address documentation: https://developer.sumup.com/tools/glossary/address
+	Address documentation: https://developer.sumup.com/tools/glossary/merchant#addresses
 	"""
 
-    attributes: Attributes | None = None
+    attributes: MerchantsAttributes | None = None
     """
-	Object attributes that are modifiable only by SumUp applications.
+	Object metadata which should only be writable for internal applications, and readable by all clients.
+	**Warning**: Updating Attributes will overwrite the existing data. Make sure to always include the complete JSON object.
 	"""
 
     identifiers: CompanyIdentifiers | None = None
@@ -1719,7 +1672,7 @@ class Company(pydantic.BaseModel):
 	A list of country-specific company identifiers.
 	"""
 
-    legal_type: LegalType | None = None
+    legal_type: str | None = None
     """
 	The category identifying the legal structure of the company or legal entity.
 	Min length: 4
@@ -1741,16 +1694,16 @@ class Company(pydantic.BaseModel):
 	Max length: 150
 	"""
 
-    phone_number: PhoneNumber | None = None
+    phone_number: str | None = None
     """
 	The company's phone number (used for verification) in [E.164](https://en.wikipedia.org/wiki/E.164) format.
 	Max length: 16
 	"""
 
-    trading_address: Address | None = None
+    trading_address: MerchantsAddress | None = None
     """
 	A trading address is where your suppliers, banks or customers send you correspondence to. Trading address canbe different to the company's registered address (`address`).
-	Address documentation: https://developer.sumup.com/tools/glossary/address
+	Address documentation: https://developer.sumup.com/tools/glossary/merchant#addresses
 	"""
 
     website: str | None = None
@@ -2423,17 +2376,6 @@ DiscountApplicationMode = typing.Literal["AUTOMATIC", "MANUAL"] | str
 
 DiscountClas = typing.Literal["BUNDLE", "BUY_X_GET_Y", "CATEGORY", "ITEM", "MEAL_DEAL"] | str
 
-DiscountLevel = str
-"""
-Specifies where discount was applied by user (either merchant or consumer):
-- CART: Applied to the whole cart (calculated and distributed per sale item)
-- ITEM: Applied to specific sale item
-
-*Accepted values:* ["ITEM", "CART"].
-Min length: 4
-Max length: 4
-"""
-
 
 class DiscountSourceAdHoc(pydantic.BaseModel):
     """
@@ -2657,16 +2599,6 @@ class DiscountSource(pydantic.BaseModel):
 	"""
 
 
-PositiveAmount = int
-"""
-The value of the amount in minor units of the currency according to the Sale.currency.scale. 
-`value` can get large for some currencies and applications. 
-Use Long type or a similar data type when parsing `value`.
-Format: int64
-Min: 0
-"""
-
-
 class DiscountValue(pydantic.BaseModel):
     """
             The value type of the discount, either a percentage based or absolute monetary value.
@@ -2676,7 +2608,7 @@ class DiscountValue(pydantic.BaseModel):
     - percentage.
     """
 
-    absolute: PositiveAmount | None = None
+    absolute: int | None = None
     """
 	The absolute value in minor units of the currency according to the Sale.currency.scale.
 	Example: 10000 = 10.00
@@ -2702,7 +2634,7 @@ class DiscountLine(pydantic.BaseModel):
     Object representing information about single discount line.
     """
 
-    gross_amount: PositiveAmount
+    gross_amount: int
     """
 	The gross amount of the discount.
 	The value of the amount in minor units of the currency according to the Sale.currency.scale.
@@ -2710,7 +2642,7 @@ class DiscountLine(pydantic.BaseModel):
 	Min: 0
 	"""
 
-    level: DiscountLevel
+    level: str
     """
 	Specifies where discount was applied by user (either merchant or consumer):
 	- CART: Applied to the whole cart (calculated and distributed per sale item)
@@ -2721,7 +2653,7 @@ class DiscountLine(pydantic.BaseModel):
 	Max length: 4
 	"""
 
-    net_amount: PositiveAmount
+    net_amount: int
     """
 	The net amount of the discount.
 	The value of the amount in minor units of the currency according to the Sale.currency.scale.
@@ -2734,7 +2666,7 @@ class DiscountLine(pydantic.BaseModel):
 	The source of discount. Exactly one property must be set.
 	"""
 
-    tax_amount: PositiveAmount
+    tax_amount: int
     """
 	The tax amount of the discount.
 	The value of the amount in minor units of the currency according to the Sale.currency.scale.
@@ -2851,12 +2783,6 @@ class ErrorForbidden(pydantic.BaseModel):
 	"""
 
 
-TransactionEventId = int
-"""
-Numeric identifier of a transaction event. Use it as `tx_event_id` when requesting receipt details for aspecific event. This is separate from the transaction ID and the transaction history pagination references.
-Format: int64
-"""
-
 TransactionEventStatus = (
     typing.Literal[
         "FAILED", "PAID_OUT", "PENDING", "RECONCILED", "REFUNDED", "SCHEDULED", "SUCCESSFUL"
@@ -2865,11 +2791,6 @@ TransactionEventStatus = (
 )
 
 TransactionEventType = typing.Literal["CHARGE_BACK", "PAYOUT", "PAYOUT_DEDUCTION", "REFUND"] | str
-
-TransactionId = str
-"""
-Unique identifier of the transaction.
-"""
 
 
 class Event(pydantic.BaseModel):
@@ -2897,7 +2818,7 @@ class Event(pydantic.BaseModel):
 	Fee associated with the transaction event, in major units.
 	"""
 
-    id: TransactionEventId | None = None
+    id: int | None = None
     """
 	Numeric identifier of a transaction event. Use it as `tx_event_id` when requesting receipt details for aspecific event. This is separate from the transaction ID and the transaction history pagination references.
 	Format: int64
@@ -2928,7 +2849,7 @@ class Event(pydantic.BaseModel):
 	The timestamp of when the transaction event occurred.
 	"""
 
-    transaction_id: TransactionId | None = None
+    transaction_id: str | None = None
     """
 	Unique identifier of the transaction.
 	"""
@@ -2943,6 +2864,52 @@ class Event(pydantic.BaseModel):
 	- `PAYOUT_DEDUCTION`: An amount deducted from a merchant payout, for example to cover a refund or chargeback.
 	"""
 
+
+EventObjectType = typing.Literal["member", "reader"] | str
+
+
+class EventObject(pydantic.BaseModel):
+    """
+    EventObject is a schema definition.
+    """
+
+    id: str
+    """
+	Identifier of the resource associated with the event
+	"""
+
+    type: EventObjectType
+    """
+	Type of the resource associated with the event
+	"""
+
+    url: str
+    """
+	URL pointing to the resource or relevant documentation
+	Format: uri
+	"""
+
+
+EventType = (
+    typing.Literal[
+        "checkouts.created",
+        "checkouts.expired",
+        "checkouts.failed",
+        "checkouts.paid",
+        "checkouts.updated",
+        "members.created",
+        "members.deleted",
+        "members.updated",
+        "readers.created",
+        "readers.deleted",
+        "roles.created",
+        "roles.deleted",
+        "roles.updated",
+        "sales.completed",
+        "sales.updated",
+    ]
+    | str
+)
 
 FeatureValueTypeV10 = typing.Literal["BOOLEAN", "DATE", "DECIMAL", "INTEGER", "TEXT"] | str
 
@@ -2998,65 +2965,6 @@ class FeatureV10(pydantic.BaseModel):
 	"""
 
 
-TaxRate = int
-"""
-The tax rate percentage in minor units (1/100000). For example 19000 = 19%.
-Format: int64
-Min: 0
-"""
-
-
-class TaxLineNetAmount(pydantic.BaseModel):
-    """
-            Net amount before applying the tax.
-    The value of the amount in minor units of the currency according to the Sale.currency.scale.
-    """
-
-    currency: str
-    """
-	Currency ISO 4217 code
-	"""
-
-    value: int
-    """
-	Amount in minor units (e.g. cents).
-	"""
-
-
-class TaxLineGrossAmount(pydantic.BaseModel):
-    """
-            Gross amount after applying the tax.
-    The value of the amount in minor units of the currency according to the Sale.currency.scale.
-    """
-
-    currency: str
-    """
-	Currency ISO 4217 code
-	"""
-
-    value: int
-    """
-	Amount in minor units (e.g. cents).
-	"""
-
-
-class TaxLineTaxAmount(pydantic.BaseModel):
-    """
-            Amount of tax.
-    The value of the amount in minor units of the currency according to the Sale.currency.scale.
-    """
-
-    currency: str
-    """
-	Currency ISO 4217 code
-	"""
-
-    value: int
-    """
-	Amount in minor units (e.g. cents).
-	"""
-
-
 class TaxLine(pydantic.BaseModel):
     """
            Information about tax together with amounts before and after its application such as:
@@ -3064,10 +2972,11 @@ class TaxLine(pydantic.BaseModel):
     - gross amount: amount after applying the tax.
     """
 
-    gross_amount: TaxLineGrossAmount
+    gross_amount: int
     """
 	Gross amount after applying the tax.
 	The value of the amount in minor units of the currency according to the Sale.currency.scale.
+	Format: int64
 	"""
 
     id: str
@@ -3076,16 +2985,18 @@ class TaxLine(pydantic.BaseModel):
 	Max length: 100
 	"""
 
-    net_amount: TaxLineNetAmount
+    net_amount: int
     """
 	Net amount before applying the tax. 
 	The value of the amount in minor units of the currency according to the Sale.currency.scale.
+	Format: int64
 	"""
 
-    tax_amount: TaxLineTaxAmount
+    tax_amount: int
     """
 	Amount of tax.
 	The value of the amount in minor units of the currency according to the Sale.currency.scale.
+	Format: int64
 	"""
 
     name: str | None = None
@@ -3094,62 +3005,11 @@ class TaxLine(pydantic.BaseModel):
 	Max length: 255
 	"""
 
-    percentage: TaxRate | None = None
+    percentage: int | None = None
     """
 	The tax rate percentage in minor units (1/100000). For example 19000 = 19%.
 	Format: int64
 	Min: 0
-	"""
-
-
-class PositiveTaxLineNetAmount(pydantic.BaseModel):
-    """
-            Net amount before applying the tax.
-    The value of the amount in minor units of the currency according to the Sale.currency.scale.
-    """
-
-    currency: str
-    """
-	Currency ISO 4217 code
-	"""
-
-    value: int
-    """
-	Amount in minor units (e.g. cents).
-	"""
-
-
-class PositiveTaxLineGrossAmount(pydantic.BaseModel):
-    """
-            Gross amount after applying the tax.
-    The value of the amount in minor units of the currency according to the Sale.currency.scale.
-    """
-
-    currency: str
-    """
-	Currency ISO 4217 code
-	"""
-
-    value: int
-    """
-	Amount in minor units (e.g. cents).
-	"""
-
-
-class PositiveTaxLineTaxAmount(pydantic.BaseModel):
-    """
-            Amount of tax.
-    The value of the amount in minor units of the currency according to the Sale.currency.scale.
-    """
-
-    currency: str
-    """
-	Currency ISO 4217 code
-	"""
-
-    value: int
-    """
-	Amount in minor units (e.g. cents).
 	"""
 
 
@@ -3162,10 +3022,11 @@ class PositiveTaxLine(pydantic.BaseModel):
     The numbers here can't be negative.
     """
 
-    gross_amount: PositiveTaxLineGrossAmount
+    gross_amount: int
     """
 	Gross amount after applying the tax.
 	The value of the amount in minor units of the currency according to the Sale.currency.scale.
+	Format: int64
 	"""
 
     id: str
@@ -3174,16 +3035,18 @@ class PositiveTaxLine(pydantic.BaseModel):
 	Max length: 100
 	"""
 
-    net_amount: PositiveTaxLineNetAmount
+    net_amount: int
     """
 	Net amount before applying the tax. 
 	The value of the amount in minor units of the currency according to the Sale.currency.scale.
+	Format: int64
 	"""
 
-    tax_amount: PositiveTaxLineTaxAmount
+    tax_amount: int
     """
 	Amount of tax.
 	The value of the amount in minor units of the currency according to the Sale.currency.scale.
+	Format: int64
 	"""
 
     name: str | None = None
@@ -3192,7 +3055,7 @@ class PositiveTaxLine(pydantic.BaseModel):
 	Max length: 255
 	"""
 
-    percentage: TaxRate | None = None
+    percentage: int | None = None
     """
 	The tax rate percentage in minor units (1/100000). For example 19000 = 19%.
 	Format: int64
@@ -3213,14 +3076,14 @@ class FinalPriceAmounts(pydantic.BaseModel):
 	Max items: 1000
 	"""
 
-    total_gross_amount_final: PositiveAmount
+    total_gross_amount_final: int
     """
 	The final gross amount includes discounts, modifiers, and taxes. If no discounts are applied, it should beequal to total_gross_amount.
 	Format: int64
 	Min: 0
 	"""
 
-    total_net_amount_final: PositiveAmount
+    total_net_amount_final: int
     """
 	The final net amount includes discounts and modifiers. It does NOT include taxes. If no discounts are applied,it should be equal to total_net_amount.
 	Format: int64
@@ -3481,12 +3344,6 @@ class GetReaderSettingsResponse(pydantic.BaseModel):
     data: GetReaderSettingsResponseData
 
 
-HorizontalAccuracy = float
-"""
-Indication of the precision of the geographical position received from the payment terminal.
-"""
-
-
 class Invite(pydantic.BaseModel):
     """
     Pending invitation for membership.
@@ -3540,95 +3397,6 @@ class ItemReferencesV10(pydantic.BaseModel):
 	"""
 
 
-ItemTypeV10 = str
-"""
-Classifies a sale line. Not a schema subclass.
-
-Known values: `CATALOG`, `DEPOSIT`, `GIFT_CARD`, `CUSTOM`, `FEE`.
-
-`FEE` lines represent merchant-charged fees on the sale (e.g. shipping, service
-charge, surcharge, cancellation). They participate in sale totals like any other
-line; type-specific data is carried in `features` (see `Feature` for the
-conventional feature keys).
-
-This is intentionally an open string, NOT a closed enum: new values are added
-over time as pure data and consumers MUST tolerate unknown values, rendering the
-line from the generic envelope (name, quantity, price, taxes) and reading any
-extra information from `features`.
-"""
-
-Lat = float
-"""
-Latitude value from the coordinates of the payment location (as received from the payment terminal reader).
-Min: -90
-Max: 90
-"""
-
-
-class LineItemPriceV10TotalNetAmount(pydantic.BaseModel):
-    """
-    The net amount (including modifiers if applied). It does NOT include discounts.
-    """
-
-    currency: str
-    """
-	Currency ISO 4217 code
-	"""
-
-    value: int
-    """
-	Amount in minor units (e.g. cents).
-	"""
-
-
-class LineItemPriceV10TotalGrossAmount(pydantic.BaseModel):
-    """
-    The gross amount (including modifiers if applied). It does NOT include discounts.
-    """
-
-    currency: str
-    """
-	Currency ISO 4217 code
-	"""
-
-    value: int
-    """
-	Amount in minor units (e.g. cents).
-	"""
-
-
-class LineItemPriceV10TotalNetAmountFinal(pydantic.BaseModel):
-    """
-    The final net amount including discounts and modifiers. Equals `total_net_amount` if no discounts apply.
-    """
-
-    currency: str
-    """
-	Currency ISO 4217 code
-	"""
-
-    value: int
-    """
-	Amount in minor units (e.g. cents).
-	"""
-
-
-class LineItemPriceV10TotalGrossAmountFinal(pydantic.BaseModel):
-    """
-    The final gross amount including discounts, modifiers and taxes. Equals `total_gross_amount` if no discounts apply.
-    """
-
-    currency: str
-    """
-	Currency ISO 4217 code
-	"""
-
-    value: int
-    """
-	Amount in minor units (e.g. cents).
-	"""
-
-
 class LineItemPriceV10(pydantic.BaseModel):
     """
             Pricing for a single line, valid for every item type.
@@ -3654,27 +3422,31 @@ class LineItemPriceV10(pydantic.BaseModel):
 	Max items: 1000
 	"""
 
-    total_gross_amount: LineItemPriceV10TotalGrossAmount
+    total_gross_amount: int
     """
 	The gross amount (including modifiers if applied). It does NOT include discounts.
+	Format: int64
 	"""
 
-    total_gross_amount_final: LineItemPriceV10TotalGrossAmountFinal
+    total_gross_amount_final: int
     """
 	The final gross amount including discounts, modifiers and taxes. Equals `total_gross_amount` if no discounts apply.
+	Format:int64
 	"""
 
-    total_net_amount: LineItemPriceV10TotalNetAmount
+    total_net_amount: int
     """
 	The net amount (including modifiers if applied). It does NOT include discounts.
+	Format: int64
 	"""
 
-    total_net_amount_final: LineItemPriceV10TotalNetAmountFinal
+    total_net_amount_final: int
     """
 	The final net amount including discounts and modifiers. Equals `total_net_amount` if no discounts apply.
+	Format: int64
 	"""
 
-    unit_amount: PositiveAmount
+    unit_amount: int
     """
 	The price of a single unit. If the tax_mode is GROSS it includes taxes,
 	otherwise no tax is included. It does NOT include discounts.
@@ -3733,11 +3505,11 @@ class Person(pydantic.BaseModel):
 	Read only
 	"""
 
-    address: Address | None = None
+    address: MerchantsAddress | None = None
     """
 	An address somewhere in the world. The address fields used depend on the country conventions. For example, inGreat Britain, `city` is `post_town`. In the United States, the top-level administrative unit used in addressesis `state`, whereas in Chile it's `region`.
 	Whether an address is valid or not depends on whether the locally required fields are present. Fields not supported ina country will be ignored.
-	Address documentation: https://developer.sumup.com/tools/glossary/address
+	Address documentation: https://developer.sumup.com/tools/glossary/merchant#addresses
 	"""
 
     birthdate: datetime.date | None = None
@@ -3746,20 +3518,16 @@ class Person(pydantic.BaseModel):
 	Format: date
 	"""
 
-    change_status: ChangeStatus | None = None
+    change_status: str | None = None
     """
 	Reflects the status of changes submitted through the `PATCH` endpoints for the Merchant or Persons. If somechanges have not been applied yet, the status will be `pending`. If all changes have been applied, the status`done`.
 	The status is only returned after write operations or on read endpoints when the `version` query parameter isprovided.
 	Read only
 	"""
 
-    citizenship: CountryCode | None = None
+    citizenship: str | None = None
     """
-	An [ISO3166-1 alpha-2](https://en.wikipedia.org/wiki/ISO_3166-1_alpha-2)
-	country code. This definition users `oneOf` with a two-character string
-	type to allow for support of future countries in client code.
-	Min length: 2
-	Max length: 2
+	The Alpha-2 ISO code of the country where the Person is a citizen.
 	Pattern: ^[A-Z]{2}$
 	"""
 
@@ -3783,10 +3551,10 @@ class Person(pydantic.BaseModel):
 	Max length: 60
 	"""
 
-    identifiers: PersonalIdentifiers | None = None
+    identifiers: MerchantsPersonalIdentifiers | None = None
     """
 	A list of country-specific personal identifiers.
-	Max items: 32
+	Max items: 5
 	"""
 
     nationality: str | None = None
@@ -3797,10 +3565,10 @@ class Person(pydantic.BaseModel):
 
     ownership: Ownership | None = None
 
-    phone_number: PhoneNumber | None = None
+    phone_number: str | None = None
     """
-	A publicly available phone number in [E.164](https://en.wikipedia.org/wiki/E.164) format.
-	Max length: 16
+	The (mobile) phone number of the individual (used for verification) in [E.164](https://en.wikipedia.org/wiki/E.164) format.
+	Maxlength: 16
 	"""
 
     relationships: list[str] | None = None
@@ -3815,7 +3583,7 @@ class Person(pydantic.BaseModel):
 	A corresponding identity user ID for the Person, if they have a user account.
 	"""
 
-    version: Version | None = None
+    version: str | None = None
     """
 	The version of the resource. The version reflects a specific change submitted to the API via one of the `PATCH`endpoints.
 	"""
@@ -3829,12 +3597,78 @@ class ListPersonsResponseBody(pydantic.BaseModel):
     items: list[Person]
 
 
-Lon = float
-"""
-Longitude value from the coordinates of the payment location (as received from the payment terminal reader).
-Min: -180
-Max: 180
-"""
+class Location(pydantic.BaseModel):
+    """
+    Physical Merchant Location with a customer-facing name and address.
+    """
+
+    address: MerchantsAddress
+    """
+	Physical address of the Location.
+	Address documentation: https://developer.sumup.com/tools/glossary/merchant#addresses
+	"""
+
+    created_at: datetime.datetime
+    """
+	Time when the Location was created.
+	Read only
+	"""
+
+    id: str
+    """
+	Unique identifier of a Merchant Location.
+	Read only
+	"""
+
+    is_default: bool
+    """
+	Whether this is the default Location for the Merchant.
+	Read only
+	"""
+
+    name: str
+    """
+	Customer-facing Location name.
+	Min length: 1
+	Max length: 255
+	"""
+
+    updated_at: datetime.datetime
+    """
+	Time when the Location was last updated.
+	Read only
+	"""
+
+    business_name: str | None = None
+    """
+	Customer-facing business name used at the Location.
+	Min length: 1
+	Max length: 255
+	"""
+
+    email: str | None = None
+    """
+	Public email address for the Location.
+	Format: email
+	Min length: 1
+	Max length: 255
+	"""
+
+    phone_number: str | None = None
+    """
+	Public phone number for the Location in E.164 format.
+	Min length: 1
+	Max length: 20
+	"""
+
+    website: str | None = None
+    """
+	Public website for the Location.
+	Format: uri
+	Min length: 1
+	Max length: 255
+	"""
+
 
 MandatePayloadType = typing.Literal["recurrent"] | str
 MandatePayloadTypeInput = MandatePayloadType
@@ -4032,16 +3866,6 @@ class Member(pydantic.BaseModel):
 	"""
 
 
-ResourceType = str
-ResourceTypeInput = str
-"""
-The type of the membership resource.
-Possible values are:
-* `merchant` - merchant account(s)
-* `organization` - organization(s)
-"""
-
-
 class MembershipResource(pydantic.BaseModel):
     """
     Information about the resource the membership is in.
@@ -4062,7 +3886,7 @@ class MembershipResource(pydantic.BaseModel):
 	Display name of the resource.
 	"""
 
-    type: ResourceType
+    type: str
     """
 	The type of the membership resource.
 	Possible values are:
@@ -4129,7 +3953,7 @@ class Membership(pydantic.BaseModel):
 	The status of the membership.
 	"""
 
-    type: ResourceType
+    type: str
     """
 	The type of the membership resource.
 	Possible values are:
@@ -4191,13 +4015,9 @@ class Merchant(pydantic.BaseModel):
     Merchant documentation: https://developer.sumup.com/tools/glossary/merchant
     """
 
-    country: CountryCode
+    country: str
     """
-	An [ISO3166-1 alpha-2](https://en.wikipedia.org/wiki/ISO_3166-1_alpha-2)
-	country code. This definition users `oneOf` with a two-character string
-	type to allow for support of future countries in client code.
-	Min length: 2
-	Max length: 2
+	The [https://en.wikipedia.org/wiki/ISO_3166-1_alpha-2](ISO3166-1 alpha-2) country code of the country themerchant is registered and operates in.
 	Pattern: ^[A-Z]{2}$
 	"""
 
@@ -4261,7 +4081,7 @@ class Merchant(pydantic.BaseModel):
 	* `government_entity`: The business is state owned and operated
 	"""
 
-    change_status: ChangeStatus | None = None
+    change_status: str | None = None
     """
 	Reflects the status of changes submitted through the `PATCH` endpoints for the Merchant or Persons. If somechanges have not been applied yet, the status will be `pending`. If all changes have been applied, the status`done`.
 	The status is only returned after write operations or on read endpoints when the `version` query parameter isprovided.
@@ -4293,7 +4113,7 @@ class Merchant(pydantic.BaseModel):
 	True if the merchant is a sandbox for testing.
 	"""
 
-    version: Version | None = None
+    version: str | None = None
     """
 	The version of the resource. The version reflects a specific change submitted to the API via one of the `PATCH`endpoints.
 	"""
@@ -4318,54 +4138,24 @@ class ModifierSet(pydantic.BaseModel):
 	"""
 
 
-class PriceAmountsTotalNetAmount(pydantic.BaseModel):
-    """
-    The net amount (including modifiers if applied). It does NOT include discounts.
-    """
-
-    currency: str
-    """
-	Currency ISO 4217 code
-	"""
-
-    value: int
-    """
-	Amount in minor units (e.g. cents).
-	"""
-
-
-class PriceAmountsTotalGrossAmount(pydantic.BaseModel):
-    """
-    The gross amount (including modifiers if applied). It does NOT include discounts.
-    """
-
-    currency: str
-    """
-	Currency ISO 4217 code
-	"""
-
-    value: int
-    """
-	Amount in minor units (e.g. cents).
-	"""
-
-
 class PriceAmounts(pydantic.BaseModel):
     """
     Base price information for items including unit amount and totals.
     """
 
-    total_gross_amount: PriceAmountsTotalGrossAmount
+    total_gross_amount: int
     """
 	The gross amount (including modifiers if applied). It does NOT include discounts.
+	Format: int64
 	"""
 
-    total_net_amount: PriceAmountsTotalNetAmount
+    total_net_amount: int
     """
 	The net amount (including modifiers if applied). It does NOT include discounts.
+	Format: int64
 	"""
 
-    unit_amount: PositiveAmount
+    unit_amount: int
     """
 	The price of a single unit.
 	If the tax_mode is GROSS, it includes taxes, otherwise no tax included.
@@ -4375,54 +4165,24 @@ class PriceAmounts(pydantic.BaseModel):
 	"""
 
 
-class PositivePriceAmountsTotalNetAmount(pydantic.BaseModel):
-    """
-    The net amount (including modifiers if applied). It does NOT include discounts.
-    """
-
-    currency: str
-    """
-	Currency ISO 4217 code
-	"""
-
-    value: int
-    """
-	Amount in minor units (e.g. cents).
-	"""
-
-
-class PositivePriceAmountsTotalGrossAmount(pydantic.BaseModel):
-    """
-    The gross amount (including modifiers if applied). It does NOT include discounts.
-    """
-
-    currency: str
-    """
-	Currency ISO 4217 code
-	"""
-
-    value: int
-    """
-	Amount in minor units (e.g. cents).
-	"""
-
-
 class PositivePriceAmounts(pydantic.BaseModel):
     """
     Price information for items with positive amounts only.
     """
 
-    total_gross_amount: PositivePriceAmountsTotalGrossAmount
+    total_gross_amount: int
     """
 	The gross amount (including modifiers if applied). It does NOT include discounts.
+	Format: int64
 	"""
 
-    total_net_amount: PositivePriceAmountsTotalNetAmount
+    total_net_amount: int
     """
 	The net amount (including modifiers if applied). It does NOT include discounts.
+	Format: int64
 	"""
 
-    unit_amount: PositiveAmount
+    unit_amount: int
     """
 	The price of a single unit.
 	If the tax_mode is GROSS, it includes taxes, otherwise no tax included.
@@ -4444,13 +4204,6 @@ class PositivePriceWithTaxes(pydantic.BaseModel):
 	Max items: 1000
 	"""
 
-
-Quantity = float
-"""
-The numerical value representing the quantity in the specified unit.
-Format: double
-Min: 0
-"""
 
 ModifierItem = dict[str, object]
 """
@@ -4882,15 +4635,6 @@ class Product(pydantic.BaseModel):
 	"""
 
 
-PublicApmType = str
-"""
-Alternative payment method type when `method` is `apm`.
-Gift card is not an APM on this API.
-Input is case-insensitive; the canonical form is lowercase snake_case.
-**VALUES**: [qr_code_pix, sepa_dd, paypal, sumup_pay, twint, iris].
-Max length: 20
-"""
-
 PublicCardV10Type = typing.Literal["credit", "debit", "unknown"] | str
 
 
@@ -4899,7 +4643,7 @@ class PublicCardV10(pydantic.BaseModel):
     Card brand, credit/debit processing type, and last four digits.
     """
 
-    brand: Brand
+    brand: str
     """
 	The brand of the card.
 	Input is case-insensitive; the canonical form is lowercase snake_case.
@@ -4938,21 +4682,6 @@ class PublicGiftCardPayment(pydantic.BaseModel):
 	"""
 
 
-PublicPaymentMethod = str
-"""
-Payment method on public sales read API v1.0.
-Digital wallets are first-class methods. Gift card payments use `gift_card`, not `apm`.
-Input is case-insensitive; the canonical form is lowercase snake_case.
-**VALUES**: [card, cash, apm, external, apple_pay, google_pay, whatsapp_pay, gift_card].
-Max length: 20
-"""
-
-Reference = str
-"""
-The reference to the actual payment used for this sale, e.g. the sumup transaction code.
-Max length: 50
-"""
-
 PublicPaymentV10Status = typing.Literal["CANCELED", "FAILED", "SUCCESSFUL"] | str
 
 
@@ -4964,7 +4693,7 @@ class PublicPaymentV10(pydantic.BaseModel):
     charge, etc.) appear as `type: "FEE"` item lines in `Sale.items`.
     """
 
-    amount: PositiveAmount
+    amount: int
     """
 	The amount of the payment including tips.
 	The value of the amount in minor units of `Sale.currency`.
@@ -4972,7 +4701,7 @@ class PublicPaymentV10(pydantic.BaseModel):
 	Min: 0
 	"""
 
-    method: PublicPaymentMethod
+    method: str
     """
 	Payment method on public sales read API v1.0.
 	Digital wallets are first-class methods. Gift card payments use `gift_card`, not `apm`.
@@ -4988,7 +4717,7 @@ class PublicPaymentV10(pydantic.BaseModel):
 	transaction time. Not the device clock.
 	"""
 
-    reference: Reference
+    reference: str
     """
 	The reference to the actual payment used for this sale, e.g. the sumup transaction code.
 	Max length: 50
@@ -5010,7 +4739,7 @@ class PublicPaymentV10(pydantic.BaseModel):
 	Default: "purchase"
 	"""
 
-    apm_type: PublicApmType | None = None
+    apm_type: str | None = None
     """
 	Alternative payment method type when `method` is `apm`.
 	Gift card is not an APM on this API.
@@ -5052,21 +4781,6 @@ class ReaderDevice(pydantic.BaseModel):
 	"""
 
 
-ReaderId = str
-ReaderIdInput = str
-"""
-Unique identifier of the reader that the payment is initiated on.
-Min length: 30
-Max length: 30
-"""
-
-ReaderName = str
-ReaderNameInput = str
-"""
-Custom human-readable, user-defined name for easier identification of the reader.
-Max length: 500
-"""
-
 ReaderStatus = typing.Literal["expired", "paired", "processing", "unknown"] | str
 
 
@@ -5085,14 +4799,16 @@ class Reader(pydantic.BaseModel):
 	Information about the underlying physical device.
 	"""
 
-    id: ReaderId
+    id: str
     """
-	Unique identifier of the reader that the payment is initiated on.
-	Min length: 30
+	Unique identifier of the object.
+	
+	Note that this identifies the instance of the physical devices pairing with your SumUp account. If you [delete](https://developer.sumup.com/api/readers/delete-reader) areader, and pair the device again, the ID will be different. Do not use this ID to refer to a physical device.
+	Minlength: 30
 	Max length: 30
 	"""
 
-    name: ReaderName
+    name: str
     """
 	Custom human-readable, user-defined name for easier identification of the reader.
 	Max length: 500
@@ -5187,15 +4903,6 @@ class ReaderCheckoutStatusChange(pydantic.BaseModel):
     """
 	Timestamp of the event.
 	"""
-
-
-ReaderPairingCode = str
-ReaderPairingCodeInput = str
-"""
-The pairing code is a 8 or 9 character alphanumeric string that is displayed on a SumUp Device after initiatingthe pairing. It is used to link the physical device to the created pairing.
-Min length: 8
-Max length: 9
-"""
 
 
 class ReaderPaymentRequestParamsAffiliate(pydantic.BaseModel):
@@ -5338,7 +5045,7 @@ class ReceiptEvent(pydantic.BaseModel):
 	Format: double
 	"""
 
-    id: TransactionEventId | None = None
+    id: int | None = None
     """
 	Numeric identifier of a transaction event. Use it as `tx_event_id` when requesting receipt details for aspecific event. This is separate from the transaction ID and the transaction history pagination references.
 	Format: int64
@@ -5369,7 +5076,7 @@ class ReceiptEvent(pydantic.BaseModel):
 	The timestamp of when the transaction event occurred.
 	"""
 
-    transaction_id: TransactionId | None = None
+    transaction_id: str | None = None
     """
 	Unique identifier of the transaction.
 	"""
@@ -5692,7 +5399,7 @@ class ReceiptTransaction(pydantic.BaseModel):
 	Transaction code returned after processing the transaction.
 	"""
 
-    transaction_id: TransactionId | None = None
+    transaction_id: str | None = None
     """
 	Unique identifier of the transaction.
 	"""
@@ -5879,14 +5586,14 @@ class SaleLineItemV10(pydantic.BaseModel):
 	a deposit with `operation_type` = `RETURN`).
 	"""
 
-    quantity: Quantity
+    quantity: float
     """
 	The numerical value representing the quantity in the specified unit.
 	Format: double
 	Min: 0
 	"""
 
-    type: ItemTypeV10
+    type: str
     """
 	Classifies a sale line. Not a schema subclass.
 	
@@ -5947,43 +5654,6 @@ class SaleLineItemV10(pydantic.BaseModel):
 	"""
 
 
-class SalePriceV10NetAmount(pydantic.BaseModel):
-    """
-            Final net total for the sale: sum of `items[].price.total_net_amount_final`
-    after cart-level discounts (tips excluded).
-    In minor units according to `Sale.currency.scale`.
-    """
-
-    currency: str
-    """
-	Currency ISO 4217 code
-	"""
-
-    value: int
-    """
-	Amount in minor units (e.g. cents).
-	"""
-
-
-class SalePriceV10GrossAmount(pydantic.BaseModel):
-    """
-            Final gross total for the sale: sum of `items[].price.total_gross_amount_final`
-    after cart-level discounts (tips excluded).
-    Same value as search `total_amount`, in minor units according to `Sale.currency.scale`.
-    Payment amounts include tips and can therefore differ from this gross total.
-    """
-
-    currency: str
-    """
-	Currency ISO 4217 code
-	"""
-
-    value: int
-    """
-	Amount in minor units (e.g. cents).
-	"""
-
-
 class SalePriceV10(pydantic.BaseModel):
     """
             Sale-level pricing aggregate, parallel to `LineItemPrice` on each `SaleLineItem`.
@@ -5993,19 +5663,21 @@ class SalePriceV10(pydantic.BaseModel):
     adjustments that consumers use for receipts and payment reconciliation.
     """
 
-    gross_amount: SalePriceV10GrossAmount
+    gross_amount: int
     """
 	Final gross total for the sale: sum of `items[].price.total_gross_amount_final`
 	after cart-level discounts (tips excluded).
 	Same value as search `total_amount`, in minor units according to `Sale.currency.scale`.
 	Payment amounts include tips and can therefore differ from this gross total.
+	Format: int64
 	"""
 
-    net_amount: SalePriceV10NetAmount
+    net_amount: int
     """
 	Final net total for the sale: sum of `items[].price.total_net_amount_final`
 	after cart-level discounts (tips excluded).
 	In minor units according to `Sale.currency.scale`.
+	Format: int64
 	"""
 
     taxes: list[TaxLine]
@@ -6024,23 +5696,12 @@ class SalePriceV10(pydantic.BaseModel):
 	"""
 
 
-SalesChannel = str
-"""
-The sale_channel is field that indicates the channel through
-which the sale was made. For example, if the sale was made in the merchant app,
-the sale_channel could be POS. If the sale was made on a kiosk, the
-sale_channel is KIOSK.
-
-*Accepted values:* ["POS", "KIOSK", "ONLINE_STORE", "SOLO", "ORDER_AND_PAY", "INVOICE", "BOOKINGS", "ORDER_AGGREGATOR", "SUBSCRIPTIONS","UNKNOWN"].
-"""
-
-
 class SaleSource(pydantic.BaseModel):
     """
     Information about the source of the sale.
     """
 
-    channel: SalesChannel
+    channel: str
     """
 	The sale_channel is field that indicates the channel through
 	which the sale was made. For example, if the sale was made in the merchant app,
@@ -6076,6 +5737,26 @@ class SaleSource(pydantic.BaseModel):
 SaleStateV10 = typing.Literal["CLOSED"] | str
 SaleStateV10Input = SaleStateV10
 
+
+class SalesActivityCurrency(pydantic.BaseModel):
+    """
+    The currency of the sale.
+    """
+
+    code: str
+    """
+	3-letter currency code as defined by ISO-4217.
+	Format: iso-4217
+	Min length: 3
+	Max length: 3
+	"""
+
+    scale: int
+    """
+	The scaling factor to apply to the value to arrive at the currency's major unit. Providing a scale mitigates changesto the minor unit over time, for example due to inflation. For example, if `scale` is denoted by `s` and`value` is denoted by  `v` is the value, then one arrives at the major currency value by calculating `v/ 10^s`.
+	"""
+
+
 TaxMode = typing.Literal["GROSS", "NET", "NO_TAX"] | str
 
 
@@ -6099,9 +5780,9 @@ class Sale(pydantic.BaseModel):
 	Instant when the sale was created.
 	"""
 
-    currency: Currency
+    currency: SalesActivityCurrency
     """
-	Three-letter [ISO 4217](https://en.wikipedia.org/wiki/ISO_4217) currency code of the amount.
+	The currency of the sale.
 	"""
 
     id: str
@@ -6190,24 +5871,6 @@ class SalePage(pydantic.BaseModel):
 	"""
 
 
-class SaleSearchItemTotalAmount(pydantic.BaseModel):
-    """
-            Final sale gross total after discounts and taxes, excluding tips.
-    Same value as `Sale.price.gross_amount`, in minor units according to `currency.scale`.
-    Payment amounts include tips and can therefore differ from this total.
-    """
-
-    currency: str
-    """
-	Currency ISO 4217 code
-	"""
-
-    value: int
-    """
-	Amount in minor units (e.g. cents).
-	"""
-
-
 class SaleSearchItem(pydantic.BaseModel):
     """
     Summary row for a sale in search results. Use `GET /sales/{sale_id}` for the full `Sale`.
@@ -6223,9 +5886,9 @@ class SaleSearchItem(pydantic.BaseModel):
 	Instant when the sale was created.
 	"""
 
-    currency: Currency
+    currency: SalesActivityCurrency
     """
-	Three-letter [ISO 4217](https://en.wikipedia.org/wiki/ISO_4217) currency code of the amount.
+	The currency of the sale.
 	"""
 
     id: str
@@ -6244,11 +5907,12 @@ class SaleSearchItem(pydantic.BaseModel):
 	Checkout tax mode for the sale. Same values as `Sale.tax_mode`.
 	"""
 
-    total_amount: SaleSearchItemTotalAmount
+    total_amount: int
     """
 	Final sale gross total after discounts and taxes, excluding tips.
 	Same value as `Sale.price.gross_amount`, in minor units according to `currency.scale`.
 	Payment amounts include tips and can therefore differ from this total.
+	Format: int64
 	"""
 
     name: str | None = None
@@ -6535,7 +6199,7 @@ class TransactionEvent(pydantic.BaseModel):
 	- `PAYOUT_DEDUCTION`: An amount deducted from a merchant payout, for example to cover a refund or chargeback.
 	"""
 
-    id: TransactionEventId | None = None
+    id: int | None = None
     """
 	Numeric identifier of a transaction event. Use it as `tx_event_id` when requesting receipt details for aspecific event. This is separate from the transaction ID and the transaction history pagination references.
 	Format: int64
@@ -6686,19 +6350,19 @@ class TransactionFullLocation(pydantic.BaseModel):
     Details of the payment location as received from the payment terminal.
     """
 
-    horizontal_accuracy: HorizontalAccuracy | None = None
+    horizontal_accuracy: float | None = None
     """
 	Indication of the precision of the geographical position received from the payment terminal.
 	"""
 
-    lat: Lat | None = None
+    lat: float | None = None
     """
 	Latitude value from the coordinates of the payment location (as received from the payment terminal reader).
 	Min: -90
 	Max: 90
 	"""
 
-    lon: Lon | None = None
+    lon: float | None = None
     """
 	Longitude value from the coordinates of the payment location (as received from the payment terminal reader).
 	Min: -180
@@ -6767,7 +6431,7 @@ class TransactionFull(pydantic.BaseModel):
 	External transaction identifier supplied by the client.
 	"""
 
-    horizontal_accuracy: HorizontalAccuracy | None = None
+    horizontal_accuracy: float | None = None
     """
 	Indication of the precision of the geographical position received from the payment terminal.
 	"""
@@ -6783,7 +6447,7 @@ class TransactionFull(pydantic.BaseModel):
 	Min: 1
 	"""
 
-    lat: Lat | None = None
+    lat: float | None = None
     """
 	Latitude value from the coordinates of the payment location (as received from the payment terminal reader).
 	Min: -90
@@ -6805,7 +6469,7 @@ class TransactionFull(pydantic.BaseModel):
 	Details of the payment location as received from the payment terminal.
 	"""
 
-    lon: Lon | None = None
+    lon: float | None = None
     """
 	Longitude value from the coordinates of the payment location (as received from the payment terminal reader).
 	Min: -180
@@ -7056,7 +6720,7 @@ class TransactionHistory(pydantic.BaseModel):
 	SumUp transaction code, for example `TEENSK4W2K`. Use it to look up the transaction with the `transaction_code` queryparameter. This is separate from the transaction's `id` and the card issuer's `auth_code`.
 	"""
 
-    transaction_id: TransactionId | None = None
+    transaction_id: str | None = None
     """
 	Unique identifier of the transaction.
 	"""
@@ -7259,6 +6923,30 @@ class UpdateReaderSettingsUnprocessableEntity(pydantic.BaseModel):
     """
 
     errors: UpdateReaderSettingsUnprocessableEntityErrors
+
+
+class WebhooksEvent(pydantic.BaseModel):
+    """
+    WebhooksEvent is a schema definition.
+    """
+
+    created_at: datetime.datetime
+    """
+	UTC timestamp when the event was created
+	"""
+
+    id: str
+    """
+	Unique id for this event
+	Max length: 64
+	"""
+
+    object: EventObject
+
+    type: EventType
+    """
+	The event type name used when subscribing to an event destination.
+	"""
 
 
 ProcessCheckout400Response = ErrorExtended | list[ErrorExtended]

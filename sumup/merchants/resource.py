@@ -24,29 +24,23 @@ from .._service import (
     serialize_request_data,
 )
 from ..types import (
-    Address,
-    Attributes,
     BasePerson,
     Branding,
     BusinessProfile,
-    ChangeStatus,
     ClassicMerchantIdentifiers,
     Company,
     CompanyIdentifier,
     CompanyIdentifiers,
-    CountryCode,
-    LegalType,
     ListPersonsResponseBody,
     Merchant,
+    MerchantsAddress,
+    MerchantsAttributes,
+    MerchantsPersonalIdentifiers,
     Meta,
     Ownership,
     Person,
-    PersonalIdentifier,
-    PersonalIdentifiers,
-    PhoneNumber,
     Problem,
     Timestamps,
-    Version,
 )
 
 
