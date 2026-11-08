@@ -8,10 +8,8 @@ from ..types import (
     ReceiptMerchantData,
     ReceiptReader,
     ReceiptTransaction,
-    TransactionEventId,
     TransactionEventStatus,
     TransactionEventType,
-    TransactionId,
 )
 from .resource import (
     AsyncReceiptsResource,
@@ -29,8 +27,6 @@ __all__ = [
     "ReceiptReader",
     "ReceiptTransaction",
     "ReceiptsResource",
-    "TransactionEventId",
     "TransactionEventStatus",
     "TransactionEventType",
-    "TransactionId",
 ]

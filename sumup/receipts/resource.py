@@ -32,10 +32,8 @@ from ..types import (
     ReceiptMerchantData,
     ReceiptReader,
     ReceiptTransaction,
-    TransactionEventId,
     TransactionEventStatus,
     TransactionEventType,
-    TransactionId,
 )
 
 

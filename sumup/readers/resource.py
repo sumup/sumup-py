@@ -45,12 +45,6 @@ from ..types import (
     Problem,
     Reader,
     ReaderDevice,
-    ReaderId,
-    ReaderIdInput,
-    ReaderName,
-    ReaderNameInput,
-    ReaderPairingCode,
-    ReaderPairingCodeInput,
     ReaderPaymentRequestParams,
     ReaderPaymentRequestParamsInput,
     ReaderPaymentResponse,
@@ -119,7 +113,7 @@ class CreateReaderBodyInput(typing_extensions.TypedDict, total=False):
 
     name: typing_extensions.Required[
         typing_extensions.Annotated[
-            ReaderNameInput,
+            str,
             typing_extensions.Doc(
                 "Custom human-readable, user-defined name for easier identification of the reader.\nMax length: 500"
             ),
@@ -127,7 +121,7 @@ class CreateReaderBodyInput(typing_extensions.TypedDict, total=False):
     ]
     pairing_code: typing_extensions.Required[
         typing_extensions.Annotated[
-            ReaderPairingCodeInput,
+            str,
             typing_extensions.Doc(
                 "The pairing code is a 8 or 9 character alphanumeric string that is displayed on a SumUp Device after initiatingthe pairing. It is used to link the physical device to the created pairing.\nMin length: 8\nMax length: 9"
             ),
@@ -158,7 +152,7 @@ class UpdateReaderBodyInput(typing_extensions.TypedDict, total=False):
     ]
     name: typing_extensions.NotRequired[
         typing_extensions.Annotated[
-            ReaderNameInput,
+            str,
             typing_extensions.Doc(
                 "Custom human-readable, user-defined name for easier identification of the reader.\nMax length: 500"
             ),
@@ -401,7 +395,7 @@ class ReadersResource(Resource):
     def create_go_checkout(
         self,
         merchant_code: str,
-        reader_id: ReaderId,
+        reader_id: str,
         *,
         affiliate: CreateGoReaderCheckoutBodyAffiliateInput | None | NotGivenType = NOT_GIVEN,
         client_transaction_id: str,
@@ -496,8 +490,8 @@ class ReadersResource(Resource):
         self,
         merchant_code: str,
         *,
-        pairing_code: ReaderPairingCodeInput,
-        name: ReaderNameInput,
+        pairing_code: str,
+        name: str,
         metadata: MetadataInput | None | NotGivenType = NOT_GIVEN,
         headers: HeaderTypes | None = None,
     ) -> Reader:
@@ -543,9 +537,7 @@ class ReadersResource(Resource):
         else:
             raise APIError.from_response("Unexpected response", resp)
 
-    def get(
-        self, merchant_code: str, reader_id: ReaderId, headers: HeaderTypes | None = None
-    ) -> Reader:
+    def get(self, merchant_code: str, reader_id: str, headers: HeaderTypes | None = None) -> Reader:
         """
         Retrieve a Reader
 
@@ -573,7 +565,7 @@ class ReadersResource(Resource):
         else:
             raise APIError.from_response("Unexpected response", resp)
 
-    def delete(self, merchant_code: str, reader_id: ReaderId, headers: HeaderTypes | None = None):
+    def delete(self, merchant_code: str, reader_id: str, headers: HeaderTypes | None = None):
         """
         Delete a reader
 
@@ -604,9 +596,9 @@ class ReadersResource(Resource):
     def update(
         self,
         merchant_code: str,
-        reader_id: ReaderId,
+        reader_id: str,
         *,
-        name: ReaderNameInput | None | NotGivenType = NOT_GIVEN,
+        name: str | None | NotGivenType = NOT_GIVEN,
         metadata: MetadataInput | None | NotGivenType = NOT_GIVEN,
         headers: HeaderTypes | None = None,
     ) -> Reader:
@@ -1227,7 +1219,7 @@ class AsyncReadersResource(AsyncResource):
     async def create_go_checkout(
         self,
         merchant_code: str,
-        reader_id: ReaderId,
+        reader_id: str,
         *,
         affiliate: CreateGoReaderCheckoutBodyAffiliateInput | None | NotGivenType = NOT_GIVEN,
         client_transaction_id: str,
@@ -1322,8 +1314,8 @@ class AsyncReadersResource(AsyncResource):
         self,
         merchant_code: str,
         *,
-        pairing_code: ReaderPairingCodeInput,
-        name: ReaderNameInput,
+        pairing_code: str,
+        name: str,
         metadata: MetadataInput | None | NotGivenType = NOT_GIVEN,
         headers: HeaderTypes | None = None,
     ) -> Reader:
@@ -1370,7 +1362,7 @@ class AsyncReadersResource(AsyncResource):
             raise APIError.from_response("Unexpected response", resp)
 
     async def get(
-        self, merchant_code: str, reader_id: ReaderId, headers: HeaderTypes | None = None
+        self, merchant_code: str, reader_id: str, headers: HeaderTypes | None = None
     ) -> Reader:
         """
         Retrieve a Reader
@@ -1399,9 +1391,7 @@ class AsyncReadersResource(AsyncResource):
         else:
             raise APIError.from_response("Unexpected response", resp)
 
-    async def delete(
-        self, merchant_code: str, reader_id: ReaderId, headers: HeaderTypes | None = None
-    ):
+    async def delete(self, merchant_code: str, reader_id: str, headers: HeaderTypes | None = None):
         """
         Delete a reader
 
@@ -1432,9 +1422,9 @@ class AsyncReadersResource(AsyncResource):
     async def update(
         self,
         merchant_code: str,
-        reader_id: ReaderId,
+        reader_id: str,
         *,
-        name: ReaderNameInput | None | NotGivenType = NOT_GIVEN,
+        name: str | None | NotGivenType = NOT_GIVEN,
         metadata: MetadataInput | None | NotGivenType = NOT_GIVEN,
         headers: HeaderTypes | None = None,
     ) -> Reader:
