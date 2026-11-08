@@ -30,6 +30,8 @@ from ._events import (
 )
 from .types import (
     Checkout,
+    EventObjectType,
+    EventType,
     Member,
     Reader,
     Role,
@@ -45,11 +47,11 @@ class CheckoutCreatedEvent(FetchableEvent[Checkout]):
     Checkout. The notification itself contains a resource reference.
     """
 
-    EVENT_TYPE: typing.ClassVar[str] = "checkouts.created"
+    EVENT_TYPE: typing.ClassVar[EventType] = "checkouts.created"
     type: typing.Literal["checkouts.created"] = pydantic.Field(
         default="checkouts.created", frozen=True
     )
-    _object_type: typing.ClassVar[str | None] = "checkout"
+    _object_type: typing.ClassVar[EventObjectType | None] = "checkout"
     _response_model: typing.ClassVar[builtins.type[pydantic.BaseModel]] = Checkout
 
 
@@ -61,11 +63,11 @@ class CheckoutExpiredEvent(FetchableEvent[Checkout]):
     Checkout. The notification itself contains a resource reference.
     """
 
-    EVENT_TYPE: typing.ClassVar[str] = "checkouts.expired"
+    EVENT_TYPE: typing.ClassVar[EventType] = "checkouts.expired"
     type: typing.Literal["checkouts.expired"] = pydantic.Field(
         default="checkouts.expired", frozen=True
     )
-    _object_type: typing.ClassVar[str | None] = "checkout"
+    _object_type: typing.ClassVar[EventObjectType | None] = "checkout"
     _response_model: typing.ClassVar[builtins.type[pydantic.BaseModel]] = Checkout
 
 
@@ -77,11 +79,11 @@ class CheckoutFailedEvent(FetchableEvent[Checkout]):
     Checkout. The notification itself contains a resource reference.
     """
 
-    EVENT_TYPE: typing.ClassVar[str] = "checkouts.failed"
+    EVENT_TYPE: typing.ClassVar[EventType] = "checkouts.failed"
     type: typing.Literal["checkouts.failed"] = pydantic.Field(
         default="checkouts.failed", frozen=True
     )
-    _object_type: typing.ClassVar[str | None] = "checkout"
+    _object_type: typing.ClassVar[EventObjectType | None] = "checkout"
     _response_model: typing.ClassVar[builtins.type[pydantic.BaseModel]] = Checkout
 
 
@@ -93,9 +95,9 @@ class CheckoutPaidEvent(FetchableEvent[Checkout]):
     Checkout. The notification itself contains a resource reference.
     """
 
-    EVENT_TYPE: typing.ClassVar[str] = "checkouts.paid"
+    EVENT_TYPE: typing.ClassVar[EventType] = "checkouts.paid"
     type: typing.Literal["checkouts.paid"] = pydantic.Field(default="checkouts.paid", frozen=True)
-    _object_type: typing.ClassVar[str | None] = "checkout"
+    _object_type: typing.ClassVar[EventObjectType | None] = "checkout"
     _response_model: typing.ClassVar[builtins.type[pydantic.BaseModel]] = Checkout
 
 
@@ -107,11 +109,11 @@ class CheckoutUpdatedEvent(FetchableEvent[Checkout]):
     Checkout. The notification itself contains a resource reference.
     """
 
-    EVENT_TYPE: typing.ClassVar[str] = "checkouts.updated"
+    EVENT_TYPE: typing.ClassVar[EventType] = "checkouts.updated"
     type: typing.Literal["checkouts.updated"] = pydantic.Field(
         default="checkouts.updated", frozen=True
     )
-    _object_type: typing.ClassVar[str | None] = "checkout"
+    _object_type: typing.ClassVar[EventObjectType | None] = "checkout"
     _response_model: typing.ClassVar[builtins.type[pydantic.BaseModel]] = Checkout
 
 
@@ -123,9 +125,9 @@ class MemberCreatedEvent(FetchableEvent[Member]):
     Member. The notification itself contains a resource reference.
     """
 
-    EVENT_TYPE: typing.ClassVar[str] = "members.created"
+    EVENT_TYPE: typing.ClassVar[EventType] = "members.created"
     type: typing.Literal["members.created"] = pydantic.Field(default="members.created", frozen=True)
-    _object_type: typing.ClassVar[str | None] = "member"
+    _object_type: typing.ClassVar[EventObjectType | None] = "member"
     _response_model: typing.ClassVar[builtins.type[pydantic.BaseModel]] = Member
 
 
@@ -137,9 +139,9 @@ class MemberDeletedEvent(FetchableEvent[Member]):
     Member. The notification itself contains a resource reference.
     """
 
-    EVENT_TYPE: typing.ClassVar[str] = "members.deleted"
+    EVENT_TYPE: typing.ClassVar[EventType] = "members.deleted"
     type: typing.Literal["members.deleted"] = pydantic.Field(default="members.deleted", frozen=True)
-    _object_type: typing.ClassVar[str | None] = "member"
+    _object_type: typing.ClassVar[EventObjectType | None] = "member"
     _response_model: typing.ClassVar[builtins.type[pydantic.BaseModel]] = Member
 
 
@@ -151,9 +153,9 @@ class MemberUpdatedEvent(FetchableEvent[Member]):
     Member. The notification itself contains a resource reference.
     """
 
-    EVENT_TYPE: typing.ClassVar[str] = "members.updated"
+    EVENT_TYPE: typing.ClassVar[EventType] = "members.updated"
     type: typing.Literal["members.updated"] = pydantic.Field(default="members.updated", frozen=True)
-    _object_type: typing.ClassVar[str | None] = "member"
+    _object_type: typing.ClassVar[EventObjectType | None] = "member"
     _response_model: typing.ClassVar[builtins.type[pydantic.BaseModel]] = Member
 
 
@@ -165,9 +167,9 @@ class ReaderCreatedEvent(FetchableEvent[Reader]):
     Reader. The notification itself contains a resource reference.
     """
 
-    EVENT_TYPE: typing.ClassVar[str] = "readers.created"
+    EVENT_TYPE: typing.ClassVar[EventType] = "readers.created"
     type: typing.Literal["readers.created"] = pydantic.Field(default="readers.created", frozen=True)
-    _object_type: typing.ClassVar[str | None] = "reader"
+    _object_type: typing.ClassVar[EventObjectType | None] = "reader"
     _response_model: typing.ClassVar[builtins.type[pydantic.BaseModel]] = Reader
 
 
@@ -179,9 +181,9 @@ class ReaderDeletedEvent(FetchableEvent[Reader]):
     Reader. The notification itself contains a resource reference.
     """
 
-    EVENT_TYPE: typing.ClassVar[str] = "readers.deleted"
+    EVENT_TYPE: typing.ClassVar[EventType] = "readers.deleted"
     type: typing.Literal["readers.deleted"] = pydantic.Field(default="readers.deleted", frozen=True)
-    _object_type: typing.ClassVar[str | None] = "reader"
+    _object_type: typing.ClassVar[EventObjectType | None] = "reader"
     _response_model: typing.ClassVar[builtins.type[pydantic.BaseModel]] = Reader
 
 
@@ -193,9 +195,9 @@ class RoleCreatedEvent(FetchableEvent[Role]):
     Role. The notification itself contains a resource reference.
     """
 
-    EVENT_TYPE: typing.ClassVar[str] = "roles.created"
+    EVENT_TYPE: typing.ClassVar[EventType] = "roles.created"
     type: typing.Literal["roles.created"] = pydantic.Field(default="roles.created", frozen=True)
-    _object_type: typing.ClassVar[str | None] = "role"
+    _object_type: typing.ClassVar[EventObjectType | None] = "role"
     _response_model: typing.ClassVar[builtins.type[pydantic.BaseModel]] = Role
 
 
@@ -207,9 +209,9 @@ class RoleDeletedEvent(FetchableEvent[Role]):
     Role. The notification itself contains a resource reference.
     """
 
-    EVENT_TYPE: typing.ClassVar[str] = "roles.deleted"
+    EVENT_TYPE: typing.ClassVar[EventType] = "roles.deleted"
     type: typing.Literal["roles.deleted"] = pydantic.Field(default="roles.deleted", frozen=True)
-    _object_type: typing.ClassVar[str | None] = "role"
+    _object_type: typing.ClassVar[EventObjectType | None] = "role"
     _response_model: typing.ClassVar[builtins.type[pydantic.BaseModel]] = Role
 
 
@@ -221,9 +223,9 @@ class RoleUpdatedEvent(FetchableEvent[Role]):
     Role. The notification itself contains a resource reference.
     """
 
-    EVENT_TYPE: typing.ClassVar[str] = "roles.updated"
+    EVENT_TYPE: typing.ClassVar[EventType] = "roles.updated"
     type: typing.Literal["roles.updated"] = pydantic.Field(default="roles.updated", frozen=True)
-    _object_type: typing.ClassVar[str | None] = "role"
+    _object_type: typing.ClassVar[EventObjectType | None] = "role"
     _response_model: typing.ClassVar[builtins.type[pydantic.BaseModel]] = Role
 
 
@@ -235,9 +237,9 @@ class SaleCompletedEvent(FetchableEvent[Sale]):
     Sale. The notification itself contains a resource reference.
     """
 
-    EVENT_TYPE: typing.ClassVar[str] = "sales.completed"
+    EVENT_TYPE: typing.ClassVar[EventType] = "sales.completed"
     type: typing.Literal["sales.completed"] = pydantic.Field(default="sales.completed", frozen=True)
-    _object_type: typing.ClassVar[str | None] = "sale"
+    _object_type: typing.ClassVar[EventObjectType | None] = "sale"
     _response_model: typing.ClassVar[builtins.type[pydantic.BaseModel]] = Sale
 
 
@@ -249,9 +251,9 @@ class SaleUpdatedEvent(FetchableEvent[Sale]):
     Sale. The notification itself contains a resource reference.
     """
 
-    EVENT_TYPE: typing.ClassVar[str] = "sales.updated"
+    EVENT_TYPE: typing.ClassVar[EventType] = "sales.updated"
     type: typing.Literal["sales.updated"] = pydantic.Field(default="sales.updated", frozen=True)
-    _object_type: typing.ClassVar[str | None] = "sale"
+    _object_type: typing.ClassVar[EventObjectType | None] = "sale"
     _response_model: typing.ClassVar[builtins.type[pydantic.BaseModel]] = Sale
 
 
@@ -274,7 +276,7 @@ KnownEventNotification = (
 )
 
 
-_EVENT_MODELS: dict[str, type[EventNotification]] = {
+_EVENT_MODELS: dict[EventType, type[EventNotification]] = {
     "checkouts.created": CheckoutCreatedEvent,
     "checkouts.expired": CheckoutExpiredEvent,
     "checkouts.failed": CheckoutFailedEvent,

@@ -12,6 +12,7 @@ from sumup.events import (
     EventCallbackError,
     EventHandlerRegistrationError,
     EventNotification,
+    EventObject,
     EventObjectUrlError,
     EventPayloadError,
     EventSignatureError,
@@ -25,7 +26,8 @@ from sumup.events import (
     UnknownEvent,
     verify_event_signature,
 )
-from sumup.types import Problem, Reader
+from sumup.types import EventObject as GeneratedEventObject
+from sumup.types import Problem, Reader, WebhooksEvent
 
 _NOW = 1788696000
 _SECRET = "event_secret_test"
@@ -116,6 +118,30 @@ def test_known_event_type_default_and_validation():
     with pytest.raises(pydantic.ValidationError) as raised:
         ReaderCreatedEvent.model_validate(payload)
     assert raised.value.errors()[0]["type"] == "literal_error"
+
+
+def test_event_models_extend_generated_schemas(sdk):
+    event = sdk.parse_event_notification_without_verification(_body())
+    assert isinstance(event, WebhooksEvent)
+    assert isinstance(event.object, GeneratedEventObject)
+    assert WebhooksEvent.model_validate(event.model_dump()).model_dump() == event.model_dump()
+
+
+@pytest.mark.parametrize("field", ["id", "type", "url"])
+@pytest.mark.parametrize("value", ["", 123, b"reader"])
+def test_event_object_preserves_strict_reference_validation(field, value):
+    reference = json.loads(_body())["object"]
+    reference[field] = value
+    with pytest.raises(pydantic.ValidationError):
+        EventObject.model_validate(reference)
+
+
+def test_unknown_event_preserves_future_object_types(sdk):
+    payload = json.loads(_body("future.event"))
+    payload["object"]["type"] = "future_resource"
+    event = sdk.parse_event_notification_without_verification(json.dumps(payload))
+    assert isinstance(event, UnknownEvent)
+    assert event.object.type == "future_resource"
 
 
 @pytest.mark.parametrize(
