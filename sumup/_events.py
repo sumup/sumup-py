@@ -15,8 +15,7 @@ import httpx
 import pydantic
 
 from ._exceptions import APIError, SumupError, _wrap_request_errors
-from .types import EventObject as _EventObject
-from .types import EventObjectType, EventType, WebhooksEvent
+from .types import EventObject, EventObjectType, EventType, WebhooksEvent
 
 SIGNATURE_HEADER = "X-SumUp-Webhook-Signature"
 """Header containing the signing timestamp and signature. Pass its complete value."""
@@ -28,12 +27,6 @@ Read the body before JSON middleware. Parsing and reserializing can change the
 signed bytes and cause verification to fail.
 """
 _ObjectT = TypeVar("_ObjectT", bound=pydantic.BaseModel)
-
-
-def _nonempty_string(value: object) -> str:
-    if not isinstance(value, str) or not value:
-        raise ValueError("expected a nonempty string")
-    return value
 
 
 class EventError(SumupError):
@@ -75,21 +68,6 @@ class EventObjectUrlError(EventError):
     """
 
 
-class EventObject(_EventObject):
-    """Reference to the resource associated with an event.
-
-    Attributes:
-        id: Identifier of the referenced resource.
-        type: Resource type, such as "member" or "reader".
-        url: API URL used by the event's fetch_object() or fetch_object_async().
-    """
-
-    @pydantic.field_validator("id", "type", "url", mode="before")
-    @classmethod
-    def _validate_reference(cls, value: object) -> str:
-        return _nonempty_string(value)
-
-
 class EventNotification(WebhooksEvent):
     """Metadata shared by known events and UnknownEvent.
 
@@ -104,18 +82,12 @@ class EventNotification(WebhooksEvent):
         object: Reference to the associated API resource.
     """
 
-    # Pydantic freezes the discriminator and validates the stricter reference model.
+    # Pydantic freezes the inherited discriminator at runtime.
     type: EventType = pydantic.Field(frozen=True)  # ty: ignore[invalid-mutable-override]
     created_at: pydantic.AwareDatetime
-    object: EventObject  # ty: ignore[invalid-mutable-override]
 
     _client: httpx.Client | httpx.AsyncClient | None = pydantic.PrivateAttr(default=None)
     _object_type: ClassVar[EventObjectType | None] = None
-
-    @pydantic.field_validator("id", "type", mode="before")
-    @classmethod
-    def _validate_identifier(cls, value: object) -> str:
-        return _nonempty_string(value)
 
     @pydantic.field_validator("object")
     @classmethod

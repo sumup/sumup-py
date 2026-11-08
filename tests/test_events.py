@@ -123,17 +123,9 @@ def test_known_event_type_default_and_validation():
 def test_event_models_extend_generated_schemas(sdk):
     event = sdk.parse_event_notification_without_verification(_body())
     assert isinstance(event, WebhooksEvent)
+    assert EventObject is GeneratedEventObject
     assert isinstance(event.object, GeneratedEventObject)
     assert WebhooksEvent.model_validate(event.model_dump()).model_dump() == event.model_dump()
-
-
-@pytest.mark.parametrize("field", ["id", "type", "url"])
-@pytest.mark.parametrize("value", ["", 123, b"reader"])
-def test_event_object_preserves_strict_reference_validation(field, value):
-    reference = json.loads(_body())["object"]
-    reference[field] = value
-    with pytest.raises(pydantic.ValidationError):
-        EventObject.model_validate(reference)
 
 
 def test_unknown_event_preserves_future_object_types(sdk):
@@ -224,13 +216,11 @@ def test_parse_rejects_invalid_payload(sdk, body):
 @pytest.mark.parametrize(
     "field,value",
     [
-        ("id", ""),
         ("type", []),
         ("created_at", "2026-04-11"),
         ("created_at", "2026-04-11T10:00:00"),
         ("created_at", "2026-02-30T10:00:00Z"),
         ("object", None),
-        ("object.id", ""),
         ("object.type", "member"),
         ("object.url", 123),
     ],
