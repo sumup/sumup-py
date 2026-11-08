@@ -26,8 +26,8 @@ from sumup.events import (
     UnknownEvent,
     verify_event_signature,
 )
+from sumup.types import Event, Problem, Reader
 from sumup.types import EventObject as GeneratedEventObject
-from sumup.types import Problem, Reader, WebhooksEvent
 
 _NOW = 1788696000
 _SECRET = "event_secret_test"
@@ -122,10 +122,10 @@ def test_known_event_type_default_and_validation():
 
 def test_event_models_extend_generated_schemas(sdk):
     event = sdk.parse_event_notification_without_verification(_body())
-    assert isinstance(event, WebhooksEvent)
+    assert isinstance(event, Event)
     assert EventObject is GeneratedEventObject
     assert isinstance(event.object, GeneratedEventObject)
-    assert WebhooksEvent.model_validate(event.model_dump()).model_dump() == event.model_dump()
+    assert Event.model_validate(event.model_dump()).model_dump() == event.model_dump()
 
 
 def test_unknown_event_preserves_future_object_types(sdk):
