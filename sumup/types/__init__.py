@@ -2783,88 +2783,6 @@ class ErrorForbidden(pydantic.BaseModel):
 	"""
 
 
-TransactionEventStatus = (
-    typing.Literal[
-        "FAILED", "PAID_OUT", "PENDING", "RECONCILED", "REFUNDED", "SCHEDULED", "SUCCESSFUL"
-    ]
-    | str
-)
-
-TransactionEventType = typing.Literal["CHARGE_BACK", "PAYOUT", "PAYOUT_DEDUCTION", "REFUND"] | str
-
-
-class Event(pydantic.BaseModel):
-    """
-    High-level transaction event details.
-    """
-
-    amount: float | None = None
-    """
-	Amount associated with the transaction event, in major units.
-	"""
-
-    deducted_amount: float | None = None
-    """
-	Amount deducted from the merchant for the event, in major units.
-	"""
-
-    deducted_fee_amount: float | None = None
-    """
-	Fee deducted from the merchant for the event, in major units.
-	"""
-
-    fee_amount: float | None = None
-    """
-	Fee associated with the transaction event, in major units.
-	"""
-
-    id: int | None = None
-    """
-	Numeric identifier of a transaction event. Use it as `tx_event_id` when requesting receipt details for aspecific event. This is separate from the transaction ID and the transaction history pagination references.
-	Format: int64
-	"""
-
-    installment_number: int | None = None
-    """
-	Consecutive number of the installment associated with the event.
-	"""
-
-    status: TransactionEventStatus | None = None
-    """
-	Status of the transaction event.
-	
-	Not every value is used for every event type.
-	
-	- `PENDING`: The event has been created but is not final yet. Used for events that are still being processed andwhose final outcome is not known yet.
-	- `SCHEDULED`: The event is planned for a future payout cycle but has not been executed yet. This applies topayout events before money is actually sent out.
-	- `RECONCILED`: The underlying payment has been matched with settlement data and is ready to continue through payoutprocessing, but the funds have not been paid out yet. This applies to payout events.
-	- `PAID_OUT`: The payout event has been completed and the funds were included in a merchant payout.
-	- `REFUNDED`: A refund event has been accepted and recorded in the refund flow. This is the status returned forrefund events once the transaction amount is being or has been returned to the payer.
-	- `SUCCESSFUL`: The event completed successfully. Use this as the generic terminal success status for event typesthat do not expose a more specific business outcome such as `PAID_OUT` or `REFUNDED`.
-	- `FAILED`: The event could not be completed. Typical examples are a payout that could not be executed oran event that was rejected during processing.
-	"""
-
-    timestamp: datetime.datetime | None = None
-    """
-	The timestamp of when the transaction event occurred.
-	"""
-
-    transaction_id: str | None = None
-    """
-	Unique identifier of the transaction.
-	"""
-
-    type: TransactionEventType | None = None
-    """
-	Financial event associated with a transaction.
-	
-	- `PAYOUT`: Funds from the transaction being prepared for or included in a merchant payout. Check the event statusto determine whether they have been paid out.
-	- `REFUND`: Money returned to the payer.
-	- `CHARGE_BACK`: A reversal of the payment following a chargeback.
-	- `PAYOUT_DEDUCTION`: An amount deducted from a merchant payout, for example to cover a refund or chargeback.
-	"""
-
-
 EventObjectType = typing.Literal["member", "reader"] | str
 
 
@@ -2910,6 +2828,31 @@ EventType = (
     ]
     | str
 )
+
+
+class Event(pydantic.BaseModel):
+    """
+    Event is a schema definition.
+    """
+
+    created_at: datetime.datetime
+    """
+	UTC timestamp when the event was created
+	"""
+
+    id: str
+    """
+	Unique id for this event
+	Max length: 64
+	"""
+
+    object: EventObject
+
+    type: EventType
+    """
+	The event type name used when subscribing to an event destination.
+	"""
+
 
 FeatureValueTypeV10 = typing.Literal["BOOLEAN", "DATE", "DECIMAL", "INTEGER", "TEXT"] | str
 
@@ -5034,6 +4977,16 @@ class ReceiptCard(pydantic.BaseModel):
 	"""
 
 
+TransactionEventStatus = (
+    typing.Literal[
+        "FAILED", "PAID_OUT", "PENDING", "RECONCILED", "REFUNDED", "SCHEDULED", "SUCCESSFUL"
+    ]
+    | str
+)
+
+TransactionEventType = typing.Literal["CHARGE_BACK", "PAYOUT", "PAYOUT_DEDUCTION", "REFUND"] | str
+
+
 class ReceiptEvent(pydantic.BaseModel):
     """
     Transaction event details as rendered on the receipt.
@@ -6168,6 +6121,78 @@ class Token(pydantic.BaseModel):
 
 class TransactionEvent(pydantic.BaseModel):
     """
+    High-level transaction event details.
+    """
+
+    amount: float | None = None
+    """
+	Amount associated with the transaction event, in major units.
+	"""
+
+    deducted_amount: float | None = None
+    """
+	Amount deducted from the merchant for the event, in major units.
+	"""
+
+    deducted_fee_amount: float | None = None
+    """
+	Fee deducted from the merchant for the event, in major units.
+	"""
+
+    fee_amount: float | None = None
+    """
+	Fee associated with the transaction event, in major units.
+	"""
+
+    id: int | None = None
+    """
+	Numeric identifier of a transaction event. Use it as `tx_event_id` when requesting receipt details for aspecific event. This is separate from the transaction ID and the transaction history pagination references.
+	Format: int64
+	"""
+
+    installment_number: int | None = None
+    """
+	Consecutive number of the installment associated with the event.
+	"""
+
+    status: TransactionEventStatus | None = None
+    """
+	Status of the transaction event.
+	
+	Not every value is used for every event type.
+	
+	- `PENDING`: The event has been created but is not final yet. Used for events that are still being processed andwhose final outcome is not known yet.
+	- `SCHEDULED`: The event is planned for a future payout cycle but has not been executed yet. This applies topayout events before money is actually sent out.
+	- `RECONCILED`: The underlying payment has been matched with settlement data and is ready to continue through payoutprocessing, but the funds have not been paid out yet. This applies to payout events.
+	- `PAID_OUT`: The payout event has been completed and the funds were included in a merchant payout.
+	- `REFUNDED`: A refund event has been accepted and recorded in the refund flow. This is the status returned forrefund events once the transaction amount is being or has been returned to the payer.
+	- `SUCCESSFUL`: The event completed successfully. Use this as the generic terminal success status for event typesthat do not expose a more specific business outcome such as `PAID_OUT` or `REFUNDED`.
+	- `FAILED`: The event could not be completed. Typical examples are a payout that could not be executed oran event that was rejected during processing.
+	"""
+
+    timestamp: datetime.datetime | None = None
+    """
+	The timestamp of when the transaction event occurred.
+	"""
+
+    transaction_id: str | None = None
+    """
+	Unique identifier of the transaction.
+	"""
+
+    type: TransactionEventType | None = None
+    """
+	Financial event associated with a transaction.
+	
+	- `PAYOUT`: Funds from the transaction being prepared for or included in a merchant payout. Check the event statusto determine whether they have been paid out.
+	- `REFUND`: Money returned to the payer.
+	- `CHARGE_BACK`: A reversal of the payment following a chargeback.
+	- `PAYOUT_DEDUCTION`: An amount deducted from a merchant payout, for example to cover a refund or chargeback.
+	"""
+
+
+class TransactionEventDetails(pydantic.BaseModel):
+    """
     Detailed information about a transaction event.
     """
 
@@ -6415,7 +6440,7 @@ class TransactionFull(pydantic.BaseModel):
 	How the payment details were captured, for example `CHIP` or `CONTACTLESS` for card-present payments and`CUSTOMER_ENTRY` for card details entered by the payer. For wallet and alternative payment methods, this canidentify the method, such as `APPLE_PAY` or `BLIK`.
 	"""
 
-    events: list[Event] | None = None
+    events: list[TransactionEvent] | None = None
     """
 	Compact list of events related to the transaction.
 	"""
@@ -6585,7 +6610,7 @@ class TransactionFull(pydantic.BaseModel):
 	SumUp transaction code, for example `TEENSK4W2K`. Use it to look up the transaction with the `transaction_code` queryparameter. This is separate from the transaction's `id` and the card issuer's `auth_code`.
 	"""
 
-    transaction_events: list[TransactionEvent] | None = None
+    transaction_events: list[TransactionEventDetails] | None = None
     """
 	Detailed list of events related to the transaction.
 	"""
@@ -6923,30 +6948,6 @@ class UpdateReaderSettingsUnprocessableEntity(pydantic.BaseModel):
     """
 
     errors: UpdateReaderSettingsUnprocessableEntityErrors
-
-
-class WebhooksEvent(pydantic.BaseModel):
-    """
-    WebhooksEvent is a schema definition.
-    """
-
-    created_at: datetime.datetime
-    """
-	UTC timestamp when the event was created
-	"""
-
-    id: str
-    """
-	Unique id for this event
-	Max length: 64
-	"""
-
-    object: EventObject
-
-    type: EventType
-    """
-	The event type name used when subscribing to an event destination.
-	"""
 
 
 ProcessCheckout400Response = ErrorExtended | list[ErrorExtended]
