@@ -27,13 +27,13 @@ from ._events import (
     UnknownEvent,
     verify_event_signature,
 )
-{{- if .ObjectTypes }}
 from .types import (
+    EventObjectType,
+    EventType,
 {{- range .ObjectTypes }}
     {{ . }},
 {{- end }}
 )
-{{- end }}
 
 
 {{ range .Events -}}
@@ -45,9 +45,9 @@ class {{ .ClassName }}(FetchableEvent[{{ .ObjectType }}]):
     {{ .ObjectType }}. The notification itself contains a resource reference.
     """
 
-    EVENT_TYPE: typing.ClassVar[str] = {{ printf "%q" .EventType }}
+    EVENT_TYPE: typing.ClassVar[EventType] = {{ printf "%q" .EventType }}
     type: typing.Literal[{{ printf "%q" .EventType }}] = pydantic.Field(default={{ printf "%q" .EventType }}, frozen=True)
-    _object_type: typing.ClassVar[str | None] = {{ printf "%q" .ObjectKind }}
+    _object_type: typing.ClassVar[EventObjectType | None] = {{ printf "%q" .ObjectKind }}
     _response_model: typing.ClassVar[typing.Type[pydantic.BaseModel]] = {{ .ObjectType }}
 
 
@@ -58,7 +58,7 @@ KnownEventNotification = ({{ range $index, $event := .Events }}{{ if $index }} |
 KnownEventNotification = EventNotification
 {{ end }}
 
-_EVENT_MODELS: typing.Dict[str, typing.Type[EventNotification]] = {
+_EVENT_MODELS: typing.Dict[EventType, typing.Type[EventNotification]] = {
 {{- range .Events }}
     {{ printf "%q" .EventType }}: {{ .ClassName }},
 {{- end }}

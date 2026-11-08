@@ -9,12 +9,13 @@ import json
 import re
 import time
 from collections.abc import Awaitable, Callable
-from typing import Annotated, ClassVar, Generic, TypeVar, cast
+from typing import ClassVar, Generic, TypeVar, cast
 
 import httpx
 import pydantic
 
 from ._exceptions import APIError, SumupError, _wrap_request_errors
+from .types import EventObject, EventObjectType, EventType, WebhooksEvent
 
 SIGNATURE_HEADER = "X-SumUp-Webhook-Signature"
 """Header containing the signing timestamp and signature. Pass its complete value."""
@@ -25,7 +26,6 @@ EventBody = str | bytes | bytearray | memoryview
 Read the body before JSON middleware. Parsing and reserializing can change the
 signed bytes and cause verification to fail.
 """
-_NonemptyString = Annotated[str, pydantic.Field(strict=True, min_length=1)]
 _ObjectT = TypeVar("_ObjectT", bound=pydantic.BaseModel)
 
 
@@ -68,21 +68,7 @@ class EventObjectUrlError(EventError):
     """
 
 
-class EventObject(pydantic.BaseModel):
-    """Reference to the resource associated with an event.
-
-    Attributes:
-        id: Identifier of the referenced resource.
-        type: Resource type, such as "member" or "reader".
-        url: API URL used by the event's fetch_object() or fetch_object_async().
-    """
-
-    id: _NonemptyString
-    type: _NonemptyString
-    url: _NonemptyString
-
-
-class EventNotification(pydantic.BaseModel):
+class EventNotification(WebhooksEvent):
     """Metadata shared by known events and UnknownEvent.
 
     Notifications contain a resource reference. Known event classes provide
@@ -96,13 +82,12 @@ class EventNotification(pydantic.BaseModel):
         object: Reference to the associated API resource.
     """
 
-    id: _NonemptyString
-    type: _NonemptyString = pydantic.Field(frozen=True)
+    # Pydantic freezes the inherited discriminator at runtime.
+    type: EventType = pydantic.Field(frozen=True)  # ty: ignore[invalid-mutable-override]
     created_at: pydantic.AwareDatetime
-    object: EventObject
 
     _client: httpx.Client | httpx.AsyncClient | None = pydantic.PrivateAttr(default=None)
-    _object_type: ClassVar[str | None] = None
+    _object_type: ClassVar[EventObjectType | None] = None
 
     @pydantic.field_validator("object")
     @classmethod
@@ -123,7 +108,7 @@ class UnknownEvent(EventNotification):
 class FetchableEvent(EventNotification, Generic[_ObjectT]):
     """Base for known events with typed resource fetching."""
 
-    EVENT_TYPE: ClassVar[str]
+    EVENT_TYPE: ClassVar[EventType]
     _response_model: ClassVar[type[pydantic.BaseModel]]
 
     def _parse_response(self, response: httpx.Response) -> _ObjectT:
@@ -215,9 +200,9 @@ class _BaseEventsHandler:
         self._secret = secret
         self._fallback = fallback
         self._client = client
-        self._callbacks: dict[str, _ErasedCallback] = {}
+        self._callbacks: dict[EventType, _ErasedCallback] = {}
 
-    def _register(self, event_type: str, callback: _ErasedCallback) -> None:
+    def _register(self, event_type: EventType, callback: _ErasedCallback) -> None:
         if not callable(callback):
             raise EventHandlerRegistrationError("an event callback is required")
         if event_type in self._callbacks:

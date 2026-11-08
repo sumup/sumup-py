@@ -12,6 +12,7 @@ from sumup.events import (
     EventCallbackError,
     EventHandlerRegistrationError,
     EventNotification,
+    EventObject,
     EventObjectUrlError,
     EventPayloadError,
     EventSignatureError,
@@ -25,7 +26,8 @@ from sumup.events import (
     UnknownEvent,
     verify_event_signature,
 )
-from sumup.types import Problem, Reader
+from sumup.types import EventObject as GeneratedEventObject
+from sumup.types import Problem, Reader, WebhooksEvent
 
 _NOW = 1788696000
 _SECRET = "event_secret_test"
@@ -118,6 +120,22 @@ def test_known_event_type_default_and_validation():
     assert raised.value.errors()[0]["type"] == "literal_error"
 
 
+def test_event_models_extend_generated_schemas(sdk):
+    event = sdk.parse_event_notification_without_verification(_body())
+    assert isinstance(event, WebhooksEvent)
+    assert EventObject is GeneratedEventObject
+    assert isinstance(event.object, GeneratedEventObject)
+    assert WebhooksEvent.model_validate(event.model_dump()).model_dump() == event.model_dump()
+
+
+def test_unknown_event_preserves_future_object_types(sdk):
+    payload = json.loads(_body("future.event"))
+    payload["object"]["type"] = "future_resource"
+    event = sdk.parse_event_notification_without_verification(json.dumps(payload))
+    assert isinstance(event, UnknownEvent)
+    assert event.object.type == "future_resource"
+
+
 @pytest.mark.parametrize(
     "body", [b'{ "name": "caf\xc3\xa9" }\n', bytearray(b"body"), memoryview(b"body"), "café"]
 )
@@ -198,13 +216,11 @@ def test_parse_rejects_invalid_payload(sdk, body):
 @pytest.mark.parametrize(
     "field,value",
     [
-        ("id", ""),
         ("type", []),
         ("created_at", "2026-04-11"),
         ("created_at", "2026-04-11T10:00:00"),
         ("created_at", "2026-02-30T10:00:00Z"),
         ("object", None),
-        ("object.id", ""),
         ("object.type", "member"),
         ("object.url", 123),
     ],
