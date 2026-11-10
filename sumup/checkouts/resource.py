@@ -47,6 +47,7 @@ from ..types import (
     CheckoutAccepted,
     CheckoutCreateRequest,
     CheckoutCreateRequestInput,
+    CheckoutEntryMode,
     CheckoutSuccess,
     CheckoutUpdateRequest,
     CheckoutUpdateRequestInput,
@@ -54,7 +55,6 @@ from ..types import (
     Currency,
     CurrencyInput,
     DetailsError,
-    EntryMode,
     Error,
     ErrorExtended,
     ErrorForbidden,
@@ -394,9 +394,9 @@ class ProcessCheckoutCheckoutSuccessResponseTransaction(pydantic.BaseModel):
 	Three-letter [ISO 4217](https://en.wikipedia.org/wiki/ISO_4217) currency code of the amount.
 	"""
 
-    entry_mode: EntryMode | None = None
+    entry_mode: CheckoutEntryMode | None = None
     """
-	How the payment details were captured, for example `CHIP` or `CONTACTLESS` for card-present payments and`CUSTOMER_ENTRY` for card details entered by the payer. For wallet and alternative payment methods, this canidentify the method, such as `APPLE_PAY` or `BLIK`.
+	How the payment details were captured for a checkout transaction, for example `CUSTOMER_ENTRY` for card detailsentered by the payer or `APPLE_PAY` for an Apple Pay payment. Checkout entry modes use uppercase values, unlikeentry modes returned by the Transactions endpoints.
 	"""
 
     id: str | None = None
