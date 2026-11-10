@@ -728,6 +728,32 @@ class CategoryV10(pydantic.BaseModel):
 	"""
 
 
+CheckoutEntryMode = (
+    typing.Literal[
+        "APPLE_PAY",
+        "BANCOMATPAY",
+        "BANCONTACT",
+        "BLIK",
+        "BOLETO",
+        "CARD",
+        "CUSTOMER_ENTRY",
+        "DIRECT_DEBIT",
+        "EPS",
+        "GIROPAY",
+        "GOOGLE_PAY",
+        "IDEAL",
+        "KLARNA",
+        "MOTO",
+        "MYBANK",
+        "P24",
+        "PAYPAL",
+        "PIX",
+        "QR_CODE_PIX",
+        "SATISPAY",
+    ]
+    | str
+)
+
 Currency = (
     typing.Literal[
         "BRL",
@@ -749,40 +775,6 @@ Currency = (
     | str
 )
 CurrencyInput = Currency
-
-EntryMode = (
-    typing.Literal[
-        "APPLE_PAY",
-        "BANCONTACT",
-        "BLIK",
-        "BOLETO",
-        "CHIP",
-        "CONTACTLESS",
-        "CONTACTLESS_MAGSTRIPE",
-        "CUSTOMER_ENTRY",
-        "DIRECT_DEBIT",
-        "EPS",
-        "GIROPAY",
-        "GOOGLE_PAY",
-        "IDEAL",
-        "MAGSTRIPE",
-        "MAGSTRIPE_FALLBACK",
-        "MANUAL_ENTRY",
-        "MOTO",
-        "MYBANK",
-        "N/A",
-        "NONE",
-        "P24",
-        "PAYPAL",
-        "PIX",
-        "QR_CODE_PIX",
-        "SATISPAY",
-        "SOFORT",
-        "TWINT",
-    ]
-    | str
-)
-EntryModeInput = EntryMode
 
 MandateResponseStatus = typing.Literal["active", "inactive"] | str
 
@@ -892,11 +884,6 @@ class TransactionCheckoutInfo(pydantic.BaseModel):
 	Authorization code for the transaction sent by the payment card issuer or bank. Applicable only to card payments.
 	"""
 
-    entry_mode: EntryMode | None = None
-    """
-	How the payment details were captured, for example `CHIP` or `CONTACTLESS` for card-present payments and`CUSTOMER_ENTRY` for card details entered by the payer. For wallet and alternative payment methods, this canidentify the method, such as `APPLE_PAY` or `BLIK`.
-	"""
-
     merchant_code: str | None = None
     """
 	Unique code of the registered merchant to whom the payment is made.
@@ -936,9 +923,9 @@ class CheckoutTransaction(pydantic.BaseModel):
 	Three-letter [ISO 4217](https://en.wikipedia.org/wiki/ISO_4217) currency code of the amount.
 	"""
 
-    entry_mode: EntryMode | None = None
+    entry_mode: CheckoutEntryMode | None = None
     """
-	How the payment details were captured, for example `CHIP` or `CONTACTLESS` for card-present payments and`CUSTOMER_ENTRY` for card details entered by the payer. For wallet and alternative payment methods, this canidentify the method, such as `APPLE_PAY` or `BLIK`.
+	How the payment details were captured for a checkout transaction, for example `CUSTOMER_ENTRY` for card detailsentered by the payer or `APPLE_PAY` for an Apple Pay payment. Checkout entry modes use uppercase values, unlikeentry modes returned by the Transactions endpoints.
 	"""
 
     id: str | None = None
@@ -1334,9 +1321,9 @@ class CheckoutSuccessTransaction(pydantic.BaseModel):
 	Three-letter [ISO 4217](https://en.wikipedia.org/wiki/ISO_4217) currency code of the amount.
 	"""
 
-    entry_mode: EntryMode | None = None
+    entry_mode: CheckoutEntryMode | None = None
     """
-	How the payment details were captured, for example `CHIP` or `CONTACTLESS` for card-present payments and`CUSTOMER_ENTRY` for card details entered by the payer. For wallet and alternative payment methods, this canidentify the method, such as `APPLE_PAY` or `BLIK`.
+	How the payment details were captured for a checkout transaction, for example `CUSTOMER_ENTRY` for card detailsentered by the payer or `APPLE_PAY` for an Apple Pay payment. Checkout entry modes use uppercase values, unlikeentry modes returned by the Transactions endpoints.
 	"""
 
     id: str | None = None
@@ -2723,6 +2710,44 @@ class ElvCardAccount(pydantic.BaseModel):
     """
 	ELV card sort code.
 	"""
+
+
+EntryMode = (
+    typing.Literal[
+        "apple pay",
+        "bancontact",
+        "blik",
+        "boleto",
+        "chip",
+        "contactless",
+        "contactless magstripe",
+        "customer entry",
+        "direct debit",
+        "eps",
+        "giropay",
+        "google pay",
+        "ideal",
+        "iris",
+        "magstripe",
+        "magstripe fallback",
+        "manual entry",
+        "moto",
+        "mybank",
+        "na",
+        "none",
+        "p24",
+        "paypal",
+        "pix",
+        "qr code pix",
+        "satispay",
+        "sofort",
+        "sumup gift card",
+        "sumup pay",
+        "twint",
+    ]
+    | str
+)
+EntryModeInput = EntryMode
 
 
 class Error(pydantic.BaseModel):
@@ -6266,6 +6291,11 @@ class TransactionMixinHistory(pydantic.BaseModel):
     Additional transaction fields used by history and detailed views.
     """
 
+    entry_mode: EntryMode | None = None
+    """
+	How the payment details were captured, for example `chip` or `contactless` for card-present payments and`customer entry` for card details entered by the payer. For wallet and alternative payment methods, this canidentify the method, such as `apple pay` or `blik`.
+	"""
+
     payout_plan: TransactionMixinHistoryPayoutPlan | None = None
     """
 	Payout plan of the registered user at the time when the transaction was made.
@@ -6437,7 +6467,7 @@ class TransactionFull(pydantic.BaseModel):
 
     entry_mode: EntryMode | None = None
     """
-	How the payment details were captured, for example `CHIP` or `CONTACTLESS` for card-present payments and`CUSTOMER_ENTRY` for card details entered by the payer. For wallet and alternative payment methods, this canidentify the method, such as `APPLE_PAY` or `BLIK`.
+	How the payment details were captured, for example `chip` or `contactless` for card-present payments and`customer entry` for card details entered by the payer. For wallet and alternative payment methods, this canidentify the method, such as `apple pay` or `blik`.
 	"""
 
     events: list[TransactionEvent] | None = None
@@ -6669,6 +6699,11 @@ class TransactionHistory(pydantic.BaseModel):
     currency: Currency | None = None
     """
 	Three-letter [ISO 4217](https://en.wikipedia.org/wiki/ISO_4217) currency code of the amount.
+	"""
+
+    entry_mode: EntryMode | None = None
+    """
+	How the payment details were captured, for example `chip` or `contactless` for card-present payments and`customer entry` for card details entered by the payer. For wallet and alternative payment methods, this canidentify the method, such as `apple pay` or `blik`.
 	"""
 
     id: str | None = None
