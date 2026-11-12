@@ -1,5 +1,34 @@
 # Changelog
 
+## [0.4.2](https://github.com/sumup/sumup-py/compare/v0.4.1...v0.4.2) (2026-11-12)
+
+
+### Chores
+
+* **deps-dev:** bump pytest from 9.1.1 to 9.2.0 ([#455](https://github.com/sumup/sumup-py/issues/455)) ([2f1b7b3](https://github.com/sumup/sumup-py/commit/2f1b7b376dff14b8cf25c7d1ded172d7deeb36f1))
+* **deps-dev:** bump ruff from 0.17.2 to 0.17.3 ([#454](https://github.com/sumup/sumup-py/issues/454)) ([1b37e69](https://github.com/sumup/sumup-py/commit/1b37e696fea5aa76060a3fb620a250a612736ad2))
+* **deps-dev:** bump ruff from 0.17.3 to 0.17.4 ([#466](https://github.com/sumup/sumup-py/issues/466)) ([b6ec2de](https://github.com/sumup/sumup-py/commit/b6ec2dec35f11b5c075b8d4db47edf2e847fe339))
+* **deps-dev:** bump ty from 0.0.91 to 0.0.95 ([#453](https://github.com/sumup/sumup-py/issues/453)) ([1b2905e](https://github.com/sumup/sumup-py/commit/1b2905e967d9d667e98a61dd627e53d4ada2f5a8))
+* **deps-dev:** bump ty from 0.0.95 to 0.0.99 ([#467](https://github.com/sumup/sumup-py/issues/467)) ([5fdde0a](https://github.com/sumup/sumup-py/commit/5fdde0ab12add7ca0c7ede63cae5040a44bd66bf))
+* **deps:** bump amannn/action-semantic-pull-request ([#463](https://github.com/sumup/sumup-py/issues/463)) ([75aa8c2](https://github.com/sumup/sumup-py/commit/75aa8c295b7a8e70966d8d81ab5137fbe824d988))
+* **deps:** bump astral-sh/setup-uv from 10.3.2 to 10.3.3 ([#450](https://github.com/sumup/sumup-py/issues/450)) ([3281471](https://github.com/sumup/sumup-py/commit/3281471a55513f0b7b15d70c7ed518af2d2f6b6d))
+* **deps:** bump github.com/pb33f/libopenapi in /codegen ([#449](https://github.com/sumup/sumup-py/issues/449)) ([4856987](https://github.com/sumup/sumup-py/commit/4856987a412bfb4d8372ddf83ac60b89c3169b34))
+* **deps:** bump github.com/pb33f/libopenapi in /codegen ([#464](https://github.com/sumup/sumup-py/issues/464)) ([47ff9d0](https://github.com/sumup/sumup-py/commit/47ff9d09a05b308488c96743ed8a9f987ac6b4eb))
+* **deps:** bump pydantic from 2.14.1 to 2.14.2 ([#452](https://github.com/sumup/sumup-py/issues/452)) ([8a9f8f4](https://github.com/sumup/sumup-py/commit/8a9f8f4389b5e1af037497ee82d8452064e9c137))
+* **deps:** bump pydantic from 2.14.2 to 2.14.3 ([#465](https://github.com/sumup/sumup-py/issues/465)) ([e8aaee9](https://github.com/sumup/sumup-py/commit/e8aaee92d507c2cfe5cd60cc45a79872d3c08b88))
+* **deps:** bump reviewdog/action-actionlint from 1.80.6 to 1.81.1 ([#451](https://github.com/sumup/sumup-py/issues/451)) ([71f65f6](https://github.com/sumup/sumup-py/commit/71f65f69fff7095bc05f28d52d9c76f94839ca07))
+* **deps:** bump reviewdog/action-actionlint from 1.81.1 to 1.83.0 ([#462](https://github.com/sumup/sumup-py/issues/462)) ([bf7fde8](https://github.com/sumup/sumup-py/commit/bf7fde8794c0f4499cadf2cfa8c70c050622f606))
+* synced file(s) with sumup/apis ([#457](https://github.com/sumup/sumup-py/issues/457)) ([fc61c4c](https://github.com/sumup/sumup-py/commit/fc61c4c5906fff9bec693f32a37d976f98031890))
+* synced file(s) with sumup/apis ([#458](https://github.com/sumup/sumup-py/issues/458)) ([0b106f9](https://github.com/sumup/sumup-py/commit/0b106f90ed937a31ade6b0baecfbe4d8d0e9bc6e))
+* synced file(s) with sumup/apis ([#460](https://github.com/sumup/sumup-py/issues/460)) ([1e7b5a6](https://github.com/sumup/sumup-py/commit/1e7b5a6e59ff34ad4cc398cdb04226e4257836d2))
+* synced file(s) with sumup/apis ([#461](https://github.com/sumup/sumup-py/issues/461)) ([fddb64f](https://github.com/sumup/sumup-py/commit/fddb64fa196065b0e7c0fc785a86193c5ce5100a))
+* synced file(s) with sumup/apis ([#468](https://github.com/sumup/sumup-py/issues/468)) ([17d1090](https://github.com/sumup/sumup-py/commit/17d1090b8164611ee9a9c7703fc79f2e65b497a8))
+
+
+### Refactors
+
+* **events:** reuse generated event schemas and types ([#459](https://github.com/sumup/sumup-py/issues/459)) ([e231000](https://github.com/sumup/sumup-py/commit/e2310002f243dd87b33a2fc861b563e672b98020))
+
 ## [0.4.1](https://github.com/sumup/sumup-py/compare/v0.4.0...v0.4.1) (2026-11-03)
 
 
