@@ -4673,8 +4673,9 @@ class PublicPaymentV10(pydantic.BaseModel):
     """
 	Payment method on public sales read API v1.0.
 	Digital wallets are first-class methods. Gift card payments use `gift_card`, not `apm`.
-	Input is case-insensitive; the canonical form is lowercase snake_case.
-	**VALUES**: [card, cash, apm, external, apple_pay, google_pay, whatsapp_pay, gift_card].
+	Values use lowercase snake_case. Known values are `card`, `cash`, `apm`, `external`,
+	`apple_pay`, `google_pay`, `whatsapp_pay`, and `gift_card`.
+	Additional values may be returned as new payment methods become available.
 	Max length: 20
 	"""
 
@@ -4700,10 +4701,8 @@ class PublicPaymentV10(pydantic.BaseModel):
     """
 	Payment operation type.
 	This is distinct from the payment instrument in `method`.
-	Input is case-insensitive; the canonical form is lowercase snake_case.
-	**VALUES**: [purchase, unreferenced_refund]
-	Defaults to "purchase" if unspecified. Either a normal purchase or an unreferenced refund for negative
-	sales like deposit returns.
+	Values use lowercase snake_case. Known values are `purchase` for a normal purchase
+	and `unreferenced_refund` for negative sales such as deposit returns.
 	Default: "purchase"
 	"""
 
@@ -4711,8 +4710,9 @@ class PublicPaymentV10(pydantic.BaseModel):
     """
 	Alternative payment method type when `method` is `apm`.
 	Gift card is not an APM on this API.
-	Input is case-insensitive; the canonical form is lowercase snake_case.
-	**VALUES**: [qr_code_pix, sepa_dd, paypal, sumup_pay, twint, iris].
+	Values use lowercase snake_case. Known values are `qr_code_pix`, `sepa_dd`, `paypal`,
+	`sumup_pay`, `twint`, and `iris`.
+	Additional values may be returned as new alternative payment methods become available.
 	Max length: 20
 	"""
 
@@ -5835,17 +5835,15 @@ class Sale(pydantic.BaseModel):
 class SalePage(pydantic.BaseModel):
     """
             Paginated list of `Sale` objects. Results are ordered **newest first** by the newest
-    activity recorded for each sale. See `ListSalesV10`.
+    activity recorded for each sale.
     """
 
     items: list[Sale]
 
     pagination_token: str | None = None
     """
-	Pagination token for subsequent requests. Should only be set by clients if they have
-	received a token in the previous response, and this request is an immediate follow-up
-	request to that response to load the subsequent page. Clients should treat this as an
-	opaque token and should not attempt to parse it in any way.
+	Opaque token for the next page. Pass it as the `pagination_token` query parameter
+	on the next list request. Omitted when no further page is available.
 	"""
 
 
@@ -5950,8 +5948,8 @@ class SaleSearchRequest(pydantic.BaseModel):
 
     pagination_token: str | None = None
     """
-	Opaque pagination token from a previous search response. Not interchangeable with tokens
-	from `GET /sales`.
+	Opaque token from the previous search response. To load the next page, send it with
+	the same filters. Not interchangeable with tokens from `GET /sales`.
 	"""
 
     payment_statuses: list[PaymentStatusFilterV10] | None = None
@@ -5997,7 +5995,7 @@ class SaleSearchRequestDict(typing_extensions.TypedDict, total=False):
         typing_extensions.Annotated[
             str,
             typing_extensions.Doc(
-                "Opaque pagination token from a previous search response. Not interchangeable with tokens\nfrom `GET /sales`."
+                "Opaque token from the previous search response. To load the next page, send it with\nthe same filters. Not interchangeable with tokens from `GET /sales`."
             ),
         ]
     ]
@@ -6045,7 +6043,8 @@ class SaleSearchResponse(pydantic.BaseModel):
 
     pagination_token: str | None = None
     """
-	Opaque token for the next page of search results.
+	Opaque token for the next page. Pass it as `pagination_token` in the next search
+	request body with the same filters. Omitted when no further page is available.
 	"""
 
 
