@@ -29,7 +29,6 @@ from .._service import (
     serialize_request_data,
 )
 from ..types import (
-    CategoryV10,
     DiscountApplicationMode,
     DiscountClas,
     DiscountLine,
@@ -42,37 +41,38 @@ from ..types import (
     DiscountSourceLoyaltyType,
     DiscountSourceOffer,
     DiscountValue,
-    FeatureV10,
-    FeatureValueTypeV10,
     FinalPriceAmounts,
-    ItemReferencesV10,
-    LineItemPriceV10,
     ModifierItem,
     ModifierSet,
-    PaymentStatusFilterV10,
-    PaymentStatusFilterV10Input,
     PositivePriceAmounts,
     PositivePriceWithTaxes,
     PositiveTaxLine,
     PriceAmounts,
-    ProblemV10,
-    PublicCardV10,
-    PublicGiftCardPayment,
-    PublicPaymentV10,
+    Problem,
     Sale,
-    SaleLineItemV10,
+    SaleChannelFilter,
+    SaleChannelFilterInput,
+    SaleGiftCardPayment,
+    SaleItem,
+    SaleItemCategory,
+    SaleItemFeature,
+    SaleItemFeatureValueType,
+    SaleItemPrice,
+    SaleItemReferences,
+    SaleLifecycleState,
+    SaleLifecycleStateInput,
     SalePage,
-    SalePriceV10,
+    SalePayment,
+    SalePaymentCard,
+    SalePaymentStatusFilter,
+    SalePaymentStatusFilterInput,
     SalesActivityCurrency,
-    SalesChannelFilterV10,
-    SalesChannelFilterV10Input,
     SaleSearchItem,
     SaleSearchRequest,
     SaleSearchRequestInput,
     SaleSearchResponse,
     SaleSource,
-    SaleStateV10,
-    SaleStateV10Input,
+    SaleTotals,
     TaxLine,
     TaxMode,
     UnitOfMeasure,
@@ -111,7 +111,7 @@ class SearchSalesV10BodyInput(typing_extensions.TypedDict, total=False):
     ]
     payment_statuses: typing_extensions.NotRequired[
         typing_extensions.Annotated[
-            typing.Sequence[PaymentStatusFilterV10Input],
+            typing.Sequence[SalePaymentStatusFilterInput],
             typing_extensions.Doc(
                 "Filters rows by payment outcome. Multiple values match any of them (**OR**). The search\nrow does not echo this value."
             ),
@@ -119,7 +119,7 @@ class SearchSalesV10BodyInput(typing_extensions.TypedDict, total=False):
     ]
     sale_statuses: typing_extensions.NotRequired[
         typing_extensions.Annotated[
-            typing.Sequence[SaleStateV10Input],
+            typing.Sequence[SaleLifecycleStateInput],
             typing_extensions.Doc(
                 "Filters rows by sale lifecycle (`state`). Multiple values match any of them (**OR**).\nUses the same values as `Sale.state`. Non-finalised sales are never returned; only\nfully-paid sales."
             ),
@@ -127,7 +127,7 @@ class SearchSalesV10BodyInput(typing_extensions.TypedDict, total=False):
     ]
     sales_channels: typing_extensions.NotRequired[
         typing_extensions.Annotated[
-            typing.Sequence[SalesChannelFilterV10Input],
+            typing.Sequence[SaleChannelFilterInput],
             typing_extensions.Doc(
                 "Sales channel filter. Multiple values match any of them (**OR**)."
             ),
@@ -191,23 +191,23 @@ class SalesResource(Resource):
             return pydantic.TypeAdapter(SalePage).validate_python(resp.json())
         elif resp.status_code == 400:
             raise APIError.from_response(
-                "Validation error on the request.", resp, body_type=ProblemV10
+                "Validation error on the request.", resp, body_type=Problem
             )
         elif resp.status_code == 401:
             raise APIError.from_response(
                 "The client is not authenticated (auth header is empty or invalid).",
                 resp,
-                body_type=ProblemV10,
+                body_type=Problem,
             )
         elif resp.status_code == 403:
             raise APIError.from_response(
                 "Missing `sales.read`, merchant code mismatch on the token, or no `merchant.read` permission.",
                 resp,
-                body_type=ProblemV10,
+                body_type=Problem,
             )
         elif resp.status_code == 412:
             raise APIError.from_response(
-                "User-Agent header is not present or is empty.", resp, body_type=ProblemV10
+                "User-Agent header is not present or is empty.", resp, body_type=Problem
             )
         else:
             raise APIError.from_response("Unexpected response", resp)
@@ -218,13 +218,11 @@ class SalesResource(Resource):
         *,
         start_date: datetime.datetime | None | NotGivenType = NOT_GIVEN,
         end_date: datetime.datetime | None | NotGivenType = NOT_GIVEN,
-        sale_statuses: typing.Sequence[SaleStateV10Input] | None | NotGivenType = NOT_GIVEN,
-        payment_statuses: typing.Sequence[PaymentStatusFilterV10Input]
+        sale_statuses: typing.Sequence[SaleLifecycleStateInput] | None | NotGivenType = NOT_GIVEN,
+        payment_statuses: typing.Sequence[SalePaymentStatusFilterInput]
         | None
         | NotGivenType = NOT_GIVEN,
-        sales_channels: typing.Sequence[SalesChannelFilterV10Input]
-        | None
-        | NotGivenType = NOT_GIVEN,
+        sales_channels: typing.Sequence[SaleChannelFilterInput] | None | NotGivenType = NOT_GIVEN,
         pagination_token: str | None | NotGivenType = NOT_GIVEN,
         pagination_limit: int | None | NotGivenType = NOT_GIVEN,
         headers: HeaderTypes | None = None,
@@ -281,23 +279,23 @@ class SalesResource(Resource):
             return pydantic.TypeAdapter(SaleSearchResponse).validate_python(resp.json())
         elif resp.status_code == 400:
             raise APIError.from_response(
-                "Validation error on the request.", resp, body_type=ProblemV10
+                "Validation error on the request.", resp, body_type=Problem
             )
         elif resp.status_code == 401:
             raise APIError.from_response(
                 "The client is not authenticated (auth header is empty or invalid).",
                 resp,
-                body_type=ProblemV10,
+                body_type=Problem,
             )
         elif resp.status_code == 403:
             raise APIError.from_response(
                 "Missing `sales.read`, merchant code mismatch on the token, or no `merchant.read` permission.",
                 resp,
-                body_type=ProblemV10,
+                body_type=Problem,
             )
         elif resp.status_code == 412:
             raise APIError.from_response(
-                "User-Agent header is not present or is empty.", resp, body_type=ProblemV10
+                "User-Agent header is not present or is empty.", resp, body_type=Problem
             )
         else:
             raise APIError.from_response("Unexpected response", resp)
@@ -331,23 +329,23 @@ class SalesResource(Resource):
             raise APIError.from_response(
                 "The client is not authenticated (auth header is empty or invalid).",
                 resp,
-                body_type=ProblemV10,
+                body_type=Problem,
             )
         elif resp.status_code == 403:
             raise APIError.from_response(
                 "Missing `sales.read`, merchant code mismatch on the token, or no `merchant.read` permission.",
                 resp,
-                body_type=ProblemV10,
+                body_type=Problem,
             )
         elif resp.status_code == 404:
             raise APIError.from_response(
                 "Sale not found. Non-finalised sales are never returned; only fully-paid sales.",
                 resp,
-                body_type=ProblemV10,
+                body_type=Problem,
             )
         elif resp.status_code == 412:
             raise APIError.from_response(
-                "User-Agent header is not present or is empty.", resp, body_type=ProblemV10
+                "User-Agent header is not present or is empty.", resp, body_type=Problem
             )
         else:
             raise APIError.from_response("Unexpected response", resp)
@@ -403,23 +401,23 @@ class AsyncSalesResource(AsyncResource):
             return pydantic.TypeAdapter(SalePage).validate_python(resp.json())
         elif resp.status_code == 400:
             raise APIError.from_response(
-                "Validation error on the request.", resp, body_type=ProblemV10
+                "Validation error on the request.", resp, body_type=Problem
             )
         elif resp.status_code == 401:
             raise APIError.from_response(
                 "The client is not authenticated (auth header is empty or invalid).",
                 resp,
-                body_type=ProblemV10,
+                body_type=Problem,
             )
         elif resp.status_code == 403:
             raise APIError.from_response(
                 "Missing `sales.read`, merchant code mismatch on the token, or no `merchant.read` permission.",
                 resp,
-                body_type=ProblemV10,
+                body_type=Problem,
             )
         elif resp.status_code == 412:
             raise APIError.from_response(
-                "User-Agent header is not present or is empty.", resp, body_type=ProblemV10
+                "User-Agent header is not present or is empty.", resp, body_type=Problem
             )
         else:
             raise APIError.from_response("Unexpected response", resp)
@@ -430,13 +428,11 @@ class AsyncSalesResource(AsyncResource):
         *,
         start_date: datetime.datetime | None | NotGivenType = NOT_GIVEN,
         end_date: datetime.datetime | None | NotGivenType = NOT_GIVEN,
-        sale_statuses: typing.Sequence[SaleStateV10Input] | None | NotGivenType = NOT_GIVEN,
-        payment_statuses: typing.Sequence[PaymentStatusFilterV10Input]
+        sale_statuses: typing.Sequence[SaleLifecycleStateInput] | None | NotGivenType = NOT_GIVEN,
+        payment_statuses: typing.Sequence[SalePaymentStatusFilterInput]
         | None
         | NotGivenType = NOT_GIVEN,
-        sales_channels: typing.Sequence[SalesChannelFilterV10Input]
-        | None
-        | NotGivenType = NOT_GIVEN,
+        sales_channels: typing.Sequence[SaleChannelFilterInput] | None | NotGivenType = NOT_GIVEN,
         pagination_token: str | None | NotGivenType = NOT_GIVEN,
         pagination_limit: int | None | NotGivenType = NOT_GIVEN,
         headers: HeaderTypes | None = None,
@@ -493,23 +489,23 @@ class AsyncSalesResource(AsyncResource):
             return pydantic.TypeAdapter(SaleSearchResponse).validate_python(resp.json())
         elif resp.status_code == 400:
             raise APIError.from_response(
-                "Validation error on the request.", resp, body_type=ProblemV10
+                "Validation error on the request.", resp, body_type=Problem
             )
         elif resp.status_code == 401:
             raise APIError.from_response(
                 "The client is not authenticated (auth header is empty or invalid).",
                 resp,
-                body_type=ProblemV10,
+                body_type=Problem,
             )
         elif resp.status_code == 403:
             raise APIError.from_response(
                 "Missing `sales.read`, merchant code mismatch on the token, or no `merchant.read` permission.",
                 resp,
-                body_type=ProblemV10,
+                body_type=Problem,
             )
         elif resp.status_code == 412:
             raise APIError.from_response(
-                "User-Agent header is not present or is empty.", resp, body_type=ProblemV10
+                "User-Agent header is not present or is empty.", resp, body_type=Problem
             )
         else:
             raise APIError.from_response("Unexpected response", resp)
@@ -545,23 +541,23 @@ class AsyncSalesResource(AsyncResource):
             raise APIError.from_response(
                 "The client is not authenticated (auth header is empty or invalid).",
                 resp,
-                body_type=ProblemV10,
+                body_type=Problem,
             )
         elif resp.status_code == 403:
             raise APIError.from_response(
                 "Missing `sales.read`, merchant code mismatch on the token, or no `merchant.read` permission.",
                 resp,
-                body_type=ProblemV10,
+                body_type=Problem,
             )
         elif resp.status_code == 404:
             raise APIError.from_response(
                 "Sale not found. Non-finalised sales are never returned; only fully-paid sales.",
                 resp,
-                body_type=ProblemV10,
+                body_type=Problem,
             )
         elif resp.status_code == 412:
             raise APIError.from_response(
-                "User-Agent header is not present or is empty.", resp, body_type=ProblemV10
+                "User-Agent header is not present or is empty.", resp, body_type=Problem
             )
         else:
             raise APIError.from_response("Unexpected response", resp)

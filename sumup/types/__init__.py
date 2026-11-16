@@ -710,24 +710,6 @@ class CardResponse(pydantic.BaseModel):
 	"""
 
 
-class CategoryV10(pydantic.BaseModel):
-    """
-    A category a line belongs to.
-    """
-
-    id: str
-    """
-	The category id. Usually a UUID, but not always (legacy cases).
-	Max length: 100
-	"""
-
-    name: str
-    """
-	The category name.
-	Max length: 30
-	"""
-
-
 CheckoutEntryMode = (
     typing.Literal[
         "APPLE_PAY",
@@ -2879,60 +2861,6 @@ class Event(pydantic.BaseModel):
 	"""
 
 
-FeatureValueTypeV10 = typing.Literal["BOOLEAN", "DATE", "DECIMAL", "INTEGER", "TEXT"] | str
-
-
-class FeatureV10(pydantic.BaseModel):
-    """
-            A named, typed characteristic of a line. New item types add data here instead of
-    a typed sub-object per type.
-
-    Examples by item type (illustrative, not exhaustive):
-      - DEPOSIT:   `operation_type` = "SALE", `linked_line_id` = "line-1"
-      - GIFT_CARD: `gift_card_reference` = "GCMINGXPC5"
-      - CATALOG:   `variant_name` = "Large", `item_id` / `variant_id` (TEXT),
-                   `reporting_category_id` = "cat-..."
-      - FEE:       `fee_type` = "SHIPPING" (required); optional `fee_id`,
-                   `value_absolute` or `value_percentage`, and per-type metadata
-                   features such as `delivery_name` / `tracking_reference` (shipping),
-                   `card_type` / `scheme` (surcharge), or `policy_id` (cancellation)
-      - (future) SUBSCRIPTION: `billing_period` = "P1M", `renews_at` = "2026-07-02"
-
-    Conventional `FEE` feature keys:
-      - `fee_type` (TEXT, required): `SHIPPING`, `SURCHARGE`, `SERVICE_CHARGE`, or
-        `CANCELLATION`
-      - `fee_id` (TEXT, optional): identifier of the fee definition
-      - `value_absolute` (INTEGER, optional): configured absolute value in minor units
-        of the sale currency (the charged amount is on `price`)
-      - `value_percentage` (INTEGER, optional): configured percentage in minor units
-        (1/100000; e.g. 10000 = 10%)
-      - Per-type metadata (optional, TEXT unless noted): `delivery_name`,
-        `tracking_reference` (shipping); `card_type`, `scheme` (surcharge);
-        `policy_id` (cancellation)
-    """
-
-    name: str
-    """
-	The feature name/key.
-	Max length: 100
-	"""
-
-    value: str
-    """
-	The feature value in canonical string form, to be parsed per `value_type`
-	(e.g. INTEGER -> "3", DECIMAL -> "1.50", DATE -> "2026-07-02",
-	BOOLEAN -> "true"). Carrying it as a string keeps the wire format stable as
-	new feature names and value types are introduced.
-	Max length: 1000
-	"""
-
-    value_type: FeatureValueTypeV10
-    """
-	The data type of a feature value. The wire `value` is always a string and is parsed
-	according to this type.
-	"""
-
-
 class TaxLine(pydantic.BaseModel):
     """
            Information about tax together with amounts before and after its application such as:
@@ -3324,110 +3252,6 @@ class Invite(pydantic.BaseModel):
 	"""
 
     expires_at: datetime.datetime
-
-
-ItemReferencesV10CatalogSource = typing.Literal["EXTERNAL", "SUMUP"] | str
-
-
-class ItemReferencesV10(pydantic.BaseModel):
-    """
-            Outward identifiers and links for a line, kept in one place rather than scattered
-    per item type.
-    """
-
-    catalog_reference: str | None = None
-    """
-	Reference to the backing catalog entity (item variant, deposit, ...),
-	typically a URN such as
-	`urn:sumup:pos:variant:${MERCHANT_CODE}:${ITEM_ID}:${VARIANT_ID}` or
-	`urn:sumup:pos:deposit:${MERCHANT_CODE}:${DEPOSIT_ID}`.
-	Empty for ad-hoc / manual lines. Type-agnostic on purpose: a new item type
-	backed by a catalog entity reuses this field instead of adding its own.
-	Max length: 255
-	"""
-
-    catalog_source: ItemReferencesV10CatalogSource | None = None
-    """
-	The source of the catalog the line originates from.
-	Default: "SUMUP"
-	"""
-
-    external_id: str | None = None
-    """
-	An external reference id connecting this line to another system.
-	Max length: 250
-	"""
-
-    sku: str | None = None
-    """
-	Stock keeping unit, enriched from the Catalog when available.
-	Max length: 100
-	"""
-
-
-class LineItemPriceV10(pydantic.BaseModel):
-    """
-            Pricing for a single line, valid for every item type.
-
-    Merges the standard amounts (with tax breakdown) and the final amounts (after
-    discounts/modifiers).
-
-    Totals and tax amounts can be negative for return-like operations (for example
-    a deposit with `operation_type` = `RETURN`).
-    """
-
-    taxes: list[TaxLine]
-    """
-	Taxes applied on top of the net amount resulting in the gross amount.
-	Min items: 1
-	Max items: 1000
-	"""
-
-    taxes_final: list[TaxLine]
-    """
-	Taxes applied on top of `total_net_amount_final` resulting in `total_gross_amount_final`. Equals `taxes` ifno discounts apply.
-	Min items: 1
-	Max items: 1000
-	"""
-
-    total_gross_amount: int
-    """
-	The gross amount (including modifiers if applied). It does NOT include discounts.
-	Format: int64
-	"""
-
-    total_gross_amount_final: int
-    """
-	The final gross amount including discounts, modifiers and taxes. Equals `total_gross_amount` if no discounts apply.
-	Format:int64
-	"""
-
-    total_net_amount: int
-    """
-	The net amount (including modifiers if applied). It does NOT include discounts.
-	Format: int64
-	"""
-
-    total_net_amount_final: int
-    """
-	The final net amount including discounts and modifiers. Equals `total_net_amount` if no discounts apply.
-	Format: int64
-	"""
-
-    unit_amount: int
-    """
-	The price of a single unit. If the tax_mode is GROSS it includes taxes,
-	otherwise no tax is included. It does NOT include discounts.
-	Format: int64
-	Min: 0
-	"""
-
-    discounts: list[DiscountLine] | None = None
-    """
-	Discounts applied. Discount amounts do not affect `total_net_amount` /
-	`total_gross_amount`; they are reflected in the `*_final` amounts.
-	Max items: 1000
-	"""
 
 
 class Link(pydantic.BaseModel):
@@ -4260,76 +4084,7 @@ class PaymentInstrumentResponse(pydantic.BaseModel):
 	"""
 
 
-PaymentStatusFilterV10 = typing.Literal["CHARGED_BACK", "PAID"] | str
-PaymentStatusFilterV10Input = PaymentStatusFilterV10
-
-
 class Problem(pydantic.BaseModel):
-    """
-            A RFC 9457 problem details object.
-
-    Additional properties specific to the problem type may be present.
-    """
-
-    type: str
-    """
-	A URI reference that identifies the problem type.
-	Format: uri
-	"""
-
-    detail: str | None = None
-    """
-	A human-readable explanation specific to this occurrence of the problem.
-	"""
-
-    instance: str | None = None
-    """
-	A URI reference that identifies the specific occurrence of the problem.
-	Format: uri
-	"""
-
-    status: int | None = None
-    """
-	The HTTP status code generated by the origin server for this occurrence of the problem.
-	"""
-
-    title: str | None = None
-    """
-	A short, human-readable summary of the problem type.
-	"""
-
-    model_config = pydantic.ConfigDict(extra="allow")
-
-    @pydantic.model_validator(mode="before")
-    @classmethod
-    def _merge_additional_properties(cls, values: object) -> object:
-        if not isinstance(values, dict):
-            return values
-
-        values_dict = typing.cast(dict[str, object], values)
-        additional = values_dict.get("additional_properties")
-        if not isinstance(additional, dict):
-            return values
-
-        merged = dict(additional)
-        for key, value in values_dict.items():
-            if key != "additional_properties":
-                merged[key] = value
-
-        return merged
-
-    @property
-    def additional_properties(self) -> dict[str, object]:
-        if self.model_extra is None:
-            object.__setattr__(self, "__pydantic_extra__", {})
-        return typing.cast(dict[str, object], self.model_extra)
-
-    @additional_properties.setter
-    def additional_properties(self, value: dict[str, object]) -> None:
-        object.__setattr__(self, "__pydantic_extra__", dict(value))
-
-
-class ProblemV10(pydantic.BaseModel):
     """
             A RFC 9457 problem details object.
 
@@ -4600,133 +4355,6 @@ class Product(pydantic.BaseModel):
     """
 	VAT rate as a decimal fraction, for example `0.19` for 19%.
 	Format: decimal
-	"""
-
-
-PublicCardV10Type = typing.Literal["credit", "debit", "unknown"] | str
-
-
-class PublicCardV10(pydantic.BaseModel):
-    """
-    Card brand, credit/debit processing type, and last four digits.
-    """
-
-    brand: str
-    """
-	The brand of the card.
-	Input is case-insensitive; the canonical form is lowercase snake_case.
-	**VALUES**: [amex, cup, diners, discover, elo, elv, hipercard, jcb, maestro, mastercard, visa, visa_electron,
-	visa_vpay, vr, eftpos, conecs, swile, girocard, interac, sumup, bancomat].
-	Max length: 20
-	"""
-
-    last_4_digits: str
-    """
-	The last 4 digits of the card used for the payment.
-	Min length: 4
-	Max length: 4
-	Pattern: ^\\d{4}$
-	"""
-
-    type: PublicCardV10Type
-    """
-	Credit or debit processing choice, not brand or funding.
-	`unknown` when unavailable; prepaid/voucher are not processing types.
-	"""
-
-
-class PublicGiftCardPayment(pydantic.BaseModel):
-    """
-            Gift card used for this payment. Present when `method` is `gift_card` and the gift card
-    id is known.
-    Gift card IDs use the format "GC" followed by 9 alphanumeric characters
-    (e.g. GCZ3NTMB1V).
-    """
-
-    id: str
-    """
-	Gift card identifier. Format "GC" followed by 9 alphanumeric characters
-	(e.g. GCZ3NTMB1V).
-	"""
-
-
-PublicPaymentV10Status = typing.Literal["CANCELED", "FAILED", "SUCCESSFUL"] | str
-
-
-class PublicPaymentV10(pydantic.BaseModel):
-    """
-            Payment on a closed sale, for bookkeeping and reconciliation.
-
-    Acquirer/processing cost is not on this object. Merchant-charged fees (shipping, service
-    charge, etc.) appear as `type: "FEE"` item lines in `Sale.items`.
-    """
-
-    amount: int
-    """
-	The amount of the payment including tips.
-	The value of the amount in minor units of `Sale.currency`.
-	Format: int64
-	Min: 0
-	"""
-
-    method: str
-    """
-	Payment method on public sales read API v1.0.
-	Digital wallets are first-class methods. Gift card payments use `gift_card`, not `apm`.
-	Values use lowercase snake_case. Known values are `card`, `cash`, `apm`, `external`,
-	`apple_pay`, `google_pay`, `whatsapp_pay`, and `gift_card`.
-	Additional values may be returned as new payment methods become available.
-	Max length: 20
-	"""
-
-    processed_at: datetime.datetime
-    """
-	UTC date-time when SumUp recorded this payment’s exposed `status` (successful, failed,
-	or canceled). Server processed time when available; otherwise the payment provider’s
-	transaction time. Not the device clock.
-	"""
-
-    reference: str
-    """
-	The reference to the actual payment used for this sale, e.g. the sumup transaction code.
-	Max length: 50
-	"""
-
-    status: PublicPaymentV10Status
-    """
-	The status of the payment.
-	"""
-
-    type: str
-    """
-	Payment operation type.
-	This is distinct from the payment instrument in `method`.
-	Values use lowercase snake_case. Known values are `purchase` for a normal purchase
-	and `unreferenced_refund` for negative sales such as deposit returns.
-	Default: "purchase"
-	"""
-
-    apm_type: str | None = None
-    """
-	Alternative payment method type when `method` is `apm`.
-	Gift card is not an APM on this API.
-	Values use lowercase snake_case. Known values are `qr_code_pix`, `sepa_dd`, `paypal`,
-	`sumup_pay`, `twint`, and `iris`.
-	Additional values may be returned as new alternative payment methods become available.
-	Max length: 20
-	"""
-
-    card: PublicCardV10 | None = None
-    """
-	Card brand, credit/debit processing type, and last four digits.
-	"""
-
-    gift_card: PublicGiftCardPayment | None = None
-    """
-	Gift card used for this payment. Present when `method` is `gift_card` and the gift card
-	id is known.
-	Gift card IDs use the format "GC" followed by 9 alphanumeric characters
-	(e.g. GCZ3NTMB1V).
 	"""
 
 
@@ -5504,6 +5132,197 @@ class Role(pydantic.BaseModel):
 	"""
 
 
+class SaleGiftCardPayment(pydantic.BaseModel):
+    """
+            Gift card used for this payment. Present when `method` is `gift_card` and the gift card
+    id is known.
+    Gift card IDs use the format "GC" followed by 9 alphanumeric characters
+    (e.g. GCZ3NTMB1V).
+    """
+
+    id: str
+    """
+	Gift card identifier. Format "GC" followed by 9 alphanumeric characters
+	(e.g. GCZ3NTMB1V).
+	"""
+
+
+class SaleItemCategory(pydantic.BaseModel):
+    """
+    A category a line belongs to.
+    """
+
+    id: str
+    """
+	The category id. Usually a UUID, but not always (legacy cases).
+	Max length: 100
+	"""
+
+    name: str
+    """
+	The category name.
+	Max length: 30
+	"""
+
+
+SaleItemFeatureValueType = typing.Literal["BOOLEAN", "DATE", "DECIMAL", "INTEGER", "TEXT"] | str
+
+
+class SaleItemFeature(pydantic.BaseModel):
+    """
+            A named, typed characteristic of a line. New item types add data here instead of
+    a typed sub-object per type.
+
+    Examples by item type (illustrative, not exhaustive):
+      - DEPOSIT:   `operation_type` = "SALE", `linked_line_id` = "line-1"
+      - GIFT_CARD: `gift_card_reference` = "GCMINGXPC5"
+      - CATALOG:   `variant_name` = "Large", `item_id` / `variant_id` (TEXT),
+                   `reporting_category_id` = "cat-..."
+      - FEE:       `fee_type` = "SHIPPING" (required); optional `fee_id`,
+                   `value_absolute` or `value_percentage`, and per-type metadata
+                   features such as `delivery_name` / `tracking_reference` (shipping),
+                   `card_type` / `scheme` (surcharge), or `policy_id` (cancellation)
+      - (future) SUBSCRIPTION: `billing_period` = "P1M", `renews_at` = "2026-07-02"
+
+    Conventional `FEE` feature keys:
+      - `fee_type` (TEXT, required): `SHIPPING`, `SURCHARGE`, `SERVICE_CHARGE`, or
+        `CANCELLATION`
+      - `fee_id` (TEXT, optional): identifier of the fee definition
+      - `value_absolute` (INTEGER, optional): configured absolute value in minor units
+        of the sale currency (the charged amount is on `price`)
+      - `value_percentage` (INTEGER, optional): configured percentage in minor units
+        (1/100000; e.g. 10000 = 10%)
+      - Per-type metadata (optional, TEXT unless noted): `delivery_name`,
+        `tracking_reference` (shipping); `card_type`, `scheme` (surcharge);
+        `policy_id` (cancellation)
+    """
+
+    name: str
+    """
+	The feature name/key.
+	Max length: 100
+	"""
+
+    value: str
+    """
+	The feature value in canonical string form, to be parsed per `value_type`
+	(e.g. INTEGER -> "3", DECIMAL -> "1.50", DATE -> "2026-07-02",
+	BOOLEAN -> "true"). Carrying it as a string keeps the wire format stable as
+	new feature names and value types are introduced.
+	Max length: 1000
+	"""
+
+    value_type: SaleItemFeatureValueType
+    """
+	The data type of a feature value. The wire `value` is always a string and is parsed
+	according to this type.
+	"""
+
+
+class SaleItemPrice(pydantic.BaseModel):
+    """
+            Pricing for a single line, valid for every item type.
+
+    Merges the standard amounts (with tax breakdown) and the final amounts (after
+    discounts/modifiers).
+
+    Totals and tax amounts can be negative for return-like operations (for example
+    a deposit with `operation_type` = `RETURN`).
+    """
+
+    taxes: list[TaxLine]
+    """
+	Taxes applied on top of the net amount resulting in the gross amount.
+	Min items: 1
+	Max items: 1000
+	"""
+
+    taxes_final: list[TaxLine]
+    """
+	Taxes applied on top of `total_net_amount_final` resulting in `total_gross_amount_final`. Equals `taxes` ifno discounts apply.
+	Min items: 1
+	Max items: 1000
+	"""
+
+    total_gross_amount: int
+    """
+	The gross amount (including modifiers if applied). It does NOT include discounts.
+	Format: int64
+	"""
+
+    total_gross_amount_final: int
+    """
+	The final gross amount including discounts, modifiers and taxes. Equals `total_gross_amount` if no discounts apply.
+	Format:int64
+	"""
+
+    total_net_amount: int
+    """
+	The net amount (including modifiers if applied). It does NOT include discounts.
+	Format: int64
+	"""
+
+    total_net_amount_final: int
+    """
+	The final net amount including discounts and modifiers. Equals `total_net_amount` if no discounts apply.
+	Format: int64
+	"""
+
+    unit_amount: int
+    """
+	The price of a single unit. If the tax_mode is GROSS it includes taxes,
+	otherwise no tax is included. It does NOT include discounts.
+	Format: int64
+	Min: 0
+	"""
+
+    discounts: list[DiscountLine] | None = None
+    """
+	Discounts applied. Discount amounts do not affect `total_net_amount` /
+	`total_gross_amount`; they are reflected in the `*_final` amounts.
+	Max items: 1000
+	"""
+
+
+SaleItemReferencesCatalogSource = typing.Literal["EXTERNAL", "SUMUP"] | str
+
+
+class SaleItemReferences(pydantic.BaseModel):
+    """
+            Outward identifiers and links for a line, kept in one place rather than scattered
+    per item type.
+    """
+
+    catalog_reference: str | None = None
+    """
+	Reference to the backing catalog entity (item variant, deposit, ...),
+	typically a URN such as
+	`urn:sumup:pos:variant:${MERCHANT_CODE}:${ITEM_ID}:${VARIANT_ID}` or
+	`urn:sumup:pos:deposit:${MERCHANT_CODE}:${DEPOSIT_ID}`.
+	Empty for ad-hoc / manual lines. Type-agnostic on purpose: a new item type
+	backed by a catalog entity reuses this field instead of adding its own.
+	Max length: 255
+	"""
+
+    catalog_source: SaleItemReferencesCatalogSource | None = None
+    """
+	The source of the catalog the line originates from.
+	Default: "SUMUP"
+	"""
+
+    external_id: str | None = None
+    """
+	An external reference id connecting this line to another system.
+	Max length: 250
+	"""
+
+    sku: str | None = None
+    """
+	Stock keeping unit, enriched from the Catalog when available.
+	Max length: 100
+	"""
+
+
 class UnitOfMeasure(pydantic.BaseModel):
     """
     The unit of measure of the item.
@@ -5528,10 +5347,10 @@ class UnitOfMeasure(pydantic.BaseModel):
 	"""
 
 
-SaleLineItemV10ServiceType = typing.Literal["IN_HOUSE", "TAKE_AWAY"] | str
+SaleItemServiceType = typing.Literal["IN_HOUSE", "TAKE_AWAY"] | str
 
 
-class SaleLineItemV10(pydantic.BaseModel):
+class SaleItem(pydantic.BaseModel):
     """
             A single line of a sale.
 
@@ -5553,7 +5372,7 @@ class SaleLineItemV10(pydantic.BaseModel):
 	Max length: 250
 	"""
 
-    price: LineItemPriceV10
+    price: SaleItemPrice
     """
 	Pricing for a single line, valid for every item type.
 	
@@ -5579,7 +5398,7 @@ class SaleLineItemV10(pydantic.BaseModel):
 	
 	`FEE` lines represent merchant-charged fees on the sale (e.g. shipping, service
 	charge, surcharge, cancellation). They participate in sale totals like any other
-	line; type-specific data is carried in `features` (see `Feature` for the
+	line; type-specific data is carried in `features` (see `SaleItemFeature` for the
 	conventional feature keys).
 	
 	This is intentionally an open string, NOT a closed enum: new values are added
@@ -5593,17 +5412,17 @@ class SaleLineItemV10(pydantic.BaseModel):
 	The unit of measure of the item.
 	"""
 
-    categories: list[CategoryV10] | None = None
+    categories: list[SaleItemCategory] | None = None
     """
 	Categories the line belongs to. A shared optional structure available to any
 	line; not a per-type field.
 	Max items: 1000
 	"""
 
-    features: list[FeatureV10] | None = None
+    features: list[SaleItemFeature] | None = None
     """
 	Named, typed, type-specific data. New item types add their data here as
-	features instead of new schema variants. See `Feature` for per-type examples.
+	features instead of new schema variants. See `SaleItemFeature` for per-type examples.
 	Max items: 100
 	"""
 
@@ -5620,57 +5439,130 @@ class SaleLineItemV10(pydantic.BaseModel):
 	Max length: 300
 	"""
 
-    references: ItemReferencesV10 | None = None
+    references: SaleItemReferences | None = None
     """
 	Outward identifiers and links for a line, kept in one place rather than scattered
 	per item type.
 	"""
 
-    service_type: SaleLineItemV10ServiceType | None = None
+    service_type: SaleItemServiceType | None = None
     """
 	The type of service for this line.
 	"""
 
 
-class SalePriceV10(pydantic.BaseModel):
-    """
-            Sale-level pricing aggregate, parallel to `LineItemPrice` on each `SaleLineItem`.
+SaleLifecycleState = typing.Literal["CLOSED"] | str
+SaleLifecycleStateInput = SaleLifecycleState
 
-    Line-level breakdown (unit price, line discounts, per-line taxes) lives on
-    `items[].price`. This object holds the rolled-up totals and cart-level
-    adjustments that consumers use for receipts and payment reconciliation.
+SalePaymentCardType = typing.Literal["credit", "debit", "unknown"] | str
+
+
+class SalePaymentCard(pydantic.BaseModel):
+    """
+    Card brand, credit/debit processing type, and last four digits.
     """
 
-    gross_amount: int
+    brand: str
     """
-	Final gross total for the sale: sum of `items[].price.total_gross_amount_final`
-	after cart-level discounts (tips excluded).
-	Same value as search `total_amount`, in minor units according to `Sale.currency.scale`.
-	Payment amounts include tips and can therefore differ from this gross total.
+	The brand of the card.
+	Input is case-insensitive; the canonical form is lowercase snake_case.
+	**VALUES**: [amex, cup, diners, discover, elo, elv, hipercard, jcb, maestro, mastercard, visa, visa_electron,
+	visa_vpay, vr, eftpos, conecs, swile, girocard, interac, sumup, bancomat].
+	Max length: 20
+	"""
+
+    last_4_digits: str
+    """
+	The last 4 digits of the card used for the payment.
+	Min length: 4
+	Max length: 4
+	Pattern: ^\\d{4}$
+	"""
+
+    type: SalePaymentCardType
+    """
+	Credit or debit processing choice, not brand or funding.
+	`unknown` when unavailable; prepaid/voucher are not processing types.
+	"""
+
+
+SalePaymentStatus = typing.Literal["CANCELED", "FAILED", "SUCCESSFUL"] | str
+
+
+class SalePayment(pydantic.BaseModel):
+    """
+            Payment on a closed sale, for bookkeeping and reconciliation.
+
+    Acquirer/processing cost is not on this object. Merchant-charged fees (shipping, service
+    charge, etc.) appear as `type: "FEE"` item lines in `Sale.items`.
+    """
+
+    amount: int
+    """
+	The amount of the payment including tips.
+	The value of the amount in minor units of `Sale.currency`.
 	Format: int64
+	Min: 0
 	"""
 
-    net_amount: int
+    method: str
     """
-	Final net total for the sale: sum of `items[].price.total_net_amount_final`
-	after cart-level discounts (tips excluded).
-	In minor units according to `Sale.currency.scale`.
-	Format: int64
+	Payment method on public sales read API v1.0.
+	Digital wallets are first-class methods. Gift card payments use `gift_card`, not `apm`.
+	Values use lowercase snake_case. Known values are `card`, `cash`, `apm`, `external`,
+	`apple_pay`, `google_pay`, `whatsapp_pay`, and `gift_card`.
+	Additional values may be returned as new payment methods become available.
+	Max length: 20
 	"""
 
-    taxes: list[TaxLine]
+    processed_at: datetime.datetime
     """
-	Tax lines aggregated across the sale (after cart-level discounts).
-	Per-line tax detail remains on `items[].price.taxes` / `taxes_final`.
-	Min items: 1
-	Max items: 1000
+	UTC date-time when SumUp recorded this payment’s exposed `status` (successful, failed,
+	or canceled). Server processed time when available; otherwise the payment provider’s
+	transaction time. Not the device clock.
 	"""
 
-    cart_discounts: list[DiscountLine] | None = None
+    reference: str
     """
-	Discounts applied at cart level. Item-level discounts remain on
-	`items[].price.discounts`.
-	Max items: 1000
+	The reference to the actual payment used for this sale, e.g. the sumup transaction code.
+	Max length: 50
+	"""
+
+    status: SalePaymentStatus
+    """
+	The status of the payment.
+	"""
+
+    type: str
+    """
+	Payment operation type.
+	This is distinct from the payment instrument in `method`.
+	Values use lowercase snake_case. Known values are `purchase` for a normal purchase
+	and `unreferenced_refund` for negative sales such as deposit returns.
+	Default: "purchase"
+	"""
+
+    apm_type: str | None = None
+    """
+	Alternative payment method type when `method` is `apm`.
+	Gift card is not an APM on this API.
+	Values use lowercase snake_case. Known values are `qr_code_pix`, `sepa_dd`, `paypal`,
+	`sumup_pay`, `twint`, and `iris`.
+	Additional values may be returned as new alternative payment methods become available.
+	Max length: 20
+	"""
+
+    card: SalePaymentCard | None = None
+    """
+	Card brand, credit/debit processing type, and last four digits.
+	"""
+
+    gift_card: SaleGiftCardPayment | None = None
+    """
+	Gift card used for this payment. Present when `method` is `gift_card` and the gift card
+	id is known.
+	Gift card IDs use the format "GC" followed by 9 alphanumeric characters
+	(e.g. GCZ3NTMB1V).
 	"""
 
 
@@ -5712,8 +5604,46 @@ class SaleSource(pydantic.BaseModel):
 	"""
 
 
-SaleStateV10 = typing.Literal["CLOSED"] | str
-SaleStateV10Input = SaleStateV10
+class SaleTotals(pydantic.BaseModel):
+    """
+            Sale-level pricing aggregate, parallel to `SaleItemPrice` on each `SaleItem`.
+
+    Line-level breakdown (unit price, line discounts, per-line taxes) lives on
+    `items[].price`. This object holds the rolled-up totals and cart-level
+    adjustments that consumers use for receipts and payment reconciliation.
+    """
+
+    gross_amount: int
+    """
+	Final gross total for the sale: sum of `items[].price.total_gross_amount_final`
+	after cart-level discounts (tips excluded).
+	Same value as search `total_amount`, in minor units according to `Sale.currency.scale`.
+	Payment amounts include tips and can therefore differ from this gross total.
+	Format: int64
+	"""
+
+    net_amount: int
+    """
+	Final net total for the sale: sum of `items[].price.total_net_amount_final`
+	after cart-level discounts (tips excluded).
+	In minor units according to `Sale.currency.scale`.
+	Format: int64
+	"""
+
+    taxes: list[TaxLine]
+    """
+	Tax lines aggregated across the sale (after cart-level discounts).
+	Per-line tax detail remains on `items[].price.taxes` / `taxes_final`.
+	Min items: 1
+	Max items: 1000
+	"""
+
+    cart_discounts: list[DiscountLine] | None = None
+    """
+	Discounts applied at cart level. Item-level discounts remain on
+	`items[].price.discounts`.
+	Max items: 1000
+	"""
 
 
 class SalesActivityCurrency(pydantic.BaseModel):
@@ -5744,7 +5674,7 @@ class Sale(pydantic.BaseModel):
 
     Non-finalised sales are never returned; only fully-paid sales.
 
-    Item lines are `SaleLineItem`. Merchant fees appear as `type: "FEE"` lines; extra fee data
+    Item lines are `SaleItem`. Merchant fees appear as `type: "FEE"` lines; extra fee data
     is in `features`.
     """
 
@@ -5768,7 +5698,7 @@ class Sale(pydantic.BaseModel):
 	The ID of the sale.
 	"""
 
-    items: list[SaleLineItemV10]
+    items: list[SaleItem]
     """
 	The lines sold in this sale, in the order they were added to the cart.
 	Includes merchant fees (`type: "FEE"`) when present; fee details are in `features`.
@@ -5776,15 +5706,15 @@ class Sale(pydantic.BaseModel):
 	Max items: 1000
 	"""
 
-    payments: list[PublicPaymentV10]
+    payments: list[SalePayment]
     """
 	Payments on this sale, in the order they were recorded.
 	Max items: 1000
 	"""
 
-    price: SalePriceV10
+    price: SaleTotals
     """
-	Sale-level pricing aggregate, parallel to `LineItemPrice` on each `SaleLineItem`.
+	Sale-level pricing aggregate, parallel to `SaleItemPrice` on each `SaleItem`.
 	
 	Line-level breakdown (unit price, line discounts, per-line taxes) lives on
 	`items[].price`. This object holds the rolled-up totals and cart-level
@@ -5796,7 +5726,7 @@ class Sale(pydantic.BaseModel):
 	Information about the source of the sale.
 	"""
 
-    state: SaleStateV10
+    state: SaleLifecycleState
     """
 	Lifecycle state of the sale.
 	Non-finalised sales are never returned; only fully-paid sales.
@@ -5832,6 +5762,25 @@ class Sale(pydantic.BaseModel):
 	"""
 
 
+SaleChannelFilter = (
+    typing.Literal[
+        "BOOKINGS",
+        "INVOICE",
+        "KIOSK",
+        "ONLINE_PAYMENTS",
+        "ONLINE_STORE",
+        "ORDER_AGGREGATOR",
+        "ORDER_AND_PAY",
+        "POS",
+        "SOLO",
+        "SUBSCRIPTIONS",
+        "UNKNOWN",
+    ]
+    | str
+)
+SaleChannelFilterInput = SaleChannelFilter
+
+
 class SalePage(pydantic.BaseModel):
     """
             Paginated list of `Sale` objects. Results are ordered **newest first** by the newest
@@ -5845,6 +5794,10 @@ class SalePage(pydantic.BaseModel):
 	Opaque token for the next page. Pass it as the `pagination_token` query parameter
 	on the next list request. Omitted when no further page is available.
 	"""
+
+
+SalePaymentStatusFilter = typing.Literal["CHARGED_BACK", "PAID"] | str
+SalePaymentStatusFilterInput = SalePaymentStatusFilter
 
 
 class SaleSearchItem(pydantic.BaseModel):
@@ -5872,7 +5825,7 @@ class SaleSearchItem(pydantic.BaseModel):
 	Sale identifier.
 	"""
 
-    state: SaleStateV10
+    state: SaleLifecycleState
     """
 	Lifecycle state of the sale.
 	Non-finalised sales are never returned; only fully-paid sales.
@@ -5905,25 +5858,6 @@ class SaleSearchItem(pydantic.BaseModel):
 	"""
 
 
-SalesChannelFilterV10 = (
-    typing.Literal[
-        "BOOKINGS",
-        "INVOICE",
-        "KIOSK",
-        "ONLINE_PAYMENTS",
-        "ONLINE_STORE",
-        "ORDER_AGGREGATOR",
-        "ORDER_AND_PAY",
-        "POS",
-        "SOLO",
-        "SUBSCRIPTIONS",
-        "UNKNOWN",
-    ]
-    | str
-)
-SalesChannelFilterV10Input = SalesChannelFilterV10
-
-
 class SaleSearchRequest(pydantic.BaseModel):
     """
             Filter and pagination criteria for `POST /sales/search`. Filters from different categories
@@ -5952,20 +5886,20 @@ class SaleSearchRequest(pydantic.BaseModel):
 	the same filters. Not interchangeable with tokens from `GET /sales`.
 	"""
 
-    payment_statuses: list[PaymentStatusFilterV10] | None = None
+    payment_statuses: list[SalePaymentStatusFilter] | None = None
     """
 	Filters rows by payment outcome. Multiple values match any of them (**OR**). The search
 	row does not echo this value.
 	"""
 
-    sale_statuses: list[SaleStateV10] | None = None
+    sale_statuses: list[SaleLifecycleState] | None = None
     """
 	Filters rows by sale lifecycle (`state`). Multiple values match any of them (**OR**).
 	Uses the same values as `Sale.state`. Non-finalised sales are never returned; only
 	fully-paid sales.
 	"""
 
-    sales_channels: list[SalesChannelFilterV10] | None = None
+    sales_channels: list[SaleChannelFilter] | None = None
     """
 	Sales channel filter. Multiple values match any of them (**OR**).
 	"""
@@ -6001,7 +5935,7 @@ class SaleSearchRequestDict(typing_extensions.TypedDict, total=False):
     ]
     payment_statuses: typing_extensions.NotRequired[
         typing_extensions.Annotated[
-            typing.Sequence[PaymentStatusFilterV10Input],
+            typing.Sequence[SalePaymentStatusFilterInput],
             typing_extensions.Doc(
                 "Filters rows by payment outcome. Multiple values match any of them (**OR**). The search\nrow does not echo this value."
             ),
@@ -6009,7 +5943,7 @@ class SaleSearchRequestDict(typing_extensions.TypedDict, total=False):
     ]
     sale_statuses: typing_extensions.NotRequired[
         typing_extensions.Annotated[
-            typing.Sequence[SaleStateV10Input],
+            typing.Sequence[SaleLifecycleStateInput],
             typing_extensions.Doc(
                 "Filters rows by sale lifecycle (`state`). Multiple values match any of them (**OR**).\nUses the same values as `Sale.state`. Non-finalised sales are never returned; only\nfully-paid sales."
             ),
@@ -6017,7 +5951,7 @@ class SaleSearchRequestDict(typing_extensions.TypedDict, total=False):
     ]
     sales_channels: typing_extensions.NotRequired[
         typing_extensions.Annotated[
-            typing.Sequence[SalesChannelFilterV10Input],
+            typing.Sequence[SaleChannelFilterInput],
             typing_extensions.Doc(
                 "Sales channel filter. Multiple values match any of them (**OR**)."
             ),
