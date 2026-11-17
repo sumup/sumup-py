@@ -75,9 +75,9 @@ class RefundTransactionBodyInput(typing_extensions.TypedDict, total=False):
 
     amount: typing_extensions.NotRequired[
         typing_extensions.Annotated[
-            float,
+            int,
             typing_extensions.Doc(
-                "Amount to refund in major units of the transaction's currency, for example `5` for EUR 5.00. It must begreater than zero and cannot exceed the amount eligible for a refund. Eligibility depends on the transaction andcountry/currency rules. If omitted, the system requests a full refund."
+                "Amount to refund in minor units of the transaction's currency, for example `500` for EUR 5.00. It must begreater than zero and cannot exceed the amount eligible for a refund. Eligibility depends on the transaction andcountry/currency rules. If omitted, the system requests a full refund.\nMin: 0"
             ),
         ]
     ]
@@ -124,7 +124,7 @@ class TransactionsResource(Resource):
         merchant_code: str,
         transaction_id: str,
         *,
-        amount: float | None | NotGivenType = NOT_GIVEN,
+        amount: int | None | NotGivenType = NOT_GIVEN,
         headers: HeaderTypes | None = None,
     ) -> RefundTransaction201Response:
         """
@@ -340,7 +340,7 @@ class AsyncTransactionsResource(AsyncResource):
         merchant_code: str,
         transaction_id: str,
         *,
-        amount: float | None | NotGivenType = NOT_GIVEN,
+        amount: int | None | NotGivenType = NOT_GIVEN,
         headers: HeaderTypes | None = None,
     ) -> RefundTransaction201Response:
         """
