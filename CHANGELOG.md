@@ -1,5 +1,18 @@
 # Changelog
 
+## [0.4.3](https://github.com/sumup/sumup-py/compare/v0.4.2...v0.4.3) (2026-11-17)
+
+
+### Features
+
+* **ci:** publish Python packages with provenance ([#469](https://github.com/sumup/sumup-py/issues/469)) ([08a80dc](https://github.com/sumup/sumup-py/commit/08a80dcb80fa30d60cc1e8bc6b05de9448ee5f21))
+
+
+### Chores
+
+* synced file(s) with sumup/apis ([#472](https://github.com/sumup/sumup-py/issues/472)) ([1a1516f](https://github.com/sumup/sumup-py/commit/1a1516f84aa773f5cae823d804c810b6940ec1b7))
+* synced file(s) with sumup/apis ([#473](https://github.com/sumup/sumup-py/issues/473)) ([73cada1](https://github.com/sumup/sumup-py/commit/73cada10ca1f8adaaf3a8e5d1e701e611325ae79))
+
 ## [0.4.2](https://github.com/sumup/sumup-py/compare/v0.4.1...v0.4.2) (2026-11-12)
 
 
