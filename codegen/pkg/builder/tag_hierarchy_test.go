@@ -53,6 +53,9 @@ components: {schemas: {}}
 	if parent.Get == nil || parent.Post == nil {
 		t.Fatal("the parent must still contain both operations")
 	}
+	if name := builder.nestedMethodName("readercheckouts", "create_reader_checkout"); name != "create" {
+		t.Fatalf("expected create on Checkouts, got %s", name)
+	}
 	if path := builder.resourcePath("readercheckouts"); path != "readers.checkouts" {
 		t.Fatalf("wrong resource path %q", path)
 	}

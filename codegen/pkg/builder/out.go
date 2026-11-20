@@ -140,6 +140,9 @@ func (b *Builder) generateResourceFile(tagName string, paths *v3.Paths) ([]strin
 		return nil, fmt.Errorf("convert paths to methods: %w", err)
 	}
 	flattenMethodBodies(methods, bodyTypes)
+	for _, method := range methods {
+		method.FunctionName = b.nestedMethodName(tagName, method.FunctionName)
+	}
 
 	slog.Info("generating file",
 		slog.String("tag", tag.Name),

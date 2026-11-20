@@ -85,6 +85,7 @@ func (b *Builder) Samples(sdkVersion string) (*SampleCatalog, error) {
 			if len(operation.Tags) > 0 {
 				tagName = strings.ToLower(operation.Tags[0])
 			}
+			method.FunctionName = b.nestedMethodName(tagName, method.FunctionName)
 			if pathsForTag := b.pathsByTag[tagName]; pathsForTag != nil {
 				flattenMethodBodies([]*Method{method}, b.pathsToBodyTypes(pathsForTag))
 			}

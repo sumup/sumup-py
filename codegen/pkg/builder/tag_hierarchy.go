@@ -113,3 +113,51 @@ func (b *Builder) resourcePath(tag string) string {
 	}
 	return strcase.ToSnake(tag)
 }
+
+// scopedMethodNames removes a resource suffix when the shorter name is unambiguous.
+func scopedMethodNames(names []string, suffixes ...string) map[string]string {
+	original := make(map[string]bool, len(names))
+	proposed := make(map[string]string, len(names))
+	counts := make(map[string]int, len(names))
+	for _, name := range names {
+		original[name] = true
+		short := unqualifiedMethodName(name, suffixes)
+		proposed[name] = short
+		counts[short]++
+	}
+	for name, short := range proposed {
+		if original[short] || counts[short] > 1 {
+			delete(proposed, name)
+		}
+	}
+	return proposed
+}
+
+func unqualifiedMethodName(name string, suffixes []string) string {
+	for _, suffix := range suffixes {
+		for _, ending := range []string{suffix, strings.TrimSuffix(suffix, "s")} {
+			if ending != "" {
+				if short, found := strings.CutSuffix(name, ending); found && short != "" {
+					return short
+				}
+			}
+		}
+	}
+	return name
+}
+
+func (b *Builder) nestedMethodName(tag, original string) string {
+	parent := b.resourceParents[tag]
+	paths := b.pathsByTag[tag]
+	if parent.tag == "" || paths == nil {
+		return original
+	}
+	var names []string
+	for path := range paths.PathItems.ValuesFromOldest() {
+		for op := range path.GetOperations().ValuesFromOldest() {
+			names = append(names, operationMethodName(op))
+		}
+	}
+	scoped := scopedMethodNames(names, "_"+strcase.ToSnake(b.tagByTagName(tag).Name), "_"+strcase.ToSnake(parent.label))
+	return cmp.Or(scoped[original], original)
+}

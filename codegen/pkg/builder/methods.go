@@ -174,14 +174,7 @@ func (b *Builder) operationToMethod(method, path string, o *v3.Operation) (*Meth
 		return nil, fmt.Errorf("get successful response type: %w", err)
 	}
 
-	methodName := strcase.ToSnake(o.OperationId)
-	if ext, ok := extension.Get[map[string]any](o.Extensions, "x-codegen"); ok {
-		//nolint:errcheck // FIXME: type assertion
-		if name, ok := ext["method_name"]; ok {
-			//nolint:errcheck // FIXME: type assertion
-			methodName = strcase.ToSnake(name.(string))
-		}
-	}
+	methodName := operationMethodName(o)
 
 	params, err := b.buildPathParams("path", o.Parameters)
 	if err != nil {
@@ -488,4 +481,17 @@ func formatStringType(t *base.Schema) string {
 	default:
 		return "str"
 	}
+}
+
+func operationMethodName(o *v3.Operation) string {
+	methodName := strcase.ToSnake(o.OperationId)
+	if ext, ok := extension.Get[map[string]any](o.Extensions, "x-codegen"); ok {
+		//nolint:errcheck // FIXME: type assertion
+		if name, ok := ext["method_name"]; ok {
+			//nolint:errcheck // FIXME: type assertion
+			methodName = strcase.ToSnake(name.(string))
+		}
+	}
+
+	return methodName
 }
