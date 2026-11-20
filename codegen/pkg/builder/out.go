@@ -110,6 +110,7 @@ type resourceTemplateData struct {
 	InputTypeNames []string
 	Params         []Writable
 	Service        string
+	Children       []childResource
 	Methods        []*Method
 	UsesSecret     bool
 	TagDescription string
@@ -139,6 +140,9 @@ func (b *Builder) generateResourceFile(tagName string, paths *v3.Paths) ([]strin
 		return nil, fmt.Errorf("convert paths to methods: %w", err)
 	}
 	flattenMethodBodies(methods, bodyTypes)
+	for _, method := range methods {
+		method.FunctionName = b.nestedMethodName(tagName, method.FunctionName)
+	}
 
 	slog.Info("generating file",
 		slog.String("tag", tag.Name),
@@ -158,6 +162,7 @@ func (b *Builder) generateResourceFile(tagName string, paths *v3.Paths) ([]strin
 		Params:         innerTypes,
 		Service:        strcase.ToCamel(tag.Name),
 		Methods:        methods,
+		Children:       b.children(tagName),
 		UsesSecret:     usesSecret,
 		TagDescription: strings.TrimSpace(tag.Description),
 	}); err != nil {
@@ -336,6 +341,9 @@ func (b *Builder) writeClientFile(fname string, tags []string) error {
 
 	resources := make([]resource, 0, len(tags))
 	for i := range tags {
+		if b.resourceParents[tags[i]].tag != "" {
+			continue
+		}
 		if p := b.pathsByTag[tags[i]]; p.PathItems.Len() == 0 {
 			continue
 		}

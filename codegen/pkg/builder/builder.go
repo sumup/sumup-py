@@ -25,7 +25,8 @@ type Builder struct {
 
 	// spec are the OpenAPI specs we are working with.
 	// Load the specs using [Builder.Load].
-	spec *v3.Document
+	spec            *v3.Document
+	resourceParents map[string]resourceParent
 
 	// schemasByTag maps tags to respective schema references.
 	schemasByTag map[string][]*base.SchemaProxy
@@ -82,6 +83,15 @@ func New(cfg Config, opts ...Option) *Builder {
 func (b *Builder) Load(spec *v3.Document) error {
 	b.start = time.Now()
 	b.spec = spec
+	parents, err := readResourceParents(spec)
+	if err != nil {
+		return err
+	}
+	b.resourceParents = make(map[string]resourceParent, len(parents))
+	for child, parent := range parents {
+		parent.tag = strings.ToLower(parent.tag)
+		b.resourceParents[strings.ToLower(child)] = parent
+	}
 	normalizeSchemaAnnotations(spec)
 
 	b.collectPaths()
