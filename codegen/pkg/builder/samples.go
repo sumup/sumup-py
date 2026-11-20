@@ -6,7 +6,6 @@ import (
 	"strconv"
 	"strings"
 
-	"github.com/iancoleman/strcase"
 	"github.com/pb33f/go-yaml"
 	"github.com/pb33f/libopenapi/datamodel/high/base"
 	v3 "github.com/pb33f/libopenapi/datamodel/high/v3"
@@ -272,7 +271,7 @@ func (b *Builder) renderSample(
 		})
 	}
 
-	resourceName := strcase.ToSnake(tagName)
+	resourceName := b.resourcePath(tagName)
 	var source strings.Builder
 	source.WriteString("import os\n\n")
 	source.WriteString("import sumup\n\n")
