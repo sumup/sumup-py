@@ -541,6 +541,7 @@ CardType = (
         "ALELO",
         "AMEX",
         "BANCOMAT",
+        "CARNET",
         "CONECS",
         "CUP",
         "DINERS",
@@ -1832,23 +1833,15 @@ CreateReaderCheckoutRequestPaymentTypeInput = CreateReaderCheckoutRequestPayment
 
 class CreateReaderCheckoutRequestTotalAmount(pydantic.BaseModel):
     """
-            Amount structure.
+            Amount to charge in minor units. Use the decimal places for the currency.
+    CLP, COP, and HUF use zero decimal places.
 
-    The amount is represented as an integer value altogether with the currency and the minor unit.
-
-    For example, EUR 1.00 is represented as value 100 with minor unit of 2.
+    For example, send `1234` for EUR 12.34 or `1000` for CLP 1000.
     """
 
     currency: str
     """
 	Currency ISO 4217 code
-	"""
-
-    minor_unit: int
-    """
-	The minor units of the currency.
-	It represents the number of decimals of the currency. For the currencies CLP, COP and HUF, the minor unit is0.
-	Min: 0
 	"""
 
     value: int
@@ -1861,14 +1854,6 @@ class CreateReaderCheckoutRequestTotalAmount(pydantic.BaseModel):
 class CreateReaderCheckoutRequestTotalAmountDict(typing_extensions.TypedDict, total=False):
     currency: typing_extensions.Required[
         typing_extensions.Annotated[str, typing_extensions.Doc("Currency ISO 4217 code")]
-    ]
-    minor_unit: typing_extensions.Required[
-        typing_extensions.Annotated[
-            int,
-            typing_extensions.Doc(
-                "The minor units of the currency.\nIt represents the number of decimals of the currency. For the currencies CLP, COP and HUF, the minor unit is0.\nMin: 0"
-            ),
-        ]
     ]
     value: typing_extensions.Required[
         typing_extensions.Annotated[
@@ -1887,11 +1872,10 @@ class CreateReaderCheckoutRequest(pydantic.BaseModel):
 
     total_amount: CreateReaderCheckoutRequestTotalAmount
     """
-	Amount structure.
+	Amount to charge in minor units. Use the decimal places for the currency.
+	CLP, COP, and HUF use zero decimal places.
 	
-	The amount is represented as an integer value altogether with the currency and the minor unit.
-	
-	For example, EUR 1.00 is represented as value 100 with minor unit of 2.
+	For example, send `1234` for EUR 12.34 or `1000` for CLP 1000.
 	"""
 
     aade: CreateReaderCheckoutRequestAade | None = None
@@ -1974,7 +1958,7 @@ class CreateReaderCheckoutRequestDict(typing_extensions.TypedDict, total=False):
         typing_extensions.Annotated[
             CreateReaderCheckoutRequestTotalAmountInput,
             typing_extensions.Doc(
-                "Amount structure.\n\nThe amount is represented as an integer value altogether with the currency and the minor unit.\n\nFor example, EUR 1.00 is represented as value 100 with minor unit of 2."
+                "Amount to charge in minor units. Use the decimal places for the currency.\nCLP, COP, and HUF use zero decimal places.\n\nFor example, send `1234` for EUR 12.34 or `1000` for CLP 1000."
             ),
         ]
     ]
@@ -3088,23 +3072,15 @@ GetReaderCheckoutResponseDataStatus = (
 
 class GetReaderCheckoutResponseDataTotalAmount(pydantic.BaseModel):
     """
-            Amount structure.
+            The checkout amount. The value uses two decimal places, even for currencies
+    such as CLP that use zero decimal places in the create request.
 
-    The amount is represented as an integer value altogether with the currency and the minor unit.
-
-    For example, EUR 1.00 is represented as value 100 with minor unit of 2.
+    For example, EUR 10.00 is returned as `1000` and CLP 1000 as `100000`.
     """
 
     currency: str
     """
 	Currency ISO 4217 code
-	"""
-
-    minor_unit: int
-    """
-	The minor units of the currency.
-	It represents the number of decimals of the currency. For the currencies CLP, COP and HUF, the minor unit is0.
-	Min: 0
 	"""
 
     value: int
@@ -3177,11 +3153,10 @@ class GetReaderCheckoutResponseData(pydantic.BaseModel):
 
     total_amount: GetReaderCheckoutResponseDataTotalAmount
     """
-	Amount structure.
+	The checkout amount. The value uses two decimal places, even for currencies
+	such as CLP that use zero decimal places in the create request.
 	
-	The amount is represented as an integer value altogether with the currency and the minor unit.
-	
-	For example, EUR 1.00 is represented as value 100 with minor unit of 2.
+	For example, EUR 10.00 is returned as `1000` and CLP 1000 as `100000`.
 	"""
 
     updated_at: datetime.datetime
