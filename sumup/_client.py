@@ -23,7 +23,9 @@ from .members import AsyncMembersResource, MembersResource
 from .memberships import AsyncMembershipsResource, MembershipsResource
 from .merchants import AsyncMerchantsResource, MerchantsResource
 from .payouts import AsyncPayoutsResource, PayoutsResource
+from .readercheckouts import AsyncReadercheckoutsResource, ReadercheckoutsResource
 from .readers import AsyncReadersResource, ReadersResource
+from .readersettings import AsyncReadersettingsResource, ReadersettingsResource
 from .receipts import AsyncReceiptsResource, ReceiptsResource
 from .roles import AsyncRolesResource, RolesResource
 from .sales import AsyncSalesResource, SalesResource
@@ -205,11 +207,25 @@ class Sumup(Resource):
         return PayoutsResource(self._client)
 
     @property
+    def readercheckouts(self) -> ReadercheckoutsResource:
+        """Access the Readercheckouts API endpoints."""
+        from .readercheckouts.resource import ReadercheckoutsResource
+
+        return ReadercheckoutsResource(self._client)
+
+    @property
     def readers(self) -> ReadersResource:
         """Access the Readers API endpoints."""
         from .readers.resource import ReadersResource
 
         return ReadersResource(self._client)
+
+    @property
+    def readersettings(self) -> ReadersettingsResource:
+        """Access the Readersettings API endpoints."""
+        from .readersettings.resource import ReadersettingsResource
+
+        return ReadersettingsResource(self._client)
 
     @property
     def receipts(self) -> ReceiptsResource:
@@ -409,11 +425,25 @@ class AsyncSumup(AsyncResource):
         return AsyncPayoutsResource(self._client)
 
     @property
+    def readercheckouts(self) -> AsyncReadercheckoutsResource:
+        """Access the Readercheckouts API endpoints."""
+        from .readercheckouts.resource import AsyncReadercheckoutsResource
+
+        return AsyncReadercheckoutsResource(self._client)
+
+    @property
     def readers(self) -> AsyncReadersResource:
         """Access the Readers API endpoints."""
         from .readers.resource import AsyncReadersResource
 
         return AsyncReadersResource(self._client)
+
+    @property
+    def readersettings(self) -> AsyncReadersettingsResource:
+        """Access the Readersettings API endpoints."""
+        from .readersettings.resource import AsyncReadersettingsResource
+
+        return AsyncReadersettingsResource(self._client)
 
     @property
     def receipts(self) -> AsyncReceiptsResource:

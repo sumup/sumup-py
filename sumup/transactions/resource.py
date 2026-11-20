@@ -77,7 +77,7 @@ class RefundTransactionBodyInput(typing_extensions.TypedDict, total=False):
         typing_extensions.Annotated[
             int,
             typing_extensions.Doc(
-                "Amount to refund in minor units of the transaction's currency, for example `500` for EUR 5.00. It must begreater than zero and cannot exceed the amount eligible for a refund. Eligibility depends on the transaction andcountry/currency rules. If omitted, the system requests a full refund.\nMin: 0"
+                "Amount to refund in minor units of the transaction's currency, for example `500` for EUR 5.00. It must begreater than zero and cannot exceed the amount eligible for a refund. Eligibility depends on the transaction andcountry/currency rules. If omitted, the system requests a full refund."
             ),
         ]
     ]
