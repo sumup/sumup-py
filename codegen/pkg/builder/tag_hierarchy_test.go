@@ -1,8 +1,9 @@
 package builder
 
 import (
-	"github.com/pb33f/libopenapi"
 	"testing"
+
+	"github.com/pb33f/libopenapi"
 )
 
 func TestNestedReaderResources(t *testing.T) {
