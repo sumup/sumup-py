@@ -341,7 +341,7 @@ func (b *Builder) writeClientFile(fname string, tags []string) error {
 		if b.resourceParents[tags[i]].tag != "" {
 			continue
 		}
-		if p := b.pathsByTag[tags[i]]; p.PathItems.Len() == 0 {
+		if p := b.pathsByTag[tags[i]]; p.PathItems.Len() == 0 && len(b.children(tags[i])) == 0 {
 			continue
 		}
 		resources = append(resources, resource{

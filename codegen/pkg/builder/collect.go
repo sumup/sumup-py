@@ -36,18 +36,18 @@ func (b *Builder) collectPaths() {
 				)
 				continue
 			}
-
-			for owner := tag; owner != ""; owner = b.resourceParents[owner].tag {
-				tagPaths := b.pathsByTag[owner]
-				if tagPaths == nil {
-					tagPaths = v3.NewPaths(&v3low.Paths{})
-					b.pathsByTag[owner] = tagPaths
-				}
-				if len(b.resourceParents) == 0 {
-					tagPaths.PathItems.Set(path, pathSpec)
-				} else if _, exists := tagPaths.PathItems.Get(path); !exists {
-					tagPaths.PathItems.Set(path, b.pathForResource(pathSpec, owner))
-				}
+			tagPaths := b.pathsByTag[tag]
+			if tagPaths == nil {
+				tagPaths = v3.NewPaths(&v3low.Paths{})
+				b.pathsByTag[tag] = tagPaths
+			}
+			if len(b.resourceParents) == 0 {
+				tagPaths.PathItems.Set(path, pathSpec)
+			} else if _, exists := tagPaths.PathItems.Get(path); !exists {
+				tagPaths.PathItems.Set(path, pathForResource(pathSpec, tag))
+			}
+			for parent := b.resourceParents[tag].tag; parent != "" && b.pathsByTag[parent] == nil; parent = b.resourceParents[parent].tag {
+				b.pathsByTag[parent] = v3.NewPaths(&v3low.Paths{})
 			}
 		}
 	}
@@ -94,12 +94,10 @@ func (b *Builder) collectSchemasByTag(dest map[string][]*base.SchemaProxy, path,
 
 		for _, tag := range op.Tags {
 			tagLower := strings.ToLower(tag)
-			for owner := tagLower; owner != ""; owner = b.resourceParents[owner].tag {
-				if !slices.ContainsFunc(dest[owner], func(sp *base.SchemaProxy) bool {
-					return sp.GetReference() == schema.GetReference()
-				}) {
-					dest[owner] = append(dest[owner], schema)
-				}
+			if !slices.ContainsFunc(dest[tagLower], func(sp *base.SchemaProxy) bool {
+				return sp.GetReference() == schema.GetReference()
+			}) {
+				dest[tagLower] = append(dest[tagLower], schema)
 			}
 		}
 	}

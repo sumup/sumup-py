@@ -87,11 +87,7 @@ func (b *Builder) Load(spec *v3.Document) error {
 	if err != nil {
 		return err
 	}
-	b.resourceParents = make(map[string]resourceParent, len(parents))
-	for child, parent := range parents {
-		parent.tag = strings.ToLower(parent.tag)
-		b.resourceParents[strings.ToLower(child)] = parent
-	}
+	b.resourceParents = parents
 	normalizeSchemaAnnotations(spec)
 
 	b.collectPaths()
