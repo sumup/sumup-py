@@ -24,6 +24,9 @@ import pydantic
 import typing_extensions
 
 
+{{- range .Children }}
+from ..{{.Package}} import {{.Service}}Resource, Async{{.Service}}Resource
+{{- end }}
 {{- range $type := .Params }}
 {{ $type.String }}
 {{- end }}
@@ -34,6 +37,9 @@ class {{.Service}}Resource(Resource):
 
 	def __init__(self, client: httpx.Client) -> None:
 		super().__init__(client)
+{{- range .Children }}
+		self.{{.Name}} = {{.Service}}Resource(client)
+{{- end }}
 
 {{ range $method := .Methods }}
 {{- with .DeprecationNotice }}
@@ -93,6 +99,9 @@ class Async{{.Service}}Resource(AsyncResource):
 
 	def __init__(self, client: httpx.AsyncClient) -> None:
 		super().__init__(client)
+{{- range .Children }}
+		self.{{.Name}} = Async{{.Service}}Resource(client)
+{{- end }}
 
 {{ range $method := .Methods }}
 {{- with .DeprecationNotice }}

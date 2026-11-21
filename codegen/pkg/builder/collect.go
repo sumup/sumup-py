@@ -36,14 +36,19 @@ func (b *Builder) collectPaths() {
 				)
 				continue
 			}
-
-			tagPaths, ok := b.pathsByTag[tag]
-			if !ok {
+			tagPaths := b.pathsByTag[tag]
+			if tagPaths == nil {
 				tagPaths = v3.NewPaths(&v3low.Paths{})
 				b.pathsByTag[tag] = tagPaths
 			}
-
-			tagPaths.PathItems.Set(path, pathSpec)
+			if len(b.resourceParents) == 0 {
+				tagPaths.PathItems.Set(path, pathSpec)
+			} else if _, exists := tagPaths.PathItems.Get(path); !exists {
+				tagPaths.PathItems.Set(path, pathForResource(pathSpec, tag))
+			}
+			for parent := b.resourceParents[tag].tag; parent != "" && b.pathsByTag[parent] == nil; parent = b.resourceParents[parent].tag {
+				b.pathsByTag[parent] = v3.NewPaths(&v3low.Paths{})
+			}
 		}
 	}
 }
