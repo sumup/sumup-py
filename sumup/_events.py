@@ -83,7 +83,7 @@ class EventNotification(Event):
     """
 
     # Pydantic freezes the inherited discriminator at runtime.
-    type: EventType = pydantic.Field(frozen=True)  # ty: ignore[invalid-mutable-override]
+    type: EventType = pydantic.Field(frozen=True)  # ty: ignore[incompatible-mutable-override]
     created_at: pydantic.AwareDatetime
 
     _client: httpx.Client | httpx.AsyncClient | None = pydantic.PrivateAttr(default=None)
