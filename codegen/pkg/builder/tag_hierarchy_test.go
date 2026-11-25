@@ -1,6 +1,9 @@
 package builder
 
 import (
+	"os"
+	"path/filepath"
+	"strings"
 	"testing"
 
 	"github.com/pb33f/libopenapi"
@@ -42,7 +45,8 @@ components: {schemas: {}}
 		t.Fatal(err)
 	}
 
-	builder := New(Config{Out: t.TempDir()})
+	out := t.TempDir()
+	builder := New(Config{Out: out})
 	if err := builder.Load(&model.Model); err != nil {
 		t.Fatal(err)
 	}
@@ -63,6 +67,22 @@ components: {schemas: {}}
 	}
 	if path := builder.resourcePath("readercheckouts"); path != "readers.checkouts" {
 		t.Fatalf("wrong resource path %q", path)
+	}
+	if err := builder.Build(); err != nil {
+		t.Fatal(err)
+	}
+	for file, want := range map[string]string{
+		"readers/resource.py":           "from .checkouts import ReaderCheckoutsResource, AsyncReaderCheckoutsResource",
+		"readers/checkouts/__init__.py": "from .resource import (",
+		"readers/checkouts/resource.py": "from ..._service import Resource",
+	} {
+		content, err := os.ReadFile(filepath.Join(out, filepath.FromSlash(file)))
+		if err != nil {
+			t.Fatal(err)
+		}
+		if !strings.Contains(string(content), want) {
+			t.Errorf("%s is missing %q", file, want)
+		}
 	}
 }
 
