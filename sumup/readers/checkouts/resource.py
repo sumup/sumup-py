@@ -13,8 +13,8 @@ import httpx
 import pydantic
 import typing_extensions
 
-from .._exceptions import APIError, _wrap_request_errors
-from .._service import (
+from ..._exceptions import APIError, _wrap_request_errors
+from ..._service import (
     NOT_GIVEN,
     AsyncResource,
     HeaderTypes,
@@ -23,7 +23,7 @@ from .._service import (
     serialize_query_params,
     serialize_request_data,
 )
-from ..types import (
+from ...types import (
     CreateReaderCheckoutError,
     CreateReaderCheckoutRequest,
     CreateReaderCheckoutRequestInput,

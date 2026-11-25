@@ -4,7 +4,7 @@ import json
 import httpx
 
 
-def test_create_reader_checkout_omits_null_fields(sdk_factory):
+def test_create_reader_checkout_omits_unspecified_fields(sdk_factory):
     captured_request: dict[str, httpx.Request] = {}
 
     def handler(request: httpx.Request) -> httpx.Response:
@@ -12,19 +12,17 @@ def test_create_reader_checkout_omits_null_fields(sdk_factory):
         return httpx.Response(201, json={"data": {"client_transaction_id": "txn-123"}})
 
     sdk = sdk_factory(handler)
-    response = sdk.readers.create_checkout(
+    response = sdk.readers.checkouts.create(
         "merchant-123",
         "reader-456",
-        total_amount={"currency": "EUR", "minor_unit": 2, "value": 1500},
+        total_amount={"currency": "EUR", "value": 1500},
     )
 
     assert response.data.client_transaction_id == "txn-123"
     assert "request" in captured_request
     request = captured_request["request"]
     assert request.url.path == "/v0.1/merchants/merchant-123/readers/reader-456/checkout"
-    assert json.loads(request.content) == {
-        "total_amount": {"currency": "EUR", "minor_unit": 2, "value": 1500}
-    }
+    assert json.loads(request.content) == {"total_amount": {"currency": "EUR", "value": 1500}}
 
 
 def test_create_checkout_serializes_datetime_fields(sdk_factory):

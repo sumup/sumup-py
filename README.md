@@ -144,13 +144,12 @@ from sumup import Sumup
 client = Sumup(api_key="sup_sk_MvxmLOl0...")
 
 # Create a reader checkout
-reader_checkout = client.readers.create_checkout(
+reader_checkout = client.readers.checkouts.create(
     reader_id="your-reader-id",
     merchant_code="your-merchant-code",
     total_amount={
         "value": 1000,  # 10.00 EUR (amount in cents)
         "currency": "EUR",
-        "minor_unit": 2,
     },
     description="Coffee purchase",
     return_url="https://example.com/webhook",

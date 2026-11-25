@@ -23,7 +23,7 @@ def test_get_reader_checkout_accepts_pending_null_fields(sdk_factory):
                     "reader_firmware_version": "3.3.3.21",
                     "reader_serial_number": "1234567890",
                     "status": "pending",
-                    "total_amount": {"currency": "EUR", "minor_unit": 2, "value": 1000},
+                    "total_amount": {"currency": "EUR", "value": 1000},
                     "updated_at": "2026-07-07T20:42:18.117244Z",
                     "valid_until": None,
                 }
@@ -31,7 +31,7 @@ def test_get_reader_checkout_accepts_pending_null_fields(sdk_factory):
         )
 
     sdk = sdk_factory(handler)
-    checkout = sdk.readers.get_checkout(
+    checkout = sdk.readers.checkouts.get(
         "merchant-123",
         "reader-456",
         "00e33a36-c99b-4cb2-b635-b90c1455c9c8",

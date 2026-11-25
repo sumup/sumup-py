@@ -69,17 +69,19 @@ func (b *Builder) generateSharedTypes() error {
 }
 
 type indexTemplateData struct {
+	RootImport        string
 	Service           string
 	ResourceTypeNames []string
 	TypeNames         []string
 }
 
-func (b *Builder) generateResourceIndex(tagName string, resourceTypes []string) error {
+func (b *Builder) generateResourceIndex(tagName, dir, rootImport string, resourceTypes []string) error {
 	tag := b.tagByTagName(tagName)
 	typeNames := b.schemaTypeNamesByTag(tagName)
 
 	typesBuf := bytes.NewBuffer(nil)
 	if err := b.templates.ExecuteTemplate(typesBuf, "index.py.tmpl", indexTemplateData{
+		RootImport:        rootImport,
 		TypeNames:         typeNames,
 		ResourceTypeNames: resourceTypes,
 		Service:           strcase.ToCamel(tag.Name),
@@ -87,7 +89,6 @@ func (b *Builder) generateResourceIndex(tagName string, resourceTypes []string) 
 		return err
 	}
 
-	dir := path.Join(b.cfg.Out, strcase.ToSnake(tag.Name))
 	typeFileName := path.Join(dir, "__init__.py")
 	typesFile, err := openGeneratedFile(typeFileName)
 	if err != nil {
@@ -105,7 +106,7 @@ func (b *Builder) generateResourceIndex(tagName string, resourceTypes []string) 
 }
 
 type resourceTemplateData struct {
-	PackageName    string
+	RootImport     string
 	TypeNames      []string
 	InputTypeNames []string
 	Params         []Writable
@@ -116,7 +117,7 @@ type resourceTemplateData struct {
 	TagDescription string
 }
 
-func (b *Builder) generateResourceFile(tagName string, paths *v3.Paths) ([]string, error) {
+func (b *Builder) generateResourceFile(tagName, dir, rootImport string, paths *v3.Paths) ([]string, error) {
 	tag := b.tagByTagName(tagName)
 
 	typeNames := b.schemaTypeNamesByTag(tagName)
@@ -153,7 +154,7 @@ func (b *Builder) generateResourceFile(tagName string, paths *v3.Paths) ([]strin
 
 	serviceBuf := bytes.NewBuffer(nil)
 	if err := b.templates.ExecuteTemplate(serviceBuf, "resource.py.tmpl", resourceTemplateData{
-		PackageName:    strcase.ToSnake(tag.Name),
+		RootImport:     rootImport,
 		TypeNames:      typeNames,
 		InputTypeNames: inputTypeNames(b.requestSchemaTypeNamesByTag(tagName)),
 		Params:         innerTypes,
@@ -166,7 +167,6 @@ func (b *Builder) generateResourceFile(tagName string, paths *v3.Paths) ([]strin
 		return nil, err
 	}
 
-	dir := path.Join(b.cfg.Out, strcase.ToSnake(tag.Name))
 	resourceFileName := path.Join(dir, "resource.py")
 	resourceFile, err := openGeneratedFile(resourceFileName)
 	if err != nil {
@@ -223,19 +223,19 @@ func (b *Builder) generateResource(tagName string, paths *v3.Paths) error {
 		return fmt.Errorf("empty tag name")
 	}
 
-	tag := b.tagByTagName(tagName)
-
-	dir := path.Join(b.cfg.Out, strcase.ToSnake(tag.Name))
+	packagePath := b.resourcePath(tagName)
+	dir := b.resourceDir(packagePath)
+	rootImport := strings.Repeat(".", strings.Count(packagePath, ".")+2)
 	if err := os.MkdirAll(dir, os.ModePerm); err != nil {
 		return err
 	}
 
-	resourceTypes, err := b.generateResourceFile(tagName, paths)
+	resourceTypes, err := b.generateResourceFile(tagName, dir, rootImport, paths)
 	if err != nil {
 		return err
 	}
 
-	if err := b.generateResourceIndex(tagName, resourceTypes); err != nil {
+	if err := b.generateResourceIndex(tagName, dir, rootImport, resourceTypes); err != nil {
 		return err
 	}
 
@@ -268,35 +268,48 @@ func writableUsesSecret(w Writable) bool {
 }
 
 func (b *Builder) cleanupGeneratedResourceDirs() error {
-	entries, err := os.ReadDir(b.cfg.Out)
+	expected := make(map[string]string, len(b.pathsByTag))
+	for tagName := range b.pathsByTag {
+		packagePath := b.resourcePath(tagName)
+		dir := b.resourceDir(packagePath)
+		if otherTag, exists := expected[dir]; exists {
+			return fmt.Errorf("tags %q and %q share resource package %q", otherTag, tagName, packagePath)
+		}
+		expected[dir] = tagName
+	}
+	return cleanupResourceDirs(b.cfg.Out, expected)
+}
+
+func (b *Builder) resourceDir(packagePath string) string {
+	return filepath.Join(b.cfg.Out, filepath.FromSlash(strings.ReplaceAll(packagePath, ".", "/")))
+}
+
+func cleanupResourceDirs(dir string, expected map[string]string) error {
+	entries, err := os.ReadDir(dir)
 	if err != nil {
 		if os.IsNotExist(err) {
 			return nil
 		}
-		return fmt.Errorf("read output directory: %w", err)
+		return fmt.Errorf("read resource directory %q: %w", dir, err)
 	}
-
-	expected := make(map[string]struct{}, len(b.pathsByTag))
-	for tagName := range b.pathsByTag {
-		tag := b.tagByTagName(tagName)
-		expected[strcase.ToSnake(tag.Name)] = struct{}{}
-	}
-
 	for _, entry := range entries {
 		if !entry.IsDir() {
 			continue
 		}
 
-		name := entry.Name()
-		if _, ok := expected[name]; ok {
+		child := filepath.Join(dir, entry.Name())
+		if _, ok := expected[child]; ok {
+			if err := cleanupResourceDirs(child, expected); err != nil {
+				return err
+			}
 			continue
 		}
-		if !isGeneratedResourceDir(path.Join(b.cfg.Out, name)) {
+		if !isGeneratedResourceDir(child) {
 			continue
 		}
 
-		if err := os.RemoveAll(path.Join(b.cfg.Out, name)); err != nil {
-			return fmt.Errorf("remove stale generated resource %q: %w", name, err)
+		if err := os.RemoveAll(child); err != nil {
+			return fmt.Errorf("remove stale generated resource %q: %w", child, err)
 		}
 	}
 
@@ -310,11 +323,8 @@ func isGeneratedResourceDir(dir string) bool {
 	if _, err := os.Stat(resourceFile); err != nil {
 		return false
 	}
-	if _, err := os.Stat(indexFile); err != nil {
-		return false
-	}
-
-	return true
+	index, err := os.ReadFile(indexFile)
+	return err == nil && bytes.HasPrefix(index, []byte("# Code generated by `py-sdk-gen`. DO NOT EDIT."))
 }
 
 func (b *Builder) writeClientFile(fname string, tags []string) error {
@@ -337,17 +347,18 @@ func (b *Builder) writeClientFile(fname string, tags []string) error {
 	}
 
 	resources := make([]resource, 0, len(tags))
-	for i := range tags {
-		if b.resourceParents[tags[i]].tag != "" {
+	for _, tag := range tags {
+		if b.resourceParents[tag].tag != "" {
 			continue
 		}
-		if p := b.pathsByTag[tags[i]]; p.PathItems.Len() == 0 && len(b.children(tags[i])) == 0 {
+		if p := b.pathsByTag[tag]; p.PathItems.Len() == 0 && len(b.children(tag)) == 0 {
 			continue
 		}
+		name := strcase.ToCamel(b.tagByTagName(tag).Name)
 		resources = append(resources, resource{
-			Name:           strcase.ToCamel(tags[i]),
-			Package:        strcase.ToSnake(tags[i]),
-			ShortDocstring: fmt.Sprintf("Access the %s API endpoints.", strcase.ToCamel(tags[i])),
+			Name:           name,
+			Package:        b.resourcePath(tag),
+			ShortDocstring: fmt.Sprintf("Access the %s API endpoints.", name),
 		})
 	}
 
@@ -388,19 +399,13 @@ func (b *Builder) writeAPIVersionFile(fname string) error {
 }
 
 func openGeneratedFile(filename string) (*os.File, error) {
-	cwd, err := os.Getwd()
+	f, err := os.OpenFile(filename, os.O_RDWR|os.O_CREATE|os.O_TRUNC, os.FileMode(0o644))
 	if err != nil {
-		return nil, fmt.Errorf("get current working directory: %w", err)
-	}
-
-	p := filepath.Join(cwd, filename)
-	f, err := os.OpenFile(p, os.O_RDWR|os.O_CREATE|os.O_TRUNC, os.FileMode(0o644))
-	if err != nil {
-		return nil, fmt.Errorf("create %q: %w", p, err)
+		return nil, fmt.Errorf("create %q: %w", filename, err)
 	}
 	if err := f.Chmod(0o644); err != nil {
 		_ = f.Close()
-		return nil, fmt.Errorf("set permissions on %q: %w", p, err)
+		return nil, fmt.Errorf("set permissions on %q: %w", filename, err)
 	}
 
 	return f, nil

@@ -92,7 +92,6 @@ func pathForResource(path *v3.PathItem, tag string) *v3.PathItem {
 type childResource struct {
 	Name    string
 	Service string
-	Package string
 }
 
 func (b *Builder) children(tag string) []childResource {
@@ -100,7 +99,7 @@ func (b *Builder) children(tag string) []childResource {
 	for child, parent := range b.resourceParents {
 		if parent.tag == tag && b.pathsByTag[child] != nil {
 			name := b.tagByTagName(child).Name
-			children = append(children, childResource{Name: strcase.ToSnake(parent.label), Service: strcase.ToCamel(name), Package: strcase.ToSnake(name)})
+			children = append(children, childResource{Name: strcase.ToSnake(parent.label), Service: strcase.ToCamel(name)})
 		}
 	}
 	slices.SortFunc(children, func(a, b childResource) int { return cmp.Compare(a.Name, b.Name) })
@@ -111,5 +110,5 @@ func (b *Builder) resourcePath(tag string) string {
 	if parent := b.resourceParents[tag]; parent.tag != "" {
 		return b.resourcePath(parent.tag) + "." + strcase.ToSnake(parent.label)
 	}
-	return strcase.ToSnake(tag)
+	return strcase.ToSnake(b.tagByTagName(tag).Name)
 }

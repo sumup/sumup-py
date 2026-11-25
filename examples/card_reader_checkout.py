@@ -22,10 +22,10 @@ async def main():
     readers = await client.readers.list(merchant_code)
     reader = readers.items[0]
 
-    checkout = await client.readers.create_checkout(
+    checkout = await client.readers.checkouts.create(
         merchant_code=merchant_code,
         reader_id=reader.id,
-        total_amount={"currency": "EUR", "minor_unit": 2, "value": 1000},
+        total_amount={"currency": "EUR", "value": 1000},
         description="sumup-py card reader checkout example",
     )
 

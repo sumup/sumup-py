@@ -6,16 +6,16 @@
 """
 {{- end }}
 from __future__ import annotations
-from .._service import Resource, AsyncResource, HeaderTypes, NotGivenType, NOT_GIVEN, serialize_query_params, serialize_request_data
-from .._exceptions import APIError, _wrap_request_errors
+from {{ .RootImport }}_service import Resource, AsyncResource, HeaderTypes, NotGivenType, NOT_GIVEN, serialize_query_params, serialize_request_data
+from {{ .RootImport }}_exceptions import APIError, _wrap_request_errors
 {{- if .UsesSecret }}
-from .._secret import Secret
+from {{ .RootImport }}_secret import Secret
 {{- end }}
 {{- with .TypeNames }}
-from ..types import {{ join ", " . }}
+from {{ $.RootImport }}types import {{ join ", " . }}
 {{- end }}
 {{- with .InputTypeNames }}
-from ..types import {{ join ", " . }}
+from {{ $.RootImport }}types import {{ join ", " . }}
 {{- end }}
 import datetime
 import httpx
@@ -25,7 +25,7 @@ import typing_extensions
 
 
 {{- range .Children }}
-from ..{{.Package}} import {{.Service}}Resource, Async{{.Service}}Resource
+from .{{.Name}} import {{.Service}}Resource, Async{{.Service}}Resource
 {{- end }}
 {{- range $type := .Params }}
 {{ $type.String }}

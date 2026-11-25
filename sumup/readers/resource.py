@@ -23,8 +23,6 @@ from .._service import (
     serialize_query_params,
     serialize_request_data,
 )
-from ..reader_checkouts import AsyncReaderCheckoutsResource, ReaderCheckoutsResource
-from ..reader_settings import AsyncReaderSettingsResource, ReaderSettingsResource
 from ..types import (
     Affiliate,
     AffiliateInput,
@@ -45,6 +43,8 @@ from ..types import (
     StatusResponse,
     Unauthorized,
 )
+from .checkouts import AsyncReaderCheckoutsResource, ReaderCheckoutsResource
+from .settings import AsyncReaderSettingsResource, ReaderSettingsResource
 
 
 class CreateGoReaderCheckoutBodyAffiliateInput(typing_extensions.TypedDict, total=False):
