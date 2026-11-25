@@ -140,11 +140,12 @@ print(f"Checkout Reference: {checkout.checkout_reference}")
 
 ```python
 from sumup import Sumup
+from sumup.readers.checkouts import CreateReaderCheckoutResponse
 
 client = Sumup(api_key="sup_sk_MvxmLOl0...")
 
 # Create a reader checkout
-reader_checkout = client.readers.checkouts.create(
+reader_checkout: CreateReaderCheckoutResponse = client.readers.checkouts.create(
     reader_id="your-reader-id",
     merchant_code="your-merchant-code",
     total_amount={
