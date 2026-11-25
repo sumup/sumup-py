@@ -1,5 +1,26 @@
 # Changelog
 
+## [0.4.4](https://github.com/sumup/sumup-py/compare/v0.4.3...v0.4.4) (2026-11-25)
+
+
+### Features
+
+* **codegen:** support nested SDK resources ([#479](https://github.com/sumup/sumup-py/issues/479)) ([b32425c](https://github.com/sumup/sumup-py/commit/b32425c8c9195f70b5c220576abac9465815b2bb))
+
+
+### Chores
+
+* **deps-dev:** bump ruff from 0.17.4 to 0.17.6 ([#488](https://github.com/sumup/sumup-py/issues/488)) ([8d751d1](https://github.com/sumup/sumup-py/commit/8d751d1713009ad0a87276464ece88530a3f0756))
+* **deps-dev:** bump ty from 0.0.99 to 0.0.107 ([#486](https://github.com/sumup/sumup-py/issues/486)) ([dcd26d1](https://github.com/sumup/sumup-py/commit/dcd26d12805f751d8f81abdcdf48c5ebc31d0f84))
+* **deps:** bump actions/create-github-app-token from 3.3.0 to 3.4.0 ([#483](https://github.com/sumup/sumup-py/issues/483)) ([5b26b9b](https://github.com/sumup/sumup-py/commit/5b26b9b43fe5304fd80ff311a00a9ba78b7f39ad))
+* **deps:** bump actions/setup-go from 7.0.0 to 7.1.0 ([#481](https://github.com/sumup/sumup-py/issues/481)) ([4555ad1](https://github.com/sumup/sumup-py/commit/4555ad15cc664b3ecf90ca552ec7f8d71475b0e1))
+* **deps:** bump amannn/action-semantic-pull-request ([#482](https://github.com/sumup/sumup-py/issues/482)) ([0b30dc4](https://github.com/sumup/sumup-py/commit/0b30dc43045819f64d1e8af24412a9cb8fb5cace))
+* **deps:** bump astral-sh/setup-uv from 10.3.3 to 10.4.0 ([#485](https://github.com/sumup/sumup-py/issues/485)) ([eae55a7](https://github.com/sumup/sumup-py/commit/eae55a79bf8b566ef01592aa9e82a337360cfd25))
+* **deps:** bump github.com/pb33f/libopenapi in /codegen ([#484](https://github.com/sumup/sumup-py/issues/484)) ([fc39351](https://github.com/sumup/sumup-py/commit/fc3935139200dc400093bf2fbadea9170dcb51ad))
+* **deps:** bump pydantic from 2.14.3 to 2.14.4 ([#487](https://github.com/sumup/sumup-py/issues/487)) ([e6c0621](https://github.com/sumup/sumup-py/commit/e6c0621c89517844195d8e9e82effb28c4c23435))
+* **deps:** bump reviewdog/action-actionlint from 1.83.0 to 1.84.1 ([#474](https://github.com/sumup/sumup-py/issues/474)) ([d435289](https://github.com/sumup/sumup-py/commit/d4352892c6a687c77e438c7f1ef778bd192a532e))
+* synced file(s) with sumup/apis ([#478](https://github.com/sumup/sumup-py/issues/478)) ([61c2357](https://github.com/sumup/sumup-py/commit/61c23570b7796d8829afebccbbc11d7ca41f40b1))
+
 ## [0.4.3](https://github.com/sumup/sumup-py/compare/v0.4.2...v0.4.3) (2026-11-17)
 
 
